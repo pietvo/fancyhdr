@@ -1,4 +1,4 @@
-% fancyhdr.sty version 3.4
+% fancyhdr.sty version 3.5
 % Fancy headers and footers for LaTeX.
 % Piet van Oostrum, 
 % Dept of Computer and Information Sciences, University of Utrecht,
@@ -156,6 +156,10 @@
 % Replace \rm by \normalfont\rmfamily
 % and \sl by \normalfont\slshape
 
+% Aug 21, 2016
+% version 3.5
+% Don't define \footruleskip if it is already defined
+
 \def\ifancy@mpty#1{\def\temp@a{#1}\ifx\temp@a\@empty}
 
 \def\fancy@def#1#2{\ifancy@mpty{#2}\fancy@gbl\def#1{\leavevmode}\else
@@ -310,7 +314,9 @@
 \newlength{\f@ncyO@orf}
 \newcommand{\headrulewidth}{0.4pt}
 \newcommand{\footrulewidth}{0pt}
-\newcommand{\footruleskip}{.3\normalbaselineskip}
+%% Memoir also define \footruleskip. 
+%% Don't define \footruleskip if it is already defined
+\@ifundefined{footruleskip}{\newcommand{\footruleskip}{.3\normalbaselineskip}}{}
 
 % Fancyplain stuff shouldn't be used anymore (rather
 % \fancypagestyle{plain} should be used), but it must be present for
