@@ -1,4 +1,4 @@
-% fancyhdr.sty version 3.2
+% fancyhdr.sty version 3.4
 % Fancy headers and footers for LaTeX.
 % Piet van Oostrum, 
 % Dept of Computer and Information Sciences, University of Utrecht,
@@ -144,6 +144,17 @@
 % version 3.2
 % reset \everypar (the real one) in \fancy@reset because spanish.ldf does
 % strange things with \everypar between << and >>.
+
+% Aug 20, 2016
+% version 3.3
+% Replace `\@ifundefined{chapter}' with `\ifx\chapter\@undefined'
+% because the former subtly make \chapter equal to \relax, which may be
+% undesirable in some cases.
+
+% Aug 21, 2016
+% version 3.4
+% Replace \rm by \normalfont\rmfamily
+% and \sl by \normalfont\slshape
 
 \def\ifancy@mpty#1{\def\temp@a{#1}\ifx\temp@a\@empty}
 
@@ -337,13 +348,13 @@
 % lefthead empty on ``plain'' pages, \rightmark on even, \leftmark on odd pages
 % evenhead empty on ``plain'' pages, \leftmark on even, \rightmark on odd pages
 \if@twoside
-  \fancyhead[el,or]{\fancyplain{}{\sl\rightmark}}
-  \fancyhead[er,ol]{\fancyplain{}{\sl\leftmark}}
+  \fancyhead[el,or]{\fancyplain{}{\normalfont\slshape\rightmark}}
+  \fancyhead[er,ol]{\fancyplain{}{\normalfont\slshape\leftmark}}
 \else
-  \fancyhead[l]{\fancyplain{}{\sl\rightmark}}
-  \fancyhead[r]{\fancyplain{}{\sl\leftmark}}
+  \fancyhead[l]{\fancyplain{}{\normalfont\slshape\rightmark}}
+  \fancyhead[r]{\fancyplain{}{\normalfont\slshape\leftmark}}
 \fi
-\fancyfoot[c]{\rm\thepage} % page number
+\fancyfoot[c]{\normalfont\rmfamily\thepage} % page number
 
 % Use box 0 as a temp box and dimen 0 as temp dimen. 
 % This can be done, because this code will always
@@ -396,15 +407,18 @@
 % the version 1 documentation) will still work.
 %
 \@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
-\@ifundefined{chapter}{\def\sectionmark##1{\markboth
+\ifx\chapter\@undefined
+\def\sectionmark##1{\markboth
 {\MakeUppercase{\ifnum \c@secnumdepth>\z@
  \thesection\hskip 1em\relax \fi ##1}}{}}%
 \def\subsectionmark##1{\markright {\ifnum \c@secnumdepth >\@ne
- \thesubsection\hskip 1em\relax \fi ##1}}}%
-{\def\chaptermark##1{\markboth {\MakeUppercase{\ifnum \c@secnumdepth>\m@ne
+ \thesubsection\hskip 1em\relax \fi ##1}}%
+\else
+\def\chaptermark##1{\markboth {\MakeUppercase{\ifnum \c@secnumdepth>\m@ne
  \@chapapp\ \thechapter. \ \fi ##1}}{}}%
 \def\sectionmark##1{\markright{\MakeUppercase{\ifnum \c@secnumdepth >\z@
- \thesection. \ \fi ##1}}}}%
+ \thesection. \ \fi ##1}}}%
+\fi
 %\csname ps@headings\endcsname % use \ps@headings defaults if they exist
 \ps@@fancy
 \gdef\ps@fancy{\@fancyplainfalse\ps@@fancy}%
