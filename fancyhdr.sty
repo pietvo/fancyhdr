@@ -1,9 +1,9 @@
-% fancyhdr.sty version 3.5
+% fancyhdr.sty version 3.6
 % Fancy headers and footers for LaTeX.
 % Piet van Oostrum, 
 % Dept of Computer and Information Sciences, University of Utrecht,
-% Padualaan 14, P.O. Box 80.089, 3508 TB Utrecht, The Netherlands
-% Telephone: +31 30 2532180. Email: piet@cs.uu.nl
+% Email: piet@vanoostrum.org
+% Web: http://www.pietvanoostrum.com
 % ========================================================================
 % LICENCE:
 % This file may be distributed under the terms of the LaTeX Project Public
@@ -159,6 +159,14 @@
 % Aug 21, 2016
 % version 3.5
 % Don't define \footruleskip if it is already defined
+
+% Aug. 27, 2016
+% version 3.6
+% Added a \ProvidesPackage line.
+% Updated contact information.
+
+\NeedsTeXFormat{LaTeX2e}[1995/06/01]%
+\ProvidesPackage{fancyhdr}[2016/08/27 3.6 Extensive control of page headers and footers]%
 
 \def\ifancy@mpty#1{\def\temp@a{#1}\ifx\temp@a\@empty}
 
