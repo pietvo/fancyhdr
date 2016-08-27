@@ -1,4 +1,4 @@
-% Extra marks for latex. Version 2.0.
+% Extra marks for latex. Version 2.1.
 % Piet van Oostrum, 
 % Dept of Computer and Information Sciences, University of Utrecht,
 % Email: piet@vanoostrum.org
@@ -24,6 +24,10 @@
 % March 3, 2004
 % version 2.0
 % Release.
+% Aug. 27, 2016
+% version 2.1
+% Added a \ProvidesPackage line.
+% Updated contact information.
 
 % This package gives you two additional marks. 
 % \extramarks{m1}{m2} define two extra marks for headers/footers 
@@ -58,6 +62,8 @@
 % if marginpars or floats are used, as LaTeX clobbers TeX's topmark in this
 % case. 
 
+\NeedsTeXFormat{LaTeX2e}[1995/06/01]%
+\ProvidesPackage{extramarks}[2016/08/27 2.1 Extra marks]%
 \newtoks\@temptokenb
 
 %Just in case.
