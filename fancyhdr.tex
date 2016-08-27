@@ -6,18 +6,13 @@
 \usepackage{array}
 \usepackage{a4wide}
 \usepackage{boxedminipage}
-%%\usepackage{fancyheadings}
-%%\pagestyle{fancy}
-%%\lhead{\rightmark}
-%%\rhead{\thepage}
-%%\cfoot{}
 \makeindex
 \title{Page layout in \LaTeX}
 \author{Piet van Oostrum\thanks{A considerable part of this article was
     written by  George
     Gr\"atzer (University of Manitoba) in \emph{Notices Amer. Math. Soc.}
     Thanks, George!}\\
-  Dept.\ of Computer Science\\
+  Dept.\ of Computer Science\thanks{This was my employer at the time I developed this package. I am now retired.}\\
   Utrecht University}
 \def\latex/{\protect\LaTeX{}}
 \def\tex/{\TeX}
@@ -58,12 +53,9 @@
   Originally this was the documentation of the  \textsf{fancyheadings}
   package. It did contain also other info, e.g. advanced use of marks.
   It has now been upgraded to include more, e.g. the handling of floats.
-  The fancyheadings documentation has been upgraded to conform to version 2
-  of this package\footnote{this version is due to be released Real Soon Now}. For reasons of compatibility with certain operating systems, the
-  name of the package has been changed to \textsf{fancyhdr}.
+  The documentation describes version 3.6 or later of the \textsf{fancyhdr} package 
+  and version 2.1 or later of the \textsf{extramarks} package.
 
-  Although this paper uses \LaTeXe{} commands, most of the techniques can
-  be used with older \LaTeX versions with appropriate changes.
 \end{abstract}
 \tableofcontents
 
@@ -94,7 +86,7 @@ to accomplish things that cannot be done in another way. You should use
 these packages to get the desired result rather than fiddling with the
 output routine yourself.
 
-There a a number of things that you must be aware of:
+There are a number of things that you must be aware of:
 \begin{enumerate}
 \item The margins on the left are not called \Cmd{leftmargin}, but
   \Cmd{evensidemargin} (on even-numbered pages) and \Cmd{oddsidemargin}
@@ -201,22 +193,6 @@ define:
 Of course, you also have complete control over fonts, uppercase
 and lowercase displays, etc.
 
-%%% \section{Where to get it?}\label{get}
-%%% You only need the file \verb|fancyhdr.sty| which you can find at the
-%%% \index{ftp}
-%%% CTAN sites: \verb|ftp.shsu.edu| (U.S.), \verb|ftp.tex.ac.uk| (U.K.), and
-%%% \verb|ftp.dante.de| (Germany).
-%%% You will find it in the directory\\
-%%% \verb|/tex-archive/macros/latex209/contrib/fancyhdr|. Although
-%%% \textsf{fancyhdr}
-%%% is a \latex/ 2.09 style file, it will work with \LaTeXe{}. Also this
-%%% \TTindex{fixmarks.sty}
-%%% \TTindex{extramarks.sty}
-%%% article and the two packages \texttt{fixmarks} and \texttt{extramarks} can
-%%% be found there. (The code for these packages given in this article is a
-%%% simplified version.)
-
-
 \section{Simple use of \textsf{fancyhdr}}  To use this package in a
 \LaTeXe\ document, place the file \verb|fancyhdr.sty| in a
 directory/folder where \tex/ can find it (normally in the input
@@ -226,9 +202,7 @@ after
 \begin{verbatim}
 \documentclass{...}
 \end{verbatim}
-the commands\footnote{For LaTeX2.09 you should specify \texttt{[fancyhdr]}
-  in the \Cmd{documentstyle} instead of the \Cmd{usepackage}
-  command.}: 
+the commands: 
 
 \PSindex{fancy}
 \begin{verbatim}
@@ -261,8 +235,8 @@ A. Smith, on ``The performance of new graduates'' with the
 following page layout:
 
 \begin{fblock}
-\noindent\makebox[\textwidth]{\hfill\bfseries The performance of new
-graduates}
+\noindent\makebox[\textwidth]{\hfill\textbf{The performance of new
+graduates}}
 \noindent\makebox[\textwidth]{\hrulefill}\\[\baselineskip]
 \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[\baselineskip]
 \noindent\makebox[\textwidth]{\hrulefill}
@@ -287,7 +261,7 @@ This is accomplished by these commands following \Cmd{pagestyle\{fancy\}}
 \begin{verbatim}
 \lhead{}
 \chead{}
-\rhead{\bfseries The performance of new graduates}
+\rhead{\textbf{The performance of new graduates}}
 \lfoot{From: K. Grant}
 \cfoot{To: Dean A. Smith}
 \rfoot{\thepage}
@@ -295,7 +269,7 @@ This is accomplished by these commands following \Cmd{pagestyle\{fancy\}}
 \renewcommand{\footrulewidth}{0.4pt}
 \end{verbatim}
 (The \Cmd{thepage} macro displays the current page number.
-\Cmd{bfseries} is the \LaTeXe's way of selecting bold face.)
+\Cmd{textbf} puts it in bold face.)
 
 This is now fine, except that the first page does not need
 all these headers and footers.  To eliminate all but the
@@ -337,8 +311,8 @@ following for the even (left-side) pages:
 
 \begin{fblock}
 
-\noindent\makebox[\textwidth]{\bfseries The performance of new
-graduates\hfill}
+\noindent\makebox[\textwidth]{\textbf{The performance of new
+graduates}\hfill}
 \noindent\makebox[\textwidth]{\hrulefill}\\[\baselineskip]
 \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[\baselineskip]
 \noindent\makebox[\textwidth]{\hrulefill}
@@ -352,7 +326,7 @@ Here are the commands:
 
 \begin{verbatim}
 \fancyhead{} % clear all header fields
-\fancyhead[RO,LE]{\bfseries The performance of new graduates}
+\fancyhead[RO,LE]{\textbf{The performance of new graduates}}
 \fancyfoot{} % clear all footer fields
 \fancyfoot[LE,RO]{\thepage}
 \fancyfoot[LO,CE]{From: K. Grant}
@@ -437,7 +411,7 @@ making the page number bold.
 \begin{verbatim}
 \fancypagestyle{plain}{%
 \fancyhf{} % clear all header and footer fields
-\fancyfoot[C]{\bfseries \thepage} % except the center
+\fancyfoot[C]{\textbf{\thepage}} % except the center
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}}
 \end{verbatim}
@@ -458,7 +432,7 @@ the footer; there is no header, and there are no decorative lines.
 On an even page, we get the layout:
 
 \begin{fblock}
-\noindent\makebox[\textwidth]{\sl 1.2  EVALUATION\hfill
+\noindent\makebox[\textwidth]{\textsl{1.2  EVALUATION}\hfill
  CHAPTER 1. INTRODUCTION}
 \noindent\makebox[\textwidth]{\hrulefill}\\[\baselineskip]
 \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[\baselineskip]
@@ -469,7 +443,7 @@ On an even page, we get the layout:
 On an odd page, we get the layout:
 
 \begin{fblock}
-\noindent\makebox[\textwidth]{\sl CHAPTER 1. INTRODUCTION\hfill
+\noindent\makebox[\textwidth]{\textsl{CHAPTER 1. INTRODUCTION}\hfill
  1.2  EVALUATION}
 \noindent\makebox[\textwidth]{\hrulefill}\\[\baselineskip]
 \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[\baselineskip]
@@ -484,8 +458,8 @@ This default layout is produced by the following commands:
 \CmdIndex{rightmark}
 \CmdIndex{leftmark}
 \begin{verbatim}
-\fancyhead[LE,RO]{\slshape \rightmark}
-\fancyhead[LO,RE]{\slshape \leftmark}
+\fancyhead[LE,RO]{\textsl{\rightmark}}
+\fancyhead[LO,RE]{\textsl{\leftmark}}
 \fancyfoot[C]{\thepage}
 \end{verbatim}
 
@@ -749,50 +723,6 @@ Fortunately the \texttt{ifthen} package works well:
 \fancyhead[LO,RE]{\thepage}
 \end{verbatim}
 
-Dictionaries are often done with two columns. Unfortunately there is a bug
-in \latex/'s twocolumn option which causes some marks to be lost. If you
-use the  package in figure~\ref{fig:fixmarks}, this will be
-solved\footnote{This is a simplification of the  actual code. Get the real
-  package from the CTAN sites.}\footnote{The
-  \texttt{multicol} package uses a similar technique.}. 
-
-\begin{figure}[tb]
-\small
-\TTindex{fixmarks.sty}
-\begin{verbatim}
-% fixmarks.sty:
-% Patch LaTeX's output routine to handle marks correctly with two columns.
-% Joe Pallas <pallas@edu.stanford.neon>
-% Corrected by Piet van Oostrum <piet@cs.uu.nl> on Feb 5, 1993, Oct 5, 1994
-
-\def\@outputdblcol{\if@firstcolumn \global\@firstcolumnfalse
-% Remember the marks from the first column
-    \global\setbox\@leftcolumn\copy\@outputbox
-    \splitmaxdepth=\maxdimen \cbaddness=10000
-    \setbox\@outputbox\vsplit\@outputbox to\maxdimen
-    \xdef\@firstcoltopmark{\topmark}%
-    \xdef\@firstcolfirstmark{\splitfirstmark}%
-    \ifx\@firstcolfirstmark\empty\global\let\@setmarks\relax\else
-      \gdef\@setmarks{\let\firstmark\@firstcolfirstmark
-        \let\topmark\@firstcoltopmark}%
-    \fi
-% End of change
-  \else \global\@firstcolumntrue
-    \setbox\@outputbox\vbox{\hbox to\textwidth{\hbox to\columnwidth
-      {\box\@leftcolumn \hss}\hfil \vrule width\columnseprule\hfil
-       \hbox to\columnwidth{\box\@outputbox \hss}}}\@combinedblfloats
-% Override current first and top with those of first column if necessary
-       \@setmarks
-% End of change
-       \@outputpage \begingroup \@dblfloatplacement \@startdblcolumn
-       \@whilesw\if@fcolmade \fi{\@outputpage\@startdblcolumn}\endgroup
-    \fi}
-\end{verbatim}
-
-  \caption{Fix marks in twocolumn style}
-  \label{fig:fixmarks}
-\end{figure}
-
 \section{Fancy layouts}
 
 \index{multi-line}
@@ -894,9 +824,9 @@ And now a complete definition of Lamport's book style:
 \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
 \renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
 \fancyhf{}
-\fancyhead[LE,RO]{\bfseries\thepage}
-\fancyhead[LO]{\bfseries\rightmark}
-\fancyhead[RE]{\bfseries\leftmark}
+\fancyhead[LE,RO]{\textbf{\thepage}}
+\fancyhead[LO]{\textbf{\rightmark}}
+\fancyhead[RE]{\textbf{\leftmark}}
 \fancypagestyle{plain}{%
    \fancyhead{} % get rid of headers
    \renewcommand{\headrulewidth}{0pt} % and the line
@@ -906,6 +836,20 @@ And now a complete definition of Lamport's book style:
 
 Notice that the \Cmd{chaptermark} and \Cmd{sectionmark} commands have
 been redefined to eliminate the chapter numbers and the uppercaseness.
+
+For more control about the horizontal position of the headers and/or footers, \textsf{fancyhdr} has additional commands to specify the offset of the header and/or footer elements. Use \Cmd{fancyhfoffset[place]\{length\}} 
+\CmdIndex{fancyhfoffset} 
+to offset one or more elements. The \texttt{place} parameter is like the optional parameter of \Cmd{fancyhf}, like \texttt{L R E O}, except that \texttt{C} cannot be used. It specifies for which elements the offset should be applied. The \texttt{length} parameter specifies the actual offset. Positive values move the element outward (into the margin), negative values inward. There are also specialised commands \Cmd{fancyheadoffset} and \Cmd{fancyfootoffset}, which have the \texttt{H} and \texttt{F} parameter pre-applied, respectively.
+\CmdIndex{fancyheadoffset} 
+\CmdIndex{fancyfootoffset} 
+
+When you use these commands, \latex/ will recalculate \Cmd{headwidth}, based on the given parameters.
+
+So the above example could also have been done with (N.B. You can only use such an expression as a length parameter if the \textsf{calc} package is used):
+
+\begin{verbatim}
+\fancyheadoffset[LE,RO]{\marginparsep+\marginparwidth}
+\end{verbatim}
 
 For the second example, we take the \amslatex/ book.% \cite{gG93B}.
 % George Gratzer, Math into LaTeX, An Introduction to LaTeX and AMS-LaTeX,
@@ -1051,12 +995,7 @@ page then you must redefine the \Cmd{cleardoublepage} command.
 \label{sec:nofm}
 
 Some document writers prefer the pages to be numbered as \textsf{n} of
-\textsf{m} where \textsf{m} is the number of pages in the document. There
-\TTindex{nofm.sty}
-is a package \texttt{nofm.sty} available, but some versions of it are
-defective, and most don't work with fancyhdr because they take over the
-\TTindex{lastpage.sty}
-complete page layout. For \LaTeXe{} there is a package \texttt{lastpage}
+\textsf{m} where \textsf{m} is the number of pages in the document. There is a package \texttt{lastpage}
 available which you can use with \textsf{fancyhdr} as follows:
 
 \begin{verbatim}
@@ -1065,24 +1004,11 @@ available which you can use with \textsf{fancyhdr} as follows:
 \cfoot{\thepage\ of \pageref{LastPage}}
 \end{verbatim}
 
-If you are still using \latex/2.09 and you are not able to switch to
-\LaTeXe{} you can use the \latex/2.09 compatible \texttt{lastpage209.sty}.
-which is defined as
-follows:
-
-\begin{verbatim}
-\let\origenddocument=\enddocument
-\def\enddocument{\clearpage\if@filesw
-  {\addtocounter{page}{-1} \immediate\write\@mainaux
-    {\string\newlabel{LastPage}{{}{\thepage}}}}\origenddocument}
-\end{verbatim}
-
 The value of the \texttt{LastPage} label can be used to
 make different headers or footers on the last page of a document. E.g.\ if
 you want the footer of every odd page, except if it is the last one, to
 contain the text ``please turn over'', this can be done as
-follows\footnote{This requires a reasonably recent version of the
-  \texttt{ifthen} package.}:
+follows:
 
 \begin{verbatim}
 \usepackage{lastpage}
@@ -1097,17 +1023,29 @@ follows\footnote{This requires a reasonably recent version of the
 In technical documentation very often page numbers are used of the form
 2-10 where the first number is the chapter number and the second is the
 pagenumber relative to the chapter. Sometimes section is used rather than
-chapter. The package \textsf{chappg} can be used to get this format. If you
-want to change the layout e.g. use a dot rather than a dash, or a section
-rather than a chapter, you should make a private copy and edit it.
+chapter. The package \textsf{chappg} can be used to get this format. 
 
-This package redefines \Cmd{thepage} as 
-\Cmd{arabic\{chapter\}-}\Cmd{arabic\{page\}}.
-Unfortunately this gives numbers rather than letters for appendices. A
-better definition would be  \Cmd{thechapter-}\Cmd{arabic\{page\}} but you can
-give this definition yourself after the \Cmd{usepackage\{chappg\}} command.
+Basically this package redefines \Cmd{thepage} as 
+\Cmd{thechapter}\Cmd{chappgsep}\Cmd{arabic\{page\}}, where \Cmd{chappgsep} by default is ``-''. If you want do use a different separator, you must redefine \Cmd{chappgsep}, for example to use an en-dash:
+
+\begin{verbatim}
+\renewcommand{\chappgsep}{--}
+\end{verbatim}
+
+To use a different prefix, for example the section number, use the \Cmd{pagenumbering\{bychapter\}} command with an optional argument specifying the prefix.
+\CmdIndex{pagenumbering}
+
+\begin{verbatim}
+\pagenumbering[\thesection]{bychapter}
+\end{verbatim}
+
 What the package also does is reset the page number to 1 at the beginning
 of each chapter.
+
+There is a caveat when you have appendixes in your document. Before the
+\Cmd{appendix} command you should give a \Cmd{clearpage} or
+\Cmd{cleardoublepage}. See the \textsf{chappg} documentation for
+details.
 
 There is a fundamental difference between the page numbering of the style
 ``\emph{m} of \emph{n}'' as described in the previous section and the
@@ -1140,7 +1078,7 @@ any of the above mentioned changes. If this is not possible you can use the
 \texttt{afterpage} package with:\\
 \Cmd{afterpage\{}\Cmd{lhead\{new value\}\}} or
 \CmdIndex{pagenumbering}
-\Cmd{afterpage\{}\Cmd{pagenumbering\{roman\}}. You cannot use \Cmd{afterpage}
+\Cmd{afterpage\{}\Cmd{pagenumbering\{roman\}\}}. You cannot use \Cmd{afterpage}
 to change the \Cmd{pagestyle} as the commands issued by \Cmd{afterpage}
 are local in a group, and the \Cmd{pagestyle} command makes only local
 changes. The \Cmd{pagenumbering} and the \textsf{fancyhdr} commands
@@ -1197,49 +1135,8 @@ the following:
 You cannot use \latex/'s mark mechanisms for this if you also want to use
 chapter and section information.
 
-The code from figure~\ref{fig:xmarks} constitutes a package that gives you
-two extra marks that can be used in this situation\footnote{After I made
-  this package I discovered a package \texttt{secret.sty} that does a
-  similar thing to mark confidential paragraphs if they cross a page
-  boundary. It does it, however, by changing the output routine.}.
-\begin{figure}[tb]\small
-\CmdIndex{extramarks}
-\begin{verbatim}
-% extramarks.sty
-\def\@leftmark#1#2#3#4{#1}
-\def\@rightmark#1#2#3#4{#2}
-
-\def\markboth#1#2{{\def\protect{\noexpand\protect\noexpand}
-     \let\label\relax \let\index\relax \let\glossary\relax
-     \expandafter\@markboth\@themark{#1}{#2}
-     \mark{\@themark}}\if@nobreak\ifvmode\nobreak\fi\fi}
-\def\markright#1{{\def\protect{\noexpand\protect\noexpand}
-     \let\label\relax \let\index\relax \let\glossary\relax
-     \expandafter\@markright\@themark
-     {#1}\mark{\@themark}}\if@nobreak\ifvmode\nobreak\fi\fi}
-\def\@markright#1#2#3#4#5{\gdef\@themark{{#1}{#5}{#3}{#4}}}
-\def\@markboth#1#2#3#4#5#6{\gdef\@themark{{#5}{#6}{#3}{#4}}}
-\def\leftmark{\expandafter\@leftmark\botmark{}{}{}{}}
-\def\rightmark{\expandafter\@rightmark\firstmark{}{}{}{}}
-\def\firstleftmark{\expandafter\@leftmark\firstmark{}{}{}{}}
-\def\lastrightmark{\expandafter\@rightmark\botmark{}{}{}{}}
-
-\def\@themark{{}{}{}{}}
-
-\def\extramarks#1#2{{\def\protect{\noexpand\protect\noexpand}
-     \let\label\relax \let\index\relax \let\glossary\relax
-     \expandafter\@markextra\@themark{#1}{#2}
-     \mark{\@themark}}\if@nobreak\ifvmode\nobreak\fi\fi}
-\def\@markextra#1#2#3#4#5#6{\gdef\@themark{{#1}{#2}{#5}{#6}}}
-\def\firstxmark{\expandafter\@firstxmark\firstmark{}{}{}{}}
-\def\topxmark{\expandafter\@firstxmark\topmark{}{}{}{}}
-\def\lastxmark{\expandafter\@lastxmark\botmark{}{}{}{}}
-\def\@firstxmark#1#2#3#4{#3}
-\def\@lastxmark#1#2#3#4{#4}
-\end{verbatim}
-  \caption{Package for extra marks in \latex/}
-  \label{fig:xmarks}
-\end{figure}
+The \textsf{extramarks} package gives you
+two extra marks that can be used in this situation.
 Here is a way to use this package:
 
 \begin{verbatim}
@@ -1267,10 +1164,19 @@ package: If commands of the form
 \Cmd{firstxmark} gives you the first $m_1$ value and
 \Cmd{lastxmark} gives you the last $m_2$ value
 of the current page.
+
+In case you want the last  $m_1$ value or the first  $m_2$ value, you can use the \Cmd{lastleftxmark} or \Cmd{firstrightxmark}, respectively. For symmetry reasons there are also commands \Cmd{firstleftxmark} (=\Cmd{firstxmark}), \Cmd{lastrightxmark} (=\Cmd{lastxmark}), \Cmd{topleftxmark} (=\Cmd{topxmark}) and \Cmd{toprightxmark}.
+\CmdIndex{lastleftxmark}
+\CmdIndex{firstrightxmark}
+\CmdIndex{firstleftxmark}
+\CmdIndex{lastrightxmark}
+\CmdIndex{topleftxmark}
+\CmdIndex{toprightxmark}
+
+The package also gives you the \Cmd{firstleftmark} and \Cmd{lastrightmark}
+commands that complement the standard \latex/ marks.
 \CmdIndex{firstleftmark}
 \CmdIndex{lastrightmark}
-It also gives you the \Cmd{firstleftmark} and \Cmd{lastrightmark}
-commands that complement the standard \latex/ marks.
 
 To stress the point that marks are the correct way to do this, let me
 give you a ``solution'' that will not work\footnote{Actually there is
@@ -1598,8 +1504,7 @@ There are a number of ways to prevent this:
   next page.
 \item use the \texttt{flafter} package which causes floats never to be
   placed ``backwards''.
-\item use the command \Cmd{suppressfloats[t]}\footnote{This command and the
-    ``!'' placement parameter are not defined in \LaTeX2.09.}.  This
+\item use the command \Cmd{suppressfloats[t]}.  This
   command will cause floats for the top position \emph{on this page} to be
   moved to the next page. This can also be done with \texttt{[b]} or
   without parameter for all floats on this page.
@@ -1626,10 +1531,9 @@ give the command:
 \end{verbatim}
  in the preamble. Now you will be able to
 specify \texttt{[H]} as the position parameter, which will mean ``HERE and only
-HERE''. This may cause an unwanted page break however\footnote{There used
-to be a \texttt{here.sty} with the same effect, but this is incompatible
-with \LaTeXe}. If you want to avoid the unwanted pagebreak, i.e. let
-\LaTeX{} move the float only if it doesn't fit on the page, the use the
+HERE''. This may cause an unwanted page break however. 
+If you want to avoid the unwanted pagebreak, i.e. let
+\LaTeX{} move the float only if it doesn't fit on the page, then use the
 \textsf{afterpage} package with:
 \begin{verbatim}
 \afterpage{\clearpage \begin{figure}[H] ... \end{figure}}
@@ -1748,13 +1652,28 @@ start your multipage figure on an even page, however.
 \section{Contact information}
 
 Piet van Oostrum\\
-Dept.\ of Computer Science\\
-Utrecht University\\
-P.O. Box 80.089\\
-3508 TB Utrecht, The Netherlands\\
-Telephone: +31 30 2532180 Telefax: +31 30 2513791\\
-E-mail: piet@cs.uu.nl \\
-WWW: http://www.cs.uu.nl/people/piet
+E-mail: piet@vanoostrum.org \\
+WWW: http://www.pietvanoostrum.com
+
+\section{Version information}
+\begin{itemize}
+\item  Version 1.0. March 11,  2003. This is the version that was distributed for a 
+  long time on CTAN. Version history before this has been lost. 
+\item Version 2.0. August 27, 2016:
+  \begin{itemize}
+  \item Removed references to fixmarks.sty as that is no longer used.
+  \item References to older \LaTeX{} versions removed.
+  \item Removed obsolete source code of \texttt{extramarks.sty}
+  \item Changed font commands to \Cmd{textbf} and \Cmd{textsl}.
+  \item Added description of the \Cmd{fancy\ldots offset} commands.
+  \item Added various \Cmd{\ldots xmark} commands from \texttt{extramarks.sty}.
+  \item Various corrections applied.
+  \item Updated contact information.
+  \item Added Version information. :)
+  \end{itemize}
+
+\end{itemize}
+
 
 \printindex
 
