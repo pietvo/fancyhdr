@@ -1,31 +1,32 @@
-This is fancyhdr, a replacement for fancyheadings. 
+fancyhdr – Extensive control of page headers and footers in LaTeX2ε
 
-I still still intend to make sometime in the future a real .dtx of it,
-including the minimal documentation. The current documentation is in
-fancyhdr.tex, but this contains much more material than the fancyhdr doc.
-When the fancyhdr.dtx is ready, I will rename fancyhdr.tex into something
-like pagelayout.tex to get it more in line with the title (Page Layout in
-LaTeX).
+The package provides extensive facilities, both for constructing headers and footers, and for controlling their use (for example, at times when LaTeX would automatically change the heading style in use).
 
-fancyhdr is 99% compatible with fancyheadings. The only incompatibility is
-that \headrulewidth and \footrulewidth and their \plain... versions are no
-longer length parameters, but normal macros (to be changed with
-\renewcommand rather than \setlength).
+The package consists of the following files:
 
-Although all the other old fancyheadings commands continue to work you are
-advised to use the new syntax as described in fancyhdr.tex, because this is
-much easier to use in complicated cases. The old way of doing is no longer
-described in the manual, except for the simplest use of \lhead etc.
+README				 This file
+fancyhdr.sty		 the LaTeX package
+fancyhdr.tex		 extensive documentation file
+fancyhdr.pdf  		 PDF of the above
+fancyheadings.sty	 this loads fancyhdr with a warning message
+extramarks.sty 		 a package for additional marks
 
-In order to latex the documentation you need to install a copy of
-tex-archive/macros/latex/contrib/other/misc/boxedminipage.sty
+Fancyhdr is a replacement for the old LaTeX2 package fancyheadings. That
+one should not be used anymore. The package fancyheadings included here
+just loads fancyhdr with a warning message.
 
-The fixmarks.sty is now obsolete, as it is superseded by David Carlisle's
-fix2col.sty (tex-archive/macros/latex/contrib/supported/carlisle/) so it is
-no longer included here.
+The documentation (fancyhdr.tex/fancyhdr.pdf) describes both
+fancyhdr.sty and extramarks.sty.
+In order to latex the documentation you need to have a copy of
+boxedminipage.sty (CTAN:/macros/latex/contrib/boxedminipage) installed.
 
-fancyhdr.sty version 3 and extramarks.sty version 2 are the packages
-as described in the second edition of The LaTeX Companion.
+There used to be a package fixmarks.sty, but that is obsolete. It fixed
+a problem in LaTeX, but that is now solved in the LaTeX2ε system itself.
+So it is no longer included.
+
+fancyhdr.sty version 3 and extramarks.sty version 2 are the packages as
+described in the second edition of The LaTeX Companion. But that
+documentation should also suffice for the newer versions.
 
 LICENCE: All files in this package may be distributed under the terms of
 the LaTeX Project Public License, as described in lppl.txt in the base
@@ -33,7 +34,7 @@ LaTeX distribution. Either version 1 or, at your option, any later
 version.
 -- 
 Piet van Oostrum.
-<piet@cs.ruu.nl>
-http://www.cs.ruu.nl/~piet
+<piet@vanoostrum.org>
+http://www.pietvanoostrum.com/
 
 
