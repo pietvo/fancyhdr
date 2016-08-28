@@ -1,4 +1,4 @@
-% fancyhdr.sty version 3.6
+% fancyhdr.sty version 3.7
 % Fancy headers and footers for LaTeX.
 % Piet van Oostrum, 
 % [Formerly] Dept of Computer and Information Sciences, University of Utrecht,
@@ -165,8 +165,13 @@
 % Added a \ProvidesPackage line.
 % Updated contact information.
 
+% Aug. 28, 2016
+% version 3.7
+% Removed \normalfont from default values, as every field is already
+% initialised with \normalfont.
+
 \NeedsTeXFormat{LaTeX2e}[1995/06/01]%
-\ProvidesPackage{fancyhdr}[2016/08/27 3.6 Extensive control of page headers and footers]%
+\ProvidesPackage{fancyhdr}[2016/08/28 3.7 Extensive control of page headers and footers]%
 
 \def\ifancy@mpty#1{\def\temp@a{#1}\ifx\temp@a\@empty}
 
@@ -362,13 +367,13 @@
 % lefthead empty on ``plain'' pages, \rightmark on even, \leftmark on odd pages
 % evenhead empty on ``plain'' pages, \leftmark on even, \rightmark on odd pages
 \if@twoside
-  \fancyhead[el,or]{\fancyplain{}{\normalfont\slshape\rightmark}}
-  \fancyhead[er,ol]{\fancyplain{}{\normalfont\slshape\leftmark}}
+  \fancyhead[el,or]{\fancyplain{}{\slshape\rightmark}}
+  \fancyhead[er,ol]{\fancyplain{}{\slshape\leftmark}}
 \else
-  \fancyhead[l]{\fancyplain{}{\normalfont\slshape\rightmark}}
-  \fancyhead[r]{\fancyplain{}{\normalfont\slshape\leftmark}}
+  \fancyhead[l]{\fancyplain{}{\slshape\rightmark}}
+  \fancyhead[r]{\fancyplain{}{\slshape\leftmark}}
 \fi
-\fancyfoot[c]{\normalfont\rmfamily\thepage} % page number
+\fancyfoot[c]{\rmfamily\thepage} % page number
 
 % Use box 0 as a temp box and dimen 0 as temp dimen. 
 % This can be done, because this code will always
