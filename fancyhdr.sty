@@ -169,7 +169,9 @@
 % version 3.7
 % Removed \normalfont from default values, as every field is already
 % initialised with \normalfont.
+% Set \hsize to \headwidth in header/footer.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}[1995/06/01]%
 \ProvidesPackage{fancyhdr}[2016/08/28 3.7 Extensive control of page headers and footers]%
 
@@ -351,6 +353,7 @@
 \let\fnch@everypar\everypar% save real \everypar because of spanish.ldf
 \def\fancy@reset{\fnch@everypar{}\restorecr\endlinechar=13
  \def\baselinestretch{1}%
+ \hsize=\headwidth
  \def\nouppercase##1{{\let\uppercase\relax\let\MakeUppercase\relax
      \expandafter\let\csname MakeUppercase \endcsname\relax##1}}%
  \ifx\undefined\@newbaseline% NFSS not present; 2.09 or 2e
