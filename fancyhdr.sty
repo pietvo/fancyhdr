@@ -175,6 +175,9 @@
 % version 3.8
 % Reset \\, \raggedleft, \raggedright and \centering to their default values
 %   to avoid a clash with the tabu package.
+% Move the redefinition of \@makecol to \begin{document} to avoid a clash
+%   with the footmisc package (and maybe others)
+% Define a working \iffootnote command
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}[1995/06/01]%
@@ -524,13 +527,20 @@
   \fancy@gbl\let\fancy@Oorf\hss
   \fancy@gbl\let\fancy@Oerf\hss}
 
-\newif\iffootnote
+% Redefine \@makecol so that we can capture if there are top/bottom floats, footnotes
+%  or if we are on a float page.
+% Because of a clash with the footmisc package we do this at \begin{document}}
+
+\newif\iffnch@footnote
+\AtBeginDocument{%
 \let\latex@makecol\@makecol
-\def\@makecol{\ifvoid\footins\footnotetrue\else\footnotefalse\fi
-\let\topfloat\@toplist\let\botfloat\@botlist\latex@makecol}
-\def\iftopfloat#1#2{\ifx\topfloat\empty #2\else #1\fi}
-\def\ifbotfloat#1#2{\ifx\botfloat\empty #2\else #1\fi}
-\def\iffloatpage#1#2{\if@fcolmade #1\else #2\fi}
+\def\@makecol{\ifvoid\footins\fnch@footnotefalse\else\fnch@footnotetrue\fi
+\let\topfloat\@toplist\let\botfloat\@botlist\latex@makecol}%
+}
+\newcommand\iftopfloat[2]{\ifx\topfloat\empty #2\else #1\fi}%
+\newcommand\ifbotfloat[2]{\ifx\botfloat\empty #2\else #1\fi}%
+\newcommand\iffloatpage[2]{\if@fcolmade #1\else #2\fi}%
+\newcommand\iffootnote[2]{\iffnch@footnote #1\else #2\fi}%
 
 \newcommand{\fancypagestyle}[2]{%
   \@namedef{ps@#1}{\let\fancy@gbl\relax#2\relax\ps@fancy}}
