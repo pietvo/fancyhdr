@@ -6,6 +6,7 @@
 \usepackage{array}
 \usepackage{a4wide}
 \usepackage{boxedminipage}
+\usepackage{fourier-orns}
 \makeindex
 \title{Page layout in \LaTeX}
 \author{Piet van Oostrum\thanks{A considerable part of this article was
@@ -775,6 +776,23 @@ redefine the command \Cmd{headrule}:
 \renewcommand{\headrule}{\vbox to 0pt{\hbox
     to\headwidth{\dotfill}\vss}}
 \end{verbatim}
+
+As an alternative to changing \Cmd{headrulewidth} to 0 to have the rule disappear, you can also make it empty with
+\begin{verbatim}
+\renewcommand{\headrule}{}
+\end{verbatim}
+Visually this make no difference, but it is more difficult to restore it later to its default value.
+
+Finally, let us make a real `decorative' line\footnote{Based upon an idea by Wayne Chan.}.
+\begin{verbatim}
+\usepackage{fourier-orns}
+...
+\renewcommand\headrule{\hrulefill
+\raisebox{-2.1pt}[10pt][10pt]{\quad\decofourleft\decotwo\decofourright\quad}\hrulefill}
+\end{verbatim}
+This gives us the following headrule:
+
+\noindent\makebox[\textwidth]{\hrulefill \raisebox{-2.1pt}[10pt][10pt]{\quad\decofourleft\decotwo\decofourright\quad}\hrulefill}
 
 \CmdIndex{footruleskip}
 There is one additional parameter that you can set: \Cmd{footruleskip}. It
@@ -1674,9 +1692,10 @@ WWW: http://www.pietvanoostrum.com
   \begin{itemize}
   \item Explain what the top-marks are.
   \end{itemize}
-\item Version 2.1. Sept. 5, 2016
+\item Version 2.1. Sept. 6, 2016
   \begin{itemize}
   \item Add \verb|\string| to special indexing commands to get a neater index file.
+  \item Add a decorative headrule example
   \end{itemize}
 
 \end{itemize}
