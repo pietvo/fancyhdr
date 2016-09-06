@@ -1,4 +1,4 @@
-% fancyhdr.sty version 3.7
+% fancyhdr.sty version 3.8
 % Fancy headers and footers for LaTeX.
 % Piet van Oostrum, 
 % [Formerly] Dept of Computer and Information Sciences, University of Utrecht,
@@ -170,6 +170,11 @@
 % Removed \normalfont from default values, as every field is already
 % initialised with \normalfont.
 % Set \hsize to \headwidth in header/footer.
+
+% Sept. 6, 2016
+% version 3.8
+% Reset \\, \raggedleft, \raggedright and \centering to their default values
+%   to avoid a clash with the tabu package.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}[1995/06/01]%
@@ -350,8 +355,18 @@
 % verbatim crosses a page boundary)
 % It also defines a \nouppercase command that disables \uppercase and
 % \Makeuppercase. It can only be used in the headers and footers.
+% \set \hsize to \headwidth (helps for multicol)
+% reset \\ \raggedleft \raggedright and \centering to their default values (for tabu)
+\let\fnch@raggedleft\raggedleft
+\let\fnch@raggedright\raggedright
+\let\fnch@centering\centering
 \let\fnch@everypar\everypar% save real \everypar because of spanish.ldf
+
 \def\fancy@reset{\fnch@everypar{}\restorecr\endlinechar=13
+ \let\\\@normalcr
+ \let\raggedleft\fnch@raggedleft
+ \let\raggedright\fnch@raggedright
+ \let\centering\fnch@centering
  \def\baselinestretch{1}%
  \hsize=\headwidth
  \def\nouppercase##1{{\let\uppercase\relax\let\MakeUppercase\relax
