@@ -24,9 +24,9 @@
     PSNFSS}}
 \newcommand{\bs}{\symbol{'134}}
 \newcommand{\Cmd}[1]{\texttt{\def\{{\char`\{}\def\}{\char`\}}\bs#1}}
-\newcommand{\CmdIndex}[1]{\index{#1@\texttt{\bs#1}}}
-\newcommand{\TTindex}[1]{\index{#1@\texttt{#1}}}
-\newcommand{\PSindex}[1]{\index{page style!#1@\texttt{#1}}}
+\newcommand{\CmdIndex}[1]{\index{#1@\string\texttt{\bs#1}}}
+\newcommand{\TTindex}[1]{\index{#1@\string\texttt{#1}}}
+\newcommand{\PSindex}[1]{\index{page style!#1@\string\texttt{#1}}}
 %\floatstyle{ruled}
 \restylefloat{figure}
 \renewcommand{\topfraction}{0.9}
@@ -1674,6 +1674,10 @@ WWW: http://www.pietvanoostrum.com
 \item Version 2.1. August 28...., 2016:
   \begin{itemize}
   \item Explain what the top-marks are.
+  \end{itemize}
+\item Version 2.1. Sept. 5, 2016
+  \begin{itemize}
+  \item Add \verb|\string| to special indexing commands to get a neater index file.
   \end{itemize}
 
 \end{itemize}
