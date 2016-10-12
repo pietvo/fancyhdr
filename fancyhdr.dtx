@@ -30,8 +30,8 @@
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
-%<fancyhdr|extramarks>%% Copyright (C) 1994-2016 by Piet van Oostrum <piet@vanoostrum.org>
-%<fancyheadings>%% Public domain
+%<fancyhdr|extramarks>% Copyright (C) 1994-2016 by Piet van Oostrum <piet@vanoostrum.org>
+%<fancyheadings>% Public domain
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    \end{macrocode}
 %
@@ -1141,6 +1141,45 @@
 % \end{macro}
 % 
 %</extramarks>
+%
+% \subsection{fancyheadings.sty}
+%
+% Fancyheadings.sty was the original style file (as they were called
+% then) to implement fancy headers and footers in \LaTeX. This was in the time
+% when MSDOS was stil quite a dominant ``Operating System''. It had a
+% nasty property (amongst others): filenames consisted of at most 8
+% characters + a 3 character extension. This meant that the name
+% '\texttt{fancyheadings.sty}' was internally truncated in MSDOS to
+% '\texttt{fancyhea.sty}', although it was perfectly OK to say
+% 'fancyheadings' in \LaTeX. However, some people started to write also
+% 'fancyhea' in \LaTeX{} documents, which made them unportable to for
+% example Unix systems, unless there a copy or link was made to
+% 'fancyhea.sty'. I found this so annoying that I decided to rename the
+% package to 'fancyhdr.sty'. This package has evolved to a version that
+% is incompatible with the original 'fancyheadings'. Fancyheadings
+% should no longer be used, therefore this package is provided that
+% issues a clear warning and then switches to fancyhdr.
+%
+%
+%<*fancyheadings>
+%    \begin{macrocode}
+\PackageWarningNoLine{fancyheadings}{%
+  Please stop using fancyheadings!\MessageBreak
+  Use fancyhdr instead.\MessageBreak
+  We will call fancyhdr with the very same\MessageBreak
+  options you passed to fancyheadings.\MessageBreak
+  \MessageBreak
+  fancyhdr is 99 percent compatible with\MessageBreak
+  fancyheadings. The only incompatibility is\MessageBreak
+  that \protect\headrulewidth\space and \protect\footrulewidth\space 
+     and\MessageBreak
+  their \protect\plain... versions are no longer length\MessageBreak
+  parameters, but normal macros (to be changed\MessageBreak
+  with \protect\renewcommand\space rather than \protect\setlength).}
+\RequirePackage{fancyhdr}
+%    \end{macrocode}
+%</fancyheadings>
+%
 %
 % \Finale
 \endinput
