@@ -38,7 +38,7 @@
 %<*driver>
 \documentclass[a4paper]{ltxdoc}
 \usepackage[T1]{fontenc}
-\usepackage{fancyhdr,extramarks}
+%\usepackage{fancyhdr,extramarks}
 \usepackage{url}
 \DisableCrossrefs
 \CodelineIndex
@@ -655,7 +655,7 @@
 %
 % Initialization of the head and foot text.
 %
-% The default values still contain \fancyplain for compatibility:
+% The default values still contain \cs{fancyplain} for compatibility:
 % lefthead empty on ``plain'' pages, \cs{rightmark} on even, \cs{leftmark} on odd pages;
 % evenhead empty on ``plain'' pages, \cs{leftmark} on even, \cs{rightmark} on odd pages.
 %    \begin{macrocode}
@@ -793,7 +793,7 @@
 % the user intended to multiply it by a factor. But that case is more
 % likely done by saying something like \verb+\setlength{\headwidth}{1.2\textwidth}+. 
 % The documentation says you have to change \cs{headwidth} after the first call to
-% \pagestyle{fancy}. This code is just to catch the most common cases were
+% \verb+\pagestyle{fancy}+. This code is just to catch the most common cases were
 % that requirement is violated.
 %
 %    \begin{macrocode}
@@ -956,7 +956,191 @@
   \@namedef{ps@#1}{\let\f@nch@gbl\relax#2\relax\ps@fancy}}
 %    \end{macrocode}
 % \end{macro}
-%    %</fancyhdr>
+%</fancyhdr>
+%
+% \section{Extramarks.sty}
+%
+%<*extramarks>
+% \changes{extramarks v1.99e}{2000/10/11}{Added a few \% marks to get rid
+% of unwanted spaces, and \cs{endinput}. \\
+% Added LPPL license clause.}
+% \changes{extramarks v2.0beta}{2002/03/12}{Adapted for the new
+% implementation of marks in \LaTeX{} to solve bug latex/3203. \\
+% Added symmetric commands \cs{firstrightmark}, \cs{lastleftmark}, \cs{firstleftxmark},
+% \cs{firstrightxmark}, \cs{lastrightxmark}, \cs{lastleftxmark}, \cs{topleftxmark} and
+% \cs{toprightxmark}.}
+% \changes{extramarks v2.0x=fancyhdr v 2.0}{2004/03/03}{version 2.0 Release.}
+% \changes{extramarks v2.1}{2016/08/27}{Added a \cs{ProvidesPackage} line.\\
+% Updated contact information.}
+% \changes{extramarks v3.9}{2016/10/12}{Unify version number with \Package{fancyhdr.sty}.}
+% 
+%
+% \begin{macro}{\@temptokenb}
+% A token register to store some marks information
+%    \begin{macrocode}
+% \newtoks\@temptokenb
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\unrestored@protected@xdef}
+% Define this macro just in case it isn't defined (should be part of \LaTeX).
+%    \begin{macrocode}
+\providecommand\unrestored@protected@xdef{%
+  \let\protect\@unexpandable@protect \xdef}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\markboth}
+% Our own definition of \cs{markboth}, mainly because \cs{@markboth}
+% gets more parameters.
+%    \begin{macrocode}
+\def\markboth#1#2{%
+  \begingroup
+  \let\label\relax \let\index\relax \let\glossary\relax
+  \expandafter\@markboth\@themark{#1}{#2}%
+  \@temptokena \expandafter{\@themark}%
+  \mark{\the\@temptokena}%
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\markright}
+%   We use the standard definition of \cs{markright}. No use to duplicate here.
+% \end{macro}
+% 
+% \begin{macro}{\@markboth}
+%   Note: put \texttt{\#3\#4} in toks register.
+%    \begin{macrocode}
+\def\@markboth#1#2#3#4#5#6{\@temptokena{{#3}{#4}}%
+  \unrestored@protected@xdef\@themark{{#5}{#6}\the\@temptokena}}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\@markright}
+%   Note: put \texttt{\#1} and \texttt{\#3\#4} in toks registers.
+%   Maybe I can get rid of the extra \cs{@temptokenb} by doing the expansion
+%   of \texttt{\#5} to a temp separately. But then, nowadays registers
+%   are plenty.
+%    \begin{macrocode}
+\def\@markright#1#2#3#4#5{\@temptokena{#1}\@temptokenb{{#3}{#4}}%
+  \unrestored@protected@xdef\@themark{{\the\@temptokena}{#5}\the\@temptokenb}}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\@leftmark}
+% \begin{macro}{\@rightmark}
+% Internal macros to get the standard marks.
+%    \begin{macrocode}
+\def\@leftmark#1#2#3#4{#1} 
+\def\@rightmark#1#2#3#4{#2}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+
+% \begin{macro}{\leftmark}
+% \begin{macro}{\rightmark}
+% \begin{macro}{\firstleftmark}
+% \begin{macro}{\lastrightmark}
+% \begin{macro}{\firstrightmark}
+% \begin{macro}{\lastleftmark}
+% The standard marks + the new ones (based on the standard marks info).
+%    \begin{macrocode}
+\def\leftmark{\expandafter\@leftmark
+      \botmark\@empty\@empty\@empty\@empty}
+\def\rightmark{\expandafter\@rightmark
+      \firstmark\@empty\@empty\@empty\@empty}
+\def\firstleftmark{\expandafter\@leftmark
+      \firstmark\@empty\@empty\@empty\@empty}
+\def\lastrightmark{\expandafter\@rightmark
+      \botmark\@empty\@empty\@empty\@empty}
+\let\firstrightmark \rightmark
+\let\lastleftmark \leftmark
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+
+% \begin{macro}{\@themark}
+% This is where the marks information is stored.
+%    \begin{macrocode}
+\def\@themark{{}{}{}{}}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\extramarks}
+% This command is used to define the extra marks.
+%    \begin{macrocode}
+\newcommand\extramarks[2]{%
+  \begingroup
+  \let\label\relax \let\index\relax \let\glossary\relax
+  \expandafter\@markextra\@themark{#1}{#2}%
+  \@temptokena \expandafter{\@themark}%
+  \mark{\the\@temptokena}%
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\@markextra}
+% Internal macro to store the extra marks in the marks storage.\\
+%   Note: Put \texttt{\#1\#2} in toks register.
+%    \begin{macrocode}
+\def\@markextra#1#2#3#4#5#6{\@temptokena {{#1}{#2}}%
+  \unrestored@protected@xdef\@themark{\the\@temptokena{#5}{#6}}}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\firstleftxmark}
+% \begin{macro}{\firstrightxmark}
+% \begin{macro}{\topleftxmark}
+% \begin{macro}{\toprightxmark}
+% \begin{macro}{\lastleftxmark}
+% \begin{macro}{\lastrightxmark}
+% \begin{macro}{\firstxmark}
+% \begin{macro}{\lastxmark}
+% \begin{macro}{\topxmark}
+% The new extra marks.
+%    \begin{macrocode}
+\def\firstleftxmark{\expandafter\@leftxmark
+      \firstmark\@empty\@empty\@empty\@empty}
+\def\firstrightxmark{\expandafter\@rightxmark
+      \firstmark\@empty\@empty\@empty\@empty}
+\def\topleftxmark{\expandafter\@leftxmark
+      \topmark\@empty\@empty\@empty\@empty}
+\def\toprightxmark{\expandafter\@rightxmark
+      \topmark\@empty\@empty\@empty\@empty}
+\def\lastleftxmark{\expandafter\@leftxmark
+      \botmark\@empty\@empty\@empty\@empty}
+\def\lastrightxmark{\expandafter\@rightxmark
+      \botmark\@empty\@empty\@empty\@empty}
+\let\firstxmark\firstleftxmark
+\let\lastxmark\lastrightxmark
+\let\topxmark\topleftxmark
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% 
+% \begin{macro}{\@tleftxmark}
+% \begin{macro}{\@rightxmark}
+% Internal macros to extract the extra marks out of the marks storage.
+%    \begin{macrocode}
+\def\@leftxmark#1#2#3#4{#3}
+\def\@rightxmark#1#2#3#4{#4}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% 
+%</extramarks>
 %
 % \Finale
 \endinput
