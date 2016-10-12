@@ -46,6 +46,7 @@
 \let\environment\texttt
 \let\Package\textsf
 \def\bsbs{\cs{\char`\\}}
+\renewcommand{\partname}{Part}
 \begin{document}
   \DeleteShortVerb{\|}
   \DocInput{\jobname.dtx}
@@ -81,11 +82,12 @@
 % \title{The \Package{fancyhdr} and \Package{extramarks} packages\thanks{This document
 %   corresponds to \textsf{fancyhdr}~\fileversion, dated \filedate.}}
 % \author{Piet van Oostrum\thanks{[Formerly] Dept of Computer and Information Sciences,
-% University of Utrecht,} \\ \texttt{piet@vanoostrum.org}}
+% University of Utrecht. I am now retired.} \\ \texttt{piet@vanoostrum.org}}
 %
 % \maketitle
 %
-% \section{Introduction}
+%\part{Introduction}
+% 
 %
 % To be provided.
 %
@@ -93,13 +95,15 @@
 %
 % To be provided.
 %
+%\part{Page Layout in \LaTeX}
+%
 % \StopEventually{%
 % \PrintChanges
 % \PrintIndex}
 %
-% \section{Implementation}
+% \part{Implementation}
 %
-% \subsection{Fancyhdr.sty}
+% \section{Fancyhdr.sty}
 %
 %<*fancyhdr>
 % \changes{fancyhdr v1.4}{1994/09/16}{Correction for use with \cs{reversemarginpar}}
@@ -178,15 +182,15 @@
 % \changes{fancyhdr v1.99a}{1996/05/10}{Added a few more \% signs.}
 % 
 % \changes{fancyhdr v1.99b}{1996/05/10}{Changed the syntax of
-% \cs{f@nfor} to be resistent to catcode changes of \texttt{:!=}.\protect\\
+% \cs{f@nch@for} to be resistent to catcode changes of \texttt{:!=}.\protect\\
 % Removed the \texttt{[1]} from the defs of \cs{lhead} etc. because the parameter is
 % consumed by the \cs{@[xy]lhead} etc. macros.}
 % 
-% \changes{fancyhdr v1.99c}{1996/06/24}{Corrected \cs{nouppercase} to
+% \changes{fancyhdr v1.99c}{1997/06/24}{Corrected \cs{nouppercase} to
 % also include the protected form of \cs{MakeUppercase}.\\ 
 % \cs{global} added to manipulation of \cs{headwidth}.\\
 % \cs{iffootnote} command added.\\
-% Some comments added about \cs{@fancyhead} and \cs{@fancyfoot}.}
+% Some comments added about \cs{f@nch@head} and \cs{f@nch@foot}.}
 % 
 % \changes{fancyhdr v1.99d}{1998/08/24}{Changed the default
 % \cs{ps@empty} to \cs{ps@@empty} in order to allow
@@ -224,11 +228,11 @@
 % \changes{fancyhdr v3.0}{2004/03/03}{Release of version 3.0.}
 %
 % \changes{fancyhdr v3.1}{2004/10/07}{Added '\texttt{\cs{endlinechar}!=13}' to
-% \cs{fancy@reset} to prevent problems with \cs{includegraphics} in
+% \cs{f@nch@reset} to prevent problems with \cs{includegraphics} in
 % header/footer when \environment{verbatiminput} is active.}
 % 
 % \changes{fancyhdr v3.2}{2005/03/22}{Reset \cs{everypar} (the real one)
-% in \cs{fancy@reset} because spanish.ldf does strange things with
+% in \cs{f@nch@reset} because spanish.ldf does strange things with
 % \cs{everypar} between \guillemotleft\ and \guillemotright.}
 % 
 % \changes{fancyhdr v3.3}{2016/08/20}{Replace
@@ -255,211 +259,407 @@
 % avoid a clash with the \Package{footmisc} package (and maybe others).\\
 % Define a working \cs{iffootnote} command.}
 %
-%    \begin{macrocode}
-\def\ifancy@mpty#1{\def\temp@a{#1}\ifx\temp@a\@empty}
-
-\def\fancy@def#1#2{\ifancy@mpty{#2}\fancy@gbl\def#1{\leavevmode}\else
-                                   \fancy@gbl\def#1{#2\strut}\fi}
-
-\let\fancy@gbl\global
-
-\def\@fancyerrmsg#1{%
-        \ifx\PackageError\undefined
-        \errmessage{#1}\else
-        \PackageError{Fancyhdr}{#1}{}\fi}
-\def\@fancywarning#1{%
-        \ifx\PackageWarning\undefined
-        \errmessage{#1}\else
-        \PackageWarning{Fancyhdr}{#1}{}\fi}
-
-% Usage: \@forc \var{charstring}{command to be executed for each char}
-% This is similar to LaTeX's \@tfor, but expands the charstring.
-
-\def\@forc#1#2#3{\expandafter\f@rc\expandafter#1\expandafter{#2}{#3}}
-\def\f@rc#1#2#3{\def\temp@ty{#2}\ifx\@empty\temp@ty\else
-                                    \f@@rc#1#2\f@@rc{#3}\fi}
-\def\f@@rc#1#2#3\f@@rc#4{\def#1{#2}#4\f@rc#1{#3}{#4}}
-
-% Usage: \f@nfor\name:=list\do{body}
-% Like LaTeX's \@for but an empty list is treated as a list with an empty
-% element
-
-\newcommand{\f@nfor}[3]{\edef\@fortmp{#2}%
-    \expandafter\@forloop#2,\@nil,\@nil\@@#1{#3}}
-
-% Usage: \def@ult \cs{defaults}{argument}
-% sets \cs to the characters from defaults appearing in argument
-% or defaults if it would be empty. All characters are lowercased.
-
-\newcommand\def@ult[3]{%
-    \edef\temp@a{\lowercase{\edef\noexpand\temp@a{#3}}}\temp@a
-    \def#1{}%
-    \@forc\tmpf@ra{#2}%
-        {\expandafter\if@in\tmpf@ra\temp@a{\edef#1{#1\tmpf@ra}}{}}%
-    \ifx\@empty#1\def#1{#2}\fi}
-% 
-% \if@in <char><set><truecase><falsecase>
+% \changes{fancyhdr v3.9}{2016/10/11}{Put everything in a \texttt{.dtx} file.}
+% \changes{fancyhdr v3.9}{2016/10/12}{Rename some macros to have 'f@nch@'
+% in their names, to get a more uniform naming scheme for internal macros.}
 %
-\newcommand{\if@in}[4]{%
-    \edef\temp@a{#2}\def\temp@b##1#1##2\temp@b{\def\temp@b{##1}}%
-    \expandafter\temp@b#2#1\temp@b\ifx\temp@a\temp@b #4\else #3\fi}
-
-\newcommand{\fancyhead}{\@ifnextchar[{\f@ncyhf\fancyhead h}%
-                                     {\f@ncyhf\fancyhead h[]}}
-\newcommand{\fancyfoot}{\@ifnextchar[{\f@ncyhf\fancyfoot f}%
-                                     {\f@ncyhf\fancyfoot f[]}}
-\newcommand{\fancyhf}{\@ifnextchar[{\f@ncyhf\fancyhf{}}%
-                                   {\f@ncyhf\fancyhf{}[]}}
-
-% New commands for offsets added
-
-\newcommand{\fancyheadoffset}{\@ifnextchar[{\f@ncyhfoffs\fancyheadoffset h}%
-                                           {\f@ncyhfoffs\fancyheadoffset h[]}}
-\newcommand{\fancyfootoffset}{\@ifnextchar[{\f@ncyhfoffs\fancyfootoffset f}%
-                                           {\f@ncyhfoffs\fancyfootoffset f[]}}
-\newcommand{\fancyhfoffset}{\@ifnextchar[{\f@ncyhfoffs\fancyhfoffset{}}%
-                                         {\f@ncyhfoffs\fancyhfoffset{}[]}}
-
-% The header and footer fields are stored in command sequences with
-% names of the form: \f@ncy<x><y><z> with <x> for [eo], <y> from [lcr]
-% and <z> from [hf].
-
-\def\f@ncyhf#1#2[#3]#4{%
-    \def\temp@c{}%
-    \@forc\tmpf@ra{#3}%
-        {\expandafter\if@in\tmpf@ra{eolcrhf,EOLCRHF}%
-            {}{\edef\temp@c{\temp@c\tmpf@ra}}}%
-    \ifx\@empty\temp@c\else
-        \@fancyerrmsg{Illegal char `\temp@c' in \string#1 argument:
-          [#3]}%
-    \fi
-    \f@nfor\temp@c{#3}%
-        {\def@ult\f@@@eo{eo}\temp@c
-         \if@twoside\else
-           \if\f@@@eo e\@fancywarning
-             {\string#1's `E' option without twoside option is useless}\fi\fi
-         \def@ult\f@@@lcr{lcr}\temp@c
-         \def@ult\f@@@hf{hf}{#2\temp@c}%
-         \@forc\f@@eo\f@@@eo
-             {\@forc\f@@lcr\f@@@lcr
-                 {\@forc\f@@hf\f@@@hf
-                     {\expandafter\fancy@def\csname
-                      f@ncy\f@@eo\f@@lcr\f@@hf\endcsname
-                      {#4}}}}}}
-
-\def\f@ncyhfoffs#1#2[#3]#4{%
-    \def\temp@c{}%
-    \@forc\tmpf@ra{#3}%
-        {\expandafter\if@in\tmpf@ra{eolrhf,EOLRHF}%
-            {}{\edef\temp@c{\temp@c\tmpf@ra}}}%
-    \ifx\@empty\temp@c\else
-        \@fancyerrmsg{Illegal char `\temp@c' in \string#1 argument:
-          [#3]}%
-    \fi
-    \f@nfor\temp@c{#3}%
-        {\def@ult\f@@@eo{eo}\temp@c
-         \if@twoside\else
-           \if\f@@@eo e\@fancywarning
-             {\string#1's `E' option without twoside option is useless}\fi\fi
-         \def@ult\f@@@lcr{lr}\temp@c
-         \def@ult\f@@@hf{hf}{#2\temp@c}%
-         \@forc\f@@eo\f@@@eo
-             {\@forc\f@@lcr\f@@@lcr
-                 {\@forc\f@@hf\f@@@hf
-                     {\expandafter\setlength\csname
-                      f@ncyO@\f@@eo\f@@lcr\f@@hf\endcsname
-                      {#4}}}}}%
-     \fancy@setoffs}
-
-% Fancyheadings version 1 commands. These are more or less deprecated,
-% but they continue to work.
-
-\newcommand{\lhead}{\@ifnextchar[{\@xlhead}{\@ylhead}}
-\def\@xlhead[#1]#2{\fancy@def\f@ncyelh{#1}\fancy@def\f@ncyolh{#2}}
-\def\@ylhead#1{\fancy@def\f@ncyelh{#1}\fancy@def\f@ncyolh{#1}}
-
-\newcommand{\chead}{\@ifnextchar[{\@xchead}{\@ychead}}
-\def\@xchead[#1]#2{\fancy@def\f@ncyech{#1}\fancy@def\f@ncyoch{#2}}
-\def\@ychead#1{\fancy@def\f@ncyech{#1}\fancy@def\f@ncyoch{#1}}
-
-\newcommand{\rhead}{\@ifnextchar[{\@xrhead}{\@yrhead}}
-\def\@xrhead[#1]#2{\fancy@def\f@ncyerh{#1}\fancy@def\f@ncyorh{#2}}
-\def\@yrhead#1{\fancy@def\f@ncyerh{#1}\fancy@def\f@ncyorh{#1}}
-
-\newcommand{\lfoot}{\@ifnextchar[{\@xlfoot}{\@ylfoot}}
-\def\@xlfoot[#1]#2{\fancy@def\f@ncyelf{#1}\fancy@def\f@ncyolf{#2}}
-\def\@ylfoot#1{\fancy@def\f@ncyelf{#1}\fancy@def\f@ncyolf{#1}}
-
-\newcommand{\cfoot}{\@ifnextchar[{\@xcfoot}{\@ycfoot}}
-\def\@xcfoot[#1]#2{\fancy@def\f@ncyecf{#1}\fancy@def\f@ncyocf{#2}}
-\def\@ycfoot#1{\fancy@def\f@ncyecf{#1}\fancy@def\f@ncyocf{#1}}
-
-\newcommand{\rfoot}{\@ifnextchar[{\@xrfoot}{\@yrfoot}}
-\def\@xrfoot[#1]#2{\fancy@def\f@ncyerf{#1}\fancy@def\f@ncyorf{#2}}
-\def\@yrfoot#1{\fancy@def\f@ncyerf{#1}\fancy@def\f@ncyorf{#1}}
-
-\newlength{\fancy@headwidth}
-\let\headwidth\fancy@headwidth
-\newlength{\f@ncyO@elh}
-\newlength{\f@ncyO@erh}
-\newlength{\f@ncyO@olh}
-\newlength{\f@ncyO@orh}
-\newlength{\f@ncyO@elf}
-\newlength{\f@ncyO@erf}
-\newlength{\f@ncyO@olf}
-\newlength{\f@ncyO@orf}
-\newcommand{\headrulewidth}{0.4pt}
+% \begin{macro}{\if@nch@mpty}
+% This macro tests if its argument is empty.
+%    \begin{macrocode}
+\def\if@nch@mpty#1{\def\temp@a{#1}\ifx\temp@a\@empty}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\f@nch@def}
+% This macro defines another macro (usually a header or footer field).
+% Depending on the value of \cs{f@nch@gbl} the definition will be
+% global or local (the latter case is used in \cs{fancypagestyle}). If
+% the value (argument 2) is empty, a \cs{leavevmode} will be substituted.
+%  If it is not empty, a \cs{strut} will be added.
+%    \begin{macrocode}
+\def\f@nch@def#1#2{\if@nch@mpty{#2}\f@nch@gbl\def#1{\leavevmode}\else
+                                   \f@nch@gbl\def#1{#2\strut}\fi}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\f@nch@gbl}
+% Initialize \cs{f@nch@gbl} to \cs{global}.
+%    \begin{macrocode}
+\let\f@nch@gbl\global
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\f@nch@errmsg}
+% This macro generates an error message.
+%    \begin{macrocode}
+\def\f@nch@errmsg#1{%
+  \ifx\PackageError\undefined \errmessage{#1}\else
+  \PackageError{Fancyhdr}{#1}{}\fi}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\f@nch@warning}
+% This macro generates a warning.
+%    \begin{macrocode}
+\def\f@nch@warning#1{%
+  \ifx\PackageWarning\undefined \errmessage{#1}\else
+  \PackageWarning{Fancyhdr}{#1}{}\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\f@nch@forc}
+%   Usage: \cs{f@nch@forc} \cs{var} \texttt{\{charstring\}\{body\}}.\\
+%   Execute the body for each character in \texttt{charstring} bound
+%   to \cs{var}.
+%   This is similar to \LaTeX's \cs{@tfor}, but it expands the \texttt{charstring}.
+%    \begin{macrocode}
+\def\f@nch@forc#1#2#3{\expandafter\f@rc\expandafter#1\expandafter{#2}{#3}}
+\def\f@rc#1#2#3{\def\temp@ty{#2}\ifx\@empty\temp@ty\else
+                                    \f@nch@rc#1#2\f@nch@rc{#3}\fi}
+\def\f@nch@rc#1#2#3\f@nch@rc#4{\def#1{#2}#4\f@rc#1{#3}{#4}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\f@nch@for}
+%   Usage: \cs{f@nch@for}\cs{var}\texttt{\{list\}}\texttt{\{body\}} \\
+%   Execute the body for each element of the list, bound to \cs{var}.
+%   List elements are separated by commas. This is like \LaTeX's \cs{@for} but an empty
+%   list is treated as a list with an empty element.
+%
+%    \begin{macrocode}
+\newcommand{\f@nch@for}[3]{\edef\@fortmp{#2}%
+  \expandafter\@forloop#2,\@nil,\@nil\@@#1{#3}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\f@nch@default}
+%   Usage: \cs{f@nch@default} \cs{var}\texttt{\{defaults\}\{argument\}} \\
+%   Sets \cs{var} to the characters
+%   from \texttt{defaults} appearing in \texttt{argument}, or to \texttt{defaults} if it would be
+%   empty. All characters are lowercased first.
+%
+%    \begin{macrocode}
+\newcommand\f@nch@default[3]{%
+  \edef\temp@a{\lowercase{\edef\noexpand\temp@a{#3}}}\temp@a \def#1{}%
+  \f@nch@forc\tmpf@ra{#2}%
+  {\expandafter\f@nch@ifin\tmpf@ra\temp@a{\edef#1{#1\tmpf@ra}}{}}%
+  \ifx\@empty#1\def#1{#2}\fi}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\f@nch@ifin}
+%   Usage: \cs{f@nch@ifin} \meta{char} \meta{set} \meta{truecase} \meta{falsecase} \\
+% If \meta{char} is in \meta{set}, then \meta{truecase} else \meta{falsecase}.
+%    \begin{macrocode}
+\newcommand{\f@nch@ifin}[4]{%
+  \edef\temp@a{#2}\def\temp@b##1#1##2\temp@b{\def\temp@b{##1}}%
+  \expandafter\temp@b#2#1\temp@b\ifx\temp@a\temp@b #4\else #3\fi}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\fancyhead}
+% \changes{fancyhdr v3.9}{2016/10/12}{Let \cs{newcommand} do the
+% handling of the optional parameter.}
+% \begin{macro}{\fancyfoot}
+% \changes{fancyhdr v3.9}{2016/10/12}{Let \cs{newcommand} do the
+% handling of the optional parameter.}
+% \begin{macro}{\fancyhf}
+% \changes{fancyhdr v3.9}{2016/10/12}{Let \cs{newcommand} do the
+% handling of the optional parameter.}
+% These are the principal user macros. Pick up the parameters,
+% and supply an 'h' (\cs{fancyhead}) or 'f' (\cs{fancyfoot}).
+%    \begin{macrocode}
+\newcommand{\fancyhead}[2][]{\f@nch@fancyhf\fancyhead h[#1]{#2}}%
+\newcommand{\fancyfoot}[2][]{\f@nch@fancyhf\fancyfoot f[#1]{#2}}%
+\newcommand{\fancyhf}[2][]{\f@nch@fancyhf\fancyhf {}[#1]{#2}}%
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\fancyheadoffset}
+% \changes{fancyhdr v3.9}{2016/10/12}{Let \cs{newcommand} do the
+% handling of the optional parameter.}
+% \begin{macro}{\fancyfootoffset}
+% \changes{fancyhdr v3.9}{2016/10/12}{Let \cs{newcommand} do the
+% handling of the optional parameter.}
+% \begin{macro}{\fancyhfoffset}
+% \changes{fancyhdr v3.9}{2016/10/12}{Let \cs{newcommand} do the
+% handling of the optional parameter.}
+%   The commands for offsets.
+% Pick up the parameters,
+% and supply an 'h' (\cs{fancyheadoffset}) or 'f' (\cs{fancyfootoffset}).
+%    \begin{macrocode}
+\newcommand{\fancyheadoffset}[2][]{\f@nch@fancyhfoffs\fancyheadoffset h[#1]{#2}}%
+\newcommand{\fancyfootoffset}[2][]{\f@nch@fancyhfoffs\fancyfootoffset f[#1]{#2}}%
+\newcommand{\fancyhfoffset}[2][]{\f@nch@fancyhfoffs\fancyhfoffset {}[#1]{#2}}%
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\f@nch@fancyhf}
+% This macro interprets the parameters for the headers and footers.\\
+% Parameters:\\
+% (1) The user command that was used (like \cs{fancyhead}). This is used
+% for errors/warnings.\\
+% (2) \texttt{h} (for \cs{fancyhead}), \texttt{f} (for \cs{fancyfoot}),
+% or \texttt{\{\}} (for \cs{fancyhf}).\\
+% (3) The optional parameter that was given to these commands (default \texttt{[]}).\\
+% (4) The required parameter that was given to these commands.\\
+%   The header and footer fields are stored in command sequences with
+%   names of the form: \cs{f@nch@}\meta{x}\meta{y}\meta{z} with \meta{x} from
+%   \texttt{[eo]}, \meta{y} from \texttt{[lcr]} and \meta{z} from \texttt{[hf]}.
+%
+%    \begin{macrocode}
+\def\f@nch@fancyhf#1#2[#3]#4{%
+  \def\temp@c{}%
+  \f@nch@forc\tmpf@ra{#3}%
+  {\expandafter\f@nch@ifin\tmpf@ra{eolcrhf,EOLCRHF}%
+    {}{\edef\temp@c{\temp@c\tmpf@ra}}}%
+  \ifx\@empty\temp@c\else \f@nch@errmsg{Illegal char `\temp@c' in
+    \string#1 argument: [#3]}%
+  \fi \f@nch@for\temp@c{#3}%
+  {\f@nch@default\f@nch@@eo{eo}\temp@c \if@twoside\else \if\f@nch@@eo
+    e\f@nch@warning {\string#1's `E' option without twoside option is
+      useless}\fi\fi \f@nch@default\f@nch@@lcr{lcr}\temp@c
+    \f@nch@default\f@nch@@hf{hf}{#2\temp@c}%
+    \f@nch@forc\f@nch@eo\f@nch@@eo 
+        {\f@nch@forc\f@nch@lcr\f@nch@@lcr 
+          {\f@nch@forc\f@nch@hf\f@nch@@hf
+            {\expandafter\f@nch@def\csname
+              f@nch@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#4}}}}}}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\f@nch@fancyhfoffs}
+% This macro interprets the parameters for the header and footer
+% offsets.\\
+% Parameters:\\
+% (1) The user command that was used (like \cs{fancyheadoffset}). This is used
+% for errors/warnings.\\
+% (2) \texttt{h} (for \cs{fancyheadoffset}), \texttt{f} (for \cs{fancyfootoffset}),
+% or \texttt{\{\}} (for \cs{fancyhfoffset}).\\
+% (3) The optional parameter that was given to these commands (default \texttt{[]}).\\
+% (4) The required parameter that was given to these commands.\\
+%   The header and footer offsets are stored in command sequences with
+%   names of the form: \cs{f@nch@O@}\meta{x}\meta{y}\meta{z} with \meta{x} from
+%   \texttt{[eo]}, \meta{y} from \texttt{[lr]} and \meta{z} from \texttt{[hf]}.
+% 
+%    \begin{macrocode}
+\def\f@nch@fancyhfoffs#1#2[#3]#4{%
+  \def\temp@c{}%
+  \f@nch@forc\tmpf@ra{#3}%
+  {\expandafter\f@nch@ifin\tmpf@ra{eolrhf,EOLRHF}%
+    {}{\edef\temp@c{\temp@c\tmpf@ra}}}%
+  \ifx\@empty\temp@c\else \f@nch@errmsg{Illegal char `\temp@c' in
+    \string#1 argument: [#3]}%
+  \fi \f@nch@for\temp@c{#3}%
+  {\f@nch@default\f@nch@@eo{eo}\temp@c \if@twoside\else \if\f@nch@@eo
+    e\f@nch@warning {\string#1's `E' option without twoside option is
+      useless}\fi\fi \f@nch@default\f@nch@@lcr{lr}\temp@c
+    \f@nch@default\f@nch@@hf{hf}{#2\temp@c}%
+    \f@nch@forc\f@nch@eo\f@nch@@eo 
+        {\f@nch@forc\f@nch@lcr\f@nch@@lcr
+          {\f@nch@forc\f@nch@hf\f@nch@@hf
+            {\expandafter\setlength\csname
+              f@nch@O@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#4}}}}}%
+  \f@nch@setoffs}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\lhead}
+% \changes{fancyhdr v3.9}{2016/10/12}{Let \cs{newcommand} do the
+% handling of the optional parameter.}
+% \begin{macro}{\chead}
+% \changes{fancyhdr v3.9}{2016/10/12}{Let \cs{newcommand} do the
+% handling of the optional parameter.}
+% \begin{macro}{\rhead}
+% \changes{fancyhdr v3.9}{2016/10/12}{Let \cs{newcommand} do the
+% handling of the optional parameter.}
+% \begin{macro}{\lfoot}
+% \changes{fancyhdr v3.9}{2016/10/12}{Let \cs{newcommand} do the
+% handling of the optional parameter.}
+% \begin{macro}{\cfoot}
+% \changes{fancyhdr v3.9}{2016/10/12}{Let \cs{newcommand} do the
+% handling of the optional parameter.}
+% \begin{macro}{\rfoot}
+% \changes{fancyhdr v3.9}{2016/10/12}{Let \cs{newcommand} do the
+% handling of the optional parameter.}
+%   Fancyheadings version 1 commands. These are deprecated,
+%   but they continue to work for compatibility reasons. They have an
+%   optional parameter that is used as the value for even pages in a
+%   two-sided document. If this is not given (or if the document is not
+%   two-sided) the required parameter is used for both even and odd pages.
+%   Therefore the default value for the optional parameter is the
+%   required parameter. It is not possible to express this directly in
+%   the definition. Therefore we use a trick. Both parameters are store
+%   in a macro. For example for \cs{lhead} the parameter for even pages
+%   is stored in \cs{f@nch@elh}, and the one for odd pages in
+%   \cs{f@nch@olh}. For the others it is similar, just replace the
+%   \texttt{l} with \texttt{c} or \texttt{r}, and the \texttt{h} with
+%   \texttt{f}. In the body of the macro we first store the required
+%   parameter in \cs{f@nch@olh}, and we use this macro as default for
+%   the optional parameter. The optional parameter is then stored in
+%   \cs{f@nch@elh}. The order of the assignments is therefore important.
+%
+%    \begin{macrocode}
+\newcommand{\lhead}[2][\f@nch@olh]%
+                     {\f@nch@def\f@nch@olh{#2}\f@nch@def\f@nch@elh{#1}}
+\newcommand{\chead}[2][\f@nch@och]%
+                     {\f@nch@def\f@nch@och{#2}\f@nch@def\f@nch@ech{#1}}
+\newcommand{\rhead}[2][\f@nch@orh]%
+                     {\f@nch@def\f@nch@orh{#2}\f@nch@def\f@nch@erh{#1}}
+\newcommand{\lfoot}[2][\f@nch@olf]%
+                     {\f@nch@def\f@nch@olf{#2}\f@nch@def\f@nch@elf{#1}}
+\newcommand{\cfoot}[2][\f@nch@ocf]%
+                     {\f@nch@def\f@nch@ocf{#2}\f@nch@def\f@nch@ecf{#1}}
+\newcommand{\rfoot}[2][\f@nch@orf]%
+                     {\f@nch@def\f@nch@orf{#2}\f@nch@def\f@nch@erf{#1}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\f@nch@headwidth}
+% Length parameter to be used for \cs{headwidth}. We use this rather
+% than defining \cs{headwidth} as a length paramater directly to protect
+% ourself to someone saying: \verb+\let\headwidth\textwidth+. 
+%    \begin{macrocode}
+\newlength{\f@nch@headwidth} \let\headwidth\f@nch@headwidth
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\f@nch@O@elh} 
+% \begin{macro}{\f@nch@O@erh} 
+% \begin{macro}{\f@nch@O@olh}
+% \begin{macro}{\f@nch@O@orh} 
+% \begin{macro}{\f@nch@O@elf} 
+% \begin{macro}{\f@nch@O@erf}
+% \begin{macro}{\f@nch@O@olf} 
+% \begin{macro}{\f@nch@O@orf}
+% Length parameters for the offsets.
+%    \begin{macrocode}
+\newlength{\f@nch@O@elh} 
+\newlength{\f@nch@O@erh} 
+\newlength{\f@nch@O@olh}
+\newlength{\f@nch@O@orh} 
+\newlength{\f@nch@O@elf} 
+\newlength{\f@nch@O@erf}
+\newlength{\f@nch@O@olf} 
+\newlength{\f@nch@O@orf}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% 
+% \begin{macro}{\headrulewidth}
+% \begin{macro}{\footrulewidth}
+%    \begin{macrocode}
+\newcommand{\headrulewidth}{0.4pt} 
 \newcommand{\footrulewidth}{0pt}
-%% Memoir also define \footruleskip. 
-%% Don't define \footruleskip if it is already defined
-\@ifundefined{footruleskip}{\newcommand{\footruleskip}{.3\normalbaselineskip}}{}
-
-% Fancyplain stuff shouldn't be used anymore (rather
-% \fancypagestyle{plain} should be used), but it must be present for
-% compatibility reasons.
-
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% 
+%  \begin{macro}{\footruleskip}
+%  Memoir also defines \cs{footruleskip}.
+%  Don't define \cs{footruleskip} if it is already defined.
+%    \begin{macrocode}
+\@ifundefined{footruleskip}%
+      {\newcommand{\footruleskip}{.3\normalbaselineskip}}{}
+%    \end{macrocode}
+% \end{macro}
+% 
+%  \begin{macro}{\plainheadrulewidth}
+%  \begin{macro}{\plainfootrulewidth}
+%   Fancyplain stuff shouldn't be used anymore (rather
+%   \texttt{\cs{fancypagestyle}\{plain\}} should be used), but we keep it for
+%   compatibility reasons.
+%
+%    \begin{macrocode}
 \newcommand{\plainheadrulewidth}{0pt}
 \newcommand{\plainfootrulewidth}{0pt}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% 
+% \begin{macro}{\if@fancyplain}
+% Boolean for the implementation of \cs{fancyplain}
+%    \begin{macrocode}
 \newif\if@fancyplain \@fancyplainfalse
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\fancyplain}
+% Deprecated macro
+%    \begin{macrocode}
 \def\fancyplain#1#2{\if@fancyplain#1\else#2\fi}
-
-\headwidth=-123456789sp %magic constant
-
-% Command to reset various things in the headers:
-% a.o.  single spacing (taken from setspace.sty)
-% and the catcode of ^^M (so that epsf files in the header work if a
-% verbatim crosses a page boundary)
-% It also defines a \nouppercase command that disables \uppercase and
-% \Makeuppercase. It can only be used in the headers and footers.
-% \set \hsize to \headwidth (helps for multicol)
-% reset \\ \raggedleft \raggedright and \centering to their default values (for tabu)
-\let\fnch@raggedleft\raggedleft
-\let\fnch@raggedright\raggedright
-\let\fnch@centering\centering
-\let\fnch@everypar\everypar% save real \everypar because of spanish.ldf
-
-\def\fancy@reset{\fnch@everypar{}\restorecr\endlinechar=13
- \let\\\@normalcr
- \let\raggedleft\fnch@raggedleft
- \let\raggedright\fnch@raggedright
- \let\centering\fnch@centering
- \def\baselinestretch{1}%
- \hsize=\headwidth
- \def\nouppercase##1{{\let\uppercase\relax\let\MakeUppercase\relax
-     \expandafter\let\csname MakeUppercase \endcsname\relax##1}}%
- \ifx\undefined\@newbaseline% NFSS not present; 2.09 or 2e
-   \ifx\@normalsize\undefined \normalsize % for ucthesis.cls
-   \else \@normalsize \fi
- \else% NFSS (2.09) present
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\headwidth}
+%   Initialize \cs{headwidth} with a magic constant.
+%    \begin{macrocode}
+\headwidth=-123456789sp
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\f@nch@raggedleft}
+% \begin{macro}{\f@nch@raggedright}
+% \begin{macro}{\f@nch@centering}
+% \begin{macro}{\f@nch@everypar}
+% Save the standard definitions of \cs{raggedleft}, \cs{raggedright},
+% \cs{centering} and \cs{everypar} so that we can reset them when we are
+% typesetting the headers and footers. Some packages change these to
+% incompatible values.
+%    \begin{macrocode}
+\let\f@nch@raggedleft\raggedleft 
+\let\f@nch@raggedright\raggedright
+\let\f@nch@centering\centering
+\let\f@nch@everypar\everypar
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\f@nch@reset}
+%   Command to reset various things in the headers: a.o. single spacing
+%   (taken from setspace.sty) and the catcode of ^^M and
+%   \cs{endlinechar} (so that epsf files
+%   in the header work if a verbatim crosses a page boundary) It also
+%   defines a \cs{nouppercase} command that disables \cs{uppercase} and
+%   \cs{Makeuppercase}. It can only be used in the headers and footers. Set
+%   \cs{hsize} to \cs{headwidth} (this helps for multicol); reset
+%   \cs{}\cs{}, \cs{raggedleft}, \cs{raggedright} and \cs{centering} to
+%   their default values (for tabu), and \cs{everypar} to empty.\\
+%   The font is reset to \cs{normalfont}.
+%    \begin{macrocode}
+\def\f@nch@reset{\f@nch@everypar{}\restorecr\endlinechar=13
+  \let\\\@normalcr \let\raggedleft\f@nch@raggedleft
+  \let\raggedright\f@nch@raggedright \let\centering\f@nch@centering
+  \def\baselinestretch{1}%
+  \hsize=\headwidth
+  \def\nouppercase##1{{\let\uppercase\relax\let\MakeUppercase\relax
+      \expandafter\let\csname MakeUppercase \endcsname\relax##1}}%
+  \ifx\undefined\@newbaseline % NFSS not present; 2.09 or 2e
+  \ifx\@normalsize\undefined \normalsize % for ucthesis.cls
+  \else \@normalsize \fi \else % NFSS (2.09) present
   \@newbaseline%
- \fi}
-
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
 % Initialization of the head and foot text.
-
-% The default values still contain \fancyplain for compatibility.
-\fancyhf{} % clear all
-% lefthead empty on ``plain'' pages, \rightmark on even, \leftmark on odd pages
-% evenhead empty on ``plain'' pages, \leftmark on even, \rightmark on odd pages
+%
+% The default values still contain \fancyplain for compatibility:
+% lefthead empty on ``plain'' pages, \cs{rightmark} on even, \cs{leftmark} on odd pages;
+% evenhead empty on ``plain'' pages, \cs{leftmark} on even, \cs{rightmark} on odd pages.
+%    \begin{macrocode}
+\fancyhf{}
 \if@twoside
   \fancyhead[el,or]{\fancyplain{}{\slshape\rightmark}}
   \fancyhead[er,ol]{\fancyplain{}{\slshape\leftmark}}
@@ -468,158 +668,295 @@
   \fancyhead[r]{\fancyplain{}{\slshape\leftmark}}
 \fi
 \fancyfoot[c]{\rmfamily\thepage} % page number
-
-% Use box 0 as a temp box and dimen 0 as temp dimen. 
-% This can be done, because this code will always
-% be used inside another box, and therefore the changes are local.
-
-\def\@fancyvbox#1#2{\setbox0\vbox{#2}\ifdim\ht0>#1\@fancywarning
-  {\string#1 is too small (\the#1): ^^J Make it at least \the\ht0.^^J
-    We now make it that large for the rest of the document.^^J
-    This may cause the page layout to be inconsistent, however\@gobble}%
-  \dimen0=#1\global\setlength{#1}{\ht0}\ht0=\dimen0\fi
-  \box0}
-
-% Put together a header or footer given the left, center and
-% right text, fillers at left and right and a rule.
-% The \lap commands put the text into an hbox of zero size,
-% so overlapping text does not generate an errormessage.
-% These macros have 5 parameters:
-% 1. LEFTSIDE BEARING % This determines at which side the header will stick
-%    out. When \fancyhfoffset is used this calculates \headwidth, otherwise
-%    it is \hss or \relax (after expansion).
-% 2. \f@ncyolh, \f@ncyelh, \f@ncyolf or \f@ncyelf. This is the left component.
-% 3. \f@ncyoch, \f@ncyech, \f@ncyocf or \f@ncyecf. This is the middle comp.
-% 4. \f@ncyorh, \f@ncyerh, \f@ncyorf or \f@ncyerf. This is the right component.
-% 5. RIGHTSIDE BEARING. This is always \relax or \hss (after expansion).
-
-\def\@fancyhead#1#2#3#4#5{#1\hbox to\headwidth{\fancy@reset
-  \@fancyvbox\headheight{\hbox
-    {\rlap{\parbox[b]{\headwidth}{\raggedright#2}}\hfill
-      \parbox[b]{\headwidth}{\centering#3}\hfill
-      \llap{\parbox[b]{\headwidth}{\raggedleft#4}}}\headrule}}#5}
-
-\def\@fancyfoot#1#2#3#4#5{#1\hbox to\headwidth{\fancy@reset
-    \@fancyvbox\footskip{\footrule
+%    \end{macrocode}
+%
+% \begin{macro}{\f@nch@vbox}
+% Make a \cs{vbox} with the header or footer. Check whether there is
+% enough space and give a warning if not.
+%   Use box 0 as a temp box and dimen 0 as temp dimen. This can be done,
+%   because this code will always be used inside another box, and
+%   therefore the changes are local.
+%
+%    \begin{macrocode}
+\def\f@nch@vbox#1#2{\setbox0\vbox{#2}\ifdim\ht0>#1\f@nch@warning
+  {\string#1 is too small (\the#1): ^^J Make it at least \the\ht0.^^J We
+    now make it that large for the rest of the document.^^J This may
+    cause the page layout to be inconsistent, however\@gobble}%
+  \dimen0=#1\global\setlength{#1}{\ht0}\ht0=\dimen0\fi \box0}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\f@nch@head}
+% \begin{macro}{\f@nch@foot}
+%   Put together a header or footer given the left, center and right
+%   text, fillers at left and right and a rule. The \cs{xlap} commands put
+%   the text into an hbox of zero size, so overlapping text does not
+%   generate an errormessage. These macros have 5 parameters:\\
+% 1. LEFTSIDE BEARING.  This determines at which side the header will stick
+%   out. When \cs{fancyhfoffset} is used this calculates \cs{headwidth},
+%   otherwise it is \cs{hss} or \cs{relax} (after expansion). \\
+%   2. \cs{f@nch@olh}, \cs{f@nch@elh}, \cs{f@nch@olf} or \cs{f@nch@elf}.
+%   This is the left component. \\
+%   3. \cs{f@nch@och}, \cs{f@nch@ech}, \cs{f@nch@ocf} or \cs{f@nch@ecf}. This is the center
+%   component. \\
+%   4. \cs{f@nch@orh}, \cs{f@nch@erh}, \cs{f@nch@orf} or \cs{f@nch@erf}. This is the
+%   right component. \\
+%   5. RIGHTSIDE BEARING. This is always \cs{relax} or \cs{hss}
+%   (after expansion).
+%
+%    \begin{macrocode}
+\def\f@nch@head#1#2#3#4#5{#1\hbox to\headwidth{\f@nch@reset
+    \f@nch@vbox\headheight{\hbox
+      {\rlap{\parbox[b]{\headwidth}{\raggedright#2}}\hfill
+        \parbox[b]{\headwidth}{\centering#3}\hfill
+        \llap{\parbox[b]{\headwidth}{\raggedleft#4}}}\headrule}}#5}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\f@nch@foot#1#2#3#4#5{#1\hbox to\headwidth{\f@nch@reset
+    \f@nch@vbox\footskip{\footrule
       \hbox{\rlap{\parbox[t]{\headwidth}{\raggedright#2}}\hfill
         \parbox[t]{\headwidth}{\centering#3}\hfill
         \llap{\parbox[t]{\headwidth}{\raggedleft#4}}}}}#5}
-
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\headrule}
+%    \begin{macrocode}
 \def\headrule{{\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi
-    \hrule\@height\headrulewidth\@width\headwidth \vskip-\headrulewidth}}
-
+    \hrule\@height\headrulewidth\@width\headwidth
+    \vskip-\headrulewidth}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\footrule}
+%    \begin{macrocode}
 \def\footrule{{\if@fancyplain\let\footrulewidth\plainfootrulewidth\fi
     \vskip-\footruleskip\vskip-\footrulewidth
     \hrule\@width\headwidth\@height\footrulewidth\vskip\footruleskip}}
-
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ps@fancy}
+% Pagestyle \texttt{fancy}
+%    \begin{macrocode}
 \def\ps@fancy{%
-\@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}%for amsbook
+  \@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}% for amsbook
+%    \end{macrocode}
+% \end{macro}
 %
-% Define \MakeUppercase for old LaTeXen.
-% Note: we used \def rather than \let, so that \let\uppercase\relax (from
-% the version 1 documentation) will still work.
+% \begin{macro}{\MakeUppercase}
+%   Define \MakeUppercase for old \LaTeX{}en. Note: we used \cs{def} rather
+%   than \cs{let}, so that \verb+\let\uppercase\relax+ (from the version 1
+%   documentation) will still work.
 %
+%    \begin{macrocode}
 \@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
-\ifx\chapter\@undefined
-\def\sectionmark##1{\markboth
-{\MakeUppercase{\ifnum \c@secnumdepth>\z@
- \thesection\hskip 1em\relax \fi ##1}}{}}%
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\chaptermark}
+% \begin{macro}{\sectionmark}
+% \begin{macro}{\subsectionmark}
+% Standard definitions for \cs{chaptermark}, \cs{sectionmark} and \cs{subsectionmark}.
+% 
+%    \begin{macrocode}
+\ifx\chapter\@undefined \def\sectionmark##1{\markboth
+  {\MakeUppercase{\ifnum \c@secnumdepth>\z@ \thesection\hskip 1em\relax
+      \fi ##1}}{}}%
 \def\subsectionmark##1{\markright {\ifnum \c@secnumdepth >\@ne
- \thesubsection\hskip 1em\relax \fi ##1}}%
-\else
-\def\chaptermark##1{\markboth {\MakeUppercase{\ifnum \c@secnumdepth>\m@ne
- \@chapapp\ \thechapter. \ \fi ##1}}{}}%
+    \thesubsection\hskip 1em\relax \fi ##1}}%
+\else \def\chaptermark##1{\markboth {\MakeUppercase{\ifnum
+      \c@secnumdepth>\m@ne \@chapapp\ \thechapter. \ \fi ##1}}{}}%
 \def\sectionmark##1{\markright{\MakeUppercase{\ifnum \c@secnumdepth >\z@
- \thesection. \ \fi ##1}}}%
+      \thesection. \ \fi ##1}}}%
 \fi
-%\csname ps@headings\endcsname % use \ps@headings defaults if they exist
-\ps@@fancy
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% 
+% \begin{macro}{\ps@fancy}
+% Pagestyle \texttt{fancy}. \cs{ps@@fancy} is the real pagestyle
+% \texttt{fancy}, i.e. the non-plain one.
+%    \begin{macrocode}
+\ps@@fancy 
 \gdef\ps@fancy{\@fancyplainfalse\ps@@fancy}%
-% Initialize \headwidth if the user didn't
-%
-\ifdim\headwidth<0sp
-%
-% This catches the case that \headwidth hasn't been initialized and the
-% case that the user added something to \headwidth in the expectation that
-% it was initialized to \textwidth. We compensate this now. This loses if
+%    \end{macrocode}
+% \end{macro}
+% 
+% Initialize \cs{headwidth} if the user didn't. If \cs{headwidth} ${}< 0$,
+% then the user did not initialize it, or they just added something to
+% it in the expectation that
+% it was initialized to \cs{textwidth}. We compensate this now. This loses if
 % the user intended to multiply it by a factor. But that case is more
-% likely done by saying something like \headwidth=1.2\textwidth. 
-% The doc says you have to change \headwidth after the first call to
+% likely done by saying something like \verb+\setlength{\headwidth}{1.2\textwidth}+. 
+% The documentation says you have to change \cs{headwidth} after the first call to
 % \pagestyle{fancy}. This code is just to catch the most common cases were
 % that requirement is violated.
 %
+%    \begin{macrocode}
+\ifdim\headwidth<0sp
     \global\advance\headwidth123456789sp\global\advance\headwidth\textwidth
 \fi}
+%    \end{macrocode}
+%
+% \begin{macro}{\ps@fancyplain}
+% The pagestyle \texttt{fancyplain} (deprecated).
+% 
+%    \begin{macrocode}
 \def\ps@fancyplain{\ps@fancy \let\ps@plain\ps@plain@fancy}
-\def\ps@plain@fancy{\@fancyplaintrue\ps@@fancy}
+\def\ps@plain@fancy{\@fancyplaintrue\ps@@fancy} 
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\ps@@empty}
+% Save the definition of \cs{ps@empty} (pagestyle \texttt{empty}).
+% 
+%    \begin{macrocode}
 \let\ps@@empty\ps@empty
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\ps@@fancy}
+% The actual pagestyle \texttt{fancy}. For amsbook/amsart, which do
+% strange things with \cs{topskip}, we start with \cs{ps@@empty}. We
+% construct the even and odd headers and footers from all the parts that
+% we have collected.
+%    \begin{macrocode}
 \def\ps@@fancy{%
-\ps@@empty % This is for amsbook/amsart, which do strange things with \topskip
-\def\@mkboth{\protect\markboth}%
-\def\@oddhead{\@fancyhead\fancy@Oolh\f@ncyolh\f@ncyoch\f@ncyorh\fancy@Oorh}%
-\def\@oddfoot{\@fancyfoot\fancy@Oolf\f@ncyolf\f@ncyocf\f@ncyorf\fancy@Oorf}%
-\def\@evenhead{\@fancyhead\fancy@Oelh\f@ncyelh\f@ncyech\f@ncyerh\fancy@Oerh}%
-\def\@evenfoot{\@fancyfoot\fancy@Oelf\f@ncyelf\f@ncyecf\f@ncyerf\fancy@Oerf}%
+  \ps@@empty
+  \def\@mkboth{\protect\markboth}%
+  \def\@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh}%
+  \def\@oddfoot{\f@nch@foot\f@nch@Oolf\f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@Oorf}%
+  \def\@evenhead{\f@nch@head\f@nch@Oelh\f@nch@elh\f@nch@ech\f@nch@erh\f@nch@Oerh}%
+  \def\@evenfoot{\f@nch@foot\f@nch@Oelf\f@nch@elf\f@nch@ecf\f@nch@erf\f@nch@Oerf}%
 }
-% Default definitions for compatibility mode:
-% These cause the header/footer to take the defined \headwidth as width
-% And to shift in the direction of the marginpar area
-
-\def\fancy@Oolh{\if@reversemargin\hss\else\relax\fi}
-\def\fancy@Oorh{\if@reversemargin\relax\else\hss\fi}
-\let\fancy@Oelh\fancy@Oorh
-\let\fancy@Oerh\fancy@Oolh
-
-\let\fancy@Oolf\fancy@Oolh
-\let\fancy@Oorf\fancy@Oorh
-\let\fancy@Oelf\fancy@Oelh
-\let\fancy@Oerf\fancy@Oerh
-
-% New definitions for the use of \fancyhfoffset
-% These calculate the \headwidth from \textwidth and the specified offsets.
-
-\def\fancy@offsolh{\headwidth=\textwidth\advance\headwidth\f@ncyO@olh
-                   \advance\headwidth\f@ncyO@orh\hskip-\f@ncyO@olh}
-\def\fancy@offselh{\headwidth=\textwidth\advance\headwidth\f@ncyO@elh
-                   \advance\headwidth\f@ncyO@erh\hskip-\f@ncyO@elh}
-
-\def\fancy@offsolf{\headwidth=\textwidth\advance\headwidth\f@ncyO@olf
-                   \advance\headwidth\f@ncyO@orf\hskip-\f@ncyO@olf}
-\def\fancy@offself{\headwidth=\textwidth\advance\headwidth\f@ncyO@elf
-                   \advance\headwidth\f@ncyO@erf\hskip-\f@ncyO@elf}
-
-\def\fancy@setoffs{%
-% Just in case \let\headwidth\textwidth was used
-  \fancy@gbl\let\headwidth\fancy@headwidth
-  \fancy@gbl\let\fancy@Oolh\fancy@offsolh
-  \fancy@gbl\let\fancy@Oelh\fancy@offselh
-  \fancy@gbl\let\fancy@Oorh\hss
-  \fancy@gbl\let\fancy@Oerh\hss
-  \fancy@gbl\let\fancy@Oolf\fancy@offsolf
-  \fancy@gbl\let\fancy@Oelf\fancy@offself
-  \fancy@gbl\let\fancy@Oorf\hss
-  \fancy@gbl\let\fancy@Oerf\hss}
-
-% Redefine \@makecol so that we can capture if there are top/bottom floats, footnotes
-%  or if we are on a float page.
-% Because of a clash with the footmisc package we do this at \begin{document}}
-
-\newif\iffnch@footnote
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\f@nch@Oolh}
+% \begin{macro}{\f@nch@Oorh}
+% \begin{macro}{\f@nch@Oelh}
+% \begin{macro}{\f@nch@Oerh}
+% \begin{macro}{\f@nch@Oolf}
+% \begin{macro}{\f@nch@Oorf}
+% \begin{macro}{\f@nch@Oelf}
+% \begin{macro}{\f@nch@Oerf}
+%   Default definitions for compatibility mode: These cause the
+%   header/footer to take the defined \cs{headwidth} as its width and if
+%   required to shift it in the direction of the marginpar area.
+%
+%    \begin{macrocode}
+\def\f@nch@Oolh{\if@reversemargin\hss\else\relax\fi}
+\def\f@nch@Oorh{\if@reversemargin\relax\else\hss\fi}
+\let\f@nch@Oelh\f@nch@Oorh 
+\let\f@nch@Oerh\f@nch@Oolh
+\let\f@nch@Oolf\f@nch@Oolh
+\let\f@nch@Oorf\f@nch@Oorh
+\let\f@nch@Oelf\f@nch@Oelh
+\let\f@nch@Oerf\f@nch@Oerh
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\f@nch@offsolh}
+% \begin{macro}{\f@nch@offselh}
+%   New definitions for the use of \cs{fancyhfoffset},
+%   \cs{fancyheadoffset}, \cs{fancyfootoffset}.  These calculate the
+%   \cs{headwidth} from \cs{textwidth} and the specified offsets.\\
+%   First for the header.
+%
+%    \begin{macrocode}
+\def\f@nch@offsolh{\headwidth=\textwidth\advance\headwidth\f@nch@O@olh
+                   \advance\headwidth\f@nch@O@orh\hskip-\f@nch@O@olh}
+\def\f@nch@offselh{\headwidth=\textwidth\advance\headwidth\f@nch@O@elh
+                   \advance\headwidth\f@nch@O@erh\hskip-\f@nch@O@elh}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\f@nch@offsolh}
+% \begin{macro}{\f@nch@offselh}
+% The same for the footer.
+% 
+%    \begin{macrocode}
+\def\f@nch@offsolf{\headwidth=\textwidth\advance\headwidth\f@nch@O@olf
+                   \advance\headwidth\f@nch@O@orf\hskip-\f@nch@O@olf}
+\def\f@nch@offself{\headwidth=\textwidth\advance\headwidth\f@nch@O@elf
+                   \advance\headwidth\f@nch@O@erf\hskip-\f@nch@O@elf}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\f@nch@setoffs}
+% Set the offset parts to be used in the construction of the headers and
+% footers. Depending on \cs{f@nch@gbl} it will be done globally (for
+% pagestyle \texttt{fancy}) or locally (for \cs{fancypagestyle}).
+% Just in case \verb+\let\headwidth\textwidth+ was used, we reset
+% \cs{headwidth} to the length parameter that it should be.
+%    \begin{macrocode}
+\def\f@nch@setoffs{%
+  \f@nch@gbl\let\headwidth\f@nch@headwidth
+  \f@nch@gbl\let\f@nch@Oolh\f@nch@offsolh
+  \f@nch@gbl\let\f@nch@Oelh\f@nch@offselh \f@nch@gbl\let\f@nch@Oorh\hss
+  \f@nch@gbl\let\f@nch@Oerh\hss \f@nch@gbl\let\f@nch@Oolf\f@nch@offsolf
+  \f@nch@gbl\let\f@nch@Oelf\f@nch@offself \f@nch@gbl\let\f@nch@Oorf\hss
+  \f@nch@gbl\let\f@nch@Oerf\hss
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\iff@nch@footnote}
+% \begin{macro}{\@makecol}
+%   Redefine \cs{@makecol} so that we can capture if there are
+%   top/bottom floats, footnotes or if we are on a float page. Because
+%   of a clash with the footmisc package we do this at
+%   \verb+\begin{document}+.\\
+%   We need a boolean \cs{iff@nch@footnote} to capture if there was a footnote.
+%
+%    \begin{macrocode}
+\newif\iff@nch@footnote 
 \AtBeginDocument{%
-\let\latex@makecol\@makecol
-\def\@makecol{\ifvoid\footins\fnch@footnotefalse\else\fnch@footnotetrue\fi
-\let\topfloat\@toplist\let\botfloat\@botlist\latex@makecol}%
+  \let\latex@makecol\@makecol
+  \def\@makecol{\ifvoid\footins\f@nch@footnotefalse\else\f@nch@footnotetrue\fi
+    \let\topfloat\@toplist\let\botfloat\@botlist\latex@makecol}%
 }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% 
+% \begin{macro}{\iftopfloat}
+% \begin{macro}{\ifbotfloat}
+% \begin{macro}{\iffloatpage}
+% \begin{macro}{\iffootnote}
+% These can be used in a header/footer field to make them conditional on
+% the presence of floats and/or footnotes.
+%    \begin{macrocode}
 \newcommand\iftopfloat[2]{\ifx\topfloat\empty #2\else #1\fi}%
 \newcommand\ifbotfloat[2]{\ifx\botfloat\empty #2\else #1\fi}%
 \newcommand\iffloatpage[2]{\if@fcolmade #1\else #2\fi}%
-\newcommand\iffootnote[2]{\iffnch@footnote #1\else #2\fi}%
-
-\newcommand{\fancypagestyle}[2]{%
-  \@namedef{ps@#1}{\let\fancy@gbl\relax#2\relax\ps@fancy}}
+\newcommand\iffootnote[2]{\iff@nch@footnote #1\else #2\fi}%
 %    \end{macrocode}
-%</fancyhdr>
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
 %
+% \begin{macro}{\fancypagestyle}
+%    \begin{macrocode}
+\newcommand{\fancypagestyle}[2]{%
+  \@namedef{ps@#1}{\let\f@nch@gbl\relax#2\relax\ps@fancy}}
+%    \end{macrocode}
+% \end{macro}
+%    %</fancyhdr>
 %
 % \Finale
 \endinput
