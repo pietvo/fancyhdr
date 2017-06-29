@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2016/10/11 v3.9
+%<fancyhdr|fancyheadings|extramarks>           [2017/06/30 v3.9a
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -263,6 +263,8 @@
 % \changes{fancyhdr v3.9}{2016/10/12}{Rename some macros to have 'f@nch@'
 % in their names, to get a more uniform naming scheme for internal macros.}
 %
+% \changes{fancyhdr v3.9a}{2017/06/30}{Define \cs{@temptokenb} in extramarks.sty}
+% 
 % \begin{macro}{\if@nch@mpty}
 % This macro tests if its argument is empty.
 %    \begin{macrocode}
@@ -978,7 +980,7 @@
 % \begin{macro}{\@temptokenb}
 % A token register to store some marks information
 %    \begin{macrocode}
-% \newtoks\@temptokenb
+\newtoks\@temptokenb
 %    \end{macrocode}
 % \end{macro}
 %

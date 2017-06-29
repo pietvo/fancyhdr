@@ -21,10 +21,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks}
-           [2016/10/11 v3.9
+           [2017/06/30 v3.9a
                   Extra marks for LaTeX]
 % Copyright (C) 1994-2016 by Piet van Oostrum <piet@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtoks\@temptokenb
 \providecommand\unrestored@protected@xdef{%
   \let\protect\@unexpandable@protect \xdef}
 \def\markboth#1#2{%
