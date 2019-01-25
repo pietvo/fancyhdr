@@ -237,7 +237,7 @@
 % \begin{verbatim}
 % \fancypagestyle{pagestyle}{commands}
 % \end{verbatim}
-% This command lets you (re)define pagestyles for use in special
+% This command lets you (re)define page styles for use in special
 % situations. See section~\ref{sec:pagestyle-plain} for more details.
 %
 % \section{Using extramarks}
@@ -347,7 +347,7 @@
 % defines the general contents of the headers and footers (e.g. where the
 % page number will be printed), while
 % \cs{pagenumbering} defines the format of the page number.
-% \LaTeX{} has four standard pagestyles:
+% \LaTeX{} has four standard page styles:
 % 
 % \begin{center}
 % \noindent
@@ -612,23 +612,47 @@
 % use  \Cmd{thispagestyle\{plain\}} for a simple page layout for
 % page~1.
 % 
-% \section{Redefining \texttt{plain} style}
+% \section{Redefining page style \texttt{plain}}
 % \label{sec:pagestyle-plain}
 % 
 % Some \latex/ commands, like \cs{chapter}, use the \cs{thispagestyle}
 % command to automatically switch to the \texttt{plain} page style, thus
-% ignoring the page style currently in effect. 
+% ignoring the page style currently in effect.
+%
+% They do this by issuing a \verb+\thispagestyle{plain}+ command. The most
+% well-known places where this could happen are:
+% \begin{itemize}
+% \item The first pages of chapters in the \texttt{book} and \texttt{report} class
+% \item The first page of a document in the \texttt{article} class when \cs{maketitle} is used
+% \item The first page of an index
+% \end{itemize}
+% but it could happen at other places depending on the class and the packages used.
+%
 % To customize even such pages you must redefine the \texttt{plain}
-% pagestyle. As we indicated before you could do this by defining the
+% page style. As we indicated before you could do this by defining the
 % \cs{ps@plain} command, but \Package{fancyhdr} gives you an easier way
 % with the \cs{fancypagestyle} command. This command can be used to
-% redefine existing pagestyles (like \texttt{plain}) or to define new ones,
-% e.g. if part of your document is to use a different pagestyle. This command
-% has two parameters: one is the name of the pagestyle to be defined, the
+% redefine existing page styles (like \texttt{plain}) or to define new ones,
+% e.g. if part of your document is to use a different page style. This command
+% has two parameters: the first one is the name of the page style to be defined, the
 % second consists of commands that change the headers and/or footers, i.e.
 % \verb|fancyhead| etc. Also allowed are changes to \cs{headrulewidth} and
-% \cs{footrulewidth}. 
-%   As an example, let us
+% \cs{footrulewidth}. The (re)defined page style uses the standard
+% \texttt{fancy} definitions, amended by the definitions in the second
+% parameter. In other words, those parts that are not redefined in the
+% second parameter get their value from the \texttt{fancy} definition that
+% is current. In particular, if the second parameter is empty, i.e. given
+% as \verb+{}+, then the new page style is equal to page style
+% \texttt{fancy}.
+%
+%  As an example, let us redefine the \texttt{plain} style so that it will
+% be the same as page style \texttt{fancy}:
+% \begin{verbatim}
+% \fancypagestyle{plain}{}
+% \end{verbatim}
+% Now when these special pages use the \texttt{plain} page style, they use your redefined version.
+%
+% As another example, let us 
 % redefine the \texttt{plain} style for the report in Section~\ref{two-sided} by
 % making the page number bold. 
 % \PSindex{plain}
