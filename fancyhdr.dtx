@@ -118,7 +118,8 @@
 %     written by  George
 %     Gr\"atzer (University of Manitoba) in \emph{Notices Amer. Math. Soc.}
 %     Thanks, George!}\\
-%   Dept.\ of Computer Science\thanks{This was my employer at the time I developed this package. I am now retired.}\\
+%     Dept.\ of Computer Science\thanks{This was my employer at the time I developed this package.
+% I am now retired.}\\
 %   Utrecht University}
 %
 % \maketitle
@@ -1270,7 +1271,8 @@
 % \label{sec:nofm}
 % 
 % Some document writers prefer the pages to be numbered as \textsf{n} of
-% \textsf{m} where \textsf{m} is the number of pages in the document. There is a package \Package{lastpage}
+% \textsf{m} where \textsf{m} is the number of pages in the document.
+% There is a package \Package{lastpage}
 % available which you can use with \Package{fancyhdr} as follows:
 % 
 % \begin{verbatim}
@@ -1309,13 +1311,18 @@
 % chapter. The package \Package{chappg} can be used to get this format. 
 % 
 % Basically this package redefines \cs{thepage} as 
-% \cs{thechapter}\cs{chappgsep}\Cmd{arabic\{page\}}, where \cs{chappgsep} by default is `-'. If you want do use a different separator, you must redefine \cs{chappgsep}, for example to use an en-dash:
+% \cs{thechapter}\cs{chappgsep}\Cmd{arabic\{page\}}, where
+% \cs{chappgsep} by default is `-'. If you want do use a different
+% separator, you must redefine \cs{chappgsep}, for example to use an
+% en-dash:
 % 
 % \begin{verbatim}
 % \renewcommand{\chappgsep}{--}
 % \end{verbatim}
 % 
-% To use a different prefix, for example the section number, use the \Cmd{pagenumbering\{bychapter\}} command with an optional argument specifying the prefix.
+% To use a different prefix, for example the section number, use the
+% \Cmd{pagenumbering\{bychapter\}} command with an optional argument
+% specifying the prefix.
 % \CmdIndex{pagenumbering}
 % 
 % \begin{verbatim}
@@ -1478,7 +1485,12 @@
 % On all the following pages the values of \texttt{\%3} will be used,
 % i.e. empty ones. Of course in real life you would leave out the \texttt{\%} indicators.
 % 
-% In case you want the last  $m_1$ value or the first  $m_2$ value, you can use the \cs{lastleftxmark} or \cs{firstrightxmark}, respectively. For symmetry reasons there are also commands \cs{firstleftxmark} (=\cs{firstxmark}), \cs{lastrightxmark} (=\cs{lastxmark}), \cs{topleftxmark} (=\cs{topxmark}) and \cs{toprightxmark}. The top-marks are basically the last-marks of the previous page.
+% In case you want the last $m_1$ value or the first $m_2$ value, you
+% can use the \cs{lastleftxmark} or \cs{firstrightxmark}, respectively.
+% For symmetry reasons there are also commands \cs{firstleftxmark}
+% (=\cs{firstxmark}), \cs{lastrightxmark} (=\cs{lastxmark}),
+% \cs{topleftxmark} (=\cs{topxmark}) and \cs{toprightxmark}. The
+% top-marks are basically the last-marks of the previous page.
 % \CmdIndex{lastleftxmark}
 % \CmdIndex{firstrightxmark}
 % \CmdIndex{firstleftxmark}
@@ -1843,8 +1855,8 @@
 % \restylefloat{figure}
 % \end{verbatim}
 %  in the preamble. Now you will be able to
-% specify \texttt{[H]} as the position parameter, which will mean ``HERE and only
-% HERE''. This may cause an unwanted page break however. 
+% specify \texttt{[H]} as the position parameter, which will mean ``HERE
+% and only HERE''. This may cause an unwanted page break however.
 % If you want to avoid the unwanted pagebreak, i.e. let
 % \LaTeX{} move the float only if it doesn't fit on the page, then use the
 % \Package{afterpage} package with:
@@ -2235,8 +2247,8 @@
 % \changes{fancyhdr v3.6}{2016/08/27}{Added a \cs{ProvidesPackage} line.\\
 % Updated contact information.}
 % 
-% \changes{fancyhdr v3.7}{2016/08/28}{Removed \cs{normalfont} from default values, as every field is already
-% initialised with \cs{normalfont}.\\
+% \changes{fancyhdr v3.7}{2016/08/28}{Removed \cs{normalfont} from default values, as every field
+% is already initialised with \cs{normalfont}.\\
 % Set \cs{hsize} to \cs{headwidth} in header/footer.}
 % 
 % \changes{fancyhdr v3.8}{2016/09/06}{Reset \bsbs, \cs{raggedleft},
