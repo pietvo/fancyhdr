@@ -89,7 +89,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1031}
+% \CheckSum{1044}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -130,8 +130,11 @@
 %   proper placement of figures and tables (collectively called floats) on
 %   the page. 
 % 
-%   The documentation describes version 3.8 or later of the \Package{fancyhdr} package 
-%   and version 2.1 or later of the \Package{extramarks} package.
+%   This documentation describes version 3.10 or later of the
+% \Package{fancyhdr} and \Package{extramarks} packages. The user
+% documentation is valid for the versions 3.8 or later of the
+% \Package{fancyhdr} package and version 2.1 or later of the
+% \Package{extramarks} package.
 % 
 % \end{abstract}
 % \tableofcontents
@@ -2092,6 +2095,8 @@
 % \item Version 3.10, Januari 25, 2019
 %   \begin{itemize}
 %   \item Distribution based on fancydhr.dtx.
+%   \item Use \cs{f@nch@ifundefined} instead of \cs{ifx} or \cs{@ifundefined}.
+%   \item Replace \cs{def} with \cs{newcommand} in several places.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -2287,20 +2292,45 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\f@nch@ifundefined}
+% This macro tests if a command is undefined. Older versions of
+% fancyhdr used \cs{@ifundefined}, but this had an undesired side effect
+% in the original \LaTeX{} (the command was made equal to \cs{relax} if
+% it was undefined). Another way was\\
+% \verb+\ifx\thecommand\undefined ...+ or \verb+\ifx\thecommand\@undefined ...+
+% but that could conflict with packages that use the \cs{@ifundefined}
+% method. \LaTeX{} versions later than 2018 have a definition of
+% \cs{@ifundefined} that avoids these problems, but not everybody may
+% have such a version installed. Therefore we define our own version
+% \cs{f@nch@ifundefined}.
+% This definition is copied from the \Package{tocloft} package.
+% \begin{macrocode}
+\newcommand{\f@nch@ifundefined}[1]{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname #1\endcsname\relax
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+    \fi}
+% \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\f@nch@errmsg}
-% This macro generates an error message.
+%   This macro generates an error message.
+% \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{\f@nch@ifundefined} instead of \cs{ifx}.}
+% \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
 %    \begin{macrocode}
-\def\f@nch@errmsg#1{%
-  \ifx\PackageError\undefined \errmessage{#1}\else
-  \PackageError{Fancyhdr}{#1}{}\fi}
+\newcommand\f@nch@errmsg[1]{%
+  \f@nch@ifundefined{PackageError}{\errmessage{#1}}{\PackageError{Fancyhdr}{#1}{}}}
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\f@nch@warning}
 % This macro generates a warning.
+% \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{f@nch@ifundefined} instead of \cs{ifx}.}
+% \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
 %    \begin{macrocode}
-\def\f@nch@warning#1{%
-  \ifx\PackageWarning\undefined \errmessage{#1}\else
-  \PackageWarning{Fancyhdr}{#1}{}\fi}
+\newcommand\f@nch@warning[1]{%
+  \f@nch@ifundefined{PackageWarning}{\errmessage{#1}}{\PackageWarning{Fancyhdr}{#1}{}}}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2310,8 +2340,9 @@
 %   to \cs{var}.
 %   This is similar to \LaTeX's \cs{@tfor}, but it expands the \texttt{charstring}.
 %    \begin{macrocode}
-\def\f@nch@forc#1#2#3{\expandafter\f@rc\expandafter#1\expandafter{#2}{#3}}
-\def\f@rc#1#2#3{\def\temp@ty{#2}\ifx\@empty\temp@ty\else
+% \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
+\newcommand{\f@nch@forc}[3]{\expandafter\f@rc\expandafter#1\expandafter{#2}{#3}}
+\newcommand{\f@rc}[3]{\def\temp@ty{#2}\ifx\@empty\temp@ty\else
                                     \f@nch@rc#1#2\f@nch@rc{#3}\fi}
 \def\f@nch@rc#1#2#3\f@nch@rc#4{\def#1{#2}#4\f@rc#1{#3}{#4}}
 %    \end{macrocode}
@@ -2567,7 +2598,7 @@
 %  Memoir also defines \cs{footruleskip}.
 %  Don't define \cs{footruleskip} if it is already defined.
 %    \begin{macrocode}
-\@ifundefined{footruleskip}%
+\f@nch@ifundefined{footruleskip}%
       {\newcommand{\footruleskip}{.3\normalbaselineskip}}{}
 %    \end{macrocode}
 % \end{macro}
@@ -2644,11 +2675,11 @@
   \hsize=\headwidth
   \def\nouppercase##1{{\let\uppercase\relax\let\MakeUppercase\relax
       \expandafter\let\csname MakeUppercase \endcsname\relax##1}}%
-  \ifx\undefined\@newbaseline % NFSS not present; 2.09 or 2e
-  \ifx\@normalsize\undefined \normalsize % for ucthesis.cls
-  \else \@normalsize \fi \else % NFSS (2.09) present
-  \@newbaseline%
-  \fi}
+  \f@nch@ifundefined{@newbaseline} % NFSS not present; 2.09 or 2e
+  {\f@nch@ifundefined{@normalsize} {\normalsize} % for ucthesis.cls
+   {\@normalsize}}%
+  {\@newbaseline}% NFSS (2.09) present
+  }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2741,7 +2772,7 @@
 % Pagestyle \texttt{fancy}
 %    \begin{macrocode}
 \def\ps@fancy{%
-  \@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}% for amsbook
+  \f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}% for amsbook
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2751,7 +2782,7 @@
 %   documentation) will still work.
 %
 %    \begin{macrocode}
-\@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
+\f@nch@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -2761,16 +2792,17 @@
 % Standard definitions for \cs{chaptermark}, \cs{sectionmark} and \cs{subsectionmark}.
 % 
 %    \begin{macrocode}
-\ifx\chapter\@undefined \def\sectionmark##1{\markboth
-  {\MakeUppercase{\ifnum \c@secnumdepth>\z@ \thesection\hskip 1em\relax
+\f@nch@ifundefined{chapter}%
+ {\def\sectionmark##1{\markboth{\MakeUppercase{\ifnum \c@secnumdepth>\z@
+        \thesection\hskip 1em\relax
       \fi ##1}}{}}%
-\def\subsectionmark##1{\markright {\ifnum \c@secnumdepth >\@ne
-    \thesubsection\hskip 1em\relax \fi ##1}}%
-\else \def\chaptermark##1{\markboth {\MakeUppercase{\ifnum
+  \def\subsectionmark##1{\markright {\ifnum \c@secnumdepth >\@ne
+    \thesubsection\hskip 1em\relax \fi ##1}}}%
+ {\def\chaptermark##1{\markboth {\MakeUppercase{\ifnum
       \c@secnumdepth>\m@ne \@chapapp\ \thechapter. \ \fi ##1}}{}}%
 \def\sectionmark##1{\markright{\MakeUppercase{\ifnum \c@secnumdepth >\z@
       \thesection. \ \fi ##1}}}%
-\fi
+}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}

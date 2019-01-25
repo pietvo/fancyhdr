@@ -29,14 +29,19 @@
 \def\f@nch@def#1#2{\if@nch@mpty{#2}\f@nch@gbl\def#1{\leavevmode}\else
                                    \f@nch@gbl\def#1{#2\strut}\fi}
 \let\f@nch@gbl\global
-\def\f@nch@errmsg#1{%
-  \ifx\PackageError\undefined \errmessage{#1}\else
-  \PackageError{Fancyhdr}{#1}{}\fi}
-\def\f@nch@warning#1{%
-  \ifx\PackageWarning\undefined \errmessage{#1}\else
-  \PackageWarning{Fancyhdr}{#1}{}\fi}
-\def\f@nch@forc#1#2#3{\expandafter\f@rc\expandafter#1\expandafter{#2}{#3}}
-\def\f@rc#1#2#3{\def\temp@ty{#2}\ifx\@empty\temp@ty\else
+\newcommand{\f@nch@ifundefined}[1]{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname #1\endcsname\relax
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+    \fi}
+\newcommand\f@nch@errmsg[1]{%
+  \f@nch@ifundefined{PackageError}{\errmessage{#1}}{\PackageError{Fancyhdr}{#1}{}}}
+\newcommand\f@nch@warning[1]{%
+  \f@nch@ifundefined{PackageWarning}{\errmessage{#1}}{\PackageWarning{Fancyhdr}{#1}{}}}
+\newcommand{\f@nch@forc}[3]{\expandafter\f@rc\expandafter#1\expandafter{#2}{#3}}
+\newcommand{\f@rc}[3]{\def\temp@ty{#2}\ifx\@empty\temp@ty\else
                                     \f@nch@rc#1#2\f@nch@rc{#3}\fi}
 \def\f@nch@rc#1#2#3\f@nch@rc#4{\def#1{#2}#4\f@rc#1{#3}{#4}}
 \newcommand{\f@nch@for}[3]{\edef\@fortmp{#2}%
@@ -113,7 +118,7 @@
 \newlength{\f@nch@O@orf}
 \newcommand{\headrulewidth}{0.4pt}
 \newcommand{\footrulewidth}{0pt}
-\@ifundefined{footruleskip}%
+\f@nch@ifundefined{footruleskip}%
       {\newcommand{\footruleskip}{.3\normalbaselineskip}}{}
 \newcommand{\plainheadrulewidth}{0pt}
 \newcommand{\plainfootrulewidth}{0pt}
@@ -131,11 +136,11 @@
   \hsize=\headwidth
   \def\nouppercase##1{{\let\uppercase\relax\let\MakeUppercase\relax
       \expandafter\let\csname MakeUppercase \endcsname\relax##1}}%
-  \ifx\undefined\@newbaseline % NFSS not present; 2.09 or 2e
-  \ifx\@normalsize\undefined \normalsize % for ucthesis.cls
-  \else \@normalsize \fi \else % NFSS (2.09) present
-  \@newbaseline%
-  \fi}
+  \f@nch@ifundefined{@newbaseline} % NFSS not present; 2.09 or 2e
+  {\f@nch@ifundefined{@normalsize} {\normalsize} % for ucthesis.cls
+   {\@normalsize}}%
+  {\@newbaseline}% NFSS (2.09) present
+  }
 \fancyhf{}
 \if@twoside
   \fancyhead[el,or]{\fancyplain{}{\slshape\rightmark}}
@@ -167,18 +172,19 @@
     \vskip-\footruleskip\vskip-\footrulewidth
     \hrule\@width\headwidth\@height\footrulewidth\vskip\footruleskip}}
 \def\ps@fancy{%
-  \@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}% for amsbook
-\@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
-\ifx\chapter\@undefined \def\sectionmark##1{\markboth
-  {\MakeUppercase{\ifnum \c@secnumdepth>\z@ \thesection\hskip 1em\relax
+  \f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}% for amsbook
+\f@nch@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
+\f@nch@ifundefined{chapter}%
+ {\def\sectionmark##1{\markboth{\MakeUppercase{\ifnum \c@secnumdepth>\z@
+        \thesection\hskip 1em\relax
       \fi ##1}}{}}%
-\def\subsectionmark##1{\markright {\ifnum \c@secnumdepth >\@ne
-    \thesubsection\hskip 1em\relax \fi ##1}}%
-\else \def\chaptermark##1{\markboth {\MakeUppercase{\ifnum
+  \def\subsectionmark##1{\markright {\ifnum \c@secnumdepth >\@ne
+    \thesubsection\hskip 1em\relax \fi ##1}}}%
+ {\def\chaptermark##1{\markboth {\MakeUppercase{\ifnum
       \c@secnumdepth>\m@ne \@chapapp\ \thechapter. \ \fi ##1}}{}}%
 \def\sectionmark##1{\markright{\MakeUppercase{\ifnum \c@secnumdepth >\z@
       \thesection. \ \fi ##1}}}%
-\fi
+}
 \ps@@fancy
 \gdef\ps@fancy{\@fancyplainfalse\ps@@fancy}%
 \ifdim\headwidth<0sp
