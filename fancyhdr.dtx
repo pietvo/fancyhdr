@@ -89,7 +89,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1044}
+% \CheckSum{1046}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -2097,6 +2097,7 @@
 %   \item Distribution based on fancydhr.dtx.
 %   \item Use \cs{f@nch@ifundefined} instead of \cs{ifx} or \cs{@ifundefined}.
 %   \item Replace \cs{def} with \cs{newcommand} in several places.
+%   \item Don't use \cs{global}\cs{setlength}.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -2707,12 +2708,22 @@
 %   because this code will always be used inside another box, and
 %   therefore the changes are local.
 %
+% \changes{fancyhdr v3.10}{2019/01/25}{Don't use \cs{global}\cs{setlength}.}
 %    \begin{macrocode}
-\def\f@nch@vbox#1#2{\setbox0\vbox{#2}\ifdim\ht0>#1\f@nch@warning
-  {\string#1 is too small (\the#1): ^^J Make it at least \the\ht0.^^J We
-    now make it that large for the rest of the document.^^J This may
-    cause the page layout to be inconsistent, however\@gobble}%
-  \dimen0=#1\global\setlength{#1}{\ht0}\ht0=\dimen0\fi \box0}
+\def\f@nch@vbox#1#2{%
+  \setbox0\vbox{#2}%
+  \ifdim\ht0>#1\relax
+    \f@nch@warning{%
+      \string#1 is too small (\the#1): ^^J%
+      Make it at least \the\ht0.^^J%
+      We now make it that large for the rest of the document.^^J%
+      This may cause the page layout to be inconsistent, however\@gobble
+    }%
+    \dimen0=#1\relax
+    \global#1=\ht0\relax
+    \ht0=\dimen0 %
+  \fi
+  \box0}
 %    \end{macrocode}
 % \end{macro}
 %

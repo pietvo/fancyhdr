@@ -150,11 +150,20 @@
   \fancyhead[r]{\fancyplain{}{\slshape\leftmark}}
 \fi
 \fancyfoot[c]{\rmfamily\thepage} % page number
-\def\f@nch@vbox#1#2{\setbox0\vbox{#2}\ifdim\ht0>#1\f@nch@warning
-  {\string#1 is too small (\the#1): ^^J Make it at least \the\ht0.^^J We
-    now make it that large for the rest of the document.^^J This may
-    cause the page layout to be inconsistent, however\@gobble}%
-  \dimen0=#1\global\setlength{#1}{\ht0}\ht0=\dimen0\fi \box0}
+\def\f@nch@vbox#1#2{%
+  \setbox0\vbox{#2}%
+  \ifdim\ht0>#1\relax
+    \f@nch@warning{%
+      \string#1 is too small (\the#1): ^^J%
+      Make it at least \the\ht0.^^J%
+      We now make it that large for the rest of the document.^^J%
+      This may cause the page layout to be inconsistent, however\@gobble
+    }%
+    \dimen0=#1\relax
+    \global#1=\ht0\relax
+    \ht0=\dimen0 %
+  \fi
+  \box0}
 \def\f@nch@head#1#2#3#4#5{#1\hbox to\headwidth{\f@nch@reset
     \f@nch@vbox\headheight{\hbox
       {\rlap{\parbox[b]{\headwidth}{\raggedright#2}}\hfill
