@@ -15,6 +15,6 @@ clean:
 	rm -f *.synctex.gz *.bbl *.blg
 
 dist: fancyhdr.zip
-distfiles = README fancyhdr.dtx fancyhdr.pdf
+distfiles = README fancyhdr.dtx fancyhdr.pdf fancyhdr.ins
 fancyhdr.zip: $(distfiles)
 	cd .. ; zip -u fancyhdr/fancyhdr.zip $(addprefix fancyhdr/,$(distfiles))

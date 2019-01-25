@@ -2,27 +2,26 @@ fancyhdr – Extensive control of page headers and footers in LaTeX2ε
 
 The package provides extensive facilities, both for constructing headers and footers, and for controlling their use (for example, at times when LaTeX would automatically change the heading style in use).
 
-The package consists of the following files:
+The distribution package consists of the following files:
 
 README				 This file
+fancyhdr.dtx		 The complete source of the package and documentation
+fancyhdr.pdf  		 PDF of the documentation
+
+After processing (by tex) of fancyhdr.ins, the following package files will be generated:
+
 fancyhdr.sty		 the LaTeX package
-fancyhdr.tex		 extensive documentation file
-fancyhdr.pdf  		 PDF of the above
-fancyheadings.sty	 this loads fancyhdr with a warning message
 extramarks.sty 		 a package for additional marks
+fancyheadings.sty	 this loads fancyhdr with a warning message
 
 Fancyhdr is a replacement for the old LaTeX2 package fancyheadings. That
 one should not be used anymore. The package fancyheadings included here
 just loads fancyhdr with a warning message.
 
-The documentation (fancyhdr.tex/fancyhdr.pdf) describes both
+The documentation (fancyhdr.dtx/fancyhdr.pdf) describes both
 fancyhdr.sty and extramarks.sty.
 In order to latex the documentation you need to have a copy of
 boxedminipage.sty (CTAN:/macros/latex/contrib/boxedminipage) installed.
-
-There used to be a package fixmarks.sty, but that is obsolete. It fixed
-a problem in LaTeX, but that is now solved in the LaTeX2ε system itself.
-So it is no longer included.
 
 fancyhdr.sty version 3 and extramarks.sty version 2 are the packages as
 described in the second edition of The LaTeX Companion. But that
