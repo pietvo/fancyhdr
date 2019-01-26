@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2019/01/25 v3.10
+%<fancyhdr|fancyheadings|extramarks>           [2019/01/26 v3.10
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -89,7 +89,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1046}
+% \CheckSum{1047}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -2122,6 +2122,7 @@
 %   \item Use \cs{f@nch@ifundefined} instead of \cs{ifx} or \cs{@ifundefined}.
 %   \item Replace \cs{def} with \cs{newcommand} in several places.
 %   \item Don't use \cs{global}\cs{setlength}.
+%   \item Put \cs{footrule} in a \cs{vbox} to accommodate for flexible footrules.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -2730,11 +2731,14 @@
 % enough space and give a warning if not.
 %   Use box 0 as a temp box and dimen 0 as temp dimen. This can be done,
 %   because this code will always be used inside another box, and
-%   therefore the changes are local.
+%   therefore the changes are local.\\
+%   Parameter 1 is \cs{headheight} or \cs{footskip}, respectively.\\
+%   Parameter 2 is the contents of the box.
 %
 % \changes{fancyhdr v3.10}{2019/01/25}{Don't use \cs{global}\cs{setlength}.}
+% \changes{fancyhdr v3.10}{2019/01/26}{Use \cs{newcommand} instead of \cs{def}.}
 %    \begin{macrocode}
-\def\f@nch@vbox#1#2{%
+\newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
   \ifdim\ht0>#1\relax
     \f@nch@warning{%
@@ -2756,33 +2760,58 @@
 %   Put together a header or footer given the left, center and right
 %   text, fillers at left and right and a rule. The \cs{xlap} commands put
 %   the text into an hbox of zero size, so overlapping text does not
-%   generate an errormessage. These macros have 5 parameters:\\
-% 1. LEFTSIDE BEARING.  This determines at which side the header will stick
+%   generate an errormessage.\\ These macros have 5 parameters:\\
+%   1. LEFTSIDE BEARING.  This determines at which side the header will stick
 %   out. When \cs{fancyhfoffset} is used this calculates \cs{headwidth},
 %   otherwise it is \cs{hss} or \cs{relax} (after expansion). \\
 %   2. \cs{f@nch@olh}, \cs{f@nch@elh}, \cs{f@nch@olf} or \cs{f@nch@elf}.
 %   This is the left component. \\
-%   3. \cs{f@nch@och}, \cs{f@nch@ech}, \cs{f@nch@ocf} or \cs{f@nch@ecf}. This is the center
-%   component. \\
-%   4. \cs{f@nch@orh}, \cs{f@nch@erh}, \cs{f@nch@orf} or \cs{f@nch@erf}. This is the
-%   right component. \\
+%   3. \cs{f@nch@och}, \cs{f@nch@ech}, \cs{f@nch@ocf} or \cs{f@nch@ecf}.
+%   This is the center component. \\
+%   4. \cs{f@nch@orh}, \cs{f@nch@erh}, \cs{f@nch@orf} or \cs{f@nch@erf}.
+%   This is the right component. \\
 %   5. RIGHTSIDE BEARING. This is always \cs{relax} or \cs{hss}
 %   (after expansion).
 %
 %    \begin{macrocode}
-\def\f@nch@head#1#2#3#4#5{#1\hbox to\headwidth{\f@nch@reset
-    \f@nch@vbox\headheight{\hbox
-      {\rlap{\parbox[b]{\headwidth}{\raggedright#2}}\hfill
-        \parbox[b]{\headwidth}{\centering#3}\hfill
-        \llap{\parbox[b]{\headwidth}{\raggedleft#4}}}\headrule}}#5}
+\newcommand\f@nch@head[5]{%
+  #1%
+  \hbox to\headwidth{%
+    \f@nch@reset
+    \f@nch@vbox\headheight{%
+      \hbox{%
+        \rlap{\parbox[b]{\headwidth}{\raggedright#2}}%
+        \hfill
+        \parbox[b]{\headwidth}{\centering#3}%
+        \hfill
+        \llap{\parbox[b]{\headwidth}{\raggedleft#4}}%
+      }%
+      \headrule
+    }%
+  }%
+  #5%
+}
 %    \end{macrocode}
 %
+% \changes{fancyhdr v3.10}{2019/01/26}{Put \cs{footrule} in a \cs{vbox} to accommodate for flexible footrules.}
 %    \begin{macrocode}
-\def\f@nch@foot#1#2#3#4#5{#1\hbox to\headwidth{\f@nch@reset
-    \f@nch@vbox\footskip{\footrule
-      \hbox{\rlap{\parbox[t]{\headwidth}{\raggedright#2}}\hfill
-        \parbox[t]{\headwidth}{\centering#3}\hfill
-        \llap{\parbox[t]{\headwidth}{\raggedleft#4}}}}}#5}
+\newcommand\f@nch@foot[5]{%
+  #1%
+  \hbox to\headwidth{%
+    \f@nch@reset
+    \f@nch@vbox\footskip{%
+      \vbox{\footrule}%
+      \hbox{%
+        \rlap{\parbox[t]{\headwidth}{\raggedright#2}}%
+        \hfill
+        \parbox[t]{\headwidth}{\centering#3}%
+        \hfill
+        \llap{\parbox[t]{\headwidth}{\raggedleft#4}}%
+      }%
+    }%
+  }%
+  #5%
+}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}

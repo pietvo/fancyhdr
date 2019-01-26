@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2019/01/25 v3.10
+           [2019/01/26 v3.10
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2019 by Piet van Oostrum <piet@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -150,7 +150,7 @@
   \fancyhead[r]{\fancyplain{}{\slshape\leftmark}}
 \fi
 \fancyfoot[c]{\rmfamily\thepage} % page number
-\def\f@nch@vbox#1#2{%
+\newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
   \ifdim\ht0>#1\relax
     \f@nch@warning{%
@@ -164,16 +164,40 @@
     \ht0=\dimen0 %
   \fi
   \box0}
-\def\f@nch@head#1#2#3#4#5{#1\hbox to\headwidth{\f@nch@reset
-    \f@nch@vbox\headheight{\hbox
-      {\rlap{\parbox[b]{\headwidth}{\raggedright#2}}\hfill
-        \parbox[b]{\headwidth}{\centering#3}\hfill
-        \llap{\parbox[b]{\headwidth}{\raggedleft#4}}}\headrule}}#5}
-\def\f@nch@foot#1#2#3#4#5{#1\hbox to\headwidth{\f@nch@reset
-    \f@nch@vbox\footskip{\footrule
-      \hbox{\rlap{\parbox[t]{\headwidth}{\raggedright#2}}\hfill
-        \parbox[t]{\headwidth}{\centering#3}\hfill
-        \llap{\parbox[t]{\headwidth}{\raggedleft#4}}}}}#5}
+\newcommand\f@nch@head[5]{%
+  #1%
+  \hbox to\headwidth{%
+    \f@nch@reset
+    \f@nch@vbox\headheight{%
+      \hbox{%
+        \rlap{\parbox[b]{\headwidth}{\raggedright#2}}%
+        \hfill
+        \parbox[b]{\headwidth}{\centering#3}%
+        \hfill
+        \llap{\parbox[b]{\headwidth}{\raggedleft#4}}%
+      }%
+      \headrule
+    }%
+  }%
+  #5%
+}
+\newcommand\f@nch@foot[5]{%
+  #1%
+  \hbox to\headwidth{%
+    \f@nch@reset
+    \f@nch@vbox\footskip{%
+      \vbox{\footrule}%
+      \hbox{%
+        \rlap{\parbox[t]{\headwidth}{\raggedright#2}}%
+        \hfill
+        \parbox[t]{\headwidth}{\centering#3}%
+        \hfill
+        \llap{\parbox[t]{\headwidth}{\raggedleft#4}}%
+      }%
+    }%
+  }%
+  #5%
+}
 \def\headrule{{\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi
     \hrule\@height\headrulewidth\@width\headwidth
     \vskip-\headrulewidth}}
