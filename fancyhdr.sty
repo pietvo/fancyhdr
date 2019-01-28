@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2019/01/26 v3.10
+           [2019/01/28 v3.10
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2019 by Piet van Oostrum <piet@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -186,7 +186,8 @@
   \hbox to\headwidth{%
     \f@nch@reset
     \f@nch@vbox\footskip{%
-      \vbox{\footrule}%
+      \setbox0=\vbox{\footrule}\unvbox0
+      \vskip\footruleskip
       \hbox{%
         \rlap{\parbox[t]{\headwidth}{\raggedright#2}}%
         \hfill
@@ -202,8 +203,7 @@
     \hrule\@height\headrulewidth\@width\headwidth
     \vskip-\headrulewidth}}
 \def\footrule{{\if@fancyplain\let\footrulewidth\plainfootrulewidth\fi
-    \vskip-\footruleskip\vskip-\footrulewidth
-    \hrule\@width\headwidth\@height\footrulewidth\vskip\footruleskip}}
+    \hrule\@width\headwidth\@height\footrulewidth}}
 \def\ps@fancy{%
   \f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}% for amsbook
 \f@nch@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%

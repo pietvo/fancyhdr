@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2019/01/26 v3.10
+%<fancyhdr|fancyheadings|extramarks>           [2019/01/28 v3.10
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -89,7 +89,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1047}
+% \CheckSum{1045}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -637,7 +637,8 @@
 % has two parameters: the first one is the name of the page style to be defined, the
 % second consists of commands that change the headers and/or footers, i.e.
 % \verb|fancyhead| etc. Also allowed are changes to \cs{headrulewidth} and
-% \cs{footrulewidth}. The (re)defined page style uses the standard
+% \cs{footrulewidth} or even \cs{headrule} and \cs{footrule}.
+% The (re)defined page style uses the standard
 % \texttt{fancy} definitions, amended by the definitions in the second
 % parameter. In other words, those parts that are not redefined in the
 % second parameter get their value from the \texttt{fancy} definition that
@@ -1046,28 +1047,66 @@
 % \renewcommand{\headrule}{\vbox to 0pt{\hbox
 %     to\headwidth{\dotfill}\vss}}
 % \end{verbatim}
-% 
+%
+% The redefined \cs{headrule} should preferably take up no vertical space, as in the example above, and as in the standard definition. If it does take vertical space, the header may come too close to the text, or even intrude in the text. In that case \Package{fancyhdr} will give you a warning that \cs{headheight} is too small. Like
+% \begin{verbatim}
+% Package Fancyhdr Warning: \headheight is too small (12.0pt):
+% Make it at least 14.0pt.
+% We now make it that large for the rest of the document.
+% This may cause the page layout to be inconsistent, however.
+% \end{verbatim}
+% As the warning says, \Package{fancyhdr} will change the
+% \cs{headheight} itself, but this is too late for the current page. For
+% subsequent pages it will have effect, but now the text on these pages
+% will come out lower than on this page. So you are strongly advised to
+% redefine \cs{headheight} in the preamble, like this:
+% \begin{verbatim}
+% \setlength\headheight{14pt}
+% \end{verbatim}
+% A similar change would be necessary for \cs{footskip} if the footer comes out too tall.
+%
 % As an alternative to changing \cs{headrulewidth} to 0 to have the rule disappear, you can also make it empty with
 % \begin{verbatim}
 % \renewcommand{\headrule}{}
 % \end{verbatim}
-% Visually this make no difference, but it is more difficult to restore it later to its default value.
+% Visually this makes no difference, but it is more difficult to restore
+% it later to its default value.
 % 
 % Finally, let us make a real `decorative' line\footnote{Based upon an idea by Wayne Chan.}.
 % \begin{verbatim}
 % \usepackage{fourier-orns}
 % ...
-% \renewcommand\headrule{\hrulefill
-% \raisebox{-2.1pt}[10pt][10pt]
-%                {\quad\decofourleft\decotwo\decofourright\quad}\hrulefill}
+% \renewcommand\headrule{%
+%       \hrulefill
+%       \raisebox{-2.1pt}
+%           {\quad\decofourleft\decotwo\decofourright\quad}%
+%       \hrulefill}
 % \end{verbatim}
 % This gives us the following headrule:
 % 
 % \noindent\makebox[\textwidth]{\hrulefill
 % \raisebox{-2.1pt}[10pt][10pt]{\quad\decofourleft\decotwo\decofourright\quad}\hrulefill}
-% 
+%
+% Note that we haven't taken care to make this decorative line occupy
+% zero vertical space. The consequence is that it will extend towards
+% the text and that we will get the warning about \cs{headheight} too small. So we
+% should change \cs{headheight} as given above. Another problem is that
+% the distance between the line and the header text is quite big. We can
+% reduce this by putting a negative \cs{vspace} above it, like
+% \begin{verbatim}
+% \renewcommand\headrule{%
+%       \vspace{-6pt}
+%       \hrulefill
+%       \raisebox{-2.1pt}
+%           {\quad\decofourleft\decotwo\decofourright\quad}%
+%       \hrulefill}
+% \end{verbatim}
+%
+% We can use the same code for the \cs{footrule}, but we wouldn't need
+% the \cs{vspace}. If you want to change the distance between that
+% decorative line and the footer text you need to adjust the
 % \CmdIndex{footruleskip}
-% There is one additional parameter that you can set: \cs{footruleskip}. It
+% parameter \cs{footruleskip}. It
 % defines the distance between the decorative line in the footer and the top
 % of the footer text line. By default it is set to 30\% of the normal line
 % distance. You may want to adjust it if you use unusally large or small
@@ -2122,7 +2161,9 @@
 %   \item Use \cs{f@nch@ifundefined} instead of \cs{ifx} or \cs{@ifundefined}.
 %   \item Replace \cs{def} with \cs{newcommand} in several places.
 %   \item Don't use \cs{global}\cs{setlength}.
-%   \item Put \cs{footrule} in a \cs{vbox} to accommodate for flexible footrules.
+%   \item Put \cs{footrule} in a \cs{vbox} to accommodate for flexible
+%     footrules, and then \cs{unvbox} that. Move the \cs{footruleskip}
+%     vertical space outside of the definition of \cs{footrule}.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -2793,14 +2834,25 @@
 }
 %    \end{macrocode}
 %
-% \changes{fancyhdr v3.10}{2019/01/26}{Put \cs{footrule} in a \cs{vbox} to accommodate for flexible footrules.}
+% \changes{fancyhdr v3.10}{2019/01/26}{Put \cs{footrule} in a \cs{vbox}
+% to accommodate for flexible footrules.}
+% \changes{fancyhdr v3.10}{2019/01/28}{Use \cs{unvbox} on the footrule \cs{vbox}
+% to preserve vertical spacing.}
+% \changes{fancyhdr v3.10}{2019/01/28}{Move \cs{footruleskip} outside of the \cs{footrule}
+% definition.}
+% We put the \cs{footrule} in a \cs{vbox} to accommodate for flexible
+% footrules (e.g. using \cs{hrulefill}), so that the \cs{headwidth} will
+% be used as the line width. But to preserve the vertical spacing we
+% then \cs{unvbox} this box.
+%
 %    \begin{macrocode}
 \newcommand\f@nch@foot[5]{%
   #1%
   \hbox to\headwidth{%
     \f@nch@reset
     \f@nch@vbox\footskip{%
-      \vbox{\footrule}%
+      \setbox0=\vbox{\footrule}\unvbox0
+      \vskip\footruleskip
       \hbox{%
         \rlap{\parbox[t]{\headwidth}{\raggedright#2}}%
         \hfill
@@ -2825,10 +2877,11 @@
 % \end{macro}
 %
 % \begin{macro}{\footrule}
+% \changes{fancyhdr v3.10}{2019/01/28}{Move \cs{footruleskip} outside of the \cs{footrule}
+% definition and remove useless \cs{vskip} at the top.}
 %    \begin{macrocode}
 \def\footrule{{\if@fancyplain\let\footrulewidth\plainfootrulewidth\fi
-    \vskip-\footruleskip\vskip-\footrulewidth
-    \hrule\@width\headwidth\@height\footrulewidth\vskip\footruleskip}}
+    \hrule\@width\headwidth\@height\footrulewidth}}
 %    \end{macrocode}
 % \end{macro}
 %
