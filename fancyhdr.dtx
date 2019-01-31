@@ -2336,6 +2336,42 @@
 % making the widths slightly smaller. And when there is only one title
 % in the header, you can make the width equal to or slightly smaller
 % than \cs{headwidth}.
+%
+% \section{I lost my chapter/section titles}
+%
+% Some time ago I got a question like this (edited to get the
+% essentials):
+%
+% ``I redefined the \Cmd{pagestyle\{fancy\}} to get my own kind of headings. Also, I
+% redefined the \cs{chaptermark}.
+% I need the \texttt{fancy} style from chapter 1 and on (mainmatter part), but, until the Introduction
+% chapter (that I included into the frontmatter part) I need the \texttt{myheadings}\PSindex{myheadings} style.
+%
+% When I set the \texttt{myheadings} style into
+% the frontmatter the \texttt{fancy} style doesn't show the chapter title any more.
+%
+% What can I do in order to reestablish the right behavior of the
+% \texttt{fancy} style?''
+%
+% The solution to this problem is actually very simple. The pagestyle
+% \texttt{myheadings} (as well as \texttt{headings}\PSindex{headings}) redefines the
+% \cs{chaptermark} and \cs{sectionmark}, so when you return to pagestyle
+% \texttt{fancy}, the definitions you had given before (or the ones that
+% \Package{fancyhdr} provided) are lost. You
+% just have to repeat them at the point where you switch back to
+% pagestyle \texttt{fancy}.
+%
+% \begin{verbatim}
+% \begin{document}
+% \frontmatter
+% \pagestyle{myheadings}
+%  . . .
+% \mainmatter
+% \pagestyle{fancy}
+% \renewcommand{\chaptermark}[1]{....}
+% \end{verbatim}
+%
+%
 % \newpage
 % \part{Implementation}
 %
