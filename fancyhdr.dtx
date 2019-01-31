@@ -81,6 +81,7 @@
 \newenvironment{fblock}{\vspace{8pt}\noindent\begin{boxedminipage}{\textwidth}}{\end{boxedminipage}\vspace{8pt}}
 \newcommand{\showrule}{\\[-1.5ex]\noindent\makebox[\textwidth]{\hrulefill}\\[\baselineskip]}
 \newenvironment{xvspace}{\vspace{1ex}}{{\vspace{1ex}}}
+\setcounter{tocdepth}{1}
 
 \begin{document}
   \DeleteShortVerb{\|}
@@ -1006,7 +1007,7 @@
 % the header (\cs{headheight}) and/or of the footer (\cs{footskip}),
 % \index{Overfull \verb+\vbox+ \ldots}
 % otherwise you may get error messages ``Overfull \cs{vbox} \ldots has
-% occurred while \cs{output} is active''%
+% occurred while \cs{output} is active''^^A
 % \footnote{If you use \texttt{11pt} or \texttt{12pt} you will probably also
 %   have to do this, because \LaTeX's defaults are quite small}.
 % See Section 4.1 of the \latex/ \emph{Companion} for detail.
@@ -1065,7 +1066,8 @@
 % \end{verbatim}
 % A similar change would be necessary for \cs{footskip} if the footer comes out too tall.
 %
-% As an alternative to changing \cs{headrulewidth} to 0 to have the rule disappear, you can also make it empty with
+% As an alternative to changing \cs{headrulewidth} to 0 to have the rule
+% disappear, you can also make it empty with
 % \begin{verbatim}
 % \renewcommand{\headrule}{}
 % \end{verbatim}
@@ -1106,6 +1108,7 @@
 % the \cs{vspace}. If you want to change the distance between that
 % decorative line and the footer text you need to adjust the
 % \CmdIndex{footruleskip}
+% \DescribeMacro{\footruleskip}
 % parameter \cs{footruleskip}. It
 % defines the distance between the decorative line in the footer and the top
 % of the footer text line. By default it is set to 30\% of the normal line
@@ -1717,7 +1720,7 @@
 % \setlength{\unitlength}{9mm}
 % \newcommand{\blob}{\rule[-.2\unitlength]{1\unitlength}{.5\unitlength}}
 % \newcounter{line}
-% \newcommand{\secname}[1]{\addtocounter{line}{1}%
+% \newcommand{\secname}[1]{\addtocounter{line}{1}^^A
 %   \put(1,-\value{line}){\blob}
 %   \put(-7.5,-\value{line}){\arabic{line}}
 %   \put(-7,-\value{line}){#1}}
@@ -1749,17 +1752,17 @@
 %     \put(1,-\value{section}){\blob}
 %   \end{picture}}
 % 
-% \newcommand\lblob{%
+% \newcommand\lblob{^^A
 %   \begin{picture}(0,0)
 %     \put(-3,-\value{section}){\blob}
-%   \end{picture}%
+%   \end{picture}^^A
 %   \thepage}
 % 
 % \pagestyle{fancy}
 % \fancyfoot[C]{}
 % 
 % \newcounter{line}
-% \newcommand{\secname}[1]{\addtocounter{line}{1}%
+% \newcommand{\secname}[1]{\addtocounter{line}{1}^^A
 %   \put(1,-\value{line}){\blob}
 %   \put(-7.5,-\value{line}){\Large \arabic{line}}
 %   \put(-7,-\value{line}){\Large #1}}
@@ -1955,7 +1958,6 @@
 % 
 % Although these problems are not fully solvable in all cases, here are a
 % couple of suggestions:
-% 
 % 
 % \subsection{Tables}
 % 
@@ -2370,7 +2372,8 @@
 % \cs{@ifundefined} that avoids these problems, but not everybody may
 % have such a version installed. Therefore we define our own version
 % \cs{f@nch@ifundefined}.
-% This definition is copied from the \Package{tocloft} package.
+% This definition is copied from the \Package{tocloft} package by Peter
+% Wilson and Will Robertson.
 % \begin{macrocode}
 \newcommand{\f@nch@ifundefined}[1]{%
   \begingroup\expandafter\expandafter\expandafter\endgroup
@@ -3290,7 +3293,7 @@
 % 
 %</extramarks>
 %
-% \subsection{fancyheadings.sty}
+% \section{fancyheadings.sty}
 %
 % Fancyheadings.sty was the original style file (as they were called
 % then) to implement fancy headers and footers in \LaTeX. This was in the time
