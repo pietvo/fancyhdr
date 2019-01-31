@@ -6,6 +6,7 @@ The distribution package consists of the following files:
 
 README				 This file
 fancyhdr.dtx		 The complete source of the package and documentation
+fancyhdr.ins		 The installation file; run through TeX to generate *.sty
 fancyhdr.pdf  		 PDF of the documentation
 
 After processing (by tex) of fancyhdr.ins, the following package files will be generated:
