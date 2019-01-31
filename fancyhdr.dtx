@@ -2183,6 +2183,159 @@
 % logical place in the other documentation. It is expected to grow
 % gradually.
 %
+%
+% \section{Large chapter/section titles}
+%
+% \index{long titles}
+% Sometimes a chapter or section title is too large to fit in the header
+% or footer. It may take more than one line in the header/footer, or it
+% may overwrite other parts. How can we shorten these titles in the
+% header/footer without changing the actual title?
+%
+% Here is an example:
+% \begin{verbatim}
+% \fancyhead[LE,RO]{\nouppercase{\rightmark}} % Section title
+% \fancyhead[LO,RE]{\nouppercase{\leftmark}} % Chapter title
+% \fancyfoot[C]{\thepage}
+%  . . .
+% \chapter{This is a very long chapter title}
+%  . . .
+% \section{This is a very long section title that will not fit in the header}
+%  . . .
+% \end{verbatim}
+% With these settings the header will come out as:
+%
+% \medskip
+% {\noindent\hbox to \textwidth{^^A
+%    \rlap{\parbox[b]{\textwidth}{\raggedright Chapter 1. This is a very long chapter title}}^^A
+%    \hfill
+%    \llap{\parbox[b]{\textwidth}{\raggedleft 1.2. This is a very long
+%                   section title that will not fit in the header}}^^A
+%  }
+%  \hrule height\headrulewidth width\textwidth}
+% \bigskip
+% \noindent which isn't very nice.
+% There are basically three options to solve this problem.
+%
+% \subsection{Using optional arguments}
+%
+% As we have seen in section~\ref{sec:scoop}, the header info comes from
+% the marks. So if we want the text in the header to be smaller we have
+% to supply smaller marks. This can be done by giving these as optional
+% arguments in the \cs{chapter} and \cs{section} commands.\footnote{At
+% least in the \texttt{book} and \texttt{report} documentclasses. In the
+% \texttt{article} class this would be the \cs{section} and
+% \cs{subsection} commands.}
+% \begin{verbatim}
+% \chapter[Short chapter title]{This is a very long chapter title}
+%  . . .
+% \section[Short section title]
+%         {This is a very long section title that will not fit in the header}
+% \end{verbatim}
+% The short titles will now appear in the header. However, these will
+% also appear in the table of contents. If that is what you want than
+% you are ready. But if you want to use the long titles in the table of
+% contents, you have to use some trickery. In particular you have to
+% supply the marks yourself.
+%
+% \subsection{Using explicit marks}
+%
+% First we show how you can supply a different value for the chapter
+% title in the heading, because this is the easiest. Remember from
+% section~\ref{sec:scoop} that this mark is defined by calling
+% \cs{chaptermark}\CmdIndex{chaptermark}. Also, because it is used as \cs{leftmark}, the last
+% value of this mark on the page is used. So we can easily overrule the
+% value that is supplied by the \cs{chapter} command, by supplying an
+% additional \cs{chaptermark} command after the \cs{chapter} command,
+% like this:
+% \begin{verbatim}
+% \chapter{This is a very long chapter title that does not fit in the header}
+% \chaptermark{This is a not so long chapter title}
+% \end{verbatim}
+% For the section titles the situation is more complicated. Here we use
+% the \cs{rightmark}, which uses the first mark of its kind on the page.
+% So you might think putting a \cs{sectionmark}\CmdIndex{sectionmark} before the \cs{section}
+% command would be the solution. Unfortunately, it is not that simple.
+% In many cases, this will work, but not when there is a page break just
+% before the section title, because in that case the \cs{sectionmark}
+% will stay behind on the previous page. However, we can put the
+% \cs{sectionmark} inside the argument of the \cs{section} command.
+% Because \LaTeX{} first typesets the title (which will execute the
+% included \cs{sectionmark} command), and after that executes its own
+% \cs{sectionmark}, our \cs{sectionmark} will be the first. But
+% there is one case in which this fails: if the next page does not have any
+% \cs{sectionmark} commands, it will inherit the \textbf{last} mark from the page
+% before it, which will be the long title. To correct this we must also
+% give an additional \cs{sectionmark} with the short title
+% \textbf{after} the \cs{section} command.
+%
+% As if this isn't enough, there is still a problem with this setup. Our
+% section title is not only used to typeset the title in the text, but
+% it is also included in the table of contents. But the table of
+% contents does not accept a \cs{sectionmark} in its title. It will
+% generate an ugly error message. To prevent this we must give the long
+% title (that we want to appear in the table of contents) also as the
+% optional argument to the \cs{section} command. Of course this will
+% also generate a mark for the header, but this will be overruled by
+% our included \cs{sectionmark} commands
+%
+% So the complete code would be:
+% \begin{verbatim}
+% \section[Long title]{Long title\sectionmark{Short title}}
+% \sectionmark{Short title}
+% \end{verbatim}
+% To avoid all the repetitions, it is better to make a macro:
+% \begin{verbatim}
+% \newcommand{\Section}[2]{\section[#1]{#1\sectionmark{#2}}\sectionmark{#2}}
+%  . . .
+% \Section{Text title}{Header title}
+% \end{verbatim}
+% And if you want to use yet a different text in the table of contents,
+% you can make a macro with three parameters. The third parameter is the
+% text to be put in the table of contents. We use this parameter as the
+% optional argument for the \cs{section} command.
+% \begin{verbatim}
+% \newcommand{\Sectioniii}[3]{\section[#3]{#1\sectionmark{#2}}\sectionmark{#2}}
+%  . . .
+% \Sectioniii{Text title}{Header title}{TOC title}
+% \end{verbatim}
+% Please note that if you use the \texttt{article} class, instead of
+% \cs{chaptermark} and \cs{sectionmark}, you would probably use \cs{sectionmark}\cs{subsectionmark}.
+%
+% \subsection{Using automatic truncation}
+%
+% For this solution we use the \Package{truncate} package by Donald
+% Arseneau. This has a \cs{truncate}\CmdIndex{truncate} command that
+% truncates a text to a maximum size, when it exceeds that size. We put
+% both headers in \cs{truncate} to limit it to half the \cs{headwidth}.
+% Of course it is also possible to make asymmetric arrangements.
+% \begin{verbatim}
+% \usepackage[fit]{truncate}
+% \fancyhead[LE,RO]{\nouppercase{\truncate{0.5\headwidth}{\rightmark}}}
+% \fancyhead[LO,RE]{\nouppercase{\truncate{0.5\headwidth}{\leftmark}}}
+% \end{verbatim}
+% We don't have to make any changes to the chaper and section titles
+% because \cs{truncate} will take care of this.
+% This arrangement gives the following header when both titles are too
+% big, like in the example above:
+%
+% \medskip
+% {\noindent\hbox to \textwidth{^^A
+%    \truncate{0.5\textwidth}{Chapter 1. This is a very long chapter title that does not fit in the header}^^A
+%    \hfill
+%    \truncate{0.5\textwidth}{1.2. This is a very long section title that will not fit in the header}^^A
+%  }
+%  \hrule height\headrulewidth width\textwidth}
+% \bigskip
+%
+% Note that we have used the \texttt{[fit]} option of the
+% \Package{truncate} package. Otherwise the right header will not be
+% right aligned, but it will start at halfway the header.
+% Note also that, as each part can occupy half of the available width,
+% they could theoretically touch each other. This can be prevented by
+% making the widths slightly smaller. And when there is only one title
+% in the header, you can make the width equal to or slightly smaller
+% than \cs{headwidth}.
 % \newpage
 % \part{Implementation}
 %
