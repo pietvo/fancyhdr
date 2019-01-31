@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2019/01/28 v3.10
+%<fancyhdr|fancyheadings|extramarks>           [2019/01/31 v3.10
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -47,6 +47,7 @@
 \usepackage{fourier-orns}
 \usepackage[T1]{fontenc}
 \usepackage{url}
+\usepackage[fit]{truncate}
 \usepackage{fancyhdr}
 \GetFileInfo{fancyhdr.sty}
 \def\latex/{\protect\LaTeX{}}
@@ -142,7 +143,7 @@
 %
 %\part{Introduction}
 % 
-% This document contains three parts:
+% This document contains four parts:
 %
 % Part I is a short documentation on
 % the user commands of the \Package{fancyhdr} and \Package{extramarks} packages.
@@ -151,7 +152,9 @@
 % This used to be the complete documentation of \Package{fancyhdr} and
 % \Package{extramarks} for several years.
 %
-% Part III contains the annotated implementation.
+% Part III contains Questions and Answers.
+%
+% Part IV contains the annotated implementation.
 %
 % \section{Installation}
 % \label{sec:installation}
@@ -2172,6 +2175,13 @@
 % \StopEventually{%
 % \PrintChanges
 % \PrintIndex}
+%
+% \part{Questions \& Answers}
+%
+% This part contains answers to questions that have been emailed to me,
+% or have been asked at various internet forums, and don't have a
+% logical place in the other documentation. It is expected to grow
+% gradually.
 %
 % \newpage
 % \part{Implementation}
