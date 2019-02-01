@@ -1,0 +1,25 @@
+\documentclass[twoside]{article}
+\usepackage{lipsum}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{} % clear all header fields
+\fancyhead[RO,LE]{\textbf{The performance of new graduates}}
+\fancyfoot{} % clear all footer fields
+\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[LO,CE]{From: K. Grant}
+\fancyfoot[CO,RE]{To: Dean A. Smith}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\fancypagestyle{plain}{%
+\fancyhf{} % clear all header and footer fields
+\fancyfoot[C]{\textbf{\thepage}} % except the center
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}}
+
+\begin{document}
+\section*{Redefine \texttt{plain} -- bold page number}
+\label{sec:twosided}
+\thispagestyle{plain}
+\lipsum
+\end{document}

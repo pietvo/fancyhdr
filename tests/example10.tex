@@ -1,0 +1,35 @@
+\documentclass{article}
+\usepackage{lipsum}
+\usepackage{fourier-orns}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\setlength\headheight{14.4pt}
+
+\renewcommand\headrule{\vspace{-6pt}\hrulefill
+ \raisebox{-2.1pt}
+             {\quad\decofourleft\decotwo\decofourright\quad}\hrulefill}
+
+\renewcommand\footrule{\hrulefill
+\raisebox{-2.1pt}
+            {\quad\decofourleft\decotwo\decofourright\quad}\hrulefill}
+
+\begin{document}
+
+\tableofcontents
+
+\section{Introduction}
+
+Using default in article class with fourier decoration in headrule.
+
+\subsection{The Problem}
+\label{sec:problem}
+
+\lipsum[1]
+
+\subsection{Evaluation}
+
+\lipsum[3]
+
+
+\end{document}

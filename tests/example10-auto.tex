@@ -1,0 +1,55 @@
+\documentclass{article}
+\usepackage{lipsum}
+\usepackage{fourier-orns}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+%\setlength\headheight{14.4pt}
+
+\renewcommand\headrule{\vspace{-6pt}\hrulefill
+ \raisebox{-2.1pt}
+             {\quad\decofourleft\decotwo\decofourright\quad}\hrulefill}
+
+\renewcommand\footrule{\hrulefill
+\raisebox{-2.1pt}
+            {\quad\decofourleft\decotwo\decofourright\quad}\hrulefill}
+
+\usepackage{atveryend}
+\makeatletter
+\AfterLastShipout{%
+  \if@filesw % respect \nofiles
+    \begingroup
+      % same write register as environment `filecontents` uses
+      \chardef\reserved@c=15 %
+      \immediate\openout\reserved@c=\jobname.heights\relax
+      \immediate\write\reserved@c{%
+        \string\setlength{\string\headheight}{\the\headheight}%
+      }%
+      \immediate\write\reserved@c{%
+        \string\setlength{\string\footskip}{\the\footskip}%
+      }%
+      \immediate\closeout\reserved@c
+    \endgroup
+  \fi
+}
+\makeatother
+
+\begin{document}
+
+\tableofcontents
+
+\section{Introduction}
+
+Using default in article class with fourier decoration in headrule.
+
+\subsection{The Problem}
+\label{sec:problem}
+
+\lipsum[1]
+
+\subsection{Evaluation}
+
+\lipsum[3]
+
+
+\end{document}

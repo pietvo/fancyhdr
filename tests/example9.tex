@@ -1,0 +1,44 @@
+\documentclass{article}
+\usepackage{lipsum}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\addtolength{\headheight}{\baselineskip}
+\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+\renewcommand{\subsectionmark}[1]{\markright{#1}}
+\fancyhead[R]{\leftmark\\\rightmark}
+\fancyhead[L]{\thepage}
+\renewcommand{\headrule}{\vbox to 0pt{\hbox to\headwidth{\dotfill}\vss}}
+
+\begin{document}
+
+\tableofcontents
+
+\section{Introduction}
+
+Using default in article class
+
+\subsection{The Problem}
+\label{sec:problem}
+
+\lipsum[1]
+
+\subsection{Evaluation}
+
+\lipsum
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+This example shows that putting the \verb+\markright+ before the \verb+\subsection+ may cause it to be effected too early when the \verb+\subsection+ falls at the page break. The mark is in the header on this page, while the subsection starts at the next page.
+
+
+\subsection{Another subsection}
+
+\lipsum[3]
+
+\end{document}

@@ -1,0 +1,65 @@
+\documentclass{article}
+\usepackage{lipsum}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\begin{document}
+\section{Introduction}
+
+Using default in article class
+
+\subsection{The Problem}
+\label{sec:problem}
+
+\lipsum[1]
+
+\subsection{Evaluation}
+
+\lipsum
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+This example shows that putting the \verb+\markright+ before the \verb+\subsection+ may cause it to be effected too early whan the \verb+\subsection+ falls at the page break. The mark is in the header on this page, while the subsection starts at the next page.
+
+\markright{Another subsection}%
+\subsection*{Another subsection}
+\label{sec:another-section}
+
+\lipsum[3]
+
+\newpage
+\section{Introduction2}
+
+{\bfseries Here we do it again, but we put the \verb+\markright+ in the \verb+\subsection+ command}
+
+\subsection{The Problem2}
+\label{sec:problem}
+
+\lipsum[1]
+
+\subsection{Evaluation2}
+
+\lipsum
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+This example shows that putting the \verb+\markright+ before the \verb+\subsection+ may cause it to be effected too early whan the \verb+\subsection+ falls at the page break. The mark is in the header on this page, while the subsection starts at the next page.
+
+\subsection*{Another subsection2\markright{Another subsection}}
+\label{sec:another-section}
+
+\lipsum[3]
+
+\end{document}

@@ -1,0 +1,42 @@
+\documentclass{book}
+\usepackage{lipsum}
+\usepackage{makeidx}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[L]{\nouppercase{\rightmark}}
+\fancyhead[R]{\nouppercase{\leftmark}}
+\renewcommand{\chaptermark}[1]{%
+ \markboth{\thechapter.%
+ \ \chaptername.\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
+\makeindex
+
+\begin{document}
+\chapter{Introduction}
+
+\index{lipsum}
+Using default in book class
+
+\section{The Problem}
+\label{sec:problem}
+
+\lipsum[1]
+
+\section{Evaluation}
+
+\lipsum[2]
+
+\chapter{Do it now}
+
+Introduction of this chapter
+
+\lipsum[3]
+
+\section{First steps}
+\label{sec:first-steps}
+
+\lipsum
+\printindex
+\newpage
+``Index'' should be in header without all uppercase.
+\end{document}

@@ -1,0 +1,31 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{fourier-orns}
+\usepackage{lipsum}
+
+\pagestyle{fancy}
+
+\fancyhf{}
+% From Wayne Chan cmdln156@gmail.com
+%Header line defined here.
+\renewcommand\headrule{\hrulefill \raisebox{-2.1pt}[10pt][10pt]{\quad\decofourleft\decotwo\decofourright\quad}\hrulefill}
+
+\begin{document}
+
+\section{First Section}
+\lipsum[1-4]
+
+\newpage
+\section{Second Section}
+\begin{multicols*}{2}
+\lipsum[1-4]
+
+\lipsum[1-4]
+\end{multicols*}
+
+\section{Third Section}
+\lipsum[1-4]
+
+\end{document}

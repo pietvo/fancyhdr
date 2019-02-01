@@ -1,0 +1,88 @@
+\documentclass{article}
+\usepackage{lipsum}
+\usepackage{float}
+\floatstyle{ruled}
+\restylefloat{table}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[r]{\iftopfloat{This page has a topfloat}{No topfloat}}
+\fancyfoot[r]{\ifbotfloat{There is a float at the bottom}{}}
+\fancyfoot[l]{\iffootnote{There is a footnote}{No footnote here}}
+\fancyhead[l]{\iffloatpage{This is a floatpage}{}}
+\renewcommand{\headrulewidth}{\iftopfloat{0pt}{0.4pt}}
+\begin{document}
+Some text\footnote{Some footnote}
+
+\begin{table}[t]
+  \centering
+  \begin{tabular}{lcr}
+    left & center & right \\
+    left & center & right \\
+    left & center & right \\
+  \end{tabular}
+  \caption{Test table}
+\end{table}
+
+\lipsum
+
+\begin{table}[b]
+  \centering
+  \begin{tabular}{lcr}
+    left & center & right \\
+    left & center & right \\
+    left & center & right \\
+  \end{tabular}
+  \caption{Test table}
+\end{table}
+\lipsum[1]
+\clearpage{\pagestyle{empty}\hbox{}
+   \vspace*{\fill}
+   \begin{center}
+     This page intentionally contains only this sentence.\\
+     No headers -- no footers.
+   \end{center}
+   \vspace{\fill}
+\cleardoublepage}
+\begin{table}[p]
+  \centering
+  \begin{tabular}{lcr}
+    left & center & right \\
+    left & center & right \\
+    left & center & right \\
+  \end{tabular}
+  \caption{Test table}
+\end{table}
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}{lcr}
+    left & center & right \\
+    left & center & right \\
+    left & center & right \\
+  \end{tabular}
+  \caption{Test table}
+\end{table}
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}{lcr}
+    left & center & right \\
+    left & center & right \\
+    left & center & right \\
+  \end{tabular}
+  \caption{Test table}
+\end{table}
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}{lcr}
+    left & center & right \\
+    left & center & right \\
+    left & center & right \\
+  \end{tabular}
+  \caption{Test table}
+\end{table}
+ 
+\lipsum
+More text
+\end{document}

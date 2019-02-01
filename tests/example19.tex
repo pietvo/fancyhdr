@@ -1,0 +1,58 @@
+\documentclass[openany]{book}
+\usepackage{lipsum}
+\usepackage{extramarks}
+\usepackage{afterpage}
+ \usepackage{fancyhdr}
+ \pagestyle{fancy}
+\fancyfoot[R]{\lastxmark}
+\def\showmarks{%
+\message{topmark = \topmark}%
+\message{botmark = \botmark}%
+\message{firstmark = \firstmark}}
+
+\newenvironment{continued}{\par
+   \extramarks{(Continued\ldots)}{Continued on next page\ldots}
+   \afterpage{\noindent\firstxmark\vspace{1ex}}
+   }{\extramarks{}{}\par}
+
+\begin{document}
+
+\tableofcontents
+
+\chapter{Introduction}
+
+\lipsum
+
+\section{The Problem}
+\label{sec:problem}
+
+\begin{continued}
+  \textbf{We want to indicate that this block of text belongs together,
+    with `Continued' in header and footer.}
+  \lipsum[1]
+  \textbf{End of the block to keep together}
+\end{continued}
+
+\section{Evaluation}
+
+\lipsum
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+\chapter{Another chapter}
+
+\label{cha:another-chapter}
+
+\lipsum[2]
+
+\section{Another section}
+
+\lipsum[3-4]
+
+\end{document}

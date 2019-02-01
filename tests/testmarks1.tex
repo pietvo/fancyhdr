@@ -1,0 +1,33 @@
+\documentclass{book}
+\usepackage{lipsum}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{%
+ \markboth{\chaptername
+ \ \thechapter.\ #1}{}}
+\begin{document}
+\chapter{Introduction}
+
+Using default in book class
+
+\section{The Problem}
+\label{sec:problem}
+
+\lipsum[1]
+
+\section{Evaluation}
+
+\lipsum[2]
+
+\chapter{Do it now}
+
+Introduction of this chapter
+
+\lipsum[3]
+
+\section{First steps}
+\label{sec:first-steps}
+
+\lipsum
+
+\end{document}

@@ -1,0 +1,42 @@
+\documentclass[openany]{book}
+\usepackage{lipsum}
+\usepackage{chappg}
+\renewcommand{\chappgsep}{--}
+ \usepackage{fancyhdr}
+ \pagestyle{fancy}
+\begin{document}
+
+\pagenumbering{roman}
+\tableofcontents
+\chapter{Introduction}
+\pagenumbering{bychapter}
+
+\lipsum
+
+\section{The Problem}
+\label{sec:problem}
+
+\lipsum[1]
+
+\section{Evaluation}
+
+\lipsum
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+\chapter{Another chapter}
+\label{cha:another-chapter}
+
+\lipsum[2]
+
+\section{Another section}
+
+\lipsum[3-5]
+
+\end{document}

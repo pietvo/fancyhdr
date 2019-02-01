@@ -1,0 +1,63 @@
+\documentclass[openany]{book}
+\usepackage{lipsum}
+\usepackage{calc}
+ \usepackage{fancyhdr}
+ \pagestyle{fancy}
+ \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+ \renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+ \fancyhf{}
+ \fancyhead[LE,RO]{\textbf{\thepage}}
+ \fancyhead[LO]{\textbf{\rightmark}}
+ \fancyhead[RE]{\textbf{\leftmark}}
+\fancyheadoffset[LE,RO]{\marginparsep+\marginparwidth}
+\fancypagestyle{plain}{%
+    \fancyhead{} % get rid of headers
+    \renewcommand{\headrulewidth}{0pt} % and the line
+}
+\begin{document}
+
+\tableofcontents
+
+\chapter{Introduction}
+
+Here comes a marginpar.
+\marginpar{Donec bibendum quam in tellus. Nullam cur- sus pulvinar
+  lectus. Donec et mi. Nam vulputate metus eu enim. Vestibulum
+  pellentesque felis eu massa.}
+\lipsum
+
+\section{The Problem}
+\label{sec:problem}
+
+Here comes a marginpar.
+\marginpar{Donec bibendum quam in tellus. Nullam cur- sus pulvinar
+  lectus. Donec et mi. Nam vulputate metus eu enim. Vestibulum
+  pellentesque felis eu massa.}
+\lipsum[1]
+
+\section{Evaluation}
+
+Here comes a marginpar.
+\marginpar{Donec bibendum quam in tellus. Nullam cur- sus pulvinar
+  lectus. Donec et mi. Nam vulputate metus eu enim. Vestibulum
+  pellentesque felis eu massa.}
+\lipsum
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+
+\section{Another section}
+
+Here comes a marginpar.
+\marginpar{Donec bibendum quam in tellus. Nullam cur- sus pulvinar
+  lectus. Donec et mi. Nam vulputate metus eu enim. Vestibulum
+  pellentesque felis eu massa.}
+\lipsum[3]
+
+\end{document}

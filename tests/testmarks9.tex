@@ -1,0 +1,179 @@
+\documentclass[twoside,twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{ifthen}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\newcommand{\mymarks}{
+   \ifthenelse{\equal{\leftmark}{\rightmark}}
+     {\rightmark} % if equal
+     {\rightmark--\leftmark}} % if not equal
+ \fancyhead[LE,RO]{\mymarks}
+ \fancyhead[LO,RE]{\thepage}
+\renewcommand{\sectionmark}[1]{}
+\newcommand\entry[2]{\makebox[3cm][l]{#1} -- #2\markboth{#1}{#1}\\}
+\setlength{\textheight}{10cm}
+\begin{document}
+\noindent
+\entry{abdomen}{el abdomen}
+\entry{about}{sobre, más o menos}
+\entry{about to do sthg}{estar a punto de}
+\entry{above}{encima de, arriba}
+\entry{abroad (go \~)}{ir al extranjero (live,go)}
+\entry{absent}{ausente}
+\entry{absent-minded}{distraído}
+\entry{absolutely}{absolutamente}
+\entry{abuse}{abusar de, insultar}
+\entry{accelerator}{el acelerador}
+\entry{accent}{acento}
+\entry{accept}{aceptar, admitir}
+\entry{access (have \~)}{tener acceso a\ldots}
+\entry{accident}{accidente}
+\entry{accommodation}{alojamiento}
+\entry{accompany}{acompañar}
+\entry{accomplish}{conseguir, lograr (goal)}
+\entry{according (to)}{según}
+\entry{account}{la cuenta}
+\entry{accountant}{contable}
+\entry{accurate}{preciso}
+\entry{accuse}{acusar a alguien de algo}
+\entry{ache (n/v)}{el dolor, me duele}
+\entry{acid}{ácido}
+\entry{action}{acción}
+\entry{active}{activo}
+\entry{activity}{actividad}
+\entry{actor/actress}{actor/actriz}
+\entry{adaptor}{adaptador}
+\entry{add (v)}{añadir}
+\entry{addicted (to)}{ser adicto a}
+\entry{address}{la dirección}
+\entry{advertisement}{anuncio}
+\entry{adjust}{ajustar}
+\entry{admission}{admisión}
+\entry{admit}{confesar}
+\entry{adolescent}{adolescente}
+\entry{adopt}{adoptar}
+\entry{adult}{adulto}
+\entry{adultery}{adulterio}
+\entry{advance (in)}{por adelantado}
+\entry{advanced}{avanzado}
+\entry{advantage}{ventaja}
+\entry{adventure}{aventura}
+\entry{advice}{consejo, aviso}
+\entry{advise}{aconsejar, dar consejo.}
+\entry{aerial}{antena}
+\entry{affect}{afectar (med)}
+\entry{affection}{el cariño}
+\entry{afford}{poder permitirse algo (financially)}
+\entry{afraid}{asustado, con miedo}
+\entry{afraid (of)}{tener miedo de}
+\entry{after}{después  de , que}
+\entry{after (all)}{después de todo}
+\entry{afternoon}{tarde, de la tarde}
+\entry{afterwards}{después}
+\entry{again}{otra vez, de nuevo}
+\entry{against}{contra, contra de}
+\entry{age}{edad}
+\entry{agency}{agencia, buró}
+\entry{agent}{agente}
+\entry{aggressive}{agresivo}
+\entry{ago}{hace una semana}
+\entry{agree}{estar de acuerdo.}
+\entry{aim}{objetivo}
+\entry{air}{el aire}
+\entry{air base}{base aérea}
+\entry{air filter}{el filtro}
+\entry{air force}{fuerza aérea}
+\entry{air mail}{correo aéreo}
+\entry{air-conditioning (AC)}{el aire acondicionado}
+\entry{airline}{línea aérea}
+\entry{airplane}{el avión}
+\entry{airport}{aeropuerto.}
+\entry{aisle}{el pasillo}
+\entry{alarm}{alarma.}
+\entry{alarm clock}{el despertador}
+\entry{album}{álbum (phot)}
+\entry{alcohol}{alcohol}
+\entry{alcoholic}{alcohólico}
+\entry{algebra}{álgebra}
+\entry{alibi}{coartada, excusa}
+\entry{alien}{el extraterrestre, el extranjero}
+\entry{alive}{vivo. estar vivo}
+\entry{all}{todo, todos.}
+\entry{all right}{¿de acuerdo?¿está bien? está bien}
+\entry{allergic to}{alérgico a}
+\entry{allergy}{alergia.}
+\entry{alligator}{el caimán}
+\entry{allow}{permitir, autorizar.}
+\entry{almonds}{almendras.}
+\entry{almost}{casi, apenas.}
+\entry{alone}{solo, único.}
+\entry{aloud}{en voz alta}
+\entry{alphabet}{alfabeto, abecé.}
+\entry{already}{ya.}
+\entry{alright}{bien, como se debe.}
+\entry{also}{también, además.}
+\entry{although}{aunque}
+\entry{always}{siempre.}
+\entry{ambassador}{embajador}
+\entry{ambition}{ambición}
+\entry{ambitious}{ambicioso}
+\entry{ambulance}{la ambulancia}
+\entry{American}{americano.}
+\entry{amount}{cantidad, suma.}
+\entry{amusing}{divertido}
+\entry{analyze}{analizar}
+\entry{ancestors}{antepasados}
+\entry{anchor}{ancla}
+\entry{and}{y.}
+\entry{angel}{ángel.}
+\entry{angle}{ángulo}
+\entry{angry}{colérico, airado. enfadado}
+\entry{animal}{animal, bestia.}
+\entry{ankle}{el tobillo}
+\entry{announce}{anunciar}
+\entry{annoy}{molestar, irritar}
+\entry{annoying}{pesado}
+\entry{answer (n)}{respuesta, contestación.}
+\entry{answer (v)}{responder, contestar.}
+\entry{answering machine}{contestador automático}
+\entry{ant}{la hormiga}
+\entry{antenna}{la antena}
+\entry{antler}{el cuerno}
+\entry{any}{cualquier. alguno/a}
+\entry{anybody}{cualquiera, alguien.}
+\entry{anything}{cualquier cosa, nada.}
+\entry{anyway}{de todos modos.}
+\entry{anywhere}{dondequiera.}
+\entry{apartment}{apartamento, cuarto.}
+\entry{apartment building}{los apartamentos}
+\entry{appear}{aparecer.}
+\entry{appearance}{apariencia}
+\entry{appetite}{apetito, gana, deseo.}
+\entry{appetizer}{el aperitivo}
+\entry{applaud}{aplaudir}
+% \entry{apple}{la manzana}
+% \entry{application}{aplicación, pedido.}
+% \entry{apply}{aplicar.}
+% \entry{appointment}{cita}
+% \entry{apprentice}{aprendiz}
+% \entry{apricot}{el albaricoque}
+% \entry{April}{abril.}
+% \entry{Arab}{árabe.}
+% \entry{Arabic}{árabe (idioma), árabe.}
+% \entry{architect}{el arquitecto}
+% \entry{Argentina}{argentina}
+% \entry{arm (body)}{el brazo}
+% \entry{armchair}{la butaca}
+% \entry{armrest}{el descanso brazo, el apoyabrazos}
+% \entry{arms (weapons)}{armas}
+% \entry{army}{ejército, armada.}
+% \entry{around}{alrededor de}
+% \entry{arrange (room)}{organizar}
+% \entry{arrest}{detener}
+% \entry{arrival}{la llegada}
+% \entry{arrive}{llegar, venir}
+% \entry{arrogant}{arrogante}
+% \entry{art}{el arte}
+% \entry{art gallery}{galería de arte}
+
+\end{document}

@@ -1,0 +1,42 @@
+\documentclass{article}
+\usepackage{lipsum}
+\usepackage{fancyhdr, extramarks}
+\pagestyle{fancy}
+
+\begin{document}
+\section{Introduction}
+
+\textbf{Problem: The header  is the LAST section title, not the first.}
+
+\subsection{The Problem}
+\label{sec:problem}
+
+\lipsum[1]
+
+\subsection{Evaluation}
+
+\lipsum[2]
+
+\section{Another section}
+
+\newpage
+\fancyhead[R]{\firstleftmark}
+
+\section{Introduction}
+
+{\bfseries Solution: Use \verb+\firstleftmark+\verb+: \fancyhead[R]{\firstleftmark}+}
+
+\subsection{The Problem}
+\label{sec:problem}
+
+\lipsum[1]
+
+\subsection{Evaluation}
+
+\lipsum[2]
+
+\section{Another section}
+
+\lipsum
+
+\end{document}

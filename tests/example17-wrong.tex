@@ -1,0 +1,85 @@
+\documentclass[openany]{book}
+\usepackage{lipsum}
+\usepackage{extramarks}
+ \usepackage{fancyhdr}
+ \pagestyle{fancy}
+ \fancyhead[L]{\firstxmark}
+ \fancyfoot[R]{\lastxmark}
+\fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrule}{}}
+
+\begin{document}
+
+\pagenumbering{roman}
+\tableofcontents
+
+\bigskip
+
+This is a test for the \texttt{extramarks} package to implement a ``Continued\ldots'' header/footer. This document uses an earlier, wrong solution.
+
+\newpage
+\pagenumbering{arabic}
+\chapter{Introduction}
+
+\lipsum[1]
+
+\section{The Problem}
+\label{sec:problem}
+\noindent\rule{\textwidth}{1mm}\\
+\extramarks{}{Continued on next page\ldots}
+\textbf{We want to indicate that this block of text belongs together, with `Continued' in header and footer.}
+
+\textbf{In this example we use the wrong solution that works only for short blocks (with only one page break inside). But you can see it works on this short block.}
+
+\lipsum[1]
+
+\textbf{Here ends the  block of text that belongs together.}\\
+\noindent\rule{\textwidth}{1mm}
+\extramarks{Continued\ldots}{}
+\extramarks{}{}
+\lipsum[2-4]
+
+\section{Evaluation}
+\noindent\rule{\textwidth}{1mm}\\
+\extramarks{}{Continued on next page\ldots}
+\textbf{We want to indicate that this block of text belongs together, with `Continued' in header and footer.}
+
+\textbf{In this example we use the wrong solution that works only for short blocks (with only one page break inside). You will see that it doesn't work properly on this longer block. See the header of the next page.}
+
+\lipsum[3-9]
+
+\textbf{Here ends the  block of text that belongs together.}\\
+\noindent\rule{\textwidth}{1mm}
+\extramarks{Continued\ldots}{}
+\extramarks{}{}
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+\chapter{Another chapter}
+
+\label{cha:another-chapter}
+
+\lipsum[2]
+
+\section{Another section}
+
+\lipsum[3-4]
+
+\noindent\rule{\textwidth}{1mm}\\
+\fancyhead[L]{Continued}
+\fancyfoot[R]{Continued on next page\ldots}
+\textbf{Here we use the wrong way by directly manipulating the headers/footers without using marks. You can see that it doesn't work well.}
+
+\lipsum[5]
+
+\textbf{End of block.}\\
+\noindent\rule{\textwidth}{1mm}\\
+\fancyhead[L]{}
+\fancyfoot[R]{}
+
+\end{document}

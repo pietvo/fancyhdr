@@ -1,0 +1,54 @@
+\documentclass[openany]{book}
+\usepackage{lipsum}
+\usepackage{extramarks}
+ \usepackage{fancyhdr}
+ \pagestyle{fancy}
+ \fancyhead[L]{\setlength{\unitlength}{\baselineskip}%
+ \begin{picture}(0,0)
+   \put(-2,-3){\makebox(0,0)[r]{\firstxmark}}
+   \end{picture}\leftmark}
+ \fancyfoot[R]{\lastxmark}
+\fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrule}{}}
+
+\begin{document}
+
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+\chapter{Introduction}
+
+\lipsum
+
+\section{The Problem}
+\label{sec:problem}
+\extramarks{}{Continued on next page\ldots}
+\textbf{We want to indicate that this block of text belongs together, with `Continued' in header and footer.}
+
+\lipsum[1]
+\extramarks{Continued\ldots}{}
+\extramarks{}{}
+
+\section{Evaluation}
+
+\lipsum
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+\chapter{Another chapter}
+
+\label{cha:another-chapter}
+
+\lipsum[2]
+
+\section{Another section}
+
+\lipsum[3-4]
+
+\end{document}

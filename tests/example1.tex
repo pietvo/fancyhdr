@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage{lipsum}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[L,C]{}
+\fancyhead[R]{\textbf{The performance of new graduates}}
+\fancyfoot[L]{From: K. Grant}
+\fancyfoot[C]{To: Dean A. Smith}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{1mm}
+\begin{document}
+
+\section{Introduction}
+
+This example has simple headers/footers:
+The header has {``\textbf{The performance of new graduates}''} in the right-hand side corner.
+The footer has ``From: K. Grant'' on the left, ``To: Dean A. Smith'' in the center, and the page number on the right. And the footer has a thick (1mm) line.
+
+\section{More text}
+
+\lipsum
+
+\end{document}

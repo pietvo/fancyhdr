@@ -1,0 +1,66 @@
+\documentclass[openany]{book}
+\usepackage{lipsum}
+\usepackage{extramarks}
+ \usepackage{fancyhdr}
+ \pagestyle{fancy}
+ \fancyhead[L]{\firstrightxmark}
+ \fancyfoot[R]{\lastleftxmark}
+\fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrule}{}}
+
+\begin{document}
+
+\pagenumbering{roman}
+\tableofcontents
+
+\bigskip
+
+This is a test for the \texttt{extramarks} package to implement a ``Continued\ldots'' header/footer. This document uses a better solution. But I am still not completely confident that it covers all cases. More investigation is necessary.
+
+\newpage
+\pagenumbering{arabic}
+\chapter{Introduction}
+
+\lipsum[1]
+
+\section{The Problem}
+\label{sec:problem}
+
+\noindent\rule{\textwidth}{1mm}\\
+\extramarks {Continued on next page\ldots}{Continued\ldots}
+\textbf{We want to indicate that this block of text belongs together, with `Continued' in header and footer.}
+
+\lipsum[2]
+\lipsum
+
+\textbf{Here ends the  block of text that belongs together.}\\
+\noindent\rule{\textwidth}{1mm}
+\extramarks{}{Continued\ldots}
+\extramarks{}{}
+
+\section{Evaluation}
+
+\lipsum[3-9]
+
+\chapter{Another chapter}
+
+\label{cha:another-chapter}
+
+\lipsum[2]
+
+\section{Another section}
+
+\lipsum[3-4]
+
+\noindent\rule{\textwidth}{1mm}\\
+\fancyhead[L]{Continued}
+\fancyfoot[R]{Continued on next page\ldots}
+\textbf{Here we use the wrong way by directly manipulating the headers/footers without using marks. You can see that it doesn't work well.}
+
+\lipsum[5]
+
+\textbf{End of block.}\\
+\noindent\rule{\textwidth}{1mm}\\
+\fancyhead[L]{}
+\fancyfoot[R]{}
+
+\end{document}

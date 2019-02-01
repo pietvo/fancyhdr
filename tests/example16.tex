@@ -1,0 +1,48 @@
+\documentclass[openany]{book}
+\usepackage{lipsum}
+
+ \usepackage{fancyhdr}
+ \pagestyle{fancy}
+\newcommand{\TheAuthor}{}
+ \newcommand{\Author}[1]{\renewcommand{\TheAuthor}{#1}}
+ \fancyfoot[L]{\TheAuthor}
+\fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrule}{}}
+
+\begin{document}
+
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+\chapter{Introduction}
+\Author{K.N. Uth}
+\lipsum
+
+\section{The Problem}
+\label{sec:problem}
+
+\lipsum[1]
+
+\section{Evaluation}
+
+\lipsum
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+Some more text.
+
+\chapter{Another chapter}
+\Author{L.A.M. Port}
+\label{cha:another-chapter}
+
+\lipsum[2]
+
+\section{Another section}
+
+\lipsum[3-5]
+
+\end{document}

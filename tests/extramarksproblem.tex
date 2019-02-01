@@ -1,0 +1,80 @@
+\documentclass[10 pt]{article}
+\usepackage{blindtext}
+\usepackage[dvipsnames,svgnames,hyperref,table]{xcolor}
+
+\usepackage{ifthen}
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\pagestyle{fancy}
+
+\headheight=47pt
+\renewcommand{\footrulewidth}{\headrulewidth}
+\fancyhead[l]{Logo}
+\fancyhead[r]{Issue}
+\extramarks{0}{0}
+
+
+
+\newcommand{\pageMarking}{0}
+\newcommand{\checkMarks}{
+  \ifthenelse{\firstleftxmark = 1}{\gdef\pageMarking{1}}{}
+  \ifthenelse{\lastleftxmark = 1}{\gdef\pageMarking{1}}{}
+        }
+
+\newcommand{\mychead}{%
+\checkMarks
+        \ifthenelse{\pageMarking = 1}%
+         {%
+          firstleftxmark = \firstleftxmark\\lastleftxmark = \lastleftxmark\\\textbf{Additional~Marking}
+         }%
+         {%
+          firstleftxmark = \firstleftxmark\\lastleftxmark = \lastleftxmark%
+         }}%
+                
+\newcommand{\mycfoot}{%
+        \ifthenelse{\pageMarking = 1}%
+         {%
+          \thepage\\firstleftxmark = \firstleftxmark\\lastleftxmark = \lastleftxmark\\\textbf{Additional~Marking}%
+                \ifthenelse{\lastleftxmark = 1}%
+                {}{\gdef\pageMarking{0}}
+         }%
+         {%
+          \thepage\\firstleftxmark = \firstleftxmark\\lastleftxmark = \lastleftxmark%
+         }}%
+        
+\newenvironment{toBeMarked}{\extramarks{1}{0}\color{blue}}
+{\extramarks{0}{0}}
+
+
+\newenvironment{myenv}
+{
+        \fancyhead[c]{\mychead}
+        \fancyfoot[c]{\mycfoot}
+}
+{
+        \clearpage
+        \fancyhead[c]{}
+        \fancyfoot[c]{}
+}
+
+
+\begin{document}
+
+\begin{myenv}
+\section{Testsection}
+\blindtext[4]
+%\clearpage
+\begin{toBeMarked} %% the frist page should not be marked, clearpage would solve this, but its not desired to have a page break on each marking
+\subsection{Testsubsection 1}
+\blindtext[4]
+\end{toBeMarked}
+\blindtext[5]
+\subsection{Testsubsection 2} %% if subsection placed here page containing the blue content is not marked correctly
+\begin{toBeMarked}
+%\subsection{Testsubsection 2} %% when here it works
+\blindtext
+\end{toBeMarked}
+\subsection{Testsubsection 3}
+\blindtext[3]
+\end{myenv}
+\end{document}
