@@ -510,13 +510,14 @@
 % \noindent\makebox[\textwidth]{\hfill\textbf{The performance of new
 % graduates}}\showrule
 % \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[\baselineskip]
-% \noindent\makebox[\textwidth]{\hrulefill}
+% \noindent\makebox[\textwidth]{\rule{\textwidth}{2pt}}
 % \noindent\makebox[\textwidth]{From: K. Grant\phantom{3}\hfill
 % To: Dean A. Smith\hfill \phantom{From: K. Grant}3}
 % \end{fblock}
 % 
 % \noindent where ``3'' is the page number.  The title: ``The
-% performance of new graduates'' is bold.
+% performance of new graduates'' is bold. The rule above the footer is a
+% bit thicker (2pt).
 % 
 % This is accomplished by these commands following
 % \Cmd{pagestyle\{fancy\}}\footnote{Note that version 1 of fancyheadings
@@ -525,6 +526,7 @@
 % \CmdIndex{fancyfoot}
 % \CmdIndex{headrulewidth}
 % \CmdIndex{footrulewidth}
+% \Example
 % \begin{verbatim}
 % \fancyhead[L,C]{}
 % \fancyhead[R]{\textbf{The performance of new graduates}}
@@ -532,7 +534,7 @@
 % \fancyfoot[C]{To: Dean A. Smith}
 % \fancyfoot[R]{\thepage}
 % \renewcommand{\headrulewidth}{0.4pt}
-% \renewcommand{\footrulewidth}{0.4pt}
+% \renewcommand{\footrulewidth}{2pt}
 % \end{verbatim}
 % (The \cs{thepage} macro displays the current page number.
 % \cs{textbf} puts it in bold face.)
