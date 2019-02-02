@@ -753,15 +753,17 @@
 %
 % As another example, let us 
 % redefine the \texttt{plain} style for the report in Section~\ref{two-sided} by
-% making the page number bold. 
+% making the page number bold and enclosing it in en-dashes without any rules. 
 % \PSindex{plain}
-% 
+%
+% \Example
 % \begin{verbatim}
-% \fancypagestyle{plain}{%
-% \fancyhf{} % clear all header and footer fields
-% \fancyfoot[C]{\textbf{\thepage}} % except the center
-% \renewcommand{\headrulewidth}{0pt}
-% \renewcommand{\footrulewidth}{0pt}}
+% \fancypagestyle{plain}{
+%   \fancyhf{} % clear all header and footer fields
+%   \fancyfoot[C]{\textbf{--~\thepage~--}} % except the center
+%   \renewcommand{\headrulewidth}{0pt}
+%   \renewcommand{\footrulewidth}{0pt}
+% }
 % \end{verbatim}
 %
 %
