@@ -814,9 +814,8 @@
 % \begin{fblock}
 % \noindent\makebox[\textwidth]{\textsl{1.2  EVALUATION}\hfill
 %  \textsl{CHAPTER 1. INTRODUCTION}}\showrule
-% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[\baselineskip]
-% \noindent\makebox[\textwidth]{\hrulefill}
-% \noindent\makebox[\textwidth]{\hfill4\hfill}
+% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[2\baselineskip]
+% \noindent\makebox[\textwidth]{\hfill2\hfill}
 % \end{fblock}
 % 
 % On an odd page, we get the layout:
@@ -824,8 +823,7 @@
 % \begin{fblock}
 % \noindent\makebox[\textwidth]{\textsl{CHAPTER 1. INTRODUCTION}\hfill
 %  \textsl{1.2  EVALUATION}}\showrule
-% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[\baselineskip]
-% \noindent\makebox[\textwidth]{\hrulefill}
+% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[2\baselineskip]
 % \noindent\makebox[\textwidth]{\hfill
 % 3\hfill }
 % \end{fblock}
@@ -833,6 +831,7 @@
 % \noindent where the header text is slanted uppercase.
 % 
 % This default layout is produced by the following commands:
+% \Example
 % \CmdIndex{rightmark}
 % \CmdIndex{leftmark}
 % \begin{verbatim}
@@ -850,7 +849,8 @@
 % \Cmd{footrulewidth}\>0\>pt
 % \end{tabbing}
 % 
-% The header text is turned into all uppercase in \verb|book.cls|.
+% The header text is turned into all uppercase by the standard \LaTeX{}
+% code in \verb|book.cls|.
 % 
 % \section{The scoop on \latex/'s marks}\label{sec:custom}
 % \label{sec:scoop}
