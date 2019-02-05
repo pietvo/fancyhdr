@@ -903,8 +903,43 @@
 % \CmdIndex{chaptername}
 %    \cs{chaptername}
 % \item  the title, contained in the  argument of
-%    \cs{chaptermark}.
+%    \cs{chapter}.
 % \end{itemize}
+% We combine these below with \cs{markboth} in \cs{chaptermark}.
+%
+% For the lower-level sectioning information, we do the same with
+% \cs{markright} in \cs{sectionmark}.
+%
+% So if ``2. Implementation'' is the current chapter
+% and ``Section 2.1.\ First steps'' is the current section, then
+%
+% \Example
+% \begin{verbatim}
+% \renewcommand{\chaptermark}[1]{%
+%   \markboth{\chaptername\ \thechapter.\ #1}{}}
+% \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
+% \end{verbatim}
+% will give
+%    ``Chapter 2. Implementation'' and ``2.1.\ First steps''
+%
+% Redefining the \cs{chaptermark} and \cs{sectionmark} commands may
+% not eliminate all uppercaseness. E.g.\ the bibliography will have a title
+% \CmdIndex{uppercase}
+% \index{BIBLIOGRAPHY}
+% of \textsc{bibliography} in the header, as the \cs{MakeUppercase} is
+% explicitly given in the definition of \cs{thebibliography}. Similar for
+% \index{INDEX}
+% \textsc{index} etc.\ If you don't want to redefine these commands, you can
+% use the \cs{nouppercase} command that \Package{fancyhdr} makes available in the header
+% and footer fields. Note that this may screw other things, like uppercase
+% roman numerals in your headers, so it should be used with care. Essentially
+% this command typesets its argument in an environment where
+% \cs{MakeUppercase} and \cs{uppercase} are changed into do-nothing operations.
+%
+% \begin{verbatim}
+% \fancyhead[L]{\nouppercase{\rightmark}}
+% \fancyhead[R]{\nouppercase{\leftmark}}
+% \end{verbatim}
 % 
 % Figure~\ref{fig:markers} shows some variants for ``Chapter 2.\ Implementation''
 % (the last example is appropriate in some non-English languages). The \%
@@ -974,39 +1009,6 @@
 % \end{multicols}
 % \caption{Marker variants}\label{fig:markers}
 % \end{figure}
-% 
-% For the lower-level sectioning information, do the same with
-% \cs{markright}.
-% 
-% So if ``Section 2.1.\ First steps'' is the current section,
-% then
-% 
-% \begin{verbatim}
-% \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
-% \end{verbatim}
-% will give
-%    ``2.1.\ First steps''
-% 
-% Redefining the \cs{chaptermark} and \cs{sectionmark} commands may
-% not eliminate all uppercaseness. E.g.\ the bibliography will have a title
-% \CmdIndex{uppercase}
-% \index{BIBLIOGRAPHY}
-% of \textsc{bibliography} in the header, as the \cs{MakeUppercase} is
-% explicitly given in the definition of \cs{thebibliography}. Similar for
-% \index{INDEX}
-% \textsc{index} etc.\ If you don't want to redefine these commands, you can
-% use the \cs{nouppercase} command that \Package{fancyhdr} makes available in the header
-% and footer fields. Note that this may screw other things, like uppercase
-% roman numerals in your headers, so it should be used with care. Essentially
-% this command typesets its argument in an environment where
-% \cs{MakeUppercase} and \cs{uppercase} are changed into do-nothing operations.
-% 
-% 
-% \begin{verbatim}
-% \fancyhead[L]{\nouppercase{\rightmark}}
-% \fancyhead[R]{\nouppercase{\leftmark}}
-% \end{verbatim}
-% 
 % 
 % It should be noted that the \latex/ marking mechanism works fine with
 % chapters (which always start on a new page) and sections (which are
