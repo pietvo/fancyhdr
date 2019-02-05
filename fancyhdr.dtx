@@ -906,7 +906,7 @@
 %    \cs{chaptermark}.
 % \end{itemize}
 % 
-% Figure~\ref{fig:markers} shows some variants for ``Chapter 2.\ Do it now''
+% Figure~\ref{fig:markers} shows some variants for ``Chapter 2.\ Implementation''
 % (the last example is appropriate in some non-English languages). The \%
 % signs at the end of the lines are to prevent unwanted space. Normally you
 % would continue the lines and remove these \% signs\footnote{the \texttt{\bs
@@ -949,44 +949,43 @@
 % \verb| \ \chaptername.\ #1}{}}|\\
 % Prints:\\
 % \mbox{}\\
-% Chapter 2.\ Do it now\\
+% Chapter 2.\ Implementation\\
 % \mbox{}\\
 % \mbox{}\\
 % \mbox{}\\
-% CHAPTER 2.\ Do it now\\
-% \mbox{}\\
-% \mbox{}\\
-% \mbox{}\\
-% \mbox{}\\
-% CHAPTER 2.\ DO IT NOW\\
+% CHAPTER 2.\ Implementation\\
 % \mbox{}\\
 % \mbox{}\\
 % \mbox{}\\
 % \mbox{}\\
-% Do it now\\
+% CHAPTER 2.\ IMPLEMENTATION\\
 % \mbox{}\\
 % \mbox{}\\
-% 2.\ Do it now\\
 % \mbox{}\\
 % \mbox{}\\
-% 2.\ Chapter.\ Do it now\\
+% Implementation\\
+% \mbox{}\\
+% \mbox{}\\
+% 2.\ Implementation\\
+% \mbox{}\\
+% \mbox{}\\
+% 2.\ Chapter.\ Implementation\\
 % \mbox{}\\
 % \end{multicols}
 % \caption{Marker variants}\label{fig:markers}
 % \end{figure}
 % 
-% 
 % For the lower-level sectioning information, do the same with
 % \cs{markright}.
 % 
-% So if ``Section 2.2.\ First steps'' is the current section,
+% So if ``Section 2.1.\ First steps'' is the current section,
 % then
 % 
 % \begin{verbatim}
 % \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
 % \end{verbatim}
 % will give
-%    ``2.2.\ First steps''
+%    ``2.1.\ First steps''
 % 
 % Redefining the \cs{chaptermark} and \cs{sectionmark} commands may
 % not eliminate all uppercaseness. E.g.\ the bibliography will have a title
@@ -1360,7 +1359,7 @@
 % \end{verbatim}
 % for every chapter page, and we do not need to redefine plain.
 % 
-% Chapter and section titles appear in the form: 2.\ DO IT NOW, so we have
+% Chapter and section titles appear in the form: 2.\ IMPLEMENTATION, so we have
 % to redefine \cs{chaptermark} and \cs{sectionmark} as follows (see
 % Section~\ref{sec:custom}):
 % 
