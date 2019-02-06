@@ -876,6 +876,12 @@
 % (higher-level) and \cs{rightmark} (lower-level) contain the information
 % processed by \latex/, and you can use them directly as shown in 
 % Section~\ref{default}.
+%
+% These marks are set by the commands
+% \Cmd{markboth\{leftmark\}\{rightmark\}} and \Cmd{markright\{rightmark\}}.
+% These commands are usually used inside commands like \cs{chaptermark}
+% and \cs{sectionmark} but they can be also be given directly in your
+% document, although this not very usual.
 % 
 % The \cs{leftmark} contains the \textbf{L}eft argument of the \emph{\textbf{L}ast}
 % \cs{markboth} on the page, the \cs{rightmark} contains the \textbf{R}ight
@@ -1038,8 +1044,8 @@
 % ``Section 2.'', and the rightmark will be ``subsection 1.1'' as it will be
 % the \emph{first} mark of the page. So the page header info will combine 
 % section 2 with subsection 1.1 which isn't very nice.
-% The best you can do in these cases is use only the \cs{rightmark}s and
-% redefine \cs{sectionmark} accordingly. A \latex/ command
+% One thing you can do in these cases is use only the \cs{rightmark}s and
+% redefine \cs{sectionmark} accordingly.
 % \CmdIndex{firstleftmark}
 % \cs{firstleftmark} would also be a nice addition (see the 
 % \Package{extramarks} package in section~\ref{sec:xmarks}).
@@ -1064,38 +1070,15 @@
 % yourself, e.g.
 % 
 % \begin{verbatim}
-% \chapter*{Preface\markboth{Preface}{}}
+% \chapter*{Preface}
+% \markboth{Preface}{}
 % \end{verbatim}
 % 
-% Entering the \cs{markboth} command inside the \cs{chapter*} insures
-% that the mark will not be separated from the title by a page break. Of
-% course with \cs{chapter*} this wouldn't be  a problem if you put the mark
-% command after the chapter title, as the \cs{chapter*} command starts at a
-% new page. However with a \cs{section*} it could be dangerous to say:
-% 
+% Or in a documentclass without chapters:
 % \begin{verbatim}
 % \section*{Preface}
 % \markboth{Preface}{}
 % \end{verbatim}
-% as a page break may occur between the two commands. Therefore to be
-% safe, put the \cs{mark...} command inside the \cs{section} command.
-%
-% You have to be careful, however, if you do this with a non-starred
-% sectioning command. These will be put in the Table of Contents (if you
-% have one), and this means the entries are ``moving'' (they move to the
-% Table of Contents). The \cs{mark...} commands are ``fragile'',
-% which means they will break when moved. Therefore they must be
-% \DescribeMacro{\protect}
-% \CmdIndex{protect}
-% protected with the \cs{protect} command, for example
-% 
-% \begin{verbatim}
-% \chapter{Preface\protect\markboth{Preface}{Preface}}
-% \end{verbatim}
-% In this example we give \cs{markboth} two non-empty arguments
-% otherwise it would make no sense to use the \cs{markboth} command
-% inside the \cs{chapter} command. It is harmless to use the
-% \cs{protect} command when it is not really necessary.
 % 
 % \section{Dictionary style headers}
 % 
