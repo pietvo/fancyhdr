@@ -1379,10 +1379,10 @@ There is no footer. The \texttt{plain} style is redefined to have no header and 
 %    {\markright{\MakeUppercase{\thesection.\ #1}}}
 % \end{verbatim}
 % 
-% In an even-header, the page number is printed as the LeftHeader and
-% the chapter info as the RightHeader; in an odd-header, the section info
-% is printed as the LeftHeader and the page number as the RightHeader.  The
-% CenteredHeaders are empty.  There are no footers.
+% On an even page, the page number is printed as the left header and
+% the chapter info as the right header; on an odd page, the section info
+% is printed as the left header and the page number as the right header.  The
+% center headers are empty.  There are no footers.
 % 
 % There is a decorative line in the header.  It is 0.5pt wide, so we need
 % the commands:
@@ -1398,7 +1398,8 @@ There is no footer. The \texttt{plain} style is redefined to have no header and 
 % \begin{verbatim}
 % \fontfamily{phv}\fontseries{b}\fontsize{9}{11}\selectfont
 % \end{verbatim}
-% (See Sections 7.6.1 and 11.9.1 of the \latex/ \emph{Companion}.)
+% (See Sections 7.6.1 and 11.9.1 of the \latex/ \emph{Companion} or
+% Sections 7.6 and 7.9.1 of \emph{The \latex/ Companion, Second Edition}.)
 % Let us define a shorthand for this:
 % \begin{verbatim}
 % \newcommand{\helv}{%
@@ -1407,6 +1408,7 @@ There is no footer. The \texttt{plain} style is redefined to have no header and 
 % 
 % Now we are ready for the page layout:
 % 
+% \Example
 % \begin{verbatim}
 % \documentclass{book}
 % \usepackage{fancyhdr}
