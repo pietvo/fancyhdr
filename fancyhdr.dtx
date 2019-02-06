@@ -1046,9 +1046,20 @@
 % section 2 with subsection 1.1 which isn't very nice.
 % One thing you can do in these cases is use only the \cs{rightmark}s and
 % redefine \cs{sectionmark} accordingly.
+%
+% However, the \Package{extramarks} package described in section~\ref{sec:xmarks}
+% contains a command
 % \CmdIndex{firstleftmark}
-% \cs{firstleftmark} would also be a nice addition (see the 
-% \Package{extramarks} package in section~\ref{sec:xmarks}).
+% \cs{firstleftmark} that can be used to get the first of the leftmarks
+% on the page in the header. This might be the best solution in this
+% situation. Now the header will contain ``Section 1.'' in the situation
+% described above.
+% \Example
+% \begin{verbatim}
+% \usepackage{extramarks}
+%  . . .
+% \fancyhead[R]{\firstleftmark}
+% \end{verbatim}
 % 
 % Another problem with the marks in the standard \latex/ classes is that the
 % higher level sectioning commands (e.g. \cs{chapter}) call
