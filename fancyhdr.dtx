@@ -1647,13 +1647,14 @@ There is no footer. The \texttt{plain} style is redefined to have no header and 
 % number this is what you expect, but it is also true for other commands.
 % 
 % So if you have a book where each chapter is written by a different author
-% and you want the name of the author in the lower left-hand corner you can
-% use the following commands:
-% 
+% and you want the name of the author in the header opposite the chapter
+% title, you can use the following commands:
+%
+% \Example
 % \begin{verbatim}
 % \newcommand{\TheAuthor}{}
 % \newcommand{\Author}[1]{\renewcommand{\TheAuthor}{#1}}
-% \fancyfoot[L]{\TheAuthor}
+% \fancyhead[LE,RO]{\TheAuthor}
 % \end{verbatim}
 % 
 % \noindent and start each chapter with the command 
