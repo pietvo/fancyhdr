@@ -1514,7 +1514,8 @@ There is no footer. The \texttt{plain} style is redefined to have no header and 
 % \textsf{m} where \textsf{m} is the number of pages in the document.
 % There is a package \Package{lastpage}
 % available which you can use with \Package{fancyhdr} as follows:
-% 
+%
+% \Example
 % \begin{verbatim}
 % \usepackage{lastpage}
 % ...
@@ -1542,6 +1543,10 @@ There is no footer. The \texttt{plain} style is redefined to have no header and 
 % \fancyfoot[R]{\ifthenelse{\isodd{\value{page}} \and \not
 %      \(\value{page}=\pageref{LastPage}\)}{please turn over}{}}
 % \end{verbatim}
+%
+% In order to get the number of pages correctly used, you usually have
+% to do one additional \LaTeX{} run.
+%
 % 
 % \section{Chapter or section related page numbers}
 % 
