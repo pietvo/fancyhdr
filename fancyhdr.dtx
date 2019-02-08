@@ -1439,12 +1439,15 @@ There is no footer. The \texttt{plain} style is redefined to have no header and 
 % of the page style will at least also affect the page before the float page.
 % With \Package{fancyhdr}, however, you can specify in each of
 % the header- or footer fields
-% 
-% \Cmd{iffloatpage\{}value for float page\verb|}{|value for other pages\verb|}|
+%
+% \medskip
+% \Cmd{iffloatpage\{}\meta{value for float page}\verb|}{|\meta{value for other pages}\verb|}|
+% \medskip
 % 
 % You can even use this to get rid of the decorative line on float pages only
 % by defining:
 % 
+% \Example
 % \begin{verbatim}
 % \renewcommand{\headrulewidth}{\iffloatpage{0pt}{0.4pt}}
 % \end{verbatim}
@@ -1453,7 +1456,11 @@ There is no footer. The \texttt{plain} style is redefined to have no header and 
 % float on the top of the page, a float on the bottom of the page or a footnote on the bottom of the page.
 % 
 % \Package{fancyhdr} gives you the commands \cs{iftopfloat}, \cs{ifbotfloat} and \cs{iffootnote}
-% similar to \cs{iffloatpage}.
+% similar to \cs{iffloatpage}. For example:
+% \begin{verbatim}
+% \fancyhead[R]{\iftopfloat{This page has a topfloat}
+%                          {There is no topfloat here}}
+% \end{verbatim}
 % 
 % Note: Marks in floats will not be visible in \latex/'s output routine, so
 % it is not useful to put marks in floats. So there is currently no way to
@@ -1474,7 +1481,7 @@ There is no footer. The \texttt{plain} style is redefined to have no header and 
 % \CmdIndex{clearpage}
 % \CmdIndex{cleardoublepage}
 % \begin{verbatim}
-% \clearpage{\pagestyle{empty}\cleardoublepage}
+% \clearpage\begingroup\pagestyle{empty}\cleardoublepage\endgroup
 % \end{verbatim}
 % 
 % As the \Cmd{pagestyle\{empty\}} is enclosed in a group it only affects the
@@ -1486,7 +1493,8 @@ There is no footer. The \texttt{plain} style is redefined to have no header and 
 % \begin{verbatim}
 % \makeatletter
 % \def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
-%   \hbox{}
+%  \begingroup
+%   \mbox{}
 %   \vspace*{\fill}
 %   \begin{center}
 %     This page intentionally contains only this sentence.
@@ -1494,7 +1502,8 @@ There is no footer. The \texttt{plain} style is redefined to have no header and 
 %   \vspace{\fill}
 %   \thispagestyle{empty}
 %   \newpage
-%   \if@twocolumn\hbox{}\newpage\fi\fi\fi}
+%   \if@twocolumn\mbox{}\newpage\fi
+%  \endgroup\fi\fi}
 % \makeatother
 % \end{verbatim}
 % 
