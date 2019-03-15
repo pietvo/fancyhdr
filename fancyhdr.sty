@@ -21,14 +21,24 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2019/01/31 v3.10
+           [2019/03/22 v4.0
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2019 by Piet van Oostrum <piet@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\if@nch@mpty#1{\def\temp@a{#1}\ifx\temp@a\@empty}
-\def\f@nch@def#1#2{\if@nch@mpty{#2}\f@nch@gbl\def#1{\leavevmode}\else
+\newcommand\if@nch@mpty[1]{\def\temp@a{#1}\ifx\temp@a\@empty}
+\newif\iff@nch@check
+\f@nch@checktrue
+\DeclareOption{nocheck}{%
+  \f@nch@checkfalse
+}
+\newif\iff@nch@compatViii
+\let\f@nch@gbl\relax
+\DeclareOption{compatV3}{%
+  \let\f@nch@gbl\global
+  \f@nch@compatViiitrue
+}
+\newcommand\f@nch@def[2]{\if@nch@mpty{#2}\f@nch@gbl\def#1{\leavevmode}\else
                                    \f@nch@gbl\def#1{#2\strut}\fi}
-\let\f@nch@gbl\global
 \newcommand{\f@nch@ifundefined}[1]{%
   \begingroup\expandafter\expandafter\expandafter\endgroup
   \expandafter\ifx\csname #1\endcsname\relax
@@ -36,14 +46,92 @@
   \else
     \expandafter\@secondoftwo
     \fi}
+\DeclareOption{myheadings}{%
+  \f@nch@ifundefined{chapter}{%
+    \def\ps@myheadings{\ps@f@nch@fancyproto \let\@mkboth\@gobbletwo
+      \fancyhf{}
+      \fancyhead[LE,RO]{\thepage}%
+      \fancyhead[RE]{\slshape\leftmark}%
+      \fancyhead[LO]{\slshape\rightmark}%
+      \let\sectionmark\@gobble
+      \let\subsectionmark\@gobble
+    }%
+  }%
+  {\def\ps@myheadings{\ps@f@nch@fancyproto \let\@mkboth\@gobbletwo
+      \fancyhf{}
+      \fancyhead[LE,RO]{\thepage}%
+      \fancyhead[RE]{\slshape\leftmark}%
+      \fancyhead[LO]{\slshape\rightmark}%
+      \let\chaptermark\@gobble
+      \let\sectionmark\@gobble
+    }%
+  }%
+}
+\DeclareOption{headings}{%
+  \f@nch@ifundefined{chapter}{%
+    \if@twoside
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\sectionmark##1{%
+          \markboth{\MakeUppercase{%
+            \ifnum \c@secnumdepth >\z@ \thesection\quad \fi##1}}{}}%
+        \def\subsectionmark##1{%
+          \markright{%
+            \ifnum \c@secnumdepth >\@ne \thesubsection\quad \fi##1}}%
+      }%
+    \else
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\sectionmark##1{%
+          \markright {\MakeUppercase{%
+            \ifnum \c@secnumdepth >\z@ \thesection\quad \fi##1}}}%
+        \let\subsectionmark\@gobble % Not needed but inserted for safety
+      }%
+    \fi
+  }{\if@twoside
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\chaptermark##1{%
+          \markboth{\MakeUppercase{%
+            \ifnum \c@secnumdepth >\m@ne \if@mainmatter
+              \@chapapp\ \thechapter. \ \fi\fi##1}}{}}%
+        \def\sectionmark##1{%
+          \markright {\MakeUppercase{%
+            \ifnum \c@secnumdepth >\z@ \thesection. \ \fi##1}}}%
+      }%
+    \else
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\chaptermark##1{%
+          \markright{\MakeUppercase{%
+            \ifnum \c@secnumdepth >\m@ne \if@mainmatter
+              \@chapapp\ \thechapter. \ \fi\fi##1}}}%
+        \let\sectionmark\@gobble % Not needed but inserted for safety
+      }%
+    \fi
+  }%
+}
+\ProcessOptions*
 \newcommand\f@nch@errmsg[1]{%
-  \f@nch@ifundefined{PackageError}{\errmessage{#1}}{\PackageError{Fancyhdr}{#1}{}}}
+  \f@nch@ifundefined{PackageError}{\errmessage{#1}}{\PackageError{fancyhdr}{#1}{}}}
 \newcommand\f@nch@warning[1]{%
-  \f@nch@ifundefined{PackageWarning}{\errmessage{#1}}{\PackageWarning{Fancyhdr}{#1}{}}}
-\newcommand{\f@nch@forc}[3]{\expandafter\f@rc\expandafter#1\expandafter{#2}{#3}}
-\newcommand{\f@rc}[3]{\def\temp@ty{#2}\ifx\@empty\temp@ty\else
+  \f@nch@ifundefined{PackageWarning}{\errmessage{#1}}{\PackageWarning{fancyhdr}{#1}{}}}
+\newcommand{\f@nch@forc}[3]{\expandafter\f@nchf@rc\expandafter#1\expandafter{#2}{#3}}
+\newcommand{\f@nchf@rc}[3]{\def\temp@ty{#2}\ifx\@empty\temp@ty\else
                                     \f@nch@rc#1#2\f@nch@rc{#3}\fi}
-\def\f@nch@rc#1#2#3\f@nch@rc#4{\def#1{#2}#4\f@rc#1{#3}{#4}}
+\def\f@nch@rc#1#2#3\f@nch@rc#4{\def#1{#2}#4\f@nchf@rc#1{#3}{#4}}
 \newcommand{\f@nch@for}[3]{\edef\@fortmp{#2}%
   \expandafter\@forloop#2,\@nil,\@nil\@@#1{#3}}
 \newcommand\f@nch@default[3]{%
@@ -118,6 +206,8 @@
 \newlength{\f@nch@O@orf}
 \newcommand{\headrulewidth}{0.4pt}
 \newcommand{\footrulewidth}{0pt}
+\f@nch@ifundefined{headruleskip}%
+      {\newcommand{\headruleskip}{0pt}}{}
 \f@nch@ifundefined{footruleskip}%
       {\newcommand{\footruleskip}{.3\normalbaselineskip}}{}
 \newcommand{\plainheadrulewidth}{0pt}
@@ -141,27 +231,64 @@
    {\@normalsize}}%
   {\@newbaseline}% NFSS (2.09) present
   }
-\fancyhf{}
-\if@twoside
-  \fancyhead[el,or]{\fancyplain{}{\slshape\rightmark}}
-  \fancyhead[er,ol]{\fancyplain{}{\slshape\leftmark}}
-\else
-  \fancyhead[l]{\fancyplain{}{\slshape\rightmark}}
-  \fancyhead[r]{\fancyplain{}{\slshape\leftmark}}
-\fi
-\fancyfoot[c]{\rmfamily\thepage} % page number
+\newcommand*{\fancycenter}[1][1em]{%
+  \@ifnextchar[{\f@nch@center{#1}}{\f@nch@center{#1}[3]}%
+}
+\def\f@nch@center#1[#2]#3#4#5{%
+  \def\@tempa{#4}\ifx\@tempa\@empty
+    \hbox to\linewidth{\color@begingroup{#3}\hfil {#5}\color@endgroup}%
+  \else
+    \setlength\@tempdima{#1}%
+    \setlength{\@tempdimb}{#2\@tempdima}%
+    \@tempdimc \@tempdimb \advance\@tempdimc -\@tempdima
+    \setlength\@tempskipa{\@tempdimb \@plus 1fil \@minus \@tempdimc}%
+    \@tempskipb\@tempskipa
+    \def\@tempa{#3}\ifx\@tempa\@empty
+      \addtolength\@tempskipa{\z@ \@minus \@tempdima}%
+    \fi
+    \def\@tempa{#5}\ifx\@tempa\@empty % empty right
+      \addtolength\@tempskipb{\z@ \@minus \@tempdima}%
+    \fi
+    \settowidth{\@tempdimb}{#3}%
+    \settowidth{\@tempdimc}{#5}%
+    \ifdim\@tempdimb>\@tempdimc
+      \advance\@tempdimb -\@tempdimc
+      \addtolength\@tempskipb{\@tempdimb \@minus \@tempdimb}%
+    \else
+      \advance\@tempdimc -\@tempdimb
+      \addtolength\@tempskipa{\@tempdimc \@minus \@tempdimc}%
+    \fi
+    \hbox to\linewidth{\color@begingroup{#3}\hskip \@tempskipa
+                      {#4}\hskip \@tempskipb {#5}\color@endgroup}%
+  \fi
+}
 \newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
   \ifdim\ht0>#1\relax
-    \f@nch@warning{%
-      \string#1 is too small (\the#1): ^^J%
-      Make it at least \the\ht0.^^J%
-      We now make it that large for the rest of the document.^^J%
-      This may cause the page layout to be inconsistent, however\@gobble
-    }%
-    \dimen0=#1\relax
-    \global#1=\ht0\relax
-    \ht0=\dimen0 %
+    \iff@nch@check
+      \dimen0=#1\advance\dimen0-\ht0
+      \f@nch@warning{%
+        \string#1 is too small (\the#1): \MessageBreak
+        Make it at least \the\ht0, for example:\MessageBreak
+        \string\setlength{\string#1}{\the\ht0}%
+        \iff@nch@compatViii .\MessageBreak
+        We now make it that large for the rest of the document.\MessageBreak
+        This may cause the page layout to be inconsistent, however
+        \fi
+        \ifx#1\headheight .\MessageBreak
+          You might also make \topmargin smaller to compensate:\MessageBreak
+          \string\addtolength{\string\topmargin}{\the\dimen0}%
+        \fi
+        \@gobble
+      }%
+    \fi
+    \iff@nch@compatViii
+      \dimen0=#1\relax
+      \global#1=\ht0\relax
+      \ht0=\dimen0 %
+    \else
+      \ht0=#1%
+    \fi
   \fi
   \box0}
 \newcommand\f@nch@head[5]{%
@@ -176,6 +303,7 @@
         \hfill
         \llap{\parbox[b]{\headwidth}{\raggedleft#4}}%
       }%
+      \vskip\headruleskip\relax
       \headrule
     }%
   }%
@@ -199,41 +327,66 @@
   }%
   #5%
 }
-\def\headrule{{\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi
-    \hrule\@height\headrulewidth\@width\headwidth
-    \vskip-\headrulewidth}}
-\def\footrule{{\if@fancyplain\let\footrulewidth\plainfootrulewidth\fi
-    \hrule\@width\headwidth\@height\footrulewidth}}
-\def\ps@fancy{%
-  \f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}% for amsbook
 \f@nch@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
-\f@nch@ifundefined{chapter}%
- {\def\sectionmark##1{\markboth{\MakeUppercase{\ifnum \c@secnumdepth>\z@
-        \thesection\hskip 1em\relax
-      \fi ##1}}{}}%
-  \def\subsectionmark##1{\markright {\ifnum \c@secnumdepth >\@ne
-    \thesubsection\hskip 1em\relax \fi ##1}}}%
- {\def\chaptermark##1{\markboth {\MakeUppercase{\ifnum
-      \c@secnumdepth>\m@ne \@chapapp\ \thechapter. \ \fi ##1}}{}}%
-\def\sectionmark##1{\markright{\MakeUppercase{\ifnum \c@secnumdepth >\z@
-      \thesection. \ \fi ##1}}}%
+\f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}%
+\def\f@nch@initialise{%
+  \f@nch@ifundefined{chapter}%
+   {\def\sectionmark##1{\markboth{\MakeUppercase{\ifnum \c@secnumdepth>\z@
+          \thesection\hskip 1em\relax
+        \fi ##1}}{}}%
+    \def\subsectionmark##1{\markright {\ifnum \c@secnumdepth >\@ne
+      \thesubsection\hskip 1em\relax \fi ##1}}}%
+   {\def\chaptermark##1{\markboth {\MakeUppercase{\ifnum
+        \c@secnumdepth>\m@ne \@chapapp\ \thechapter. \ \fi ##1}}{}}%
+    \def\sectionmark##1{\markright{\MakeUppercase{\ifnum \c@secnumdepth >\z@
+        \thesection. \ \fi ##1}}}%
+   }%
+  \def\headrule{{\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi
+      \hrule\@height\headrulewidth\@width\headwidth
+      \vskip-\headrulewidth}}%
+  \def\footrule{{\if@fancyplain\let\footrulewidth\plainfootrulewidth\fi
+      \hrule\@width\headwidth\@height\footrulewidth}}%
+  \def\headrulewidth{0.4pt}%
+  \def\footrulewidth{0pt}%
+  \def\headruleskip{0pt}%
+  \def\footruleskip{0.3\normalbaselineskip}%
+  \fancyhf{}%
+  \if@twoside
+    \fancyhead[el,or]{\fancyplain{}{\slshape\rightmark}}%
+    \fancyhead[er,ol]{\fancyplain{}{\slshape\leftmark}}%
+  \else
+    \fancyhead[l]{\fancyplain{}{\slshape\rightmark}}%
+    \fancyhead[r]{\fancyplain{}{\slshape\leftmark}}%
+  \fi
+  \fancyfoot[c]{\rmfamily\thepage}% page number
 }
-\ps@@fancy
-\gdef\ps@fancy{\@fancyplainfalse\ps@@fancy}%
-\ifdim\headwidth<0sp
+\f@nch@initialise
+\def\ps@f@nch@fancyproto{%
+  \ifdim\headwidth<0sp
     \global\advance\headwidth123456789sp\global\advance\headwidth\textwidth
-\fi}
+  \fi
+  \gdef\ps@f@nch@fancyproto{\@fancyplainfalse\f@nch@fancycore}%
+  \@fancyplainfalse\f@nch@fancycore
+}%
+\@namedef{f@nch@ps@f@nch@fancyproto-is-fancyhdr}{}
+\def\ps@fancy{\ps@f@nch@fancyproto}
+\@namedef{f@nch@ps@fancy-is-fancyhdr}{}
 \def\ps@fancyplain{\ps@fancy \let\ps@plain\ps@plain@fancy}
-\def\ps@plain@fancy{\@fancyplaintrue\ps@@fancy}
-\let\ps@@empty\ps@empty
-\def\ps@@fancy{%
-  \ps@@empty
+\def\ps@plain@fancy{\@fancyplaintrue\f@nch@fancycore}
+\let\f@nch@ps@empty\ps@empty
+\def\f@nch@fancycore{%
+  \f@nch@ps@empty
   \def\@mkboth{\protect\markboth}%
   \def\@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh}%
   \def\@oddfoot{\f@nch@foot\f@nch@Oolf\f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@Oorf}%
   \def\@evenhead{\f@nch@head\f@nch@Oelh\f@nch@elh\f@nch@ech\f@nch@erh\f@nch@Oerh}%
   \def\@evenfoot{\f@nch@foot\f@nch@Oelf\f@nch@elf\f@nch@ecf\f@nch@erf\f@nch@Oerf}%
 }
+\def\ps@fancydefault{%
+  \f@nch@initialise
+  \ps@f@nch@fancyproto
+}
+\@namedef{f@nch@ps@fancydefault-is-fancyhdr}{}
 \def\f@nch@Oolh{\if@reversemargin\hss\else\relax\fi}
 \def\f@nch@Oorh{\if@reversemargin\relax\else\hss\fi}
 \let\f@nch@Oelh\f@nch@Oorh
@@ -268,8 +421,22 @@
 \newcommand\ifbotfloat[2]{\ifx\botfloat\empty #2\else #1\fi}%
 \newcommand\iffloatpage[2]{\if@fcolmade #1\else #2\fi}%
 \newcommand\iffootnote[2]{\iff@nch@footnote #1\else #2\fi}%
-\newcommand{\fancypagestyle}[2]{%
-  \@namedef{ps@#1}{\let\f@nch@gbl\relax#2\relax\ps@fancy}}
+\newcommand{\fancypagestyle}[1]{%
+  \@ifnextchar[{\f@nch@pagestyle{#1}}{\f@nch@pagestyle{#1}[f@nch@fancyproto]}%
+}
+\def\f@nch@pagestyle#1[#2]#3{%
+  \f@nch@ifundefined{ps@#2}{%
+    \f@nch@errmsg{\string\fancypagestyle: Unknown base page style `#2'}%
+  }{%
+    \f@nch@ifundefined{f@nch@ps@#2-is-fancyhdr}{%
+      \f@nch@errmsg{\string\fancypagestyle: Base page style `#2' is not fancyhdr-based}%
+    }%
+    {%
+      \@namedef{ps@#1}{\let\f@nch@gbl\relax\@nameuse{ps@#2}#3\relax}%
+      \@namedef{f@nch@ps@#1-is-fancyhdr}{}%
+    }%
+  }%
+}%
 \endinput
 %%
 %% End of file `fancyhdr.sty'.
