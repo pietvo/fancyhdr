@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2019/01/31 v3.10
+           [2019/03/15 v4.0beta
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2019 by Piet van Oostrum <piet@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,9 +37,9 @@
     \expandafter\@secondoftwo
     \fi}
 \newcommand\f@nch@errmsg[1]{%
-  \f@nch@ifundefined{PackageError}{\errmessage{#1}}{\PackageError{Fancyhdr}{#1}{}}}
+  \f@nch@ifundefined{PackageError}{\errmessage{#1}}{\PackageError{fancyhdr}{#1}{}}}
 \newcommand\f@nch@warning[1]{%
-  \f@nch@ifundefined{PackageWarning}{\errmessage{#1}}{\PackageWarning{Fancyhdr}{#1}{}}}
+  \f@nch@ifundefined{PackageWarning}{\errmessage{#1}}{\PackageWarning{fancyhdr}{#1}{}}}
 \newcommand{\f@nch@forc}[3]{\expandafter\f@rc\expandafter#1\expandafter{#2}{#3}}
 \newcommand{\f@rc}[3]{\def\temp@ty{#2}\ifx\@empty\temp@ty\else
                                     \f@nch@rc#1#2\f@nch@rc{#3}\fi}
@@ -150,18 +150,27 @@
   \fancyhead[r]{\fancyplain{}{\slshape\leftmark}}
 \fi
 \fancyfoot[c]{\rmfamily\thepage} % page number
+\newif\iff@nch@check
+\f@nch@checktrue
+\DeclareOption{nocheck}{%
+  \f@nch@checkfalse
+}
 \newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
   \ifdim\ht0>#1\relax
-    \f@nch@warning{%
-      \string#1 is too small (\the#1): ^^J%
-      Make it at least \the\ht0.^^J%
-      We now make it that large for the rest of the document.^^J%
-      This may cause the page layout to be inconsistent, however\@gobble
-    }%
-    \dimen0=#1\relax
-    \global#1=\ht0\relax
-    \ht0=\dimen0 %
+    \iff@nch@check
+      \dimen0=#1\advance\dimen0-\ht0
+      \f@nch@warning{%
+        \string#1 is too small (\the#1): \MessageBreak%
+        Make it at least \the\ht0, for example:\MessageBreak%
+        \string\setlength{\string#1}{\the\ht0}%
+        \ifx#1\headheight .\MessageBreak%
+          You might also make \topmargin smaller:\MessageBreak%
+          \string\addtolength{\string\topmargin}{\the\dimen0}%
+        \fi\@gobble
+      }%
+    \fi
+    \ht0=#1%
   \fi
   \box0}
 \newcommand\f@nch@head[5]{%
@@ -270,6 +279,7 @@
 \newcommand\iffootnote[2]{\iff@nch@footnote #1\else #2\fi}%
 \newcommand{\fancypagestyle}[2]{%
   \@namedef{ps@#1}{\let\f@nch@gbl\relax#2\relax\ps@fancy}}
+\ProcessOptions*
 \endinput
 %%
 %% End of file `fancyhdr.sty'.

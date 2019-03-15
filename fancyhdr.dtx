@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2019/01/31 v3.10
+%<fancyhdr|fancyheadings|extramarks>           [2019/03/15 v4.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -70,6 +70,7 @@
 \newcommand{\CmdIndex}[1]{\index{#1=\string\texttt{\bs#1}}}
 \newcommand{\TTindex}[1]{\index{#1=\string\texttt{#1}}}
 \newcommand{\PSindex}[1]{\index{page style>#1=\string\texttt{#1}}}
+\newcommand{\OPTindex}[1]{\index{option>#1=\string\texttt{#1}}}
 \renewcommand{\topfraction}{0.9}
 \renewcommand{\bottomfraction}{0.9}
 \renewcommand{\textfraction}{0.05}
@@ -91,7 +92,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1045}
+% \CheckSum{0}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -132,10 +133,11 @@
 %   proper placement of figures and tables (collectively called floats) on
 %   the page. 
 % 
-%   This documentation describes version 3.10 or later of the
+%   This documentation describes version 4.0 or later of the
 % \Package{fancyhdr} and \Package{extramarks} packages. The user
 % documentation is valid for the versions 3.8 or later of the
-% \Package{fancyhdr} package and version 2.1 or later of the
+% \Package{fancyhdr} package (except for the changes mentioned in
+% section~\ref{sec:version-4}), and version 2.1 or later of the
 % \Package{extramarks} package.
 % 
 % \end{abstract}
@@ -170,7 +172,27 @@
 %
 % The package \Package{fancyhdr} gives you several commands to define
 % headers and footers of the pages in a \latex/ document.
-%
+% You load the package with the following command in the preamble:
+% \begin{quote}
+% \verb|\usepackage|\oarg{options}|{fancyhdr}|
+% \end{quote}
+% (Options are available since version 4.)
+% The following options are supported:
+% \begin{center}
+% \begin{tabular}{ l l }
+% \toprule
+% Option & Meaning \\
+% \midrule
+% \texttt{nocheck} & do not check the heights of the header and footer \\
+%                  & (see section~\ref{sec:warning} on page~\pageref{sec:warning})\\
+%   ^^A \texttt{empty} & redefine the \texttt{empty} page style to be fancy-based \\
+%   ^^A \texttt{plain} & redefine the \texttt{plain} page style to be fancy-based \\
+%   ^^A \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
+%   ^^A \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
+% \bottomrule
+% \end{tabular}
+% \end{center}
+% \OPTindex{nocheck}
 % \DescribeMacro{\fancyhead}
 % \DescribeMacro{\fancyfoot}
 % \DescribeMacro{\fancyhf}
@@ -1012,8 +1034,9 @@
 % otherwise you may get error messages ``Overfull \cs{vbox} \ldots has
 % occurred while \cs{output} is active''^^A
 % \footnote{If you use \texttt{11pt} or \texttt{12pt} you will probably also
-%   have to do this, because \LaTeX's defaults are quite small}.
-% See Section 4.1 of the \latex/ \emph{Companion} for detail.
+%   have to do this, because \LaTeX's defaults are quite small}. See the
+% warning below.
+% See also Section 4.1 of the \latex/ \emph{Companion} for detail.
 % 
 % For instance, the following code will place  the section title and the
 % subsection title of an article in two lines in the upper right hand
@@ -1054,20 +1077,38 @@
 %
 % The redefined \cs{headrule} should preferably take up no vertical space, as in the example above, and as in the standard definition. If it does take vertical space, the header may come too close to the text, or even intrude in the text. In that case \Package{fancyhdr} will give you a warning that \cs{headheight} is too small. Like
 % \begin{verbatim}
-% Package Fancyhdr Warning: \headheight is too small (12.0pt):
-% Make it at least 14.0pt.
-% We now make it that large for the rest of the document.
-% This may cause the page layout to be inconsistent, however.
+% Package fancyhdr Warning: \headheight is too small (12.0pt):
+% (fancyhdr)                Make it at least 14.0pt, for example:
+% (fancyhdr)                \setlength{\headheight}{14.0pt}.
+% (fancyhdr)                You might also make \topmargin smaller:
+% (fancyhdr)                \addtolength{\topmargin}{-2.0pt}.
 % \end{verbatim}
-% As the warning says, \Package{fancyhdr} will change the
-% \cs{headheight} itself, but this is too late for the current page. For
-% subsequent pages it will have effect, but now the text on these pages
-% will come out lower than on this page. So you are strongly advised to
+% \label{sec:warning}\index{Warning}
+% You will probably get this warning on every page.
+% \textbf{Note:} Before version 4, \Package{fancyhdr} would change the
+% \cs{headheight} itself, causing the text on the following pages
+% to come out lower than on this page. This appeared to be confusing, so
+% since version~4 this is no longer done. Therefore you are strongly advised to
 % redefine \cs{headheight} in the preamble, like this:
 % \begin{verbatim}
-% \setlength\headheight{14pt}
+% \setlength{\headheight}{14pt}
+% \end{verbatim}
+% This would cause the main text to be put 2pt lower on the page, which
+% might be undesirable. You can compensate this by making \cs{topmargin}
+% correspondingly smaller, for example
+% \begin{verbatim}
+% \addtolength{\topmargin}{-2pt}
 % \end{verbatim}
 % A similar change would be necessary for \cs{footskip} if the footer comes out too tall.
+%
+% You can also eliminate this check completely by using the
+% \OPTindex{nocheck}
+% \texttt{nocheck} option of the package. But this may risk unwanted
+% run-ins of the header or footer with other text. So this is generally
+% discouraged. It is better to change \cs{headheight}, \cs{footskip},
+% and/or \cs{topmargin}. But in cases where you generate the \latex/
+% code automatically, and the software does not know how tall the header
+% or footer will be, this may be handy.
 %
 % As an alternative to changing \cs{headrulewidth} to 0 to have the rule
 % disappear, you can also make it empty with
@@ -2171,6 +2212,27 @@
 %     vertical space outside of the definition of \cs{footrule}.
 %   \end{itemize}
 % \end{itemize}
+% \subsection{Changes in version 4}
+% \label{sec:version-4}
+% Version 4 introduces a number of significant changes.
+% \begin{itemize}
+% \item Version 4.0, March 15, 2019
+%   \begin{itemize}
+%   \item Options introduced on the \cs{usepackage} command.
+%   \item The check whether the header or footer fits in
+%     \cs{headheight} and \cs{footskip}, respectively, no longer
+%     adjusts these values for the following pages. This appeared to be too
+%     confusing. \\
+%     The \texttt{nocheck} option now eliminates these checks completely, on
+%     your own risk. (See section~\ref{sec:warning} on page~\pageref{sec:warning}.)
+% \item[] \textbf{Note:} The following changes were mostly copied from the
+%   \texttt{nccfancyhdr} package by Alexander I. Rozhenko.
+%
+%
+%   \end{itemize}
+%
+% \end{itemize}
+%
 %
 % \StopEventually{%
 % \PrintChanges
@@ -2590,7 +2652,7 @@
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
 %    \begin{macrocode}
 \newcommand\f@nch@errmsg[1]{%
-  \f@nch@ifundefined{PackageError}{\errmessage{#1}}{\PackageError{Fancyhdr}{#1}{}}}
+  \f@nch@ifundefined{PackageError}{\errmessage{#1}}{\PackageError{fancyhdr}{#1}{}}}
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\f@nch@warning}
@@ -2599,7 +2661,7 @@
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
 %    \begin{macrocode}
 \newcommand\f@nch@warning[1]{%
-  \f@nch@ifundefined{PackageWarning}{\errmessage{#1}}{\PackageWarning{Fancyhdr}{#1}{}}}
+  \f@nch@ifundefined{PackageWarning}{\errmessage{#1}}{\PackageWarning{fancyhdr}{#1}{}}}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2969,6 +3031,18 @@
 \fancyfoot[c]{\rmfamily\thepage} % page number
 %    \end{macrocode}
 %
+% \begin{macro}{\iff@nch@check}
+% Boolean for the \texttt{nocheck} option.
+% \changes{fancyhdr v4.0}{2019/03/15}{Implement the \texttt{nocheck} option}
+%    \begin{macrocode}
+\newif\iff@nch@check
+\f@nch@checktrue
+\DeclareOption{nocheck}{%
+  \f@nch@checkfalse
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\f@nch@vbox}
 % Make a \cs{vbox} with the header or footer. Check whether there is
 % enough space and give a warning if not.
@@ -2980,19 +3054,25 @@
 %
 % \changes{fancyhdr v3.10}{2019/01/25}{Don't use \cs{global}\cs{setlength}.}
 % \changes{fancyhdr v3.10}{2019/01/26}{Use \cs{newcommand} instead of \cs{def}.}
+% \changes{fancyhdr v4.0}{2019/03/15}{Don't adjust the \cs{headheight}/\cs{footskip}}
+% \changes{fancyhdr v4.0}{2019/03/15}{Don't check when the \texttt{nocheck} option is given}
 %    \begin{macrocode}
 \newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
   \ifdim\ht0>#1\relax
-    \f@nch@warning{%
-      \string#1 is too small (\the#1): ^^J%
-      Make it at least \the\ht0.^^J%
-      We now make it that large for the rest of the document.^^J%
-      This may cause the page layout to be inconsistent, however\@gobble
-    }%
-    \dimen0=#1\relax
-    \global#1=\ht0\relax
-    \ht0=\dimen0 %
+    \iff@nch@check
+      \dimen0=#1\advance\dimen0-\ht0
+      \f@nch@warning{%
+        \string#1 is too small (\the#1): \MessageBreak%
+        Make it at least \the\ht0, for example:\MessageBreak%
+        \string\setlength{\string#1}{\the\ht0}%
+        \ifx#1\headheight .\MessageBreak%
+          You might also make \topmargin smaller:\MessageBreak%
+          \string\addtolength{\string\topmargin}{\the\dimen0}%
+        \fi\@gobble
+      }%
+    \fi
+    \ht0=#1%
   \fi
   \box0}
 %    \end{macrocode}
@@ -3306,6 +3386,12 @@
   \@namedef{ps@#1}{\let\f@nch@gbl\relax#2\relax\ps@fancy}}
 %    \end{macrocode}
 % \end{macro}
+% Finally, we process the options.
+% \changes{fancyhdr v4.0}{2019/03/15}{Process package options.}
+% \SpecialUsageIndex{\ProcessOptions}
+%    \begin{macrocode}
+\ProcessOptions*
+%    \end{macrocode}
 %</fancyhdr>
 %
 % \section{extramarks.sty}
