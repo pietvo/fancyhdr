@@ -150,6 +150,37 @@
   \fancyhead[r]{\fancyplain{}{\slshape\leftmark}}
 \fi
 \fancyfoot[c]{\rmfamily\thepage} % page number
+\newcommand*{\fancycenter}[1][1em]{%
+  \@ifnextchar[{\f@nch@center{#1}}{\f@nch@center{#1}[3]}%
+}
+\def\f@nch@center#1[#2]#3#4#5{%
+  \def\@tempa{#4}\ifx\@tempa\@empty
+    \hbox to\linewidth{\color@begingroup{#3}\hfil {#5}\color@endgroup}%
+  \else
+    \setlength\@tempdima{#1}%
+    \setlength{\@tempdimb}{#2\@tempdima}%
+    \@tempdimc \@tempdimb \advance\@tempdimc -\@tempdima
+    \setlength\@tempskipa{\@tempdimb \@plus 1fil \@minus \@tempdimc}%
+    \@tempskipb\@tempskipa
+    \def\@tempa{#3}\ifx\@tempa\@empty
+      \addtolength\@tempskipa{\z@ \@minus \@tempdima}%
+    \fi
+    \def\@tempa{#5}\ifx\@tempa\@empty % empty right
+      \addtolength\@tempskipb{\z@ \@minus \@tempdima}%
+    \fi
+    \settowidth{\@tempdimb}{#3}%
+    \settowidth{\@tempdimc}{#5}%
+    \ifdim\@tempdimb>\@tempdimc
+      \advance\@tempdimb -\@tempdimc
+      \addtolength\@tempskipb{\@tempdimb \@minus \@tempdimb}%
+    \else
+      \advance\@tempdimc -\@tempdimb
+      \addtolength\@tempskipa{\@tempdimc \@minus \@tempdimc}%
+    \fi
+    \hbox to\linewidth{\color@begingroup{#3}\hskip \@tempskipa
+                      {#4}\hskip \@tempskipb {#5}\color@endgroup}%
+  \fi
+}
 \newif\iff@nch@check
 \f@nch@checktrue
 \DeclareOption{nocheck}{%
