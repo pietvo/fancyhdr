@@ -753,9 +753,36 @@
 % \renewcommand{\headrulewidth}{0pt}
 % \renewcommand{\footrulewidth}{0pt}}
 % \end{verbatim}
+%
+%
+% \section{Defining other page styles}
+% \label{sec:fancypagestyle}
+%
+% Just like redefining the \texttt{plain} page style in the previous
+% section, you can define or redefine other page styles based on page
+% style \texttt{fancy}. This is also done with the \cs{fancypagestyle}
+% command. For example:
+% \begin{verbatim}
+% \fancypagestyle{toc}{%
+%   \fancyhf{}%
+%   \fancyhead[RO]{\thepage}%
+%   \fancyhead[RO]{\textsl{TABLE OF CONTENTS}}%
+%   \fancyfoot[C]{\thepage}
+% }
+% \end{verbatim}
+% This defines a special page style \texttt{toc} for use in the table
+% of contents with \Cmd{pagestyle\{toc\}}.
+% Inside the definition you can define the headers and/or footers,
+% change the header and footer rules, and even redefine commands like
+% ^^A\cs{chaptermark} (see section~\ref{sec:options} for an example). The
+% \cs{chaptermark} for an example). The
+% headers and footers that are not redefined inside the
+% \cs{fancypagestyle} definition, are taken from the global page style
+% \texttt{fancy} values.
 % 
 % 
-% \section{The default layout}\label{default}
+% \section{The default layout}
+% \label{default}
 % Let us use the \verb|book.cls| documentclass and the default settings for
 % \Package{fancyhdr}; so we only issue the commands
 % 
