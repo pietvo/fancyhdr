@@ -229,15 +229,6 @@
    {\@normalsize}}%
   {\@newbaseline}% NFSS (2.09) present
   }
-\fancyhf{}
-\if@twoside
-  \fancyhead[el,or]{\fancyplain{}{\slshape\rightmark}}
-  \fancyhead[er,ol]{\fancyplain{}{\slshape\leftmark}}
-\else
-  \fancyhead[l]{\fancyplain{}{\slshape\rightmark}}
-  \fancyhead[r]{\fancyplain{}{\slshape\leftmark}}
-\fi
-\fancyfoot[c]{\rmfamily\thepage} % page number
 \newcommand*{\fancycenter}[1][1em]{%
   \@ifnextchar[{\f@nch@center{#1}}{\f@nch@center{#1}[3]}%
 }
@@ -333,35 +324,50 @@
   }%
   #5%
 }
-\def\headrule{{\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi
-    \hrule\@height\headrulewidth\@width\headwidth
-    \vskip-\headrulewidth}}
-\def\footrule{{\if@fancyplain\let\footrulewidth\plainfootrulewidth\fi
-    \hrule\@width\headwidth\@height\footrulewidth}}
-\def\ps@fancy{%
-  \f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}% for amsbook
 \f@nch@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
-\f@nch@ifundefined{chapter}%
- {\def\sectionmark##1{\markboth{\MakeUppercase{\ifnum \c@secnumdepth>\z@
-        \thesection\hskip 1em\relax
-      \fi ##1}}{}}%
-  \def\subsectionmark##1{\markright {\ifnum \c@secnumdepth >\@ne
-    \thesubsection\hskip 1em\relax \fi ##1}}}%
- {\def\chaptermark##1{\markboth {\MakeUppercase{\ifnum
-      \c@secnumdepth>\m@ne \@chapapp\ \thechapter. \ \fi ##1}}{}}%
-\def\sectionmark##1{\markright{\MakeUppercase{\ifnum \c@secnumdepth >\z@
-      \thesection. \ \fi ##1}}}%
+\f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}%
+\def\f@nch@initialise{%
+  \f@nch@ifundefined{chapter}%
+   {\def\sectionmark##1{\markboth{\MakeUppercase{\ifnum \c@secnumdepth>\z@
+          \thesection\hskip 1em\relax
+        \fi ##1}}{}}%
+    \def\subsectionmark##1{\markright {\ifnum \c@secnumdepth >\@ne
+      \thesubsection\hskip 1em\relax \fi ##1}}}%
+   {\def\chaptermark##1{\markboth {\MakeUppercase{\ifnum
+        \c@secnumdepth>\m@ne \@chapapp\ \thechapter. \ \fi ##1}}{}}%
+    \def\sectionmark##1{\markright{\MakeUppercase{\ifnum \c@secnumdepth >\z@
+        \thesection. \ \fi ##1}}}%
+   }%
+  \def\headrule{{\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi
+      \hrule\@height\headrulewidth\@width\headwidth
+      \vskip-\headrulewidth}}
+  \def\footrule{{\if@fancyplain\let\footrulewidth\plainfootrulewidth\fi
+      \hrule\@width\headwidth\@height\footrulewidth}}
+  \def\headrulewidth{0.4pt}
+  \def\footrulewidth{0pt}
+  \fancyhf{}%
+  \if@twoside
+    \fancyhead[el,or]{\fancyplain{}{\slshape\rightmark}}%
+    \fancyhead[er,ol]{\fancyplain{}{\slshape\leftmark}}%
+  \else
+    \fancyhead[l]{\fancyplain{}{\slshape\rightmark}}%
+    \fancyhead[r]{\fancyplain{}{\slshape\leftmark}}%
+  \fi
+  \fancyfoot[c]{\rmfamily\thepage}% page number
 }
-\ps@@fancy
-\gdef\ps@fancy{\@fancyplainfalse\ps@@fancy}%
-\ifdim\headwidth<0sp
+\f@nch@initialise
+\def\ps@fancy{%
+  \ifdim\headwidth<0sp
     \global\advance\headwidth123456789sp\global\advance\headwidth\textwidth
-\fi}
+  \fi
+  \gdef\ps@fancy{\@fancyplainfalse\ps@f@nch@fancyproto}%
+  \@fancyplainfalse\ps@f@nch@fancyproto
+}%
 \def\ps@fancyplain{\ps@fancy \let\ps@plain\ps@plain@fancy}
-\def\ps@plain@fancy{\@fancyplaintrue\ps@@fancy}
-\let\ps@@empty\ps@empty
-\def\ps@@fancy{%
-  \ps@@empty
+\def\ps@plain@fancy{\@fancyplaintrue\ps@f@nch@fancyproto}
+\let\f@nch@ps@empty\ps@empty
+\def\ps@f@nch@fancyproto{%
+  \f@nch@ps@empty
   \def\@mkboth{\protect\markboth}%
   \def\@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh}%
   \def\@oddfoot{\f@nch@foot\f@nch@Oolf\f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@Oorf}%
