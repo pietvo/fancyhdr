@@ -784,15 +784,18 @@
 % \section{The default layout}
 % \label{default}
 % Let us use the \verb|book.cls| documentclass and the default settings for
-% \Package{fancyhdr}; so we only issue the commands
-% 
+% \Package{fancyhdr}; so we don't use any of the page style options in
+% the \Cmd{usepackage\{fancyhdr\}}command, and we don't redefine any
+% headers or footers.
 % \begin{verbatim}
 % \usepackage{fancyhdr}
 % \pagestyle{fancy}
 % \end{verbatim}
-% and let \Package{fancyhdr} take care of everything.  On the
-% pages where new chapters start, we get a centered page number in
-% the footer; there is no header, and there are no decorative lines.
+% and let \Package{fancyhdr} take care of everything.  As mentioned
+% before, we get a layout that is very similar to the page style \texttt{headings}.
+%
+% On the pages where new chapters start, we get a centered page number
+% in the footer; there is no header, and there are no decorative lines.
 % 
 % On an even page, we get the layout:
 % 
