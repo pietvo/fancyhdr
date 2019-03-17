@@ -37,8 +37,6 @@
 }
 \def\f@nch@def#1#2{\if@nch@mpty{#2}\f@nch@gbl\def#1{\leavevmode}\else
                                    \f@nch@gbl\def#1{#2\strut}\fi}
-%%%%%%%%% More options here
-\ProcessOptions*
 \newcommand{\f@nch@ifundefined}[1]{%
   \begingroup\expandafter\expandafter\expandafter\endgroup
   \expandafter\ifx\csname #1\endcsname\relax
@@ -46,6 +44,84 @@
   \else
     \expandafter\@secondoftwo
     \fi}
+\DeclareOption{myheadings}{%
+  \f@nch@ifundefined{chapter}{%
+    \def\ps@myheadings{\ps@fancy \let\@mkboth\@gobbletwo
+      \fancyhf{}
+      \fancyhead[LE,RO]{\thepage}%
+      \fancyhead[RE]{\slshape\leftmark}%
+      \fancyhead[LO]{\slshape\rightmark}%
+      \let\sectionmark\@gobble
+      \let\subsectionmark\@gobble
+    }%
+  }%
+  {\def\ps@myheadings{\ps@fancy \let\@mkboth\@gobbletwo
+      \fancyhf{}
+      \fancyhead[LE,RO]{\thepage}%
+      \fancyhead[RE]{\slshape\leftmark}%
+      \fancyhead[LO]{\slshape\rightmark}%
+      \let\chaptermark\@gobble
+      \let\sectionmark\@gobble
+    }%
+  }%
+}
+\DeclareOption{headings}{%
+  \f@nch@ifundefined{chapter}{%
+    \if@twoside
+      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\sectionmark##1{%
+          \markboth{\MakeUppercase{%
+            \ifnum \c@secnumdepth >\z@ \thesection\quad \fi##1}}{}}%
+        \def\subsectionmark##1{%
+          \markright{%
+            \ifnum \c@secnumdepth >\@ne \thesubsection\quad \fi##1}}%
+      }%
+    \else
+      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\sectionmark##1{%
+          \markright {\MakeUppercase{%
+            \ifnum \c@secnumdepth >\z@ \thesection\quad \fi##1}}}%
+        \let\subsectionmark\@gobble % Not needed but inserted for safety
+      }%
+    \fi
+  }{\if@twoside
+      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\chaptermark##1{%
+          \markboth{\MakeUppercase{%
+            \ifnum \c@secnumdepth >\m@ne \if@mainmatter
+              \@chapapp\ \thechapter. \ \fi\fi##1}}{}}%
+        \def\sectionmark##1{%
+          \markright {\MakeUppercase{%
+            \ifnum \c@secnumdepth >\z@ \thesection. \ \fi##1}}}%
+      }%
+    \else
+      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\chaptermark##1{%
+          \markright{\MakeUppercase{%
+            \ifnum \c@secnumdepth >\m@ne \if@mainmatter
+              \@chapapp\ \thechapter. \ \fi\fi##1}}}%
+        \let\sectionmark\@gobble % Not needed but inserted for safety
+      }%
+    \fi
+  }%
+}
+\ProcessOptions*
 \newcommand\f@nch@errmsg[1]{%
   \f@nch@ifundefined{PackageError}{\errmessage{#1}}{\PackageError{fancyhdr}{#1}{}}}
 \newcommand\f@nch@warning[1]{%

@@ -777,8 +777,7 @@
 % of contents with \Cmd{pagestyle\{toc\}}.
 % Inside the definition you can define the headers and/or footers,
 % change the header and footer rules, and even redefine commands like
-% ^^A\cs{chaptermark} (see section~\ref{sec:options} for an example). The
-% \cs{chaptermark} for an example). The
+% \cs{chaptermark} (see section~\ref{sec:options} for an example). The
 % headers and footers that are not redefined inside the
 % \cs{fancypagestyle} definition, are taken from the global page style
 % \texttt{fancy} values.
@@ -2859,15 +2858,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-%%%%%%%%% More options here
-%
-% Process the options.
-% \changes{fancyhdr v4.0}{2019/03/15}{Process package options.}
-% \SpecialUsageIndex{\ProcessOptions}
-%    \begin{macrocode}
-\ProcessOptions*
-%    \end{macrocode}
-%
 % \begin{macro}{\f@nch@ifundefined}
 % This macro tests if a command is undefined. Older versions of
 % fancyhdr used \cs{@ifundefined}, but this had an undesired side effect
@@ -2892,9 +2882,134 @@
 % \end{macrocode}
 % \end{macro}
 %
+% \changes{fancyhdr v4.0}{2019/03/17}{Added \texttt{headings} and
+% \texttt{myheadings} options.}
+% Standard styles are redefined optionally. These definitions are
+% borrowed from the \Package{nccfancyhdr} package by by Alexander I. Rozhenko.
+%
+% \begin{macro}{\ps@myheadings}
+% The redefinition of the \texttt{myheadings} style is conditional.
+% We test the existence of the \cs{chapter} command and redefine the
+% style accordingly.
+%
+% \OPTindex{myheadings}\PSindex{myheadings}
+%    \begin{macrocode}
+\DeclareOption{myheadings}{%
+  \f@nch@ifundefined{chapter}{%
+%    \end{macrocode}
+% An article-like class without chapters:
+%    \begin{macrocode}
+    \def\ps@myheadings{\ps@fancy \let\@mkboth\@gobbletwo
+      \fancyhf{}
+      \fancyhead[LE,RO]{\thepage}%
+      \fancyhead[RE]{\slshape\leftmark}%
+      \fancyhead[LO]{\slshape\rightmark}%
+      \let\sectionmark\@gobble
+      \let\subsectionmark\@gobble
+    }%
+  }%
+%    \end{macrocode}
+% A book/report-like class with chapters:
+%    \begin{macrocode}
+  {\def\ps@myheadings{\ps@fancy \let\@mkboth\@gobbletwo
+      \fancyhf{}
+      \fancyhead[LE,RO]{\thepage}%
+      \fancyhead[RE]{\slshape\leftmark}%
+      \fancyhead[LO]{\slshape\rightmark}%
+      \let\chaptermark\@gobble
+      \let\sectionmark\@gobble
+    }%
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ps@headings}
+% The redefinition of the \texttt{headings} style also differs for
+% book-like and article-like classes. It also differs for
+% one-side and two-side modes.
+%    \begin{macrocode}
+\DeclareOption{headings}{%
+  \f@nch@ifundefined{chapter}{%
+    \if@twoside
+%    \end{macrocode}
+% An article in two-side mode:
+%    \begin{macrocode}
+      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\sectionmark##1{%
+          \markboth{\MakeUppercase{%
+            \ifnum \c@secnumdepth >\z@ \thesection\quad \fi##1}}{}}%
+        \def\subsectionmark##1{%
+          \markright{%
+            \ifnum \c@secnumdepth >\@ne \thesubsection\quad \fi##1}}%
+      }%
+    \else
+%    \end{macrocode}
+% An article in one-side mode:
+%    \begin{macrocode}
+      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\sectionmark##1{%
+          \markright {\MakeUppercase{%
+            \ifnum \c@secnumdepth >\z@ \thesection\quad \fi##1}}}%
+        \let\subsectionmark\@gobble % Not needed but inserted for safety
+      }%
+    \fi
+  }{\if@twoside
+%    \end{macrocode}
+% A book in two-side mode:
+%    \begin{macrocode}
+      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\chaptermark##1{%
+          \markboth{\MakeUppercase{%
+            \ifnum \c@secnumdepth >\m@ne \if@mainmatter
+              \@chapapp\ \thechapter. \ \fi\fi##1}}{}}%
+        \def\sectionmark##1{%
+          \markright {\MakeUppercase{%
+            \ifnum \c@secnumdepth >\z@ \thesection. \ \fi##1}}}%
+      }%
+    \else
+%    \end{macrocode}
+% A book in one-side mode:
+%    \begin{macrocode}
+      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\chaptermark##1{%
+          \markright{\MakeUppercase{%
+            \ifnum \c@secnumdepth >\m@ne \if@mainmatter
+              \@chapapp\ \thechapter. \ \fi\fi##1}}}%
+        \let\sectionmark\@gobble % Not needed but inserted for safety
+      }%
+    \fi
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% Process the options.
+% \changes{fancyhdr v4.0}{2019/03/15}{Process package options.}
+% \SpecialUsageIndex{\ProcessOptions}
+%    \begin{macrocode}
+\ProcessOptions*
+%    \end{macrocode}
+%
 % \begin{macro}{\f@nch@errmsg}
 %   This macro generates an error message.
-% \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{\f@nch@ifundefined} instead of \cs{ifx}.}
+% \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{f@nch@ifundefined} instead of \cs{ifx}.}
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
 %    \begin{macrocode}
 \newcommand\f@nch@errmsg[1]{%
