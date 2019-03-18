@@ -31,9 +31,14 @@
 \DeclareOption{nocheck}{%
   \f@nch@checkfalse
 }
+\let\f@nch@gbl\relax
+\DeclareOption{compatV3}{%
+  \let\f@nch@gbl\global
+}
 \def\f@nch@def#1#2{\if@nch@mpty{#2}\f@nch@gbl\def#1{\leavevmode}\else
                                    \f@nch@gbl\def#1{#2\strut}\fi}
-\let\f@nch@gbl\global
+%%%%%%%%% More options here
+\ProcessOptions*
 \newcommand{\f@nch@ifundefined}[1]{%
   \begingroup\expandafter\expandafter\expandafter\endgroup
   \expandafter\ifx\csname #1\endcsname\relax
@@ -310,7 +315,6 @@
 \newcommand\iffootnote[2]{\iff@nch@footnote #1\else #2\fi}%
 \newcommand{\fancypagestyle}[2]{%
   \@namedef{ps@#1}{\let\f@nch@gbl\relax#2\relax\ps@fancy}}
-\ProcessOptions*
 \endinput
 %%
 %% End of file `fancyhdr.sty'.
