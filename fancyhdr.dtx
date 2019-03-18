@@ -2697,6 +2697,19 @@
 \def\if@nch@mpty#1{\def\temp@a{#1}\ifx\temp@a\@empty}
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{\iff@nch@check}
+% Boolean for the \texttt{nocheck} option.
+% \changes{fancyhdr v4.0}{2019/03/15}{Implement the \texttt{nocheck} option}
+% \OPTindex{nocheck}
+%    \begin{macrocode}
+\newif\iff@nch@check
+\f@nch@checktrue
+\DeclareOption{nocheck}{%
+  \f@nch@checkfalse
+}
+%    \end{macrocode}
+% \end{macro}
 % 
 % \begin{macro}{\f@nch@def}
 % This macro defines another macro (usually a header or footer field).
@@ -2711,10 +2724,13 @@
 % \end{macro}
 % \begin{macro}{\f@nch@gbl}
 % Initialize \cs{f@nch@gbl} to \cs{global}.
+%
+% Process the options.
+% \changes{fancyhdr v4.0}{2019/03/15}{Process package options.}
+% \SpecialUsageIndex{\ProcessOptions}
 %    \begin{macrocode}
-\let\f@nch@gbl\global
+\ProcessOptions*
 %    \end{macrocode}
-% \end{macro}
 %
 % \begin{macro}{\f@nch@ifundefined}
 % This macro tests if a command is undefined. Older versions of
@@ -3199,18 +3215,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\iff@nch@check}
-% Boolean for the \texttt{nocheck} option.
-% \changes{fancyhdr v4.0}{2019/03/15}{Implement the \texttt{nocheck} option}
-%    \begin{macrocode}
-\newif\iff@nch@check
-\f@nch@checktrue
-\DeclareOption{nocheck}{%
-  \f@nch@checkfalse
-}
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\f@nch@vbox}
 % Make a \cs{vbox} with the header or footer. Check whether there is
 % enough space and give a warning if not.
@@ -3554,12 +3558,6 @@
   \@namedef{ps@#1}{\let\f@nch@gbl\relax#2\relax\ps@fancy}}
 %    \end{macrocode}
 % \end{macro}
-% Finally, we process the options.
-% \changes{fancyhdr v4.0}{2019/03/15}{Process package options.}
-% \SpecialUsageIndex{\ProcessOptions}
-%    \begin{macrocode}
-\ProcessOptions*
-%    \end{macrocode}
 %</fancyhdr>
 %
 % \section{extramarks.sty}

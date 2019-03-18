@@ -26,6 +26,11 @@
 % Copyright (C) 1994-2019 by Piet van Oostrum <piet@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\if@nch@mpty#1{\def\temp@a{#1}\ifx\temp@a\@empty}
+\newif\iff@nch@check
+\f@nch@checktrue
+\DeclareOption{nocheck}{%
+  \f@nch@checkfalse
+}
 \def\f@nch@def#1#2{\if@nch@mpty{#2}\f@nch@gbl\def#1{\leavevmode}\else
                                    \f@nch@gbl\def#1{#2\strut}\fi}
 \let\f@nch@gbl\global
@@ -180,11 +185,6 @@
     \hbox to\linewidth{\color@begingroup{#3}\hskip \@tempskipa
                       {#4}\hskip \@tempskipb {#5}\color@endgroup}%
   \fi
-}
-\newif\iff@nch@check
-\f@nch@checktrue
-\DeclareOption{nocheck}{%
-  \f@nch@checkfalse
 }
 \newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
