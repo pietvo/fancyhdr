@@ -852,12 +852,18 @@
 % footers in this way, but instead define your
 % own page style, as explained in section~\ref{sec:fancypagestyle}.
 %
-% Page style \texttt{fancy}, however, does not have these definitions
-% built-in, but they are global in the document. So if you want to
-% switch from one of these page style to the \texttt{fancy} page style later in
-% the document, you will have to redefine the \cs{chaptermark} and/or
+% \section{Switching page styles}
+% \label{sec:switching}
+%
+% Page style \texttt{fancy}, does not have the definitions
+% of the headers and footers
+% built-in, but they are global in the document, or local in a group.
+% This also applies to the definitions of the  \cs{chaptermark} and/or
+% \cs{[sub]sectionmark} commands. So if you want to
+% switch from another page style to the \texttt{fancy} page style later in
+% the document, you will have to redefine yourself the \cs{chaptermark} and/or
 % \cs{[sub]sectionmark} commands and maybe also the definitions of the
-% headers and footer yourself at that point.
+% headers and footers, at that point.
 % For example
 % \begin{verbatim}
 % \pagestyle{fancy}
@@ -867,16 +873,26 @@
 % Please note that you have to double the \verb|#| signs, because the
 % definitions are inside a macro.
 %
+% If the previous page style was one of the standard \LaTeX{} page
+% styles, or some page style that is not based on \Package{fancyhdr},
+% then the definitions of \cs{fancyhead} or \cs{fancyfoot} are not
+% affected. So strictly you don't have to include them. But if it was
+% based on \Package{fancyhdr} and had different definitions, you will
+% get the wrong headers and/or footers when you switch back to page
+% style \texttt{fancy}. So it is safer to include them anyway.
+%
 % A better possibility is to define your own page style, and include
 % these definitions in that page style:
 % \begin{verbatim}
 % \fancypagestyle{myfancy}{
 %   \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
 %   \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
+%   \fancyhead{...}
 % }
 % ...
 % \pagestyle{myfancy}
 % \end{verbatim}
+%
 % If you want to restore the original \cs{...mark} commands from page
 % style \texttt{fancy} you can use
 % \begin{verbatim}
