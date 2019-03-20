@@ -185,8 +185,9 @@
 % \midrule
 % \texttt{nocheck} & do not check the heights of the header and footer \\
 %                  & (see section~\ref{sec:warning} on page~\pageref{sec:warning})\\
-% \texttt{compatV3} & define fancy headers and footers globally as in version~3 \\
-%                  & (see section~\ref{sec:options}) \\
+% \texttt{compatV3} & keep some behaviour (now considered undesirable) as in version~3 \\
+%          & (see section~\ref{sec:options} and section~\ref{sec:warning} on
+%                                              page~\pageref{sec:warning}) \\
 % \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
 % \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
 % \bottomrule
@@ -799,39 +800,48 @@
 % Option & Meaning \\
 % \midrule
 % \texttt{nocheck} & do not check the heights of the header and footer \\
-% \texttt{compatV3} & define fancy headers and footers globally as in
-% version~3 \\
+% \texttt{compatV3} & keep some behaviour (now considered undesirable) as in version~3 \\
 % \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
 % \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
 % \bottomrule
 % \end{tabular}
 % \end{center}
 %
-% Option \texttt{nocheck} is described in
-% section~\ref{sec:warning} on page~\pageref{sec:warning}.
+% \begin{itemize}
+% \item \OPTindex{nocheck}Option \texttt{nocheck} is described in section~\ref{sec:warning} on
+%   page~\pageref{sec:warning}.
 %
-% \OPTindex{compatV3}
-% Option \texttt{compatV3} keeps a fancyhdr version~3 (or earlier)
-% behaviour that is now considered buggy. In these versions the changes
-% to the \Package{fancyhdr} headers and footers (including those by \cs{fancyhead},
-% \cs{fancyheadoffset} and similar commands) are made globally, except
-% within a page style defined by \cs{fancypagestyle}. That is,
-% when these commands are given inside a \LaTeX{} group, they affect the
-% whole document, not only the group. If your document depends on this
-% behaviour, you can give the \texttt{compatV3} package option. However,
-% this is only considered a short-time solution. You should change your
-% document as soon as possible to work around this problem. In version~4
-% and later, the changes are always local without this option. The
-% option is scheduled to disappear in version~5 of \Package{fancyhdr}.
+% \item \OPTindex{compatV3}Option \texttt{compatV3} keeps two fancyhdr
+%   version~3 (or earlier) behaviours that are now considered undesirable.
+%   \begin{enumerate}
+%   \item The automatic adjustment of \cs{headheight} or \cs{footskip}
+%     when these are too small. This causes the page layout to be
+%     inconsistent. See section~\ref{sec:warning} on
+%     page~\pageref{sec:warning}.
+%   \item In these previous versions the changes to the
+%     \Package{fancyhdr} headers and footers (including those by
+%     \cs{fancyhead}, \cs{fancyheadoffset} and similar commands) are
+%     made globally, except within a page style defined by
+%     \cs{fancypagestyle}. That is, when these commands are given inside
+%     a \LaTeX{} group, they affect the whole document, not only the
+%     group. If your document depends on this behaviour, you can give
+%     the \texttt{compatV3} package option. However, this is only
+%     considered a short-time solution. You should change your document
+%     as soon as possible to work around this problem. In version~4 and
+%     later, without this option, the changes are always local.
+%   \end{enumerate}
+%   The option is scheduled to disappear in version~5 of
+%   \Package{fancyhdr}.
 %
-% \PSindex{headings}\PSindex{myheadings}\OPTindex{headings}\OPTindex{myheadings}
-% The options \texttt{headings} and
-% \texttt{myheadings} redefine the corresponding page style with
-% fancyhdr commands (including a decorative line under the header), so
-% that you can later select this page style as the page style for
-% (part of) the document\footnote{These options were copied from the
-% \texttt{nccfancyhdr} package, but contrary to that package, they are
-% not automatically selected.}.
+% \item \PSindex{headings}\PSindex{myheadings}\OPTindex{headings}\OPTindex{myheadings}
+%   The options \texttt{headings} and \texttt{myheadings} redefine the
+%   corresponding page style with fancyhdr commands (including a
+%   decorative line under the header), so that you can later select this
+%   page style as the page style for (part of) the
+%   document\footnote{These options were copied from the
+%   \texttt{nccfancyhdr} package, but contrary to that package, they are
+%   not automatically selected.}.
+% \end{itemize}
 %
 % \PSindex{headings}
 % The page style \texttt{headings} is in some aspects similar to the default page
@@ -1304,7 +1314,10 @@
 % \textbf{Note:} Before version 4, \Package{fancyhdr} would change the
 % \cs{headheight} itself, causing the text on the following pages
 % to come out lower than on this page. This appeared to be confusing, so
-% since version~4 this is no longer done. Therefore you are strongly advised to
+% since version~4 this is no longer done (except when you give the
+% \OPTindex{compatV3}%
+% \texttt{compatV3} package option; you should not give this as a
+% permanent solution, however, but solve the problem). Therefore you are strongly advised to
 % redefine \cs{headheight} in the preamble, like this:
 % \begin{verbatim}
 % \setlength{\headheight}{14pt}
@@ -2438,7 +2451,8 @@
 %   \item The check whether the header or footer fits in
 %     \cs{headheight} and \cs{footskip}, respectively, no longer
 %     adjusts these values for the following pages. This appeared to be too
-%     confusing. \\
+%     confusing. However, when the package option \texttt{compatV3} is given, the old
+%     behaviour is kept. \\
 %     The \texttt{nocheck} option now eliminates these checks completely, on
 %     your own risk. (See section~\ref{sec:warning} on page~\pageref{sec:warning}.)
 %   \item Eliminated \cs{f@nch@gbl}. All definitions are now local.
@@ -2447,8 +2461,8 @@
 %     you make them locally they should stay local. And it caused several
 %     problems with switching page styles, because then the global style
 %     would be changed, which you generally don't want.\\
-%     However, there is an option \texttt{compatV3} to keep the old
-%     behaviour. See section~\ref{sec:options}.
+%     However, when the package option \texttt{compatV3} is given, the old
+%     behaviour is kept. (See section~\ref{sec:options}.)
 %   \item[] \textbf{Note:} The following changes were mostly copied from the
 %     \texttt{nccfancyhdr} package by Alexander I. Rozhenko.
 %   \item The \cs{fancycenter} command (section~\ref{sec:fancycenter}).
@@ -2844,17 +2858,24 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{\iff@nch@compatViii}
+% Define \cs{iff@nch@compatViii} to track the \texttt{compatV3} option.
+%    \begin{macrocode}
+\newif\iff@nch@compatViii
+%    \end{macrocode}
 % \begin{macro}{\f@nch@gbl}
-% Initialize \cs{f@nch@gbl} to do nothing (except with \texttt{compatV3}
+% Initialize \cs{f@nch@gbl} to do nothing (except with the \texttt{compatV3}
 % option).
-% \changes{fancyhdr v4.0}{2019/03/16}{Remove the \cs{global} in definitions}
+% \changes{fancyhdr v4.0}{2019/03/19}{Remove the \cs{global} in definitions}
 % \changes{fancyhdr v4.0}{2019/03/16}{Implement the \texttt{compatV3} option}
 %    \begin{macrocode}
 \let\f@nch@gbl\relax
 \DeclareOption{compatV3}{%
   \let\f@nch@gbl\global
+  \f@nch@compatViiitrue
 }
 %    \end{macrocode}
+% \end{macro}
 % \end{macro}
 %
 % \begin{macro}{\f@nch@def}
@@ -2863,7 +2884,7 @@
 % global or local.
 % Default it is always local. But with the \texttt{compatV3} option it
 % is \cs{global} in the normal definitions, and local in \cs{fancypagestyle}.
-% The \cs{global} case is now considered a bug.
+% The \cs{global} case is now considered a bug (or at least undesirable).
 %
 % If the value (argument 2) is empty, a \cs{leavevmode} will be substituted.
 % If it is not empty, a \cs{strut} will be added.
@@ -3493,8 +3514,9 @@
 %
 % \changes{fancyhdr v3.10}{2019/01/25}{Don't use \cs{global}\cs{setlength}.}
 % \changes{fancyhdr v3.10}{2019/01/26}{Use \cs{newcommand} instead of \cs{def}.}
-% \changes{fancyhdr v4.0}{2019/03/15}{Don't adjust the \cs{headheight}/\cs{footskip}}
-% \changes{fancyhdr v4.0}{2019/03/15}{Don't check when the \texttt{nocheck} option is given}
+% \changes{fancyhdr v4.0}{2019/03/15}{Don't adjust the
+% \cs{headheight}/\cs{footskip}, except when the \texttt{compatV3} option is given.}
+% \changes{fancyhdr v4.0}{2019/03/15}{Don't check when the \texttt{nocheck} option is given.}
 %    \begin{macrocode}
 \newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
@@ -3502,16 +3524,27 @@
     \iff@nch@check
       \dimen0=#1\advance\dimen0-\ht0
       \f@nch@warning{%
-        \string#1 is too small (\the#1): \MessageBreak%
-        Make it at least \the\ht0, for example:\MessageBreak%
+        \string#1 is too small (\the#1): \MessageBreak
+        Make it at least \the\ht0, for example:\MessageBreak
         \string\setlength{\string#1}{\the\ht0}%
-        \ifx#1\headheight .\MessageBreak%
-          You might also make \topmargin smaller:\MessageBreak%
+        \iff@nch@compatViii .\MessageBreak
+        We now make it that large for the rest of the document.\MessageBreak
+        This may cause the page layout to be inconsistent, however
+        \fi
+        \ifx#1\headheight .\MessageBreak
+          You might also make \topmargin smaller to compensate:\MessageBreak
           \string\addtolength{\string\topmargin}{\the\dimen0}%
-        \fi\@gobble
+        \fi
+        \@gobble
       }%
     \fi
-    \ht0=#1%
+    \iff@nch@compatViii
+      \dimen0=#1\relax
+      \global#1=\ht0\relax
+      \ht0=\dimen0 %
+    \else
+      \ht0=#1%
+    \fi
   \fi
   \box0}
 %    \end{macrocode}

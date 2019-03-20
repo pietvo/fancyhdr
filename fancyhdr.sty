@@ -31,9 +31,11 @@
 \DeclareOption{nocheck}{%
   \f@nch@checkfalse
 }
+\newif\iff@nch@compatViii
 \let\f@nch@gbl\relax
 \DeclareOption{compatV3}{%
   \let\f@nch@gbl\global
+  \f@nch@compatViiitrue
 }
 \def\f@nch@def#1#2{\if@nch@mpty{#2}\f@nch@gbl\def#1{\leavevmode}\else
                                    \f@nch@gbl\def#1{#2\strut}\fi}
@@ -273,16 +275,27 @@
     \iff@nch@check
       \dimen0=#1\advance\dimen0-\ht0
       \f@nch@warning{%
-        \string#1 is too small (\the#1): \MessageBreak%
-        Make it at least \the\ht0, for example:\MessageBreak%
+        \string#1 is too small (\the#1): \MessageBreak
+        Make it at least \the\ht0, for example:\MessageBreak
         \string\setlength{\string#1}{\the\ht0}%
-        \ifx#1\headheight .\MessageBreak%
-          You might also make \topmargin smaller:\MessageBreak%
+        \iff@nch@compatViii .\MessageBreak
+        We now make it that large for the rest of the document.\MessageBreak
+        This may cause the page layout to be inconsistent, however
+        \fi
+        \ifx#1\headheight .\MessageBreak
+          You might also make \topmargin smaller to compensate:\MessageBreak
           \string\addtolength{\string\topmargin}{\the\dimen0}%
-        \fi\@gobble
+        \fi
+        \@gobble
       }%
     \fi
-    \ht0=#1%
+    \iff@nch@compatViii
+      \dimen0=#1\relax
+      \global#1=\ht0\relax
+      \ht0=\dimen0 %
+    \else
+      \ht0=#1%
+    \fi
   \fi
   \box0}
 \newcommand\f@nch@head[5]{%
