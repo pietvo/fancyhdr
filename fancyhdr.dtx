@@ -3761,6 +3761,20 @@
 }
 %    \end{macrocode}
 % \end{macro}
+% \begin{macro}{ps@fancydefault}
+% \changes{fancyhdr v4.0}{2019/03/21}{Added \cs{ps@fancydefault}}
+% This is page style \texttt{fancydefault}. It is in fact page style
+% \texttt{fancy} with all the defaults embedded. In contrast with page
+% style \texttt{fancy} that gets all its settings from the environment.
+% It reruns all initialisations and then calls \cs{ps@f@nch@fancyproto}.
+%    \begin{macrocode}
+\def\ps@fancydefault{%
+  \f@nch@initialise
+  \ps@f@nch@fancyproto
+}
+%    \end{macrocode}
+%
+% \end{macro}
 % 
 % \begin{macro}{\f@nch@Oolh}
 % \begin{macro}{\f@nch@Oorh}
