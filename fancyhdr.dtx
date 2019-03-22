@@ -228,12 +228,16 @@
 % 
 % \DescribeMacro{\headrulewidth}
 % \DescribeMacro{\headrulewidth}
+% \DescribeMacro{\headruleskip}
+% \DescribeMacro{\footruleskip}
 % \DescribeMacro{\headrule}
 % \DescribeMacro{\footrule}
 % \DescribeMacro{\headwidth}
 % \begin{verbatim}
 % \headrulewidth
 % \footrulewidth
+% \headruleskip
+% \footruleskip
 % \headrule
 % \footrule
 % \headwidth
@@ -241,6 +245,8 @@
 %
 % \cs{headrulewidth} and \cs{headrulewidth} are macros to define the
 % thickness of a line under the header and above the footer.
+% \cs{headruleskip} and \cs{footruleskip} are macros that define the
+% distance between the lines and the reader and footer text, respectively.
 % \cs{headrule} and \cs{footrule} are macros to completely redefines
 % these lines. And \cs{headwidth} is a length parameter that defines the
 % total width of the headers and footers. See sections~\ref{sec:simple},
@@ -1426,6 +1432,21 @@
 % of the footer text line. By default it is set to 30\% of the normal line
 % distance. You may want to adjust it if you use unusally large or small
 % fonts in the footer. Change it with \cs{renewcommand}.
+%
+% You can also change the distance between the baseline of the header text and the
+% decorative line in the header. Normally this distance is determined by
+% the maximum depth of possible descenders in the text, which is 30\% of
+% the normal line distance. You can increase or decrease this distance
+% \CmdIndex{headruleskip}
+% \DescribeMacro{\headruleskip}
+% by defining the macro \cs{headruleskip}, similar to \cs{footruleskip}.
+% This defines the extra distance. The default value is 0pt, and
+% positive values make the distance larger, and negative values make the
+% distance shorter. Please note that this does not change the position
+% of the decorative line with respect to the page, but it shifts the
+% header text. If you want to keep the header text fixed, but move the
+% decorative line, then you must also change the parameter \cs{headsep}
+% (see figure~\ref{fig:layout}).
 % 
 % \section{Two book examples}
 % \label{sec:book-examples}
@@ -2506,6 +2527,7 @@
 %     (see section~\ref{sec:options}).
 %   \item The \cs{fancypagestyle} command has an optional parameter \oarg{base-style}.
 %   \item The page style \texttt{fancydefault}.
+%   \item The \cs{headruleskip} parameter.
 %
 %   \end{itemize}
 %
@@ -3361,6 +3383,15 @@
 % \end{macro}
 % \end{macro}
 % 
+%  \begin{macro}{\headruleskip}
+%  Don't define \cs{headruleskip} if it is already defined.
+% \changes{fancyhdr v4.0}{2019/03/22}{Parameter \cs{headruleskip}.}
+%    \begin{macrocode}
+\f@nch@ifundefined{headruleskip}%
+      {\newcommand{\headruleskip}{0pt}}{}
+%    \end{macrocode}
+% \end{macro}
+% 
 %  \begin{macro}{\footruleskip}
 %  Memoir also defines \cs{footruleskip}.
 %  Don't define \cs{footruleskip} if it is already defined.
@@ -3589,6 +3620,7 @@
 %   5. RIGHTSIDE BEARING. This is always \cs{relax} or \cs{hss}
 %   (after expansion).
 %
+% \changes{fancyhdr v4.0}{2019/03/22}{Parameter \cs{headruleskip}.}
 %    \begin{macrocode}
 \newcommand\f@nch@head[5]{%
   #1%
@@ -3602,6 +3634,7 @@
         \hfill
         \llap{\parbox[b]{\headwidth}{\raggedleft#4}}%
       }%
+      \vskip\headruleskip\relax
       \headrule
     }%
   }%
@@ -3707,10 +3740,13 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% Default values for \cs{headrulewidth} and \cs{footrulewidth}.
+% Default values for \cs{headrulewidth}, \cs{footrulewidth},
+% \cs{headruleskip} and \cs{footruleskip}.
 %    \begin{macrocode}
-  \def\headrulewidth{0.4pt}
-  \def\footrulewidth{0pt}
+  \def\headrulewidth{0.4pt}%
+  \def\footrulewidth{0pt}%
+  \def\headruleskip{0pt}%
+  \def\footruleskip{0.3\normalbaselineskip}%
 %    \end{macrocode}
 % Initialization of the head and foot text.
 %

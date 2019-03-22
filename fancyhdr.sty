@@ -206,6 +206,8 @@
 \newlength{\f@nch@O@orf}
 \newcommand{\headrulewidth}{0.4pt}
 \newcommand{\footrulewidth}{0pt}
+\f@nch@ifundefined{headruleskip}%
+      {\newcommand{\headruleskip}{0pt}}{}
 \f@nch@ifundefined{footruleskip}%
       {\newcommand{\footruleskip}{.3\normalbaselineskip}}{}
 \newcommand{\plainheadrulewidth}{0pt}
@@ -301,6 +303,7 @@
         \hfill
         \llap{\parbox[b]{\headwidth}{\raggedleft#4}}%
       }%
+      \vskip\headruleskip\relax
       \headrule
     }%
   }%
@@ -343,8 +346,10 @@
       \vskip-\headrulewidth}}
   \def\footrule{{\if@fancyplain\let\footrulewidth\plainfootrulewidth\fi
       \hrule\@width\headwidth\@height\footrulewidth}}
-  \def\headrulewidth{0.4pt}
-  \def\footrulewidth{0pt}
+  \def\headrulewidth{0.4pt}%
+  \def\footrulewidth{0pt}%
+  \def\headruleskip{0pt}%
+  \def\footruleskip{0.3\normalbaselineskip}%
   \fancyhf{}%
   \if@twoside
     \fancyhead[el,or]{\fancyplain{}{\slshape\rightmark}}%
