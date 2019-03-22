@@ -3727,7 +3727,7 @@
 %    \begin{macrocode}
   \def\headrule{{\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi
       \hrule\@height\headrulewidth\@width\headwidth
-      \vskip-\headrulewidth}}
+      \vskip-\headrulewidth}}%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -3736,7 +3736,7 @@
 % definition and remove useless \cs{vskip} at the top.}
 %    \begin{macrocode}
   \def\footrule{{\if@fancyplain\let\footrulewidth\plainfootrulewidth\fi
-      \hrule\@width\headwidth\@height\footrulewidth}}
+      \hrule\@width\headwidth\@height\footrulewidth}}%
 %    \end{macrocode}
 % \end{macro}
 %
