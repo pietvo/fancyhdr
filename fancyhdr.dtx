@@ -85,6 +85,42 @@
 \newenvironment{xvspace}{\vspace{1ex}}{{\vspace{1ex}}}
 \setcounter{tocdepth}{1}
 
+% Our own page style:
+\pagestyle{fancy}
+\addtolength{\headwidth}{\marginparsep}
+\addtolength{\headwidth}{0.5\marginparwidth}
+\fancyhf{}
+\fancyhead[L]{\rightmark}
+\fancyhead[R]{\textbf{\thepage}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\quad#1}}
+
+% Page style for demonstrating struts, \headruleskip and \footruleskip.
+%
+\fancypagestyle{showstruts}{%
+  \fancyhead[L]{%
+    \texttt{\textbackslash strut}:
+    \rule[-0.3\normalbaselineskip]{10pt}{0.3\normalbaselineskip}%
+    \rule{10pt}{0.7\normalbaselineskip}
+    \texttt{\textbackslash headruleskip}$\searrow$
+    \raisebox{-0.3\normalbaselineskip}[0pt][0pt]%
+      {\ifdim \headruleskip>0pt
+        \rule[-\headruleskip]{10pt}{\headruleskip}
+      \else
+        \rule{10pt}{-\headruleskip}
+      \fi}
+  }
+  \fancyfoot[L]{%
+    \raisebox{0pt}[0pt][0pt]{%
+      \texttt{\textbackslash strut}:
+      \rule[-0.3\normalbaselineskip]{10pt}{0.3\normalbaselineskip}%
+      \rule{10pt}{0.7\normalbaselineskip}
+      \texttt{\textbackslash footruleskip} $\nearrow$
+      \rule[0.7\normalbaselineskip]{10pt}{\footruleskip}}%
+  }
+  \renewcommand{\footrulewidth}{0.4pt}
+  \renewcommand{\headruleskip}{4pt}
+}
+
 \begin{document}
   \DeleteShortVerb{\|}
   \DocInput{\jobname.dtx}
@@ -141,7 +177,9 @@
 % \Package{extramarks} package.
 % 
 % \end{abstract}
+%
 % \tableofcontents
+% \markright{Contents}
 %
 %\part{Introduction}
 % 
@@ -1446,7 +1484,11 @@
 % of the decorative line with respect to the page, but it shifts the
 % header text. If you want to keep the header text fixed, but move the
 % decorative line, then you must also change the parameter \cs{headsep}
-% (see figure~\ref{fig:layout}).
+% (see figure~\ref{fig:layout}). The header and footer in this page
+% \thispagestyle{showstruts}
+% show the \emph{strut} (the amount of space in the text area above and
+% below the baseline), and the \cs{headruleskip} and \cs{footruleskip}.
+% For this page \cs{headruleskip} is 4pt.
 % 
 % \section{Two book examples}
 % \label{sec:book-examples}
