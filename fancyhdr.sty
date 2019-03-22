@@ -25,7 +25,7 @@
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2019 by Piet van Oostrum <piet@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\if@nch@mpty#1{\def\temp@a{#1}\ifx\temp@a\@empty}
+\newcommand\if@nch@mpty[1]{\def\temp@a{#1}\ifx\temp@a\@empty}
 \newif\iff@nch@check
 \f@nch@checktrue
 \DeclareOption{nocheck}{%
@@ -37,7 +37,7 @@
   \let\f@nch@gbl\global
   \f@nch@compatViiitrue
 }
-\def\f@nch@def#1#2{\if@nch@mpty{#2}\f@nch@gbl\def#1{\leavevmode}\else
+\newcommand\f@nch@def[2]{\if@nch@mpty{#2}\f@nch@gbl\def#1{\leavevmode}\else
                                    \f@nch@gbl\def#1{#2\strut}\fi}
 \newcommand{\f@nch@ifundefined}[1]{%
   \begingroup\expandafter\expandafter\expandafter\endgroup
