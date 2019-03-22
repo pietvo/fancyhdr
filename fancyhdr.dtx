@@ -269,10 +269,10 @@
 % 
 % \DescribeMacro{\fancypagestyle}
 % \begin{verbatim}
-% \fancypagestyle{pagestyle}{commands}
+% \fancypagestyle{pagestyle}[base-style]{commands}
 % \end{verbatim}
 % This command lets you (re)define page styles for use in special
-% situations. See section~\ref{sec:pagestyle-plain} for more details.
+% situations. See section~\ref{sec:fancypagestyle} for more details.
 %
 % \section{Using extramarks}
 % \label{sec:using-extramarks}
@@ -766,7 +766,12 @@
 % Just like redefining the \texttt{plain} page style in the previous
 % section, you can define or redefine other page styles based on page
 % style \texttt{fancy}. This is also done with the \cs{fancypagestyle}
-% command. For example:
+% command. The general form of this command is:
+% \CmdIndex{fancypagestyle}
+% \begin{quote}
+% \verb|\newpagestyle|\marg{style-name}\oarg{base-style}\marg{definitions}
+% \end{quote}
+% For example:
 % \begin{verbatim}
 % \fancypagestyle{toc}{%
 %   \fancyhf{}%
@@ -778,11 +783,97 @@
 % This defines a special page style \texttt{toc} for use in the table
 % of contents with \Cmd{pagestyle\{toc\}}.
 % Inside the definition you can define the headers and/or footers,
-% change the header and footer rules, and even redefine commands like
+% change the header and footer rules, and redefine commands like
 % \cs{chaptermark} (see section~\ref{sec:options} for an example). The
-% headers and footers that are not redefined inside the
+% headers and footers and marks that are not redefined inside the
 % \cs{fancypagestyle} definition, are taken from the global page style
 % \texttt{fancy} values.
+%
+% You can also give an optional base page style to the
+% \cs{fancypagestyle} command. Then the new page style will be based on
+% the base style. This base style must be a \texttt{fancyhdr} defined
+% style. Also you should take care not to
+% create circular dependencies. In this case the order of picking up the
+% definitions (headers, footers, marks) is:
+% \begin{enumerate}
+% \item The definitions from the base style are taken.
+% \item The definitions given in the \cs{fancypagestyle} command
+% override and/or augment these.
+% \item Any definitions that are not given by the two above, are taken
+% from the environment at the time the new page style is used.
+% \end{enumerate}
+% Only the first two parts are embedded in the page style.
+% When no base style is given, part 1 is null.
+%
+% The optional base style argument is only available since version~4. In
+% this version it is also possible to redefine page style \texttt{fancy}
+% in this way. In version~3 and earlier this was not possible.
+%
+% If you want to restore the original default definitions
+% from page style \texttt{fancy}  as described in section~\ref{sec:default}, you can use
+% \begin{verbatim}
+% \fancypagestyle{myfancy}[fancydefault]{
+%   . . . override some here
+% }
+% \end{verbatim}
+% \PSindex{fancydefault}
+% Page style \texttt{fancydefault} is the version of page style
+% \texttt{fancy} that has all the initialisation embedded. Contrary to
+% this, page style \texttt{fancy} as defined in the package uses the
+% same defaults, but doesn't have them embedded. It picks them up from
+% the environment. So if the environment changes, because you redefine
+% headers, footers, mark commands, etc, the functioning of page style
+% \texttt{fancy} changes with it. The page style \texttt{fancydefault}
+% does not change, however. However, \texttt{fancydefault} is only available
+% since fancyhdr version~4.
+%
+% \section{Switching page styles}
+% \label{sec:switching}
+%
+% Page style \texttt{fancy}, if not redefined, does not have the definitions of the
+% headers and footers built-in, but they are global in the document, or
+% local in a group. This also applies to the definitions of the
+% \cs{chaptermark} and/or \cs{[sub]sectionmark} commands. So if you want
+% to switch from another page style to the \texttt{fancy} page style
+% later in the document, you will have to redefine yourself the
+% \cs{chaptermark} and/or \cs{[sub]sectionmark} commands and maybe also
+% the definitions of the headers and footers, at that point.
+% For example
+% \begin{verbatim}
+% \pagestyle{fancy}
+% \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
+% \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
+% \end{verbatim}
+% Please note that you have to double the \verb|#| signs, because the
+% definitions are inside a macro.
+%
+% If the previous page style was one of the standard \LaTeX{} page
+% styles, or some page style that is not based on \Package{fancyhdr},
+% then the definitions of \cs{fancyhead} or \cs{fancyfoot} are not
+% affected. So strictly you don't have to include them. But if it was
+% based on \Package{fancyhdr} and had different definitions, you will
+% get the wrong headers and/or footers when you switch back to page
+% style \texttt{fancy}. So it is safer to include them anyway.
+%
+% A better possibility is to define your own page style, and include
+% these definitions in that page style:
+% \begin{verbatim}
+% \fancypagestyle{myfancy}{
+%   \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
+%   \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
+%   \fancyhead{...}
+% }
+% ...
+% \pagestyle{myfancy}
+% \end{verbatim}
+%
+% In general, when you use only one page style \texttt{fancy} in your
+% document, with the occasional \cs{thispagestyle} excursion to page
+% style \texttt{plain} or \texttt{empty}, you can just keep the
+% definitions globally in your document, but as soon as you use more
+% than one page style, and swicth between them, it is highly advisable
+% to define them (including page style \texttt{fancy}) with
+% \cs{fancypagestyle} and put all the relevant definitions inside them.
 % 
 % \section{Package options}
 % \label{sec:options}
@@ -862,59 +953,6 @@
 % settings. Therefore it is not advisable to change the headers or
 % footers in this way, but instead define your
 % own page style, as explained in section~\ref{sec:fancypagestyle}.
-%
-% \section{Switching page styles}
-% \label{sec:switching}
-%
-% Page style \texttt{fancy}, does not have the definitions
-% of the headers and footers
-% built-in, but they are global in the document, or local in a group.
-% This also applies to the definitions of the  \cs{chaptermark} and/or
-% \cs{[sub]sectionmark} commands. So if you want to
-% switch from another page style to the \texttt{fancy} page style later in
-% the document, you will have to redefine yourself the \cs{chaptermark} and/or
-% \cs{[sub]sectionmark} commands and maybe also the definitions of the
-% headers and footers, at that point.
-% For example
-% \begin{verbatim}
-% \pagestyle{fancy}
-% \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
-% \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
-% \end{verbatim}
-% Please note that you have to double the \verb|#| signs, because the
-% definitions are inside a macro.
-%
-% If the previous page style was one of the standard \LaTeX{} page
-% styles, or some page style that is not based on \Package{fancyhdr},
-% then the definitions of \cs{fancyhead} or \cs{fancyfoot} are not
-% affected. So strictly you don't have to include them. But if it was
-% based on \Package{fancyhdr} and had different definitions, you will
-% get the wrong headers and/or footers when you switch back to page
-% style \texttt{fancy}. So it is safer to include them anyway.
-%
-% A better possibility is to define your own page style, and include
-% these definitions in that page style:
-% \begin{verbatim}
-% \fancypagestyle{myfancy}{
-%   \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
-%   \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
-%   \fancyhead{...}
-% }
-% ...
-% \pagestyle{myfancy}
-% \end{verbatim}
-%
-% If you want to restore the original \cs{...mark} commands from page
-% style \texttt{fancy} you can use
-% \begin{verbatim}
-% \fancypagestyle{myfancy}{
-%   \pagestyle{fancydefault}
-% }
-% \end{verbatim}
-% Page style \texttt{fancydefault} is the version of
-% page style \texttt{fancy} that initializes the \texttt{mark}
-% commands. However, \texttt{fancydefault} is only available since
-% fancyhdr version~4.
 % 
 % \section{The default layout}
 % \label{sec:default}
@@ -2465,7 +2503,9 @@
 %     \texttt{nccfancyhdr} package by Alexander I. Rozhenko.
 %   \item The \cs{fancycenter} command (section~\ref{sec:fancycenter}).
 %   \item The \texttt{headings} and \texttt{myheadings} package options
-%   (see section~\ref{sec:options}).
+%     (see section~\ref{sec:options}).
+%   \item The \cs{fancypagestyle} command has an optional parameter \oarg{base-style}.
+%   \item The page style \texttt{fancydefault}.
 %
 %   \end{itemize}
 %
