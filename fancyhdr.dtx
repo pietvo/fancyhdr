@@ -2933,7 +2933,7 @@
 %    \end{macrocode}
 % An article-like class without chapters:
 %    \begin{macrocode}
-    \def\ps@myheadings{\ps@fancy \let\@mkboth\@gobbletwo
+    \def\ps@myheadings{\ps@f@nch@fancyproto \let\@mkboth\@gobbletwo
       \fancyhf{}
       \fancyhead[LE,RO]{\thepage}%
       \fancyhead[RE]{\slshape\leftmark}%
@@ -2945,7 +2945,7 @@
 %    \end{macrocode}
 % A book/report-like class with chapters:
 %    \begin{macrocode}
-  {\def\ps@myheadings{\ps@fancy \let\@mkboth\@gobbletwo
+  {\def\ps@myheadings{\ps@f@nch@fancyproto \let\@mkboth\@gobbletwo
       \fancyhf{}
       \fancyhead[LE,RO]{\thepage}%
       \fancyhead[RE]{\slshape\leftmark}%
@@ -2969,7 +2969,7 @@
 %    \end{macrocode}
 % An article in two-side mode:
 %    \begin{macrocode}
-      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -2985,7 +2985,7 @@
 %    \end{macrocode}
 % An article in one-side mode:
 %    \begin{macrocode}
-      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -3000,7 +3000,7 @@
 %    \end{macrocode}
 % A book in two-side mode:
 %    \begin{macrocode}
-      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -3017,7 +3017,7 @@
 %    \end{macrocode}
 % A book in one-side mode:
 %    \begin{macrocode}
-      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -3694,14 +3694,18 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ps@fancy} Pagestyle \texttt{fancy}. The real page style
-% is \cs{ps@f@nch@fancyproto} This definition is for the first use. It
+% \begin{macro}{\ps@f@nch@fancyproto}
+% \cs{ps@f@nch@fancyproto} is the
+% initial value for pagestyle \texttt{fancy}. The real page style
+% is \cs{f@nch@fancycore} This definition is for the first use. It
 % also initialises \cs{headwidth}, and then resets itself to
-% \cs{ps@f@nch@fancyproto}. For backwards compatibility it still
+% \cs{f@nch@fancycore}. For backwards compatibility it still
 % contains \cs{@fancyplainfalse}.
+% The reason we have \cs{ps@f@nch@fancyproto} is so that page style
+% \texttt{fancy} can be redefined.
 % \changes{fancyhdr v4.0}{2019/03/21}{Reorganise \cs{ps@fancy}}
 %    \begin{macrocode}
-\def\ps@fancy{%
+\def\ps@f@nch@fancyproto{%
 %    \end{macrocode}
 % Initialize \cs{headwidth} if the user didn't. If \cs{headwidth} ${}< 0$,
 % then the user did not initialise it, or they just added something to
@@ -3717,13 +3721,18 @@
     \global\advance\headwidth123456789sp\global\advance\headwidth\textwidth
   \fi
 %    \end{macrocode}
-% Now we reset \cs{ps@fancy} to \cs{ps@f@nch@fancyproto} with \cs{@fancyplainfalse}
+% Now we reset \cs{ps@f@nch@fancyproto} to \cs{f@nch@fancycore} with \cs{@fancyplainfalse}
 % and call that version.
 %    \begin{macrocode}
-  \gdef\ps@fancy{\@fancyplainfalse\ps@f@nch@fancyproto}%
-  \@fancyplainfalse\ps@f@nch@fancyproto
+  \gdef\ps@f@nch@fancyproto{\@fancyplainfalse\f@nch@fancycore}%
+  \@fancyplainfalse\f@nch@fancycore
 }%
 %    \end{macrocode}
+% \end{macro}
+% \begin{macro}{ps@fancy}
+% Define \cs{ps@fancy} just to call \cs{ps@f@nch@fancyproto}.
+%    \begin{macrocode}
+\def\ps@fancy{\ps@f@nch@fancyproto}
 % \end{macro}
 %
 % \begin{macro}{\ps@fancyplain}
@@ -3731,7 +3740,7 @@
 % 
 %    \begin{macrocode}
 \def\ps@fancyplain{\ps@fancy \let\ps@plain\ps@plain@fancy}
-\def\ps@plain@fancy{\@fancyplaintrue\ps@f@nch@fancyproto}
+\def\ps@plain@fancy{\@fancyplaintrue\f@nch@fancycore}
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -3744,14 +3753,14 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\ps@f@nch@fancyproto}
-% \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@fancy} to \cs{ps@f@nch@fancyproto}}
+% \begin{macro}{\f@nch@fancycore}
+% \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@fancy} to \cs{f@nch@fancycore}}
 % The actual implementation of pagestyle \texttt{fancy}. For amsbook/amsart, which do
 % strange things with \cs{topskip}, we start with \cs{f@nch@ps@empty}. We
 % construct the even and odd headers and footers from all the parts that
 % we have collected.
 %    \begin{macrocode}
-\def\ps@f@nch@fancyproto{%
+\def\f@nch@fancycore{%
   \f@nch@ps@empty
   \def\@mkboth{\protect\markboth}%
   \def\@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh}%
@@ -3772,6 +3781,7 @@
   \f@nch@initialise
   \ps@f@nch@fancyproto
 }
+\@namedef{f@nch@ps@fancydefault-is-fancyhdr}{}
 %    \end{macrocode}
 %
 % \end{macro}

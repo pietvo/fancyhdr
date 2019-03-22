@@ -48,7 +48,7 @@
     \fi}
 \DeclareOption{myheadings}{%
   \f@nch@ifundefined{chapter}{%
-    \def\ps@myheadings{\ps@fancy \let\@mkboth\@gobbletwo
+    \def\ps@myheadings{\ps@f@nch@fancyproto \let\@mkboth\@gobbletwo
       \fancyhf{}
       \fancyhead[LE,RO]{\thepage}%
       \fancyhead[RE]{\slshape\leftmark}%
@@ -57,7 +57,7 @@
       \let\subsectionmark\@gobble
     }%
   }%
-  {\def\ps@myheadings{\ps@fancy \let\@mkboth\@gobbletwo
+  {\def\ps@myheadings{\ps@f@nch@fancyproto \let\@mkboth\@gobbletwo
       \fancyhf{}
       \fancyhead[LE,RO]{\thepage}%
       \fancyhead[RE]{\slshape\leftmark}%
@@ -70,7 +70,7 @@
 \DeclareOption{headings}{%
   \f@nch@ifundefined{chapter}{%
     \if@twoside
-      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -83,7 +83,7 @@
             \ifnum \c@secnumdepth >\@ne \thesubsection\quad \fi##1}}%
       }%
     \else
-      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -95,7 +95,7 @@
       }%
     \fi
   }{\if@twoside
-      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -109,7 +109,7 @@
             \ifnum \c@secnumdepth >\z@ \thesection. \ \fi##1}}}%
       }%
     \else
-      \def\ps@headings{\ps@fancy \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -356,17 +356,18 @@
   \fancyfoot[c]{\rmfamily\thepage}% page number
 }
 \f@nch@initialise
-\def\ps@fancy{%
+\def\ps@f@nch@fancyproto{%
   \ifdim\headwidth<0sp
     \global\advance\headwidth123456789sp\global\advance\headwidth\textwidth
   \fi
-  \gdef\ps@fancy{\@fancyplainfalse\ps@f@nch@fancyproto}%
-  \@fancyplainfalse\ps@f@nch@fancyproto
+  \gdef\ps@f@nch@fancyproto{\@fancyplainfalse\f@nch@fancycore}%
+  \@fancyplainfalse\f@nch@fancycore
 }%
+\def\ps@fancy{\ps@f@nch@fancyproto}
 \def\ps@fancyplain{\ps@fancy \let\ps@plain\ps@plain@fancy}
-\def\ps@plain@fancy{\@fancyplaintrue\ps@f@nch@fancyproto}
+\def\ps@plain@fancy{\@fancyplaintrue\f@nch@fancycore}
 \let\f@nch@ps@empty\ps@empty
-\def\ps@f@nch@fancyproto{%
+\def\f@nch@fancycore{%
   \f@nch@ps@empty
   \def\@mkboth{\protect\markboth}%
   \def\@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh}%
