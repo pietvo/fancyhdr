@@ -363,7 +363,9 @@
   \gdef\ps@f@nch@fancyproto{\@fancyplainfalse\f@nch@fancycore}%
   \@fancyplainfalse\f@nch@fancycore
 }%
+\@namedef{f@nch@ps@f@nch@fancyproto-is-fancyhdr}{}
 \def\ps@fancy{\ps@f@nch@fancyproto}
+\@namedef{f@nch@ps@fancy-is-fancyhdr}{}
 \def\ps@fancyplain{\ps@fancy \let\ps@plain\ps@plain@fancy}
 \def\ps@plain@fancy{\@fancyplaintrue\f@nch@fancycore}
 \let\f@nch@ps@empty\ps@empty
@@ -379,6 +381,7 @@
   \f@nch@initialise
   \ps@f@nch@fancyproto
 }
+\@namedef{f@nch@ps@fancydefault-is-fancyhdr}{}
 \def\f@nch@Oolh{\if@reversemargin\hss\else\relax\fi}
 \def\f@nch@Oorh{\if@reversemargin\relax\else\hss\fi}
 \let\f@nch@Oelh\f@nch@Oorh
@@ -413,8 +416,22 @@
 \newcommand\ifbotfloat[2]{\ifx\botfloat\empty #2\else #1\fi}%
 \newcommand\iffloatpage[2]{\if@fcolmade #1\else #2\fi}%
 \newcommand\iffootnote[2]{\iff@nch@footnote #1\else #2\fi}%
-\newcommand{\fancypagestyle}[2]{%
-  \@namedef{ps@#1}{\let\f@nch@gbl\relax#2\relax\ps@fancy}}
+\newcommand{\fancypagestyle}[1]{%
+  \@ifnextchar[{\f@nch@pagestyle{#1}}{\f@nch@pagestyle{#1}[f@nch@fancyproto]}%
+}
+\def\f@nch@pagestyle#1[#2]#3{%
+  \f@nch@ifundefined{ps@#2}{%
+    \f@nch@errmsg{\string\fancypagestyle: Unknown base page style `#2'}%
+  }{%
+    \f@nch@ifundefined{f@nch@ps@#2-is-fancyhdr}{%
+      \f@nch@errmsg{\string\fancypagestyle: Base page style `#2' is not fancyhdr-based}%
+    }%
+    {%
+      \@namedef{ps@#1}{\let\f@nch@gbl\relax\@nameuse{ps@#2}#3\relax}%
+      \@namedef{f@nch@ps@#1-is-fancyhdr}{}%
+    }%
+  }%
+}%
 \endinput
 %%
 %% End of file `fancyhdr.sty'.
