@@ -661,7 +661,7 @@
 % The commands \cs{fancyhead} and \cs{fancyfoot}
 % have an additional parameter between square brackets that specifies
 % for which pages and/or parts of the header/footer they apply. The first
-% \cs{fancyhead} command omits this parameter, and thus applies to all
+% \cs{fancyhead} command above omits this parameter, and thus applies to all
 % header fields. In general this is only useful to get rid of the defaults or
 % a previous definition, as is done here. Similar the \cs{fancyfoot} command
 % without square brackets clears all footer fields. In this particular
@@ -752,10 +752,11 @@
 % 
 % \begin{verbatim}
 % \fancypagestyle{plain}{%
-% \fancyhf{} % clear all header and footer fields
-% \fancyfoot[C]{\textbf{\thepage}} % except the center
-% \renewcommand{\headrulewidth}{0pt}
-% \renewcommand{\footrulewidth}{0pt}}
+%   \fancyhf{}% clear all header and footer fields
+%   \fancyfoot[C]{\textbf{\thepage}}% except the center
+%   \renewcommand{\headrulewidth}{0pt}%
+%   \renewcommand{\footrulewidth}{0pt}%
+% }
 % \end{verbatim}
 %
 %
@@ -916,7 +917,7 @@
 % fancyhdr version~4.
 % 
 % \section{The default layout}
-% \label{default}
+% \label{sec:default}
 % Let us use the \verb|book.cls| documentclass and the default settings for
 % \Package{fancyhdr}; so we don't use any of the page style options in
 % the \Cmd{usepackage\{fancyhdr\}}command, and we don't redefine any
@@ -993,7 +994,7 @@
 % \cs{leftmark}
 % (higher-level) and \cs{rightmark} (lower-level) contain the information
 % processed by \latex/, and you can use them directly as shown in 
-% Section~\ref{default}.
+% Section~\ref{sec:default}.
 % 
 % The \cs{leftmark} contains the \textbf{L}eft argument of the \emph{\textbf{L}ast}
 % \cs{markboth} on the page, the \cs{rightmark} contains the \textbf{R}ight
