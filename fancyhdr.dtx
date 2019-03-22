@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2019/03/15 v4.0beta
+%<fancyhdr|fancyheadings|extramarks>           [2019/03/22 v4.0
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -176,7 +176,7 @@
 % \begin{quote}
 % \verb|\usepackage|\oarg{options}|{fancyhdr}|
 % \end{quote}
-% (Options are available since version 4.)
+% (Options are available since version~4.0)
 % The following options are supported:
 % \begin{center}
 % \begin{tabular}{ l l }
@@ -253,7 +253,7 @@
 % \ref{sec:fancy} and \ref{sec:book-examples} for more details.
 %
 % \DescribeMacro{\fancycenter}
-% (Only in version 4.0 and later.) The command \cs{fancycenter} packs 3
+% (Only in version~4.0 and later.) The command \cs{fancycenter} packs 3
 % header fields into a full-width header.
 %
 % \DescribeMacro{\iftopfloat}
@@ -571,8 +571,8 @@
 % \section{Fancy Centering}
 % \label{sec:fancycenter}
 %
-% \textbf{Note:} This section only applies to \Package{fancyhdr} version
-% 4.0 and later\footnote{This comes from the \Package{nccfancyhdr}
+% \textbf{Note:} This section only applies to \Package{fancyhdr} version~4.0
+% and later\footnote{This comes from the \Package{nccfancyhdr}
 % package by Alexander I. Rozhenko.}.
 %
 % The marks in a fancy header and footer are prepared using \cs{parbox}
@@ -811,9 +811,9 @@
 % Only the first two parts are embedded in the page style.
 % When no base style is given, part 1 is null.
 %
-% The optional base style argument is only available since version~4. In
+% The optional base style argument is only available since version~4.0. In
 % this version it is also possible to redefine page style \texttt{fancy}
-% in this way. In version~3 and earlier this was not possible.
+% in this way. In version~3.x and earlier this was not possible.
 %
 % If you want to restore the original default definitions
 % from page style \texttt{fancy}  as described in section~\ref{sec:default}, you can use
@@ -831,7 +831,7 @@
 % headers, footers, mark commands, etc, the functioning of page style
 % \texttt{fancy} changes with it. The page style \texttt{fancydefault}
 % does not change, however. However, \texttt{fancydefault} is only available
-% since fancyhdr version~4.
+% since fancyhdr version~4.0.
 %
 % \section{Switching page styles}
 % \label{sec:switching}
@@ -884,7 +884,7 @@
 % \section{Package options}
 % \label{sec:options}
 %
-% \textbf{NOTE:} This section applies to fancyhdr version~4 and later.
+% \textbf{NOTE:} This section applies to fancyhdr version~4.0 and later.
 %
 % You can supply options to the \cs{usepackage} command:
 % \begin{quote}
@@ -910,7 +910,7 @@
 %   page~\pageref{sec:warning}.
 %
 % \item \OPTindex{compatV3}Option \texttt{compatV3} keeps two fancyhdr
-%   version~3 (or earlier) behaviours that are now considered undesirable.
+%   version~3.x (or earlier) behaviours that are now considered undesirable.
 %   \begin{enumerate}
 %   \item The automatic adjustment of \cs{headheight} or \cs{footskip}
 %     when these are too small. This causes the page layout to be
@@ -925,7 +925,7 @@
 %     group. If your document depends on this behaviour, you can give
 %     the \texttt{compatV3} package option. However, this is only
 %     considered a short-time solution. You should change your document
-%     as soon as possible to work around this problem. In version~4 and
+%     as soon as possible to work around this problem. In version~4.0 and
 %     later, without this option, the changes are always local.
 %   \end{enumerate}
 %   The option is scheduled to disappear in version~5 of
@@ -1356,10 +1356,10 @@
 % \end{verbatim}
 % \label{sec:warning}\index{Warning}
 % You will probably get this warning on every page.
-% \textbf{Note:} Before version 4, \Package{fancyhdr} would change the
+% \textbf{Note:} Before version 4.0, \Package{fancyhdr} would change the
 % \cs{headheight} itself, causing the text on the following pages
 % to come out lower than on this page. This appeared to be confusing, so
-% since version~4 this is no longer done (except when you give the
+% since version~4.0 this is no longer done (except when you give the
 % \OPTindex{compatV3}%
 % \texttt{compatV3} package option; you should not give this as a
 % permanent solution, however, but solve the problem). Therefore you are strongly advised to
@@ -2500,9 +2500,10 @@
 % \end{itemize}
 % \subsection{Changes in version 4}
 % \label{sec:version-4}
-% Version 4 introduces a number of significant changes.
+% Version 4 is a significant rewrite of the package. It also introduces
+% a number of new features.
 % \begin{itemize}
-% \item Version 4.0, March 15, 2019
+% \item Version 4.0, March 15-22, 2019
 %   \begin{itemize}
 %   \item Options introduced on the \cs{usepackage} command.
 %   \item The check whether the header or footer fits in
