@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2019/03/15 v4.0beta
+%<fancyhdr|fancyheadings|extramarks>           [2019/03/22 v4.0
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -85,6 +85,42 @@
 \newenvironment{xvspace}{\vspace{1ex}}{{\vspace{1ex}}}
 \setcounter{tocdepth}{1}
 
+% Our own page style:
+\pagestyle{fancy}
+\addtolength{\headwidth}{\marginparsep}
+\addtolength{\headwidth}{0.5\marginparwidth}
+\fancyhf{}
+\fancyhead[L]{\rightmark}
+\fancyhead[R]{\textbf{\thepage}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\quad#1}}
+
+% Page style for demonstrating struts, \headruleskip and \footruleskip.
+%
+\fancypagestyle{showstruts}{%
+  \fancyhead[L]{%
+    \texttt{\textbackslash strut}:
+    \rule[-0.3\normalbaselineskip]{10pt}{0.3\normalbaselineskip}%
+    \rule{10pt}{0.7\normalbaselineskip}
+    \texttt{\textbackslash headruleskip}$\searrow$
+    \raisebox{-0.3\normalbaselineskip}[0pt][0pt]%
+    {\ifdim \headruleskip>0pt
+      \rule[-\headruleskip]{10pt}{\headruleskip}
+    \else
+      \rule{10pt}{-\headruleskip}
+    \fi}
+  }
+  \fancyfoot[L]{%
+    \raisebox{0pt}[0pt][0pt]{%
+      \texttt{\textbackslash strut}:
+      \rule[-0.3\normalbaselineskip]{10pt}{0.3\normalbaselineskip}%
+      \rule{10pt}{0.7\normalbaselineskip}
+      \texttt{\textbackslash footruleskip} $\nearrow$
+      \rule[0.7\normalbaselineskip]{10pt}{\footruleskip}}%
+  }
+  \renewcommand{\footrulewidth}{0.4pt}
+  \renewcommand{\headruleskip}{4pt}
+}
+
 \newcounter{example}
 \newcommand{\Example}{%
   \refstepcounter{example}%
@@ -93,7 +129,6 @@
 \newcommand{\FExample}{%
   \refstepcounter{example}%
   \makebox[0pt][r]{{Example \theexample}\quad\quad}%
-}
 
 \begin{document}
   \DeleteShortVerb{\|}
@@ -151,7 +186,9 @@
 % \Package{extramarks} package.
 % 
 % \end{abstract}
+%
 % \tableofcontents
+% \markright{Contents}
 %
 %\part{Introduction}
 % 
@@ -186,7 +223,7 @@
 % \begin{quote}
 % \verb|\usepackage|\oarg{options}|{fancyhdr}|
 % \end{quote}
-% (Options are available since version 4.)
+% (Options are available since version~4.0)
 % The following options are supported:
 % \begin{center}
 % \begin{tabular}{ l l }
@@ -195,14 +232,18 @@
 % \midrule
 % \texttt{nocheck} & do not check the heights of the header and footer \\
 %                  & (see section~\ref{sec:warning} on page~\pageref{sec:warning})\\
-%   ^^A \texttt{empty} & redefine the \texttt{empty} page style to be fancy-based \\
-%   ^^A \texttt{plain} & redefine the \texttt{plain} page style to be fancy-based \\
-%   ^^A \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
-%   ^^A \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
+% \texttt{compatV3} & keep some behaviour (now considered undesirable) as in version~3 \\
+%          & (see section~\ref{sec:options} and section~\ref{sec:warning} on
+%                                              page~\pageref{sec:warning}) \\
+% \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
+% \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
 % \bottomrule
 % \end{tabular}
 % \end{center}
 % \OPTindex{nocheck}
+% \OPTindex{compatV3}
+% \OPTindex{headings}
+% \OPTindex{myheadings}
 % \DescribeMacro{\fancyhead}
 % \DescribeMacro{\fancyfoot}
 % \DescribeMacro{\fancyhf}
@@ -234,12 +275,16 @@
 % 
 % \DescribeMacro{\headrulewidth}
 % \DescribeMacro{\headrulewidth}
+% \DescribeMacro{\headruleskip}
+% \DescribeMacro{\footruleskip}
 % \DescribeMacro{\headrule}
 % \DescribeMacro{\footrule}
 % \DescribeMacro{\headwidth}
 % \begin{verbatim}
 % \headrulewidth
 % \footrulewidth
+% \headruleskip
+% \footruleskip
 % \headrule
 % \footrule
 % \headwidth
@@ -247,13 +292,15 @@
 %
 % \cs{headrulewidth} and \cs{headrulewidth} are macros to define the
 % thickness of a line under the header and above the footer.
+% \cs{headruleskip} and \cs{footruleskip} are macros that define the
+% distance between the lines and the reader and footer text, respectively.
 % \cs{headrule} and \cs{footrule} are macros to completely redefines
 % these lines. And \cs{headwidth} is a length parameter that defines the
 % total width of the headers and footers. See sections~\ref{sec:simple},
 % \ref{sec:fancy} and \ref{sec:book-examples} for more details.
 %
 % \DescribeMacro{\fancycenter}
-% (Only in version 4.0 and later.) The command \cs{fancycenter} packs 3
+% (Only in version~4.0 and later.) The command \cs{fancycenter} packs 3
 % header fields into a full-width header.
 %
 % \DescribeMacro{\iftopfloat}
@@ -275,10 +322,10 @@
 % 
 % \DescribeMacro{\fancypagestyle}
 % \begin{verbatim}
-% \fancypagestyle{pagestyle}{commands}
+% \fancypagestyle{pagestyle}[base-style]{commands}
 % \end{verbatim}
 % This command lets you (re)define page styles for use in special
-% situations. See section~\ref{sec:pagestyle-plain} for more details.
+% situations. See section~\ref{sec:fancypagestyle} for more details.
 %
 % \section{Using extramarks}
 % \label{sec:using-extramarks}
@@ -574,8 +621,8 @@
 % \section{Fancy Centering}
 % \label{sec:fancycenter}
 %
-% \textbf{Note:} This section only applies to \Package{fancyhdr} version
-% 4.0 and later\footnote{This comes from the \Package{nccfancyhdr}
+% \textbf{Note:} This section only applies to \Package{fancyhdr} version~4.0
+% and later\footnote{This comes from the \Package{nccfancyhdr}
 % package by Alexander I. Rozhenko.}.
 %
 % The marks in a fancy header and footer are prepared using \cs{parbox}
@@ -671,7 +718,7 @@
 % The commands \cs{fancyhead} and \cs{fancyfoot}
 % have an additional parameter between square brackets that specifies
 % for which pages and/or parts of the header/footer they apply. The first
-% \cs{fancyhead} command omits this parameter, and thus applies to all
+% \cs{fancyhead} command above omits this parameter, and thus applies to all
 % header fields. In general this is only useful to get rid of the defaults or
 % a previous definition, as is done here. Similar the \cs{fancyfoot} command
 % without square brackets clears all footer fields. In this particular
@@ -762,11 +809,11 @@
 %
 % \Example
 % \begin{verbatim}
-% \fancypagestyle{plain}{
-%   \fancyhf{} % clear all header and footer fields
+% \fancypagestyle{plain}{%
+%   \fancyhf{}% clear all header and footer fields
 %   \fancyfoot[C]{\textbf{--~\thepage~--}} % except the center
-%   \renewcommand{\headrulewidth}{0pt}
-%   \renewcommand{\footrulewidth}{0pt}
+%   \renewcommand{\headrulewidth}{0pt}%
+%   \renewcommand{\footrulewidth}{0pt}%
 % }
 % \end{verbatim}
 %
@@ -777,7 +824,12 @@
 % Just like redefining the \texttt{plain} page style in the previous
 % section, you can define or redefine other page styles based on page
 % style \texttt{fancy}. This is also done with the \cs{fancypagestyle}
-% command. For example:
+% command. The general form of this command is:
+% \CmdIndex{fancypagestyle}
+% \begin{quote}
+% \verb|\newpagestyle|\marg{style-name}\oarg{base-style}\marg{definitions}
+% \end{quote}
+% For example:
 % \begin{verbatim}
 % \fancypagestyle{toc}{%
 %   \fancyhf{}%
@@ -789,16 +841,179 @@
 % This defines a special page style \texttt{toc} for use in the table
 % of contents with \Cmd{pagestyle\{toc\}}.
 % Inside the definition you can define the headers and/or footers,
-% change the header and footer rules, and even redefine commands like
-% ^^A\cs{chaptermark} (see section~\ref{sec:options} for an example). The
-% \cs{chaptermark} for an example). The
-% headers and footers that are not redefined inside the
+% change the header and footer rules, and redefine commands like
+% \cs{chaptermark} (see section~\ref{sec:options} for an example). The
+% headers and footers and marks that are not redefined inside the
 % \cs{fancypagestyle} definition, are taken from the global page style
 % \texttt{fancy} values.
+%
+% You can also give an optional base page style to the
+% \cs{fancypagestyle} command. Then the new page style will be based on
+% the base style. This base style must be a \texttt{fancyhdr} defined
+% style. Also you should take care not to
+% create circular dependencies. In this case the order of picking up the
+% definitions (headers, footers, marks) is:
+% \begin{enumerate}
+% \item The definitions from the base style are taken.
+% \item The definitions given in the \cs{fancypagestyle} command
+% override and/or augment these.
+% \item Any definitions that are not given by the two above, are taken
+% from the environment at the time the new page style is used.
+% \end{enumerate}
+% Only the first two parts are embedded in the page style.
+% When no base style is given, part 1 is null.
+%
+% The optional base style argument is only available since version~4.0. In
+% this version it is also possible to redefine page style \texttt{fancy}
+% in this way. In version~3.x and earlier this was not possible.
+%
+% If you want to restore the original default definitions
+% from page style \texttt{fancy}  as described in section~\ref{sec:default}, you can use
+% \begin{verbatim}
+% \fancypagestyle{myfancy}[fancydefault]{
+%   . . . override some here
+% }
+% \end{verbatim}
+% \PSindex{fancydefault}
+% Page style \texttt{fancydefault} is the version of page style
+% \texttt{fancy} that has all the initialisation embedded. Contrary to
+% this, page style \texttt{fancy} as defined in the package uses the
+% same defaults, but doesn't have them embedded. It picks them up from
+% the environment. So if the environment changes, because you redefine
+% headers, footers, mark commands, etc, the functioning of page style
+% \texttt{fancy} changes with it. The page style \texttt{fancydefault}
+% does not change, however. However, \texttt{fancydefault} is only available
+% since fancyhdr version~4.0.
+%
+% \section{Switching page styles}
+% \label{sec:switching}
+%
+% Page style \texttt{fancy}, if not redefined, does not have the definitions of the
+% headers and footers built-in, but they are global in the document, or
+% local in a group. This also applies to the definitions of the
+% \cs{chaptermark} and/or \cs{[sub]sectionmark} commands. So if you want
+% to switch from another page style to the \texttt{fancy} page style
+% later in the document, you will have to redefine yourself the
+% \cs{chaptermark} and/or \cs{[sub]sectionmark} commands and maybe also
+% the definitions of the headers and footers, at that point.
+% For example
+% \begin{verbatim}
+% \pagestyle{fancy}
+% \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
+% \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
+% \end{verbatim}
+% Please note that you have to double the \verb|#| signs, because the
+% definitions are inside a macro.
+%
+% If the previous page style was one of the standard \LaTeX{} page
+% styles, or some page style that is not based on \Package{fancyhdr},
+% then the definitions of \cs{fancyhead} or \cs{fancyfoot} are not
+% affected. So strictly you don't have to include them. But if it was
+% based on \Package{fancyhdr} and had different definitions, you will
+% get the wrong headers and/or footers when you switch back to page
+% style \texttt{fancy}. So it is safer to include them anyway.
+%
+% A better possibility is to define your own page style, and include
+% these definitions in that page style:
+% \begin{verbatim}
+% \fancypagestyle{myfancy}{
+%   \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
+%   \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
+%   \fancyhead{...}
+% }
+% ...
+% \pagestyle{myfancy}
+% \end{verbatim}
+%
+% In general, when you use only one page style \texttt{fancy} in your
+% document, with the occasional \cs{thispagestyle} excursion to page
+% style \texttt{plain} or \texttt{empty}, you can just keep the
+% definitions globally in your document, but as soon as you use more
+% than one page style, and swicth between them, it is highly advisable
+% to define them (including page style \texttt{fancy}) with
+% \cs{fancypagestyle} and put all the relevant definitions inside them.
 % 
+% \section{Package options}
+% \label{sec:options}
+%
+% \textbf{NOTE:} This section applies to fancyhdr version~4.0 and later.
+%
+% You can supply options to the \cs{usepackage} command:
+% \begin{quote}
+% \verb|\usepackage|\oarg{options}|{fancyhdr}|
+% \end{quote}
+% % The following options are supported:
+% \begin{center}
+% \OPTindex{nocheck}\OPTindex{compatV3}\OPTindex{headings}\OPTindex{myheadings}
+% \begin{tabular}{ l l }
+% \toprule
+% Option & Meaning \\
+% \midrule
+% \texttt{nocheck} & do not check the heights of the header and footer \\
+% \texttt{compatV3} & keep some behaviour (now considered undesirable) as in version~3 \\
+% \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
+% \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
+% \bottomrule
+% \end{tabular}
+% \end{center}
+%
+% \begin{itemize}
+% \item \OPTindex{nocheck}Option \texttt{nocheck} is described in section~\ref{sec:warning} on
+%   page~\pageref{sec:warning}.
+%
+% \item \OPTindex{compatV3}Option \texttt{compatV3} keeps two fancyhdr
+%   version~3.x (or earlier) behaviours that are now considered undesirable.
+%   \begin{enumerate}
+%   \item The automatic adjustment of \cs{headheight} or \cs{footskip}
+%     when these are too small. This causes the page layout to be
+%     inconsistent. See section~\ref{sec:warning} on
+%     page~\pageref{sec:warning}.
+%   \item In these previous versions the changes to the
+%     \Package{fancyhdr} headers and footers (including those by
+%     \cs{fancyhead}, \cs{fancyheadoffset} and similar commands) are
+%     made globally, except within a page style defined by
+%     \cs{fancypagestyle}. That is, when these commands are given inside
+%     a \LaTeX{} group, they affect the whole document, not only the
+%     group. If your document depends on this behaviour, you can give
+%     the \texttt{compatV3} package option. However, this is only
+%     considered a short-time solution. You should change your document
+%     as soon as possible to work around this problem. In version~4.0 and
+%     later, without this option, the changes are always local.
+%   \end{enumerate}
+%   The option is scheduled to disappear in version~5 of
+%   \Package{fancyhdr}.
+%
+% \item \PSindex{headings}\PSindex{myheadings}\OPTindex{headings}\OPTindex{myheadings}
+%   The options \texttt{headings} and \texttt{myheadings} redefine the
+%   corresponding page style with fancyhdr commands (including a
+%   decorative line under the header), so that you can later select this
+%   page style as the page style for (part of) the
+%   document\footnote{These options were copied from the
+%   \texttt{nccfancyhdr} package, but contrary to that package, they are
+%   not automatically selected.}.
+% \end{itemize}
+%
+% \PSindex{headings}
+% The page style \texttt{headings} is in some aspects similar to the default page
+% style \texttt{fancy} settings. In the \texttt{fancy} page style, the
+% page number is in the footer, but in the \texttt{headings}
+% page style it is in the header. The header fields look similar, however.
+%
+% Please note that these page styles redefine the \cs{chaptermark} and/or
+% \cs{[sub]sectionmark} commands (see section~\ref{sec:scoop}), as do the
+% standard \latex/ page styles. The consequence is, that if you select
+% e.g.\ \Cmd{pagestyle\{headings\}}, the definitions of
+% \Cmd{pagestyle\{fancy\}} are overridden.
+% Also when you change the headers and/or footers
+% while such a page style is in effect, and you then switch back to this
+% page style, for
+% example with \verb|\pagestyle{headings}|, they revert to the built-in
+% settings. Therefore it is not advisable to change the headers or
+% footers in this way, but instead define your
+% own page style, as explained in section~\ref{sec:fancypagestyle}.
 % 
 % \section{The default layout}
-% \label{default}
+% \label{sec:default}
 % Let us use the \verb|book.cls| documentclass and the default settings for
 % \Package{fancyhdr}; so we don't use any of the page style options in
 % the \Cmd{usepackage\{fancyhdr\}}command, and we don't redefine any
@@ -875,7 +1090,7 @@
 % \cs{leftmark}
 % (higher-level) and \cs{rightmark} (lower-level) contain the information
 % processed by \latex/, and you can use them directly as shown in 
-% Section~\ref{default}.
+% section~\ref{sec:default}.
 %
 % These marks are set by the commands
 % \Cmd{markboth\{leftmark\}\{rightmark\}} and \Cmd{markright\{rightmark\}}.
@@ -1197,10 +1412,13 @@
 % \end{verbatim}
 % \label{sec:warning}\index{Warning}
 % You will probably get this warning on every page.
-% \textbf{Note:} Before version 4, \Package{fancyhdr} would change the
+% \textbf{Note:} Before version 4.0, \Package{fancyhdr} would change the
 % \cs{headheight} itself, causing the text on the following pages
 % to come out lower than on this page. This appeared to be confusing, so
-% since version~4 this is no longer done. Therefore you are strongly advised to
+% since version~4.0 this is no longer done (except when you give the
+% \OPTindex{compatV3}%
+% \texttt{compatV3} package option; you should not give this as a
+% permanent solution, however, but solve the problem). Therefore you are strongly advised to
 % redefine \cs{headheight} in the preamble, like this:
 % \begin{verbatim}
 % \setlength{\headheight}{14pt}
@@ -1271,6 +1489,25 @@
 % of the footer text line. By default it is set to 30\% of the normal line
 % distance. You may want to adjust it if you use unusally large or small
 % fonts in the footer. Change it with \cs{renewcommand}.
+%
+% You can also change the distance between the baseline of the header text and the
+% decorative line in the header. Normally this distance is determined by
+% the maximum depth of possible descenders in the text, which is 30\% of
+% the normal line distance. You can increase or decrease this distance
+% \CmdIndex{headruleskip}
+% \DescribeMacro{\headruleskip}
+% by defining the macro \cs{headruleskip}, similar to \cs{footruleskip}.
+% This defines the extra distance. The default value is 0pt, and
+% positive values make the distance larger, and negative values make the
+% distance shorter. Please note that this does not change the position
+% of the decorative line with respect to the page, but it shifts the
+% header text. If you want to keep the header text fixed, but move the
+% decorative line, then you must also change the parameter \cs{headsep}
+% (see figure~\ref{fig:layout}). The header and footer in this page
+% \thispagestyle{showstruts}
+% show the \emph{strut} (the amount of space in the text area above and
+% below the baseline), and the \cs{headruleskip} and \cs{footruleskip}.
+% For this page \cs{headruleskip} is 4pt.
 % 
 % \section{Two book examples}
 % \label{sec:book-examples}
@@ -1297,11 +1534,8 @@
 % \end{verbatim}
 % 
 % \begin{flushleft}
-% You must issue these commands \emph{after} the first
-% \Cmd{pagestyle\{fancy\}} command as this
-% will establish the default for \cs{headwidth}\footnote{In version 2 or
-% later of \Package{fancyhdr} it is usually safe to do it before, but it is still
-%   advised to do after.}.
+% It is safest to issue these commands \emph{after} the first
+% \Cmd{pagestyle\{fancy\}} command.
 % \end{flushleft}
 % 
 % And now a complete definition of Lamport's book style. The header has
@@ -2355,21 +2589,35 @@
 % \end{itemize}
 % \subsection{Changes in version 4}
 % \label{sec:version-4}
-% Version 4 introduces a number of significant changes.
+% Version 4 is a significant rewrite of the package. It also introduces
+% a number of new features.
 % \begin{itemize}
-% \item Version 4.0, March 15, 2019
+% \item Version 4.0, March 15-22, 2019
 %   \begin{itemize}
 %   \item Options introduced on the \cs{usepackage} command.
 %   \item The check whether the header or footer fits in
 %     \cs{headheight} and \cs{footskip}, respectively, no longer
 %     adjusts these values for the following pages. This appeared to be too
-%     confusing. \\
+%     confusing. However, when the package option \texttt{compatV3} is given, the old
+%     behaviour is kept. \\
 %     The \texttt{nocheck} option now eliminates these checks completely, on
 %     your own risk. (See section~\ref{sec:warning} on page~\pageref{sec:warning}.)
-% \item[] \textbf{Note:} The following changes were mostly copied from the
-%   \texttt{nccfancyhdr} package by Alexander I. Rozhenko.
-% \item The \cs{fancycenter} command (section~\ref{sec:fancycenter}).
-%
+%   \item Eliminated \cs{f@nch@gbl}. All definitions are now local.
+%     The \cs{global} case was originally so that you could do definitions in
+%     a group and they would be applied globally. This was a mistake. If
+%     you make them locally they should stay local. And it caused several
+%     problems with switching page styles, because then the global style
+%     would be changed, which you generally don't want.\\
+%     However, when the package option \texttt{compatV3} is given, the old
+%     behaviour is kept. (See section~\ref{sec:options}.)
+%   \item[] \textbf{Note:} The following changes were mostly copied from the
+%     \texttt{nccfancyhdr} package by Alexander I. Rozhenko.
+%   \item The \cs{fancycenter} command (section~\ref{sec:fancycenter}).
+%   \item The \texttt{headings} and \texttt{myheadings} package options
+%     (see section~\ref{sec:options}).
+%   \item The \cs{fancypagestyle} command has an optional parameter \oarg{base-style}.
+%   \item The page style \texttt{fancydefault}.
+%   \item The \cs{headruleskip} parameter.
 %
 %   \end{itemize}
 %
@@ -2743,7 +2991,7 @@
 % \begin{macro}{\if@nch@mpty}
 % This macro tests if its argument is empty.
 %    \begin{macrocode}
-\def\if@nch@mpty#1{\def\temp@a{#1}\ifx\temp@a\@empty}
+\newcommand\if@nch@mpty[1]{\def\temp@a{#1}\ifx\temp@a\@empty}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2760,43 +3008,42 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{\iff@nch@compatViii}
+% Define \cs{iff@nch@compatViii} to track the \texttt{compatV3} option.
+%    \begin{macrocode}
+\newif\iff@nch@compatViii
+%    \end{macrocode}
 % \begin{macro}{\f@nch@gbl}
-% Initialize \cs{f@nch@gbl} to do nothing (except with \texttt{compatV3}
+% Initialize \cs{f@nch@gbl} to do nothing (except with the \texttt{compatV3}
 % option).
-% \changes{fancyhdr v4.0}{2019/03/16}{Remove the \cs{global} in definitions}
+% \changes{fancyhdr v4.0}{2019/03/19}{Remove the \cs{global} in definitions}
 % \changes{fancyhdr v4.0}{2019/03/16}{Implement the \texttt{compatV3} option}
 %    \begin{macrocode}
-\def\f@nch@gbl{}
+\let\f@nch@gbl\relax
 \DeclareOption{compatV3}{%
   \let\f@nch@gbl\global
+  \f@nch@compatViiitrue
 }
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
+%
 % \begin{macro}{\f@nch@def}
 % This macro defines another macro (usually a header or footer field).
 % Depending on the value of \cs{f@nch@gbl} the definition will be
 % global or local.
 % Default it is always local. But with the \texttt{compatV3} option it
 % is \cs{global} in the normal definitions, and local in \cs{fancypagestyle}.
-% The \cs{global} case is now considered a bug.
+% The \cs{global} case is now considered a bug (or at least undesirable).
 %
 % If the value (argument 2) is empty, a \cs{leavevmode} will be substituted.
 % If it is not empty, a \cs{strut} will be added.
 %
 %    \begin{macrocode}
-\def\f@nch@def#1#2{\if@nch@mpty{#2}\f@nch@gbl\def#1{\leavevmode}\else
+\newcommand\f@nch@def[2]{\if@nch@mpty{#2}\f@nch@gbl\def#1{\leavevmode}\else
                                    \f@nch@gbl\def#1{#2\strut}\fi}
 %    \end{macrocode}
 % \end{macro}
-%
-%%%%%%%%% More options here
-%
-% Process the options.
-% \changes{fancyhdr v4.0}{2019/03/15}{Process package options.}
-% \SpecialUsageIndex{\ProcessOptions}
-%    \begin{macrocode}
-\ProcessOptions*
-%    \end{macrocode}
 %
 % \begin{macro}{\f@nch@ifundefined}
 % This macro tests if a command is undefined. Older versions of
@@ -2822,9 +3069,134 @@
 % \end{macrocode}
 % \end{macro}
 %
+% \changes{fancyhdr v4.0}{2019/03/17}{Added \texttt{headings} and
+% \texttt{myheadings} options.}
+% Standard styles are redefined optionally. These definitions are
+% borrowed from the \Package{nccfancyhdr} package by by Alexander I. Rozhenko.
+%
+% \begin{macro}{\ps@myheadings}
+% The redefinition of the \texttt{myheadings} style is conditional.
+% We test the existence of the \cs{chapter} command and redefine the
+% style accordingly.
+%
+% \OPTindex{myheadings}\PSindex{myheadings}
+%    \begin{macrocode}
+\DeclareOption{myheadings}{%
+  \f@nch@ifundefined{chapter}{%
+%    \end{macrocode}
+% An article-like class without chapters:
+%    \begin{macrocode}
+    \def\ps@myheadings{\ps@f@nch@fancyproto \let\@mkboth\@gobbletwo
+      \fancyhf{}
+      \fancyhead[LE,RO]{\thepage}%
+      \fancyhead[RE]{\slshape\leftmark}%
+      \fancyhead[LO]{\slshape\rightmark}%
+      \let\sectionmark\@gobble
+      \let\subsectionmark\@gobble
+    }%
+  }%
+%    \end{macrocode}
+% A book/report-like class with chapters:
+%    \begin{macrocode}
+  {\def\ps@myheadings{\ps@f@nch@fancyproto \let\@mkboth\@gobbletwo
+      \fancyhf{}
+      \fancyhead[LE,RO]{\thepage}%
+      \fancyhead[RE]{\slshape\leftmark}%
+      \fancyhead[LO]{\slshape\rightmark}%
+      \let\chaptermark\@gobble
+      \let\sectionmark\@gobble
+    }%
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ps@headings}
+% The redefinition of the \texttt{headings} style also differs for
+% book-like and article-like classes. It also differs for
+% one-side and two-side modes.
+%    \begin{macrocode}
+\DeclareOption{headings}{%
+  \f@nch@ifundefined{chapter}{%
+    \if@twoside
+%    \end{macrocode}
+% An article in two-side mode:
+%    \begin{macrocode}
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\sectionmark##1{%
+          \markboth{\MakeUppercase{%
+            \ifnum \c@secnumdepth >\z@ \thesection\quad \fi##1}}{}}%
+        \def\subsectionmark##1{%
+          \markright{%
+            \ifnum \c@secnumdepth >\@ne \thesubsection\quad \fi##1}}%
+      }%
+    \else
+%    \end{macrocode}
+% An article in one-side mode:
+%    \begin{macrocode}
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\sectionmark##1{%
+          \markright {\MakeUppercase{%
+            \ifnum \c@secnumdepth >\z@ \thesection\quad \fi##1}}}%
+        \let\subsectionmark\@gobble % Not needed but inserted for safety
+      }%
+    \fi
+  }{\if@twoside
+%    \end{macrocode}
+% A book in two-side mode:
+%    \begin{macrocode}
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\chaptermark##1{%
+          \markboth{\MakeUppercase{%
+            \ifnum \c@secnumdepth >\m@ne \if@mainmatter
+              \@chapapp\ \thechapter. \ \fi\fi##1}}{}}%
+        \def\sectionmark##1{%
+          \markright {\MakeUppercase{%
+            \ifnum \c@secnumdepth >\z@ \thesection. \ \fi##1}}}%
+      }%
+    \else
+%    \end{macrocode}
+% A book in one-side mode:
+%    \begin{macrocode}
+      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}%
+        \fancyhead[RE]{\slshape\leftmark}%
+        \fancyhead[LO]{\slshape\rightmark}%
+        \def\chaptermark##1{%
+          \markright{\MakeUppercase{%
+            \ifnum \c@secnumdepth >\m@ne \if@mainmatter
+              \@chapapp\ \thechapter. \ \fi\fi##1}}}%
+        \let\sectionmark\@gobble % Not needed but inserted for safety
+      }%
+    \fi
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% Process the options.
+% \changes{fancyhdr v4.0}{2019/03/15}{Process package options.}
+% \SpecialUsageIndex{\ProcessOptions}
+%    \begin{macrocode}
+\ProcessOptions*
+%    \end{macrocode}
+%
 % \begin{macro}{\f@nch@errmsg}
 %   This macro generates an error message.
-% \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{\f@nch@ifundefined} instead of \cs{ifx}.}
+% \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{f@nch@ifundefined} instead of \cs{ifx}.}
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
 %    \begin{macrocode}
 \newcommand\f@nch@errmsg[1]{%
@@ -2848,10 +3220,10 @@
 %   This is similar to \LaTeX's \cs{@tfor}, but it expands the \texttt{charstring}.
 %    \begin{macrocode}
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
-\newcommand{\f@nch@forc}[3]{\expandafter\f@rc\expandafter#1\expandafter{#2}{#3}}
-\newcommand{\f@rc}[3]{\def\temp@ty{#2}\ifx\@empty\temp@ty\else
+\newcommand{\f@nch@forc}[3]{\expandafter\f@nchf@rc\expandafter#1\expandafter{#2}{#3}}
+\newcommand{\f@nchf@rc}[3]{\def\temp@ty{#2}\ifx\@empty\temp@ty\else
                                     \f@nch@rc#1#2\f@nch@rc{#3}\fi}
-\def\f@nch@rc#1#2#3\f@nch@rc#4{\def#1{#2}#4\f@rc#1{#3}{#4}}
+\def\f@nch@rc#1#2#3\f@nch@rc#4{\def#1{#2}#4\f@nchf@rc#1{#3}{#4}}
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\f@nch@for}
@@ -3101,6 +3473,15 @@
 % \end{macro}
 % \end{macro}
 % 
+%  \begin{macro}{\headruleskip}
+%  Don't define \cs{headruleskip} if it is already defined.
+% \changes{fancyhdr v4.0}{2019/03/22}{Parameter \cs{headruleskip}.}
+%    \begin{macrocode}
+\f@nch@ifundefined{headruleskip}%
+      {\newcommand{\headruleskip}{0pt}}{}
+%    \end{macrocode}
+% \end{macro}
+% 
 %  \begin{macro}{\footruleskip}
 %  Memoir also defines \cs{footruleskip}.
 %  Don't define \cs{footruleskip} if it is already defined.
@@ -3190,23 +3571,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% Initialization of the head and foot text.
-%
-% The default values still contain \cs{fancyplain} for compatibility:
-% lefthead empty on ``plain'' pages, \cs{rightmark} on even, \cs{leftmark} on odd pages;
-% evenhead empty on ``plain'' pages, \cs{leftmark} on even, \cs{rightmark} on odd pages.
-%    \begin{macrocode}
-\fancyhf{}
-\if@twoside
-  \fancyhead[el,or]{\fancyplain{}{\slshape\rightmark}}
-  \fancyhead[er,ol]{\fancyplain{}{\slshape\leftmark}}
-\else
-  \fancyhead[l]{\fancyplain{}{\slshape\rightmark}}
-  \fancyhead[r]{\fancyplain{}{\slshape\leftmark}}
-\fi
-\fancyfoot[c]{\rmfamily\thepage} % page number
-%    \end{macrocode}
-%
 % \begin{macro}{\fancycenter}
 % \changes{fancyhdr v4.0}{2019/03/15}{Macro \cs{fancycenter} added}
 % \cs{fancycenter}\oarg{dist}\oarg{stretch}\marg{left-mark}\marg{center-mark}\marg{right-mark}
@@ -3292,8 +3656,9 @@
 %
 % \changes{fancyhdr v3.10}{2019/01/25}{Don't use \cs{global}\cs{setlength}.}
 % \changes{fancyhdr v3.10}{2019/01/26}{Use \cs{newcommand} instead of \cs{def}.}
-% \changes{fancyhdr v4.0}{2019/03/15}{Don't adjust the \cs{headheight}/\cs{footskip}}
-% \changes{fancyhdr v4.0}{2019/03/15}{Don't check when the \texttt{nocheck} option is given}
+% \changes{fancyhdr v4.0}{2019/03/15}{Don't adjust the
+% \cs{headheight}/\cs{footskip}, except when the \texttt{compatV3} option is given.}
+% \changes{fancyhdr v4.0}{2019/03/15}{Don't check when the \texttt{nocheck} option is given.}
 %    \begin{macrocode}
 \newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
@@ -3301,16 +3666,27 @@
     \iff@nch@check
       \dimen0=#1\advance\dimen0-\ht0
       \f@nch@warning{%
-        \string#1 is too small (\the#1): \MessageBreak%
-        Make it at least \the\ht0, for example:\MessageBreak%
+        \string#1 is too small (\the#1): \MessageBreak
+        Make it at least \the\ht0, for example:\MessageBreak
         \string\setlength{\string#1}{\the\ht0}%
-        \ifx#1\headheight .\MessageBreak%
-          You might also make \topmargin smaller:\MessageBreak%
+        \iff@nch@compatViii .\MessageBreak
+        We now make it that large for the rest of the document.\MessageBreak
+        This may cause the page layout to be inconsistent, however
+        \fi
+        \ifx#1\headheight .\MessageBreak
+          You might also make \topmargin smaller to compensate:\MessageBreak
           \string\addtolength{\string\topmargin}{\the\dimen0}%
-        \fi\@gobble
+        \fi
+        \@gobble
       }%
     \fi
-    \ht0=#1%
+    \iff@nch@compatViii
+      \dimen0=#1\relax
+      \global#1=\ht0\relax
+      \ht0=\dimen0 %
+    \else
+      \ht0=#1%
+    \fi
   \fi
   \box0}
 %    \end{macrocode}
@@ -3334,6 +3710,7 @@
 %   5. RIGHTSIDE BEARING. This is always \cs{relax} or \cs{hss}
 %   (after expansion).
 %
+% \changes{fancyhdr v4.0}{2019/03/22}{Parameter \cs{headruleskip}.}
 %    \begin{macrocode}
 \newcommand\f@nch@head[5]{%
   #1%
@@ -3347,6 +3724,7 @@
         \hfill
         \llap{\parbox[b]{\headwidth}{\raggedleft#4}}%
       }%
+      \vskip\headruleskip\relax
       \headrule
     }%
   }%
@@ -3388,31 +3766,6 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\headrule}
-%    \begin{macrocode}
-\def\headrule{{\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi
-    \hrule\@height\headrulewidth\@width\headwidth
-    \vskip-\headrulewidth}}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\footrule}
-% \changes{fancyhdr v3.10}{2019/01/28}{Move \cs{footruleskip} outside of the \cs{footrule}
-% definition and remove useless \cs{vskip} at the top.}
-%    \begin{macrocode}
-\def\footrule{{\if@fancyplain\let\footrulewidth\plainfootrulewidth\fi
-    \hrule\@width\headwidth\@height\footrulewidth}}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\ps@fancy}
-% Pagestyle \texttt{fancy}
-%    \begin{macrocode}
-\def\ps@fancy{%
-  \f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}% for amsbook
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\MakeUppercase}
 %   Define \MakeUppercase for old \LaTeX{}en. Note: we used \cs{def} rather
 %   than \cs{let}, so that \verb+\let\uppercase\relax+ (from the version 1
@@ -3422,6 +3775,21 @@
 \f@nch@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{\@chapapp}
+% Define \cs{@chapapp} for classes that don't have it, e.g. amsbook
+%    \begin{macrocode}
+\f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\f@nch@initialise}
+% \changes{fancyhdr v4.0}{2019/03/21}{Put all the initialisation code in
+% \cs{f@nch@initialise}}
+% This macro initialises the headers and footers and \cs{chaptermark}
+% and/or \cs{[sub]sectionmark} for pagestyle \texttt{fancy}
+%    \begin{macrocode}
+\def\f@nch@initialise{%
+%    \end{macrocode}
 % 
 % \begin{macro}{\chaptermark}
 % \begin{macro}{\sectionmark}
@@ -3429,72 +3797,144 @@
 % Standard definitions for \cs{chaptermark}, \cs{sectionmark} and \cs{subsectionmark}.
 % 
 %    \begin{macrocode}
-\f@nch@ifundefined{chapter}%
- {\def\sectionmark##1{\markboth{\MakeUppercase{\ifnum \c@secnumdepth>\z@
-        \thesection\hskip 1em\relax
-      \fi ##1}}{}}%
-  \def\subsectionmark##1{\markright {\ifnum \c@secnumdepth >\@ne
-    \thesubsection\hskip 1em\relax \fi ##1}}}%
- {\def\chaptermark##1{\markboth {\MakeUppercase{\ifnum
-      \c@secnumdepth>\m@ne \@chapapp\ \thechapter. \ \fi ##1}}{}}%
-\def\sectionmark##1{\markright{\MakeUppercase{\ifnum \c@secnumdepth >\z@
-      \thesection. \ \fi ##1}}}%
+  \f@nch@ifundefined{chapter}%
+   {\def\sectionmark##1{\markboth{\MakeUppercase{\ifnum \c@secnumdepth>\z@
+          \thesection\hskip 1em\relax
+        \fi ##1}}{}}%
+    \def\subsectionmark##1{\markright {\ifnum \c@secnumdepth >\@ne
+      \thesubsection\hskip 1em\relax \fi ##1}}}%
+   {\def\chaptermark##1{\markboth {\MakeUppercase{\ifnum
+        \c@secnumdepth>\m@ne \@chapapp\ \thechapter. \ \fi ##1}}{}}%
+    \def\sectionmark##1{\markright{\MakeUppercase{\ifnum \c@secnumdepth >\z@
+        \thesection. \ \fi ##1}}}%
+   }%
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\headrule}
+%    \begin{macrocode}
+  \def\headrule{{\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi
+      \hrule\@height\headrulewidth\@width\headwidth
+      \vskip-\headrulewidth}}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\footrule}
+% \changes{fancyhdr v3.10}{2019/01/28}{Move \cs{footruleskip} outside of the \cs{footrule}
+% definition and remove useless \cs{vskip} at the top.}
+%    \begin{macrocode}
+  \def\footrule{{\if@fancyplain\let\footrulewidth\plainfootrulewidth\fi
+      \hrule\@width\headwidth\@height\footrulewidth}}%
+%    \end{macrocode}
+% \end{macro}
+%
+% Default values for \cs{headrulewidth}, \cs{footrulewidth},
+% \cs{headruleskip} and \cs{footruleskip}.
+%    \begin{macrocode}
+  \def\headrulewidth{0.4pt}%
+  \def\footrulewidth{0pt}%
+  \def\headruleskip{0pt}%
+  \def\footruleskip{0.3\normalbaselineskip}%
+%    \end{macrocode}
+% Initialization of the head and foot text.
+%
+% The default values still contain \cs{fancyplain} for compatibility:
+% lefthead empty on ``plain'' pages, \cs{rightmark} on even, \cs{leftmark} on odd pages;
+% evenhead empty on ``plain'' pages, \cs{leftmark} on even, \cs{rightmark} on odd pages.
+%    \begin{macrocode}
+  \fancyhf{}%
+  \if@twoside
+    \fancyhead[el,or]{\fancyplain{}{\slshape\rightmark}}%
+    \fancyhead[er,ol]{\fancyplain{}{\slshape\leftmark}}%
+  \else
+    \fancyhead[l]{\fancyplain{}{\slshape\rightmark}}%
+    \fancyhead[r]{\fancyplain{}{\slshape\leftmark}}%
+  \fi
+  \fancyfoot[c]{\rmfamily\thepage}% page number
 }
 %    \end{macrocode}
-% \end{macro}
-% \end{macro}
-% \end{macro}
-% 
-% \begin{macro}{\ps@fancy}
-% Pagestyle \texttt{fancy}. \cs{ps@@fancy} is the real pagestyle
-% \texttt{fancy}, i.e. the non-plain one.
+% Call the initialisation
 %    \begin{macrocode}
-\ps@@fancy 
-\gdef\ps@fancy{\@fancyplainfalse\ps@@fancy}%
+\f@nch@initialise
 %    \end{macrocode}
 % \end{macro}
-% 
+%
+% \begin{macro}{\ps@f@nch@fancyproto}
+% \cs{ps@f@nch@fancyproto} is the
+% initial value for pagestyle \texttt{fancy}. The real page style
+% is \cs{f@nch@fancycore} This definition is for the first use. It
+% also initialises \cs{headwidth}, and then resets itself to
+% \cs{f@nch@fancycore}. For backwards compatibility it still
+% contains \cs{@fancyplainfalse}.
+% The reason we have \cs{ps@f@nch@fancyproto} is so that page style
+% \texttt{fancy} can be redefined.
+% \changes{fancyhdr v4.0}{2019/03/21}{Reorganise \cs{ps@fancy}}
+%    \begin{macrocode}
+\def\ps@f@nch@fancyproto{%
+%    \end{macrocode}
 % Initialize \cs{headwidth} if the user didn't. If \cs{headwidth} ${}< 0$,
-% then the user did not initialize it, or they just added something to
+% then the user did not initialise it, or they just added something to
 % it in the expectation that
-% it was initialized to \cs{textwidth}. We compensate this now. This loses if
+% it was initialised to \cs{textwidth}. We compensate this now. This loses if
 % the user intended to multiply it by a factor. But that case is more
 % likely done by saying something like \verb+\setlength{\headwidth}{1.2\textwidth}+. 
-% The documentation says you have to change \cs{headwidth} after the first call to
+% The documentation advises to change \cs{headwidth} after the first call to
 % \verb+\pagestyle{fancy}+. This code is just to catch the most common cases were
-% that requirement is violated.
-%
+% that is not the case.
 %    \begin{macrocode}
-\ifdim\headwidth<0sp
+  \ifdim\headwidth<0sp
     \global\advance\headwidth123456789sp\global\advance\headwidth\textwidth
-\fi}
+  \fi
 %    \end{macrocode}
+% Now we reset \cs{ps@f@nch@fancyproto} to \cs{f@nch@fancycore} with \cs{@fancyplainfalse}
+% and call that version.
+%    \begin{macrocode}
+  \gdef\ps@f@nch@fancyproto{\@fancyplainfalse\f@nch@fancycore}%
+  \@fancyplainfalse\f@nch@fancycore
+}%
+%    \end{macrocode}
+% Let the system know this is a \texttt{fancyhdr} pagestyle.
+%    \begin{macrocode}
+\@namedef{f@nch@ps@f@nch@fancyproto-is-fancyhdr}{}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{ps@fancy}
+% Define \cs{ps@fancy} just to call \cs{ps@f@nch@fancyproto}.
+%    \begin{macrocode}
+\def\ps@fancy{\ps@f@nch@fancyproto}
+\@namedef{f@nch@ps@fancy-is-fancyhdr}{}
+%    \end{macrocode}
+% \end{macro}
 %
 % \begin{macro}{\ps@fancyplain}
 % The pagestyle \texttt{fancyplain} (deprecated).
 % 
 %    \begin{macrocode}
 \def\ps@fancyplain{\ps@fancy \let\ps@plain\ps@plain@fancy}
-\def\ps@plain@fancy{\@fancyplaintrue\ps@@fancy} 
+\def\ps@plain@fancy{\@fancyplaintrue\f@nch@fancycore}
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\ps@@empty}
+% \begin{macro}{\f@nch@ps@empty}
 % Save the definition of \cs{ps@empty} (pagestyle \texttt{empty}).
+% \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@empty} to \cs{f@nch@ps@empty}}
 % 
 %    \begin{macrocode}
-\let\ps@@empty\ps@empty
+\let\f@nch@ps@empty\ps@empty
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\ps@@fancy}
-% The actual pagestyle \texttt{fancy}. For amsbook/amsart, which do
-% strange things with \cs{topskip}, we start with \cs{ps@@empty}. We
+% \begin{macro}{\f@nch@fancycore}
+% \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@fancy} to \cs{f@nch@fancycore}}
+% The actual implementation of pagestyle \texttt{fancy}. For amsbook/amsart, which do
+% strange things with \cs{topskip}, we start with \cs{f@nch@ps@empty}. We
 % construct the even and odd headers and footers from all the parts that
 % we have collected.
 %    \begin{macrocode}
-\def\ps@@fancy{%
-  \ps@@empty
+\def\f@nch@fancycore{%
+  \f@nch@ps@empty
   \def\@mkboth{\protect\markboth}%
   \def\@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh}%
   \def\@oddfoot{\f@nch@foot\f@nch@Oolf\f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@Oorf}%
@@ -3502,6 +3942,21 @@
   \def\@evenfoot{\f@nch@foot\f@nch@Oelf\f@nch@elf\f@nch@ecf\f@nch@erf\f@nch@Oerf}%
 }
 %    \end{macrocode}
+% \end{macro}
+% \begin{macro}{ps@fancydefault}
+% \changes{fancyhdr v4.0}{2019/03/21}{Added \cs{ps@fancydefault}}
+% This is page style \texttt{fancydefault}. It is in fact page style
+% \texttt{fancy} with all the defaults embedded. In contrast with page
+% style \texttt{fancy} that gets all its settings from the environment.
+% It reruns all initialisations and then calls \cs{ps@f@nch@fancyproto}.
+%    \begin{macrocode}
+\def\ps@fancydefault{%
+  \f@nch@initialise
+  \ps@f@nch@fancyproto
+}
+\@namedef{f@nch@ps@fancydefault-is-fancyhdr}{}
+%    \end{macrocode}
+%
 % \end{macro}
 % 
 % \begin{macro}{\f@nch@Oolh}
@@ -3619,9 +4074,32 @@
 % \end{macro}
 %
 % \begin{macro}{\fancypagestyle}
+% Define a new page style. The optional second argument is the base page style.
+% It defaults to \cs{ps@f@nch@fancyproto}.
+% \changes{fancyhdr v4.0}{2019/03/21}{Added optional base style argument.}
 %    \begin{macrocode}
-\newcommand{\fancypagestyle}[2]{%
-  \@namedef{ps@#1}{\let\f@nch@gbl\relax#2\relax\ps@fancy}}
+\newcommand{\fancypagestyle}[1]{%
+  \@ifnextchar[{\f@nch@pagestyle{#1}}{\f@nch@pagestyle{#1}[f@nch@fancyproto]}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\f@nch@pagestyle}
+% The actual code for \cs{fancypagestyle}. Build the page style body.
+% Declare it as a fancyhdr page style.
+%    \begin{macrocode}
+\def\f@nch@pagestyle#1[#2]#3{%
+  \f@nch@ifundefined{ps@#2}{%
+    \f@nch@errmsg{\string\fancypagestyle: Unknown base page style `#2'}%
+  }{%
+    \f@nch@ifundefined{f@nch@ps@#2-is-fancyhdr}{%
+      \f@nch@errmsg{\string\fancypagestyle: Base page style `#2' is not fancyhdr-based}%
+    }%
+    {%
+      \@namedef{ps@#1}{\let\f@nch@gbl\relax\@nameuse{ps@#2}#3\relax}%
+      \@namedef{f@nch@ps@#1-is-fancyhdr}{}%
+    }%
+  }%
+}%
 %    \end{macrocode}
 % \end{macro}
 %</fancyhdr>
