@@ -96,30 +96,48 @@
 \renewcommand{\sectionmark}[1]{\markright{\thesection\quad#1}}
 
 % Page style for demonstrating struts, \headruleskip and \footruleskip.
-%
-\fancypagestyle{showstruts}{%
-  \fancyhead[L]{%
+
+\newcommand{\strutheader}{%
+  \texttt{\textbackslash strut}:
+  \rule[-0.3\normalbaselineskip]{10pt}{0.3\normalbaselineskip}%
+  \rule{10pt}{0.7\normalbaselineskip}
+  \texttt{\textbackslash headruleskip}$\searrow$
+  \raisebox{-0.3\normalbaselineskip}[0pt][0pt]%
+    {\ifdim \headruleskip>0pt
+      \rule[-\headruleskip]{10pt}{\headruleskip}
+      \else
+      \rule{10pt}{-\headruleskip}
+     \fi}
+}
+\newcommand{\strutfooter}{%
+  \raisebox{0pt}[0pt][0pt]{%
     \texttt{\textbackslash strut}:
     \rule[-0.3\normalbaselineskip]{10pt}{0.3\normalbaselineskip}%
     \rule{10pt}{0.7\normalbaselineskip}
-    \texttt{\textbackslash headruleskip}$\searrow$
-    \raisebox{-0.3\normalbaselineskip}[0pt][0pt]%
-    {\ifdim \headruleskip>0pt
-      \rule[-\headruleskip]{10pt}{\headruleskip}
-    \else
-      \rule{10pt}{-\headruleskip}
-    \fi}
+    \texttt{\textbackslash footruleskip} $\nearrow$
+    \rule[0.7\normalbaselineskip]{10pt}{\footruleskip}}%
+}
+\fancypagestyle{showstruts}{%
+  \fancyhead[L]{%
+    \ifthenelse{\value{page}=\pageref{showstruts}}%
+      {\strutheader}%
+      {\rightmark}%
   }
   \fancyfoot[L]{%
-    \raisebox{0pt}[0pt][0pt]{%
-      \texttt{\textbackslash strut}:
-      \rule[-0.3\normalbaselineskip]{10pt}{0.3\normalbaselineskip}%
-      \rule{10pt}{0.7\normalbaselineskip}
-      \texttt{\textbackslash footruleskip} $\nearrow$
-      \rule[0.7\normalbaselineskip]{10pt}{\footruleskip}}%
+    \ifthenelse{\value{page}=\pageref{showstruts}}%
+      {\strutfooter}%
+      {}%
   }
-  \renewcommand{\footrulewidth}{0.4pt}
-  \renewcommand{\headruleskip}{4pt}
+  \fancyheadinit{%
+    \ifthenelse{\value{page}=\pageref{showstruts}}%
+      {\renewcommand{\headruleskip}{6pt}}%
+      {\renewcommand{\headruleskip}{0pt}}%
+  }
+  \fancyfootinit{%
+    \ifthenelse{\value{page}=\pageref{showstruts}}%
+      {\renewcommand{\footrulewidth}{0.4pt}}%
+      {\renewcommand{\footrulewidth}{0pt}}%
+  }
 }
 
 \newcounter{example}
@@ -1524,9 +1542,10 @@
 % header text. If you want to keep the header text fixed, but move the
 % decorative line, then you must also change the parameter \cs{headsep}
 % (see figure~\ref{fig:layout}). \strut
-% 
+%
+% \pagestyle{showstruts}
 % \noindent\begin{minipage}{\textwidth}
-% \label{showstruts}\thispagestyle{showstruts}
+% \label{showstruts}
 % \indent The header and footer in this page
 % show the \emph{strut} (the amount of space in the text area above and
 % below the baseline), and the \cs{headruleskip} and \cs{footruleskip}.
@@ -1932,8 +1951,174 @@
 % commands ahead, so it may already have processed some commands that produce
 % text that will appear on the next page.
 %
+% So now we are giving an example how to change the headers and footers
+% only on one specific page. In some cases this can be done by the
+% \CmdIndex{thispagestyle}
+% \cs{thispagestyle} command. This changes the page style for the
+% ``current'' page only. But then we may be hit by the problem mentioned
+% in the previous paragraph. \LaTeX{} may have a different idea about
+% the ``current'' page than you. The use of \cs{thispagestyle} is OK if
+% you can be sure that the text where the command \cs{thispagestyle} is
+% executed is the same page as where the surrounding text appears. So
+% for example directly after a \cs{chapter} command, or after a
+% \cs{newpage}. However, when the command is given near the end of a
+% page, \LaTeX{} may execute the command, and then decide that the page
+% is full and move the text that contains the command to the next page.
+% So now the page style is changed on one page earlier than was intended.
+%
+% The solution to this problem is to put a label, like
+% \Cmd{label\{otherpagestyle\}} in the text where you want the different
+% page style, and then in the header and/or footer definitions compare
+% the page number with the label page number and choose the proper
+% value. For example, if we want to replace the section title on the
+% special page with ``MYFANCY SECTION'', like in
+% \begin{verbatim}
+% \fancypagestyle{myfancy}{
+%   \fancyhead[LE,RO]{MYFANCY SECTION}
+% }
+% \end{verbatim}
+% \Example
+% we define a new pagestyle that makes the choice:
+% \begin{verbatim}
+% \usepackage{ifthen}
+% . . .
+% \fancypagestyle{switch}{
+%   \fancyhead[LE,RO]{%
+%     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
+%       {MYFANCY SECTION}
+%       {\textsl{\rightmark}}}
+% }
+% \end{verbatim}
+% \CmdIndex{ifthenelse}
+% where \verb|\textsl{\rightmark}| is the normal value of the header
+% field from \Cmd{pagestyle\{fancy\}}.
+% Now we choose \Cmd{pagestyle\{switch\}} before our text, or even for
+% the whole document.
+%
+% There can still be some ambiguity on which page gets the different
+% header. For example, if the text says:
+% \begin{quote}
+%   This page gets a different header than the surrounding pages.
+% \end{quote}
+% where do you put the \cs{label}? \LaTeX{} could break the page between
+% ``This'' and ``page'', and then would you want the special heading on
+% the page where ``This'' appears, or on the page where ``page''
+% appears. It depends on the positioning of the \cs{label} command.
+% Probably it is safer to make sure the sentence isn't broken. This can
+% be dome by putting the text in a \cs{parbox} or \texttt{minipage} environment.
+% \begin{verbatim}
+% \noindent
+% \begin{minipage}{\textwidth}
+%   This page should have a different header than the surrounding pages.
+%   \label{otherpagestyle}
+%   It is done with the \verb|\pagestyle{switch}| command, that
+%   has tests in the header field definitions. This chooses the actual
+%   header depending on the page number.
+% \end{minipage}
+% \end{verbatim}
+% The \cs{noindent} is necessary, otherwise the whole \texttt{minipage}
+% will be shifted right by the paragraph indentation.
+%
+% Note that you cannot reset the page style immediately after this code,
+% as this may still influence the current page. If you want to reset it,
+% for example to \Cmd{pagestyle\{fancy\}}, you must be sure that it
+% happens on a following page. But in this case it isn't even necessary,
+% as the special page style acts as the default on all pages except the
+% special page.
+%
+% The special header and footer in page~\pageref{showstruts}, which
+% show the struts are done in a similar way, although the header and
+% footer are a bit more elaborated there.
+% Also there is another complication there, as we also want to make both
+% \cs{headruleskip} and \cs{footrulewidth} dependent on the page number.
+% Unfortunately, this cannot be done with a simple \cs{ifthenelse}
+% \CmdIndex{ifthenelse}
+% command.
+% Both \cs{headruleskip} and \cs{footrulewidth} are eventually
+% used as length parameters, and this requires that they are
+% \emph{expandable}. However, the \cs{ifthenelse} construct is not
+% expandable, so you will get strange error messages if you use
+% something like
+% \begin{verbatim}
+% %%% NOTE: This does not work %%%%
+% \renewcommand{\footrulewidth}{%
+%   \ifthenelse{\value{page}=\pageref{otherpagestyle}}{0.4pt}{0pt}%
+% }
+% \end{verbatim}
+% For cases like this \Package{fancyhdr} version~4.0 and later has some
+% new commands \cs{fancyheadinit}, \cs{fancyfootinit} and \cs{fancyhfinit}.
+% \DescribeMacro{\fancyheadinit}
+% With \Cmd{fancyheadinit\{\meta{code}\}} you can define some code that will be executed
+% just before the construction of the header. As it is executed in the
+% header, it can test the correct page number, because the counter
+% \texttt{page} is guaranteed to have the correct value in the headers
+% and footers. Similarly, the code in \Cmd{fancyfootinit\{\meta{code}\}} is executed in
+% \DescribeMacro{\fancyfootinit}
+% the footer. And \Cmd{fancyhfinit\{\meta{code}\}} sets its code for both the header
+% \DescribeMacro{\fancyhfinit}
+% and the footer. Now we can set for example \cs{headruleskip} or
+% \cs{footrulewidth} depending on the page number. So instead of putting
+% the test inside the definition of \cs{headruleskip}, we can put it
+% outside, and then we can use the command \cs{ifthenelse}. So we put
+% the following in \Cmd{pagestyle\{switch\}}:
+% \begin{verbatim}
+%   \fancyheadinit{%
+%     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
+%       {\renewcommand{\headruleskip}{6pt}}
+%       {\renewcommand{\headruleskip}{0pt}}
+%   }
+%   \fancyfootinit{%
+%     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
+%       {\renewcommand{\footrulewidth}{4pt}}
+%       {\renewcommand{\footrulewidth}{0pt}}
+%   }
+% \end{verbatim}
+% Now here is the definition of the page style used for page~\pageref{showstruts}.
+% \begin{verbatim}
+% \fancypagestyle{showstruts}{%
+%   \fancyhead[L]{%
+%     \ifthenelse{\value{page}=\pageref{showstruts}}%
+%       {\strutheader}%
+%       {\rightmark}%
+%   }
+%   \fancyfoot[L]{%
+%     \ifthenelse{\value{page}=\pageref{showstruts}}%
+%       {\strutfooter}%
+%       {}%
+%   }
+%   \fancyheadinit{%
+%     \ifthenelse{\value{page}=\pageref{showstruts}}%
+%       {\renewcommand{\headruleskip}{6pt}}%
+%       {\renewcommand{\headruleskip}{0pt}}%
+%   }
+%   \fancyfootinit{%
+%     \ifthenelse{\value{page}=\pageref{showstruts}}%
+%       {\renewcommand{\footrulewidth}{0.4pt}}%
+%       {\renewcommand{\footrulewidth}{0pt}}%
+%   }
+% }
+% \end{verbatim}
+% The label used on that page is \texttt{showstruts}. \cs{strutheader}
+% and \cs{strutfooter} are macros that contain the code to draw these
+% pictures. In this example the values for \cs{headruleskip} and
+% \cs{footrulewidth} in the \emph{else} case are the same as the global
+% values. So we could have left these \emph{else} parts empty. Then they
+% would keep the global values.
+% However, often explicit is better than implicit.
 % 
-% ^^A See the next section for an example.
+% These initialisation commands cannot be used to make global changes to
+% the page, for example to \cs{headheight}. Neither can you use them to
+% change \cs{fancyhead} or \cs{fancyfoot}, because these have already
+% been set up. But you can use it to set the color and font of the
+% header and/or footer, for example to get large, red text in the
+% headers and footers on this specific page:
+% \begin{verbatim}
+%   \fancyhfinit{%
+%     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
+%       {\color{red}\Large}
+%       {}
+%     }
+% \end{verbatim}
 %
 % \section{Headers and footers induced by the text}
 % \label{sec:xmarks}
