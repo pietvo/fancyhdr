@@ -295,7 +295,8 @@
 % \cs{headrulewidth} and \cs{headrulewidth} are macros to define the
 % thickness of a line under the header and above the footer.
 % \cs{headruleskip} and \cs{footruleskip} are macros that define the
-% distance between the lines and the header and footer text, respectively.
+% distance between the lines and the header and footer text,
+% respectively. (But \cs{headruleskip} is only available since version~4.0.)
 % \cs{headrule} and \cs{footrule} are macros to completely redefine
 % these lines. And \cs{headwidth} is a length parameter that defines the
 % total width of the headers and footers. See sections~\ref{sec:simple},
@@ -1499,14 +1500,16 @@
 % the normal line distance. You can increase or decrease this distance
 % \CmdIndex{headruleskip}
 % \DescribeMacro{\headruleskip}
-% by defining the macro \cs{headruleskip}, similar to \cs{footruleskip}.
+% by defining the macro \cs{headruleskip}, similar to \cs{footruleskip}
+% \footnote{(But \cs{headruleskip} is only available since version~4.0.)}.
 % This defines the extra distance. The default value is 0pt, and
 % positive values make the distance larger, and negative values make the
-% distance shorter. Please note that this does not change the position
+% distance shorter.
+% Please note that this does not change the position
 % of the decorative line with respect to the page, but it shifts the
 % header text. If you want to keep the header text fixed, but move the
 % decorative line, then you must also change the parameter \cs{headsep}
-% (see figure~\ref{fig:layout}).\strut
+% (see figure~\ref{fig:layout}). \strut
 % 
 % \noindent\begin{minipage}{\textwidth}
 % \label{showstruts}\thispagestyle{showstruts}
