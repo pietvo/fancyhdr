@@ -130,7 +130,7 @@
   }
   \fancyheadinit{%
     \ifthenelse{\value{page}=\pageref{showstruts}}%
-      {\renewcommand{\headruleskip}{6pt}}%
+      {\renewcommand{\headruleskip}{4pt}}%
       {\renewcommand{\headruleskip}{0pt}}%
   }
   \fancyfootinit{%
@@ -2025,12 +2025,12 @@
 % \begin{verbatim}
 %   \fancyheadinit{%
 %     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
-%       {\renewcommand{\headruleskip}{6pt}}
+%       {\renewcommand{\headruleskip}{4pt}}
 %       {\renewcommand{\headruleskip}{0pt}}
 %   }
 %   \fancyfootinit{%
 %     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
-%       {\renewcommand{\footrulewidth}{4pt}}
+%       {\renewcommand{\footrulewidth}{0.4pt}}
 %       {\renewcommand{\footrulewidth}{0pt}}
 %   }
 % \end{verbatim}
@@ -2049,7 +2049,7 @@
 %   }
 %   \fancyheadinit{%
 %     \ifthenelse{\value{page}=\pageref{showstruts}}%
-%       {\renewcommand{\headruleskip}{6pt}}%
+%       {\renewcommand{\headruleskip}{4pt}}%
 %       {\renewcommand{\headruleskip}{0pt}}%
 %   }
 %   \fancyfootinit{%
@@ -3378,6 +3378,7 @@
   \f@nch@ifundefined{PackageError}{\errmessage{#1}}{\PackageError{fancyhdr}{#1}{}}}
 %    \end{macrocode}
 % \end{macro}
+%
 % \begin{macro}{\f@nch@warning}
 % This macro generates a warning.
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{f@nch@ifundefined} instead of \cs{ifx}.}
