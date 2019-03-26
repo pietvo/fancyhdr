@@ -302,6 +302,20 @@
 % total width of the headers and footers. See sections~\ref{sec:simple},
 % \ref{sec:fancy} and \ref{sec:book-examples} for more details.
 %
+% \DescribeMacro{\fancyheadinit}
+% \DescribeMacro{\fancyfootinit}
+% \DescribeMacro{\fancyhfinit}
+% \begin{verbatim}
+% \fancyheadinit
+% \fancyfootinit
+% \fancyhfinit
+% \end{verbatim}
+%
+% \cs{fancyheadinit} and \cs{fancyfootinit} can be used to define
+% initialisation code for the header and footer, respectively, and
+% \cs{fancyhfinit} defines both of these. These commands are only
+% available in fancyhdr version~4.0 and later. See section~\ref{sec:change}.
+%
 % \DescribeMacro{\fancycenter}
 % (Only in version~4.0 and later.) The command \cs{fancycenter} packs 3
 % header fields into a full-width header. See section~\ref{sec:fancycenter}.
@@ -2631,6 +2645,8 @@
 %   \item The \cs{fancypagestyle} command has an optional parameter \oarg{base-style}.
 %   \item The page style \texttt{fancydefault}.
 %   \item The \cs{headruleskip} parameter.
+%   \item The \cs{fancyheadinit}, \cs{fancyfootinit}, and
+%     \cs{fancyhfinit} commands.
 %
 %   \end{itemize}
 %
@@ -3658,6 +3674,49 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\fancyheadinit}
+% This macro can be used to define initialisation code that will be run
+% before the construction of the header. It can for example set the
+% color or the font, or change \cs{headrulewidth} or \cs{headruleskip}.
+% It cannot make global changes, just changes for the header.
+% \begin{macro}{\f@nch@headinit}
+%   Storage for the header initialisation code.
+%    \begin{macrocode}
+\newcommand{\f@nch@headinit}{}
+\newcommand{\fancyheadinit}[1]{%
+  \def\f@nch@headinit{#1}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\fancyfootinit}
+% This macro can be used to define initialisation code that will be run
+% before the construction of the footer. It can for example set the
+% color or the font, or change \cs{footrulewidth} or \cs{footruleskip}.
+% It cannot make global changes, just changes for the footer.
+% \begin{macro}{\f@nch@footinit}
+%   Storage for the footer initialisation code.
+%    \begin{macrocode}
+\newcommand{\f@nch@footinit}{}
+\newcommand{\fancyfootinit}[1]{%
+  \def\f@nch@footinit{#1}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\fancyhfinit}
+% This macro sets both the header and the footer initialisation codes to
+% the same value.
+%    \begin{macrocode}
+\newcommand{\fancyhfinit}[1]{%
+  \def\f@nch@headinit{#1}%
+  \def\f@nch@footinit{#1}%
+}
+%    \end{macrocode}
+%
+% \end{macro}
 % \begin{macro}{\f@nch@vbox}
 % Make a \cs{vbox} with the header or footer. Check whether there is
 % enough space and give a warning if not.
@@ -3706,7 +3765,9 @@
 % \end{macro}
 %
 % \begin{macro}{\f@nch@head}
-% \begin{macro}{\f@nch@foot}
+% \changes{fancyhdr v4.0}{2019/03/22}{Parameter \cs{headruleskip}.}
+% \changes{fancyhdr v4.0}{2019/03/25}{\cs{fancyheadinit} initialisation
+% code added and \cs{f@nch@reset} moved up.}
 %   Put together a header or footer given the left, center and right
 %   text, fillers at left and right and a rule. The \cs{xlap} commands put
 %   the text into an hbox of zero size, so overlapping text does not
@@ -3722,13 +3783,15 @@
 %   This is the right component. \\
 %   5. RIGHTSIDE BEARING. This is always \cs{relax} or \cs{hss}
 %   (after expansion).
-%
-% \changes{fancyhdr v4.0}{2019/03/22}{Parameter \cs{headruleskip}.}
+% Before constructing the header or footer, the environment is reset to
+% a known state, and then the corresponding initialisation code as given
+% in \cs{fancyheadinit} or \cs{fancyfootinit}, respectively, is run.
 %    \begin{macrocode}
 \newcommand\f@nch@head[5]{%
+  \f@nch@reset
+  \f@nch@headinit\relax
   #1%
   \hbox to\headwidth{%
-    \f@nch@reset
     \f@nch@vbox\headheight{%
       \hbox{%
         \rlap{\parbox[b]{\headwidth}{\raggedright#2}}%
@@ -3745,12 +3808,15 @@
 }
 %    \end{macrocode}
 %
+% \begin{macro}{\f@nch@foot}
 % \changes{fancyhdr v3.10}{2019/01/26}{Put \cs{footrule} in a \cs{vbox}
 % to accommodate for flexible footrules.}
 % \changes{fancyhdr v3.10}{2019/01/28}{Use \cs{unvbox} on the footrule \cs{vbox}
 % to preserve vertical spacing.}
 % \changes{fancyhdr v3.10}{2019/01/28}{Move \cs{footruleskip} outside of the \cs{footrule}
 % definition.}
+% \changes{fancyhdr v4.0}{2019/03/25}{\cs{fancyfootinit} initialisation
+% code added and \cs{f@nch@reset} moved up.}
 % We put the \cs{footrule} in a \cs{vbox} to accommodate for flexible
 % footrules (e.g. using \cs{hrulefill}), so that the \cs{headwidth} will
 % be used as the line width. But to preserve the vertical spacing we
@@ -3758,9 +3824,10 @@
 %
 %    \begin{macrocode}
 \newcommand\f@nch@foot[5]{%
+  \f@nch@reset
+  \f@nch@footinit\relax
   #1%
   \hbox to\headwidth{%
-    \f@nch@reset
     \f@nch@vbox\footskip{%
       \setbox0=\vbox{\footrule}\unvbox0
       \vskip\footruleskip
