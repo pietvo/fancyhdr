@@ -300,15 +300,6 @@
 % \DescribeMacro{\headrule}
 % \DescribeMacro{\footrule}
 % \DescribeMacro{\headwidth}
-% \begin{verbatim}
-% \headrulewidth
-% \footrulewidth
-% \headruleskip
-% \footruleskip
-% \headrule
-% \footrule
-% \headwidth
-% \end{verbatim}
 %
 % \cs{headrulewidth} and \cs{headrulewidth} are macros to define the
 % thickness of a line under the header and above the footer.
@@ -847,7 +838,6 @@
 % section, you can define or redefine other page styles based on page
 % style \texttt{fancy}. This is also done with the \cs{fancypagestyle}
 % command. The general form of this command is:
-% \CmdIndex{fancypagestyle}
 % \begin{quote}
 % \CmdIndex{fancypagestyle}
 % \verb|\fancypagestyle|\marg{style-name}\oarg{base-style}\marg{definitions}
@@ -2512,7 +2502,7 @@
 % continueing. If it is undesirable to have a pagebreak you can use the
 % \Package{afterpage} package and the following command:
 % \begin{verbatim}
-% \afterpage{clearpage}
+% \afterpage{\clearpage}
 % \end{verbatim}
 %
 % This will wait until the current page is finished and then flush all
@@ -2785,24 +2775,24 @@
 %     behaviour is kept. \\
 %     The \texttt{nocheck} option now eliminates these checks completely, on
 %     your own risk. (See section~\ref{sec:warning} on page~\pageref{sec:warning}.)
-%   \item Eliminated \cs{f@nch@gbl}. All definitions are now local.
+%   \item Eliminated global definitions. All definitions are now local.
 %     The \cs{global} case was originally so that you could do definitions in
 %     a group and they would be applied globally. This was a mistake. If
-%     you make them locally they should stay local. And it caused several
+%     you make them locally they should stay local. And it caused
 %     problems with switching page styles, because then the global style
 %     would be changed, which you generally don't want.\\
 %     However, when the package option \texttt{compatV3} is given, the old
 %     behaviour is kept. (See section~\ref{sec:options}.)
+%   \item The page style \texttt{fancydefault}.
+%   \item The \cs{headruleskip} parameter.
+%   \item The \cs{fancyheadinit}, \cs{fancyfootinit}, and
+%     \cs{fancyhfinit} commands.
 %   \item[] \textbf{Note:} The following changes were mostly copied from the
 %     \texttt{nccfancyhdr} package by Alexander I. Rozhenko.
 %   \item The \cs{fancycenter} command (section~\ref{sec:fancycenter}).
 %   \item The \texttt{headings} and \texttt{myheadings} package options
 %     (see section~\ref{sec:options}).
 %   \item The \cs{fancypagestyle} command has an optional parameter \oarg{base-style}.
-%   \item The page style \texttt{fancydefault}.
-%   \item The \cs{headruleskip} parameter.
-%   \item The \cs{fancyheadinit}, \cs{fancyfootinit}, and
-%     \cs{fancyhfinit} commands.
 %
 %   \end{itemize}
 %
@@ -3388,6 +3378,7 @@
   \f@nch@ifundefined{PackageError}{\errmessage{#1}}{\PackageError{fancyhdr}{#1}{}}}
 %    \end{macrocode}
 % \end{macro}
+%
 % \begin{macro}{\f@nch@warning}
 % This macro generates a warning.
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{f@nch@ifundefined} instead of \cs{ifx}.}
@@ -3871,8 +3862,8 @@
   \def\f@nch@footinit{#1}%
 }
 %    \end{macrocode}
-%
 % \end{macro}
+%
 % \begin{macro}{\f@nch@vbox}
 % Make a \cs{vbox} with the header or footer. Check whether there is
 % enough space and give a warning if not.
