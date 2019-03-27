@@ -2,7 +2,7 @@
 %
 % Copyright (C) 1994-219 by Piet van Oostrum <piet@vanoostrum.org>
 % -------------------------------------------------------
-% 
+%
 % This file may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3
 % of this license or (at your option) any later version.
@@ -10,7 +10,7 @@
 %
 %    http://www.latex-project.org/lppl.txt
 %
-% and version 1.3 or later is part of all distributions of LaTeX 
+% and version 1.3 or later is part of all distributions of LaTeX
 % version 2005/12/01 or later.
 %
 % \fi
@@ -48,6 +48,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{url}
 \usepackage[fit]{truncate}
+\usepackage{ifthen}
 \usepackage{fancyhdr}
 \GetFileInfo{fancyhdr.sty}
 \def\latex/{\protect\LaTeX{}}
@@ -95,30 +96,58 @@
 \renewcommand{\sectionmark}[1]{\markright{\thesection\quad#1}}
 
 % Page style for demonstrating struts, \headruleskip and \footruleskip.
-%
-\fancypagestyle{showstruts}{%
-  \fancyhead[L]{%
+
+\newcommand{\strutheader}{%
+  \texttt{\textbackslash strut}:
+  \rule[-0.3\normalbaselineskip]{10pt}{0.3\normalbaselineskip}%
+  \rule{10pt}{0.7\normalbaselineskip}
+  \texttt{\textbackslash headruleskip}$\searrow$
+  \raisebox{-0.3\normalbaselineskip}[0pt][0pt]%
+    {\ifdim \headruleskip>0pt
+      \rule[-\headruleskip]{10pt}{\headruleskip}
+      \else
+      \rule{10pt}{-\headruleskip}
+     \fi}
+}
+\newcommand{\strutfooter}{%
+  \raisebox{0pt}[0pt][0pt]{%
     \texttt{\textbackslash strut}:
     \rule[-0.3\normalbaselineskip]{10pt}{0.3\normalbaselineskip}%
     \rule{10pt}{0.7\normalbaselineskip}
-    \texttt{\textbackslash headruleskip}$\searrow$
-    \raisebox{-0.3\normalbaselineskip}[0pt][0pt]%
-      {\ifdim \headruleskip>0pt
-        \rule[-\headruleskip]{10pt}{\headruleskip}
-      \else
-        \rule{10pt}{-\headruleskip}
-      \fi}
+    \texttt{\textbackslash footruleskip} $\nearrow$
+    \rule[0.7\normalbaselineskip]{10pt}{\footruleskip}}%
+}
+\fancypagestyle{showstruts}{%
+  \fancyhead[L]{%
+    \ifthenelse{\value{page}=\pageref{showstruts}}%
+      {\strutheader}%
+      {\rightmark}%
   }
   \fancyfoot[L]{%
-    \raisebox{0pt}[0pt][0pt]{%
-      \texttt{\textbackslash strut}:
-      \rule[-0.3\normalbaselineskip]{10pt}{0.3\normalbaselineskip}%
-      \rule{10pt}{0.7\normalbaselineskip}
-      \texttt{\textbackslash footruleskip} $\nearrow$
-      \rule[0.7\normalbaselineskip]{10pt}{\footruleskip}}%
+    \ifthenelse{\value{page}=\pageref{showstruts}}%
+      {\strutfooter}%
+      {}%
   }
-  \renewcommand{\footrulewidth}{0.4pt}
-  \renewcommand{\headruleskip}{4pt}
+  \fancyheadinit{%
+    \ifthenelse{\value{page}=\pageref{showstruts}}%
+      {\renewcommand{\headruleskip}{6pt}}%
+      {\renewcommand{\headruleskip}{0pt}}%
+  }
+  \fancyfootinit{%
+    \ifthenelse{\value{page}=\pageref{showstruts}}%
+      {\renewcommand{\footrulewidth}{0.4pt}}%
+      {\renewcommand{\footrulewidth}{0pt}}%
+  }
+}
+
+\newcounter{example}
+\newcommand{\Example}{%
+  \refstepcounter{example}%
+  \marginpar{\vspace{\baselineskip}\hfill Example \theexample\quad\quad}%
+}
+\newcommand{\FExample}{%
+  \refstepcounter{example}%
+  \makebox[0pt][r]{{Example \theexample}\quad\quad}%
 }
 
 \begin{document}
@@ -164,25 +193,25 @@
 % \maketitle
 % \begin{abstract}
 %   This document describes how to customize the page layout of your LaTeX
-%   documents, i.e how to change page margings and sizes, 
+%   documents, i.e how to change page margings and sizes,
 %   headers and footers, and the
 %   proper placement of figures and tables (collectively called floats) on
-%   the page. 
-% 
+%   the page.
+%
 %   This documentation describes version 4.0 or later of the
 % \Package{fancyhdr} and \Package{extramarks} packages. The user
 % documentation is valid for the versions 3.8 or later of the
 % \Package{fancyhdr} package (except for the changes mentioned in
 % section~\ref{sec:version-4}), and version 2.1 or later of the
 % \Package{extramarks} package.
-% 
+%
 % \end{abstract}
 %
 % \tableofcontents
 % \markright{Contents}
 %
 %\part{Introduction}
-% 
+%
 % This document contains four parts:
 %
 % Part I is a short documentation on
@@ -198,14 +227,14 @@
 %
 % \section{Installation}
 % \label{sec:installation}
-% 
+%
 % The preferred way to install this package is with a package installer.
 % If you want to install it by hand, then first run the command
 % \verb+tex fancyhdr.ins+ and then move the files \texttt{fancyhdr.sty},
 % \texttt{extramarks.sty} and \texttt{fancyheadings.sty} to a place
 % where \latex/ can find it, preferably in a directory similar to
 % \texttt{.../texmf/tex/latex/fancyhdr/} in your \tex/ directory tree.
-% 
+%
 % \section{Using \Package{fancyhdr}}
 %
 % The package \Package{fancyhdr} gives you several commands to define
@@ -263,7 +292,7 @@
 % These define offsets to let the headers stick into the margin (or to
 % the inside if negative). Places cannot contain the \texttt{C}
 % specifier. See section~\ref{sec:book-examples} for more details.
-% 
+%
 % \DescribeMacro{\headrulewidth}
 % \DescribeMacro{\headrulewidth}
 % \DescribeMacro{\headruleskip}
@@ -271,56 +300,53 @@
 % \DescribeMacro{\headrule}
 % \DescribeMacro{\footrule}
 % \DescribeMacro{\headwidth}
-% \begin{verbatim}
-% \headrulewidth
-% \footrulewidth
-% \headruleskip
-% \footruleskip
-% \headrule
-% \footrule
-% \headwidth
-% \end{verbatim}
 %
 % \cs{headrulewidth} and \cs{headrulewidth} are macros to define the
 % thickness of a line under the header and above the footer.
 % \cs{headruleskip} and \cs{footruleskip} are macros that define the
-% distance between the lines and the reader and footer text, respectively.
-% \cs{headrule} and \cs{footrule} are macros to completely redefines
+% distance between the lines and the header and footer text,
+% respectively. (But \cs{headruleskip} is only available since version~4.0.)
+% \cs{headrule} and \cs{footrule} are macros to completely redefine
 % these lines. And \cs{headwidth} is a length parameter that defines the
 % total width of the headers and footers. See sections~\ref{sec:simple},
 % \ref{sec:fancy} and \ref{sec:book-examples} for more details.
 %
+% \DescribeMacro{\fancyheadinit}
+% \DescribeMacro{\fancyfootinit}
+% \DescribeMacro{\fancyhfinit}
+%
+% \cs{fancyheadinit} and \cs{fancyfootinit} can be used to define
+% initialisation code for the header and footer, respectively, and
+% \cs{fancyhfinit} defines both of these. These commands are only
+% available in fancyhdr version~4.0 and later. See section~\ref{sec:change}.
+%
 % \DescribeMacro{\fancycenter}
 % (Only in version~4.0 and later.) The command \cs{fancycenter} packs 3
-% header fields into a full-width header.
+% header fields into a full-width header. See section~\ref{sec:fancycenter}.
 %
 % \DescribeMacro{\iftopfloat}
 % \DescribeMacro{\ifbotfloat}
 % \DescribeMacro{\iffloatpage}
 % \DescribeMacro{\iffootnote}
-% \begin{verbatim}
-% \iftopfloat
-% \ifbotfloat
-% \iffloatpage
-% \iffootnote
-% \end{verbatim}
 %
-% These are macros to detect if there is a float on the top or the bottom
+% The macros \cs{iftopfloat}, \cs{ifbotfloat}, \cs{iffloatpage},
+% \cs{iffloatpage}, \cs{iffootnote}
+% are used to detect if there is a float on the top or the bottom
 % of the page, or the page is a float page, or if there is a footnote at
 % the bottom of the page. These can be used to choose different headers
 % and/or footers if these conditions are met. See
 % section~\ref{sec:float} for more details.
-% 
+%
+% \begin{quote}
 % \DescribeMacro{\fancypagestyle}
-% \begin{verbatim}
-% \fancypagestyle{pagestyle}[base-style]{commands}
-% \end{verbatim}
+% \verb|\fancypagestyle|\marg{style-name}\oarg{base-style}\marg{definitions}
+% \end{quote}
 % This command lets you (re)define page styles for use in special
 % situations. See section~\ref{sec:fancypagestyle} for more details.
 %
 % \section{Using extramarks}
 % \label{sec:using-extramarks}
-% 
+%
 % The \Package{extramarks} gives you some extra marks in \latex/,
 % besides the normal \cs{leftmark} and \cs{rightmark}, that are defined
 % by the \cs{markboth} and \cs{markright} commands.
@@ -366,9 +392,9 @@
 %
 % \section{Introduction}
 % \label{sec:intro}
-% 
+%
 % A page in a \LaTeX{} document is built from various elements as shown in
-% figure \ref{fig:layout}. 
+% figure \ref{fig:layout}.
 % \begin{figure}[htbp]
 %   \begin{center}
 %     \leavevmode
@@ -380,53 +406,53 @@
 % \end{figure}
 % \thispagestyle{plain}
 % The body contains the main text of the document
-% together with the so called floats (tables and figures). 
-% 
+% together with the so called floats (tables and figures).
+%
 % The pages are constructed by \LaTeX's output routine, which is quite
 % complicated and should therefore not be modified. Some of the packages
 % described in this paper contains small modifications to the output routine
 % to accomplish things that cannot be done in another way. You should use
 % these packages to get the desired result rather than fiddling with the
 % output routine yourself.
-% 
+%
 % There are a number of things that you must be aware of:
 % \begin{enumerate}
 % \item The margins on the left are not called \cs{leftmargin}, but
 %   \cs{evensidemargin} (on even-numbered pages) and \cs{oddsidemargin}
-%   (on odd-numbered pages). In one-sided documents 
+%   (on odd-numbered pages). In one-sided documents
 %   \cs{oddsidemargin} is used for either.  \cs{leftmargin} is also a valid
 %   \latex/ parameter but it has a different use (namely the indentation of
-%   lists). 
+%   lists).
 % \item Most of the parameters should not be changed in the middle of a
 %   document. Some changes might work at a pagebreak. If you want to change
 %   the height of a single page, you can use the \cs{enlargethispage}
-%   command. 
+%   command.
 % \end{enumerate}
-% 
+%
 % The margin notes
 % area contains small pieces of information created by the \cs{marginpar}
 % command. On twosided documents the margin notes appear on the left and right
 % alternatively. The margin notes are not on fixed places with respect to the
 % paper but at approximately the same height as the paragraph in which they
 % appear. Due to the algorithm used to decide the placement of margin notes,
-% in a twosided document unfortunately 
+% in a twosided document unfortunately
 % they may appear on the wrong side if they are close
 % to a page break.
 % If you want to put information on fixed places in the margins you may use
 % the technique described in sections \ref{sec:movie} and \ref{sec:thumb}.
-% 
+%
 % The first part of this paper describes how to change the header and footer
 % areas. The last part describes how to get your floats at the desired place.
-% 
+%
 % \section{Page headers and footers}
-% 
+%
 % The page headers and footers in \LaTeX{} are defined by the
 % \cs{pagestyle} and \cs{pagenumbering} commands. \cs{pagestyle}
 % defines the general contents of the headers and footers (e.g. where the
 % page number will be printed), while
 % \cs{pagenumbering} defines the format of the page number.
 % \LaTeX{} has four standard page styles:
-% 
+%
 % \begin{center}
 % \noindent
 %   \begin{tabular}{>{\tt}lp{9cm}}
@@ -440,13 +466,13 @@
 %     \bottomrule
 % \end{tabular}
 % \end{center}
-% 
+%
 % Although these are useful styles, they are quite limited. Additional page
 % styles can be defined by defining commands of the form \cs{ps@xxx}. This
 % command is executed when a \Cmd{pagestyle\{xxx\}} is given in the document.
-% The  \cs{ps@xxx} command should define the following 
+% The  \cs{ps@xxx} command should define the following
 % commands for the contents of the headers and footers:
-% 
+%
 % \begin{center}
 %   \noindent
 %   \begin{tabular}{lp{9cm}}
@@ -460,16 +486,16 @@
 % \bottomrule
 % \end{tabular}
 % \end{center}
-% 
+%
 % These are not user commands, but rather ``variables'' that are used by
 % \latex/'s output routine.
 % As the command names contain the character '\texttt{@}', they should
 % be defined in a package file, or otherwise be sandwiched between the commands
 % \cs{makeatletter} and \cs{makeatother}.
-% 
+%
 % The \cs{pagenumbering} command defines the layout of the page number. It
 % has a parameter from the following list:
-% 
+%
 % \begin{center}
 %   \begin{tabular}{>{\tt}ll}
 %   \toprule
@@ -481,19 +507,19 @@
 % \bottomrule
 % \end{tabular}
 % \end{center}
-% 
+%
 % The  \Cmd{pagenumbering\{xxx\}} defines the command \cs{thepage} to be the
-% expansion of the page number in the given notation \texttt{xxx}. 
+% expansion of the page number in the given notation \texttt{xxx}.
 % The pagestyle command
 % then would include \cs{thepage} in the appropriate place. Additionally
 % the  \cs{pagenumbering} command resets the page number to~1.
 % The  \cs{pagestyle} and  \cs{pagenumbering} apply to the page that is
 % being constructed, so they should be used at a location where it is clear
 % to what page they apply (see section \ref{sec:change}).
-% 
-% 
+%
+%
 % \section{What is \Package{fancyhdr}}
-% 
+%
 % The \Package{fancyhdr} macro package allows you to customize
 % in \latex/ your page headers and footers in an easy way.  You can
 % define:
@@ -506,25 +532,25 @@
 % \item different headers and footers for chapter pages
 % \item different headers and footer on pages with floats
 % \end{itemize}
-% 
+%
 % Of course, you also have complete control over fonts, uppercase
 % and lowercase displays, etc.
-% 
+%
 % \section{Simple use of \Package{fancyhdr}}  To use this package
 % install it is a place where \latex/ can find it (see
 % section~\ref{sec:installation})\footnote{In most modern \tex/
 % installation the package is already included.}, and include in the preamble of your document
-% the commands: 
-% 
+% the commands:
+%
 % \PSindex{fancy}
 % \begin{verbatim}
 % \usepackage{fancyhdr}
 % \pagestyle{fancy}
 % \end{verbatim}
-% 
+%
 % We can visualize the page layout we can create with \Package{fancyhdr}
 % as follows:
-% 
+%
 % \begin{fblock}
 % \noindent\makebox[\textwidth]{LeftHeader\hfill
 % CenteredHeader\hfill RightHeader}\showrule
@@ -533,33 +559,34 @@
 % \noindent\makebox[\textwidth]{LeftFooter\hfill
 % CenteredFooter\hfill RightFooter}
 % \end{fblock}
-% 
+%
 % The LeftHeader and LeftFooter are left justified; the
 % CenteredHeader and CenteredFooter are centered; the
 % RightHeader and RightFooter are right justified.
-% 
+%
 % We define each of the six ``fields'' and the two decorative lines
 % separately.
-% 
+%
 % \section{A simple example}
 % \label{sec:simple}
-% 
+%
 % K. Grant is writing a report to Dean
 % A. Smith, on ``The performance of new graduates'' with the
 % following page layout:
-% 
+%
 % \begin{fblock}
 % \noindent\makebox[\textwidth]{\hfill\textbf{The performance of new
 % graduates}}\showrule
 % \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[\baselineskip]
-% \noindent\makebox[\textwidth]{\hrulefill}
+% \noindent\makebox[\textwidth]{\rule{\textwidth}{2pt}}
 % \noindent\makebox[\textwidth]{From: K. Grant\phantom{3}\hfill
 % To: Dean A. Smith\hfill \phantom{From: K. Grant}3}
 % \end{fblock}
-% 
+%
 % \noindent where ``3'' is the page number.  The title: ``The
-% performance of new graduates'' is bold.
-% 
+% performance of new graduates'' is bold. The rule above the footer is a
+% bit thicker (2pt).
+%
 % This is accomplished by these commands following
 % \Cmd{pagestyle\{fancy\}}\footnote{Note that version 1 of fancyheadings
 % used the \cs{setlength} command to change the \texttt{\bs...rulewidth} parameters.}:
@@ -574,15 +601,15 @@
 % \fancyfoot[C]{To: Dean A. Smith}
 % \fancyfoot[R]{\thepage}
 % \renewcommand{\headrulewidth}{0.4pt}
-% \renewcommand{\footrulewidth}{0.4pt}
+% \renewcommand{\footrulewidth}{2pt}
 % \end{verbatim}
 % (The \cs{thepage} macro displays the current page number.
 % \cs{textbf} puts it in bold face.)
-% 
+%
 % This is now fine, except that the first page does not need
 % all these headers and footers.  To eliminate all but the
 % centered page number, issue the command
-% 
+%
 % \CmdIndex{thispagestyle}
 % \begin{verbatim}
 % \thispagestyle{plain}
@@ -593,19 +620,19 @@
 % \CmdIndex{maketitle}
 % \cs{maketitle}
 % commands.
-% 
+%
 % Alternatively, issue
 % \begin{verbatim}
 % \thispagestyle{empty}
 % \end{verbatim}
 % if you do not want any headers or footers.
-% 
+%
 % In fact the standard \latex/ classes have the command \cs{maketitle}
 % defined in such a way that a \Cmd{thispagestyle\{plain\}} is automatically
 % issued. So if you \emph{do} want the fancy layout on a page containing
 % \cs{maketitle} you must issue a \Cmd{thispagestyle\{fancy\}} after the
 % \cs{maketitle}.
-% 
+%
 % \section{Fancy Centering}
 % \label{sec:fancycenter}
 %
@@ -665,30 +692,30 @@
 % argument of header/footer marks. You can use it anywhere in your document.
 %
 % \section{An example of two-sided printing}\label{two-sided}
-% 
+%
 % \TTindex{twoside}
 % Some document classes, such as \verb|book.cls|, print two-sided by default: the even
 % pages and the odd pages have different layouts; other document classes
 % use the \verb|twoside| option to print two-sided.
-% 
+%
 % Now let us print the report two-sided.  Let the above page
 % layout be used for the odd (right-side) pages, and the
 % following for the even (left-side) pages:
-% 
+%
 % \begin{fblock}
-% 
+%
 % \noindent\makebox[\textwidth]{\textbf{The performance of new
 % graduates}\hfill}\showrule
 % \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[\baselineskip]
 % \noindent\makebox[\textwidth]{\hrulefill}
 % \noindent\makebox[\textwidth]{4\phantom{To: Dean A. Smith}\hfill
 %  From: K. Grant\hfill \phantom{4}To: Dean A. Smith}
-% 
+%
 % \end{fblock}
 % \noindent where ``4'' is the page number.
-% 
+%
 % Here are the commands:
-% 
+%
 % \begin{verbatim}
 % \fancyhead{} % clear all header fields
 % \fancyhead[RO,LE]{\textbf{The performance of new graduates}}
@@ -699,7 +726,7 @@
 % \renewcommand{\headrulewidth}{0.4pt}
 % \renewcommand{\footrulewidth}{0.4pt}
 % \end{verbatim}
-% 
+%
 % \CmdIndex{fancyhead}
 % \CmdIndex{fancyfoot}
 % The commands \cs{fancyhead} and \cs{fancyfoot}
@@ -715,7 +742,7 @@
 % \Cmd{fancyhead[LE,RO]\{text\}}
 % will define the field for both the left header on even pages and the right
 % header on odd pages. If you don't give an \texttt{E} or \texttt{O} the definition applies to
-% both. Similar for \texttt{LRC}. 
+% both. Similar for \texttt{LRC}.
 % The selectors may be given as uppercase or lowercase letters.
 % \begin{figure}[htb]
 %   \begin{center}
@@ -737,20 +764,20 @@
 %   \caption{Selectors}
 %   \label{fig:sel}
 % \end{figure}
-% 
+%
 % \CmdIndex{fancyhf}
 % There is also a more general command \cs{fancyhf} that you can use to
 % combine the specifications for headers and footers. This allows additional
 % selectors \texttt{H} (header) and \texttt{F} (footer). In fact  \cs{fancyhead} and
 % \cs{fancyfoot} are just  \cs{fancyhf} with \texttt{H} and \texttt{F} pre-specified, respectively.
-% 
+%
 % Again, you may
 % use  \Cmd{thispagestyle\{plain\}} for a simple page layout for
 % page~1.
-% 
+%
 % \section{Redefining page style \texttt{plain}}
 % \label{sec:pagestyle-plain}
-% 
+%
 % Some \latex/ commands, like \cs{chapter}, use the \cs{thispagestyle}
 % command to automatically switch to the \texttt{plain} page style, thus
 % ignoring the page style currently in effect.
@@ -769,8 +796,8 @@
 % \cs{ps@plain} command, but \Package{fancyhdr} gives you an easier way
 % with the \cs{fancypagestyle} command. This command can be used to
 % redefine existing page styles (like \texttt{plain}) or to define new ones,
-% e.g. if part of your document is to use a different page style. This command
-% has two parameters: the first one is the name of the page style to be defined, the
+% e.g. if part of your document needs a different page style. This command
+% has two mandatory parameters: the first one is the name of the page style to be defined, the
 % second consists of commands that change the headers and/or footers, i.e.
 % \verb|fancyhead| etc. Also allowed are changes to \cs{headrulewidth} and
 % \cs{footrulewidth} or even \cs{headrule} and \cs{footrule}.
@@ -789,15 +816,15 @@
 % \end{verbatim}
 % Now when these special pages use the \texttt{plain} page style, they use your redefined version.
 %
-% As another example, let us 
+% As another example, let us
 % redefine the \texttt{plain} style for the report in Section~\ref{two-sided} by
-% making the page number bold. 
+% making the page number bold and enclosing it in en-dashes without any rules.
 % \PSindex{plain}
-% 
+%
 % \begin{verbatim}
 % \fancypagestyle{plain}{%
 %   \fancyhf{}% clear all header and footer fields
-%   \fancyfoot[C]{\textbf{\thepage}}% except the center
+%   \fancyfoot[C]{\textbf{--~\thepage~--}} % except the center
 %   \renewcommand{\headrulewidth}{0pt}%
 %   \renewcommand{\footrulewidth}{0pt}%
 % }
@@ -811,10 +838,12 @@
 % section, you can define or redefine other page styles based on page
 % style \texttt{fancy}. This is also done with the \cs{fancypagestyle}
 % command. The general form of this command is:
-% \CmdIndex{fancypagestyle}
 % \begin{quote}
-% \verb|\newpagestyle|\marg{style-name}\oarg{base-style}\marg{definitions}
+% \CmdIndex{fancypagestyle}
+% \verb|\fancypagestyle|\marg{style-name}\oarg{base-style}\marg{definitions}
 % \end{quote}
+% As you see, there is an optional argument between the two mandatory arguments.
+%
 % For example:
 % \begin{verbatim}
 % \fancypagestyle{toc}{%
@@ -835,7 +864,7 @@
 %
 % You can also give an optional base page style to the
 % \cs{fancypagestyle} command. Then the new page style will be based on
-% the base style. This base style must be a \texttt{fancyhdr} defined
+% the base style. This base style must be a \texttt{fancyhdr}-defined
 % style. Also you should take care not to
 % create circular dependencies. In this case the order of picking up the
 % definitions (headers, footers, marks) is:
@@ -875,12 +904,13 @@
 % \label{sec:switching}
 %
 % Page style \texttt{fancy}, if not redefined, does not have the definitions of the
-% headers and footers built-in, but they are global in the document, or
-% local in a group. This also applies to the definitions of the
+% headers and footers built-in, but they are defined in the document,
+% globally, or locally in a group. This also applies to the definitions of the
 % \cs{chaptermark} and/or \cs{[sub]sectionmark} commands. So if you want
 % to switch from another page style to the \texttt{fancy} page style
-% later in the document, you will have to redefine yourself the
-% \cs{chaptermark} and/or \cs{[sub]sectionmark} commands and maybe also
+% later in the document, and that other page style has changed for
+% example the \cs{chaptermark} and/or \cs{[sub]sectionmark} commands,
+% you will have to redefine these yourself and maybe also
 % the definitions of the headers and footers, at that point.
 % For example
 % \begin{verbatim}
@@ -918,7 +948,7 @@
 % than one page style, and swicth between them, it is highly advisable
 % to define them (including page style \texttt{fancy}) with
 % \cs{fancypagestyle} and put all the relevant definitions inside them.
-% 
+%
 % \section{Package options}
 % \label{sec:options}
 %
@@ -948,10 +978,10 @@
 %   page~\pageref{sec:warning}.
 %
 % \item \OPTindex{compatV3}Option \texttt{compatV3} keeps two fancyhdr
-%   version~3.x (or earlier) behaviours that are now considered undesirable.
+%   version~3.x (or earlier) features that are now considered undesirable.
 %   \begin{enumerate}
 %   \item The automatic adjustment of \cs{headheight} or \cs{footskip}
-%     when these are too small. This causes the page layout to be
+%     when these are too small. This causes the page layout to become
 %     inconsistent. See section~\ref{sec:warning} on
 %     page~\pageref{sec:warning}.
 %   \item In these previous versions the changes to the
@@ -997,13 +1027,13 @@
 % settings. Therefore it is not advisable to change the headers or
 % footers in this way, but instead define your
 % own page style, as explained in section~\ref{sec:fancypagestyle}.
-% 
+%
 % \section{The default layout}
 % \label{sec:default}
 % Let us use the \verb|book.cls| documentclass and the default settings for
 % \Package{fancyhdr}; so we don't use any of the page style options in
-% the \Cmd{usepackage\{fancyhdr\}}command, and we don't redefine any
-% headers or footers.
+% the \Cmd{usepackage\{fancyhdr\}} command, and we don't redefine any
+% headers or footers. So just:
 % \begin{verbatim}
 % \usepackage{fancyhdr}
 % \pagestyle{fancy}
@@ -1013,30 +1043,28 @@
 %
 % On the pages where new chapters start, we get a centered page number
 % in the footer; there is no header, and there are no decorative lines.
-% 
+%
 % On an even page, we get the layout:
-% 
+%
 % \begin{fblock}
 % \noindent\makebox[\textwidth]{\textsl{1.2  EVALUATION}\hfill
 %  \textsl{CHAPTER 1. INTRODUCTION}}\showrule
-% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[\baselineskip]
-% \noindent\makebox[\textwidth]{\hrulefill}
-% \noindent\makebox[\textwidth]{\hfill4\hfill}
+% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[2\baselineskip]
+% \noindent\makebox[\textwidth]{\hfill2\hfill}
 % \end{fblock}
-% 
+%
 % On an odd page, we get the layout:
-% 
+%
 % \begin{fblock}
 % \noindent\makebox[\textwidth]{\textsl{CHAPTER 1. INTRODUCTION}\hfill
 %  \textsl{1.2  EVALUATION}}\showrule
-% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[\baselineskip]
-% \noindent\makebox[\textwidth]{\hrulefill}
+% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[2\baselineskip]
 % \noindent\makebox[\textwidth]{\hfill
 % 3\hfill }
 % \end{fblock}
-% 
+%
 % \noindent where the header text is slanted uppercase.
-% 
+%
 % This default layout is produced by the following commands:
 % \CmdIndex{rightmark}
 % \CmdIndex{leftmark}
@@ -1045,45 +1073,52 @@
 % \fancyhead[LO,RE]{\textsl{\leftmark}}
 % \fancyfoot[C]{\thepage}
 % \end{verbatim}
-% 
+%
 % The following settings are used for the decorative lines:
-% 
+%
 % \begin{tabbing}
 % \CmdIndex{headrulewidth}
 % \noindent \cs{headrulewidth}\qquad \qquad \qquad \=0.4\=pt\\
 % \CmdIndex{footrulewidth}
 % \Cmd{footrulewidth}\>0\>pt
 % \end{tabbing}
-% 
-% The header text is turned into all uppercase in \verb|book.cls|.
-% 
+%
+% The header text is turned into all uppercase by the standard \LaTeX{}
+% code in \verb|book.cls|.
+%
 % \section{The scoop on \latex/'s marks}\label{sec:custom}
 % \label{sec:scoop}
-% 
+%
 % Usually, for documents of class \verb|book| and \verb|report|, you may
 % want to use chapter and section information in the headings (chapter only
 % for one-sided printing), and for documents of class \verb|article|,
 % section and subsection information (section only for one-sided
 % printing).  \latex/ uses a marker mechanism to remember the chapter and
 % section (section and subsection) information for a page; this is
-% discussed in detail in \textit{The \latex/ Companion}, Section 4.3.1, or 
+% discussed in detail in \textit{The \latex/ Companion}, Section 4.3.1, or
 % \textit{The \latex/ Companion, Second Edition}, Section 4.3.4.
-% 
+%
 % There are two ways you can use and change the higher- and lower-level
 % sectioning information available to you.  The macros:
 % \CmdIndex{rightmark}
 % \CmdIndex{leftmark}
 % \cs{leftmark}
 % (higher-level) and \cs{rightmark} (lower-level) contain the information
-% processed by \latex/, and you can use them directly as shown in 
-% Section~\ref{sec:default}.
-% 
+% processed by \latex/, and you can use them directly as shown in
+% section~\ref{sec:default}.
+%
+% These marks are set by the commands
+% \Cmd{markboth\{leftmark\}\{rightmark\}} and \Cmd{markright\{rightmark\}}.
+% These commands are usually used inside commands like \cs{chaptermark}
+% and \cs{sectionmark} but they can be also be given directly in your
+% document, although this not very usual.
+%
 % The \cs{leftmark} contains the \textbf{L}eft argument of the \emph{\textbf{L}ast}
 % \cs{markboth} on the page, the \cs{rightmark} contains the \textbf{R}ight
 % argument of the \emph{fi\textbf{R}st} \cs{markboth} or the only argument of the
 % \emph{fi\textbf{R}st} \cs{markright} on the page. If no marks are present on a
 % page they are ``inherited'' from the previous page.
-% 
+%
 % You can influence how chapter, section, and subsection
 % information (only two of them!) is displayed by redefining the
 % \CmdIndex{chaptermark}
@@ -1095,7 +1130,7 @@
 %   they are seldom used.}. You must put the redefinition
 % after the first call of \Cmd{pagestyle\{fancy\}} as this
 % sets up the defaults.
-% 
+%
 % Let us illustrate this with chapter info. It is made up of three parts:
 % \begin{itemize}
 % \CmdIndex{thechapter}
@@ -1104,19 +1139,53 @@
 % \CmdIndex{chaptername}
 %    \cs{chaptername}
 % \item  the title, contained in the  argument of
-%    \cs{chaptermark}.
+%    \cs{chapter}.
 % \end{itemize}
-% 
-% Figure~\ref{fig:markers} shows some variants for ``Chapter 2.\ Do it now''
-% (the last example is appropriate in some non-English languages). The \%
+% We combine these below with \cs{markboth} in \cs{chaptermark}.
+%
+% For the lower-level sectioning information, we do the same with
+% \cs{markright} in \cs{sectionmark}.
+%
+% So if ``2. Implementation'' is the current chapter
+% and ``2.1.\ First steps'' is the current section, then
+%
+% ^^A \Example
+% \begin{verbatim}
+% \renewcommand{\chaptermark}[1]{%
+%   \markboth{\chaptername\ \thechapter.\ #1}{}}
+% \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
+% \end{verbatim}
+% will give
+%    ``Chapter 2. Implementation'' and ``2.1.\ First steps''
+%
+% Redefining the \cs{chaptermark} and \cs{sectionmark} commands may
+% not eliminate all uppercaseness. E.g.\ the bibliography will have a title
+% \CmdIndex{uppercase}
+% \index{BIBLIOGRAPHY}
+% of \textsc{bibliography} in the header, as the \cs{MakeUppercase} is
+% explicitly given in the definition of \cs{thebibliography}. Similar for
+% \index{INDEX}
+% \textsc{index} etc.\ If you don't want to redefine these commands, you can
+% use the \cs{nouppercase} command that \Package{fancyhdr} makes available in the header
+% and footer fields. Note that this may screw other things, like uppercase
+% roman numerals in your headers, so it should be used with care. Essentially
+% this command typesets its argument in an environment where
+% \cs{MakeUppercase} and \cs{uppercase} are changed into do-nothing operations.
+%
+% ^^A \Example
+% \begin{verbatim}
+% \fancyhead[L]{\nouppercase{\rightmark}}
+% \fancyhead[R]{\nouppercase{\leftmark}}
+% \end{verbatim}
+%
+% Figure~\ref{fig:markers} shows some variants for ``Chapter 2.\ Implementation''
+% (the last example is appropriate in some non-English languages). The \texttt{\%}
 % signs at the end of the lines are to prevent unwanted space. Normally you
-% would continue the lines and remove these \% signs\footnote{the \texttt{\bs
+% would continue the lines and remove these \texttt{\%} signs\footnote{The \texttt{\bs
 %     MakeUppercase} command is used in \latex/ to generate uppercase text,
-%   while in \LaTeX{} 2.09 \cs{uppercase} is used. The difference is
-%   that \cs{MakeUppercase} also deals with non-ASCII letters.
-%   Fancyhdr defines \cs{MakeUppercase} to be an alias for
-%   \cs{uppercase} if it isn't defined.}.
-% 
+%   while \cs{uppercase} is the plain \TeX{} command for this. The difference is
+%   that \cs{MakeUppercase} also deals with non-ASCII letters.}.
+%
 % \begin{figure}[tb]
 % \CmdIndex{chaptermark}
 % \CmdIndex{uppercase}
@@ -1150,93 +1219,70 @@
 % \verb| \ \chaptername.\ #1}{}}|\\
 % Prints:\\
 % \mbox{}\\
-% Chapter 2.\ Do it now\\
+% Chapter 2.\ Implementation\\
 % \mbox{}\\
 % \mbox{}\\
 % \mbox{}\\
-% CHAPTER 2.\ Do it now\\
-% \mbox{}\\
-% \mbox{}\\
-% \mbox{}\\
-% \mbox{}\\
-% CHAPTER 2.\ DO IT NOW\\
+% CHAPTER 2.\ Implementation\\
 % \mbox{}\\
 % \mbox{}\\
 % \mbox{}\\
 % \mbox{}\\
-% Do it now\\
+% CHAPTER 2.\ IMPLEMENTATION\\
 % \mbox{}\\
 % \mbox{}\\
-% 2.\ Do it now\\
 % \mbox{}\\
 % \mbox{}\\
-% 2.\ Chapter.\ Do it now\\
+% Implementation\\
+% \mbox{}\\
+% \mbox{}\\
+% 2.\ Implementation\\
+% \mbox{}\\
+% \mbox{}\\
+% 2.\ Chapter.\ Implementation\\
 % \mbox{}\\
 % \end{multicols}
 % \caption{Marker variants}\label{fig:markers}
 % \end{figure}
-% 
-% 
-% For the lower-level sectioning information, do the same with
-% \cs{markright}.
-% 
-% So if ``Section 2.2.\ First steps'' is the current section,
-% then
-% 
-% \begin{verbatim}
-% \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
-% \end{verbatim}
-% will give
-%    ``2.2.\ First steps''
-% 
-% Redefining the \cs{chaptermark} and \cs{sectionmark} commands may
-% not eliminate all uppercaseness. E.g.\ the bibliography will have a title
-% \CmdIndex{uppercase}
-% \index{BIBLIOGRAPHY}
-% of \textsc{bibliography} in the header, as the \cs{MakeUppercase} is
-% explicitly given in the definition of \cs{thebibliography}. Similar for
-% \index{INDEX}
-% \textsc{index} etc.\ If you don't want to redefine these commands, you can
-% use the \cs{nouppercase} command that \Package{fancyhdr} makes available in the header
-% and footer fields. Note that this may screw other things, like uppercase
-% roman numerals in your headers, so it should be used with care. Essentially
-% this command typesets its argument in an environment where
-% \cs{MakeUppercase} and \cs{uppercase} are changed into do-nothing operations.
-% 
-% 
-% \begin{verbatim}
-% \fancyhead[L]{\nouppercase{\rightmark}}
-% \fancyhead[R]{\nouppercase{\leftmark}}
-% \end{verbatim}
-% 
-% 
+%
 % It should be noted that the \latex/ marking mechanism works fine with
 % chapters (which always start on a new page) and sections (which are
 % reasonably long).  It does not work quite as well with short sections and
 % subsections.  This is a problem with \latex/, not with
 % \Package{fancyhdr}.
-% 
+%
 % As an example let's take a page layout where the leftmarks are generated by
 % the sections and the rightmarks by the subsections (as is default in the
-% \texttt{article} class). Take a page with some short sections, e.g. 
-% 
+% \texttt{article} class). Take a page with some short sections, e.g.
+%
 % \begin{samepage}
 % \noindent Section 1.\\
 % subsection 1.1\\
 % subsection 1.2\\
-% Section 2.  
+% Section 2.
 % \end{samepage}
-% 
+%
 % As the leftmark contains the \emph{last} mark of the page it will be
 % ``Section 2.'', and the rightmark will be ``subsection 1.1'' as it will be
-% the \emph{first} mark of the page. So the page header info will combine 
+% the \emph{first} mark of the page. So the page header info will combine
 % section 2 with subsection 1.1 which isn't very nice.
-% The best you can do in these cases is use only the \cs{rightmark}s and
-% redefine \cs{sectionmark} accordingly. A \latex/ command
+% One thing you can do in these cases is use only the \cs{rightmark}s and
+% redefine \cs{sectionmark} accordingly.
+%
+% However, the \Package{extramarks} package described in section~\ref{sec:xmarks}
+% contains a command
 % \CmdIndex{firstleftmark}
-% \cs{firstleftmark} would also be a nice addition (see the 
-% \Package{extramarks} package in section~\ref{sec:xmarks}).
-% 
+% \cs{firstleftmark} that can be used to get the first of the leftmarks
+% on the page in the header. This might be the best solution in this
+% situation. Now the header will contain ``Section 1.'' in the situation
+% described above.
+% ^^A \Example
+% \begin{verbatim}
+% \usepackage{extramarks}
+%  . . .
+% \fancyhead[R]{\firstleftmark}
+% \end{verbatim}
+%
 % Another problem with the marks in the standard \latex/ classes is that the
 % higher level sectioning commands (e.g. \cs{chapter}) call
 % \cs{markboth} with an empty right argument. This means that on the first
@@ -1249,49 +1295,26 @@
 % \cs{markright} commands or redefine the \cs{chaptermark}
 % (\cs{sectionmark}) commands to issue a \cs{markboth} command with
 % two decent parameters.
-% 
+%
 % As a final remark you should also note that the \verb|*| forms of the
 % \cs{chapter} etc.\ commands do \emph{not} call the mark commands. So if
 % you want your preface to set the header info but not be numbered nor be put in
 % the table of contents, you must issue the \cs{markboth} command
 % yourself, e.g.
-% 
+%
 % \begin{verbatim}
-% \chapter*{Preface\markboth{Preface}{}}
+% \chapter*{Preface}
+% \markboth{Preface}{}
 % \end{verbatim}
-% 
-% Entering the \cs{markboth} command inside the \cs{chapter*} insures
-% that the mark will not be separated from the title by a page break. Of
-% course with \cs{chapter*} this wouldn't be  a problem if you put the mark
-% command after the chapter title, as the \cs{chapter*} command starts at a
-% new page. However with a \cs{section*} it could be dangerous to say:
-% 
+%
+% Or in a documentclass without chapters:
 % \begin{verbatim}
 % \section*{Preface}
 % \markboth{Preface}{}
 % \end{verbatim}
-% as a page break may occur between the two commands. Therefore to be
-% safe, put the \cs{mark...} command inside the \cs{section} command.
 %
-% You have to be careful, however, if you do this with a non-starred
-% sectioning command. These will be put in the Table of Contents (if you
-% have one), and this means the entries are ``moving'' (they move to the
-% Table of Contents). The \cs{mark...} commands are ``fragile'',
-% which means they will break when moved. Therefore they must be
-% \DescribeMacro{\protect}
-% \CmdIndex{protect}
-% protected with the \cs{protect} command, for example
-% 
-% \begin{verbatim}
-% \chapter{Preface\protect\markboth{Preface}{Preface}}
-% \end{verbatim}
-% In this example we give \cs{markboth} two non-empty arguments
-% otherwise it would make no sense to use the \cs{markboth} command
-% inside the \cs{chapter} command. It is harmless to use the
-% \cs{protect} command when it is not really necessary.
-% 
 % \section{Dictionary style headers}
-% 
+%
 % \index{dictionary}
 % \index{concordance}
 % Dictionaries and concordances usually have a header containing the first
@@ -1301,16 +1324,16 @@
 % style headers, you cannot use them for chapter and section information, so
 % if there are also chapters and sections present, you must redefine the
 % \cs{chaptermark} and \cs{sectionmark} to make them harmless:
-% 
+%
 % \begin{verbatim}
 % \renewcommand{\chaptermark}[1]{}
 % \renewcommand{\sectionmark}[1]{}
 % \end{verbatim}
-% 
+%
 % Now you do a \Cmd{markboth\{\#1\}\{\#1\}} for each dictionary or concordance
 % entry \verb|#1| and use \cs{rightmark} for the first entry defined on
 % the page and \cs{leftmark} for the last one.
-% 
+%
 % If you want to use a header entry of the form \textsf{firstword--lastword}
 % it would be nice if this would be reduced to just the form
 % \textsf{firstword} if both are the same. This could happen if there is just
@@ -1319,7 +1342,7 @@
 % cannot be compared out of the box with the plain \tex/ \cs{if} commands.
 % \TTindex{ifthen}
 % Fortunately the \Package{ifthen} package works well:
-% 
+%
 % \begin{verbatim}
 % \newcommand{\mymarks}{
 %   \ifthenelse{\equal{\leftmark}{\rightmark}}
@@ -1328,10 +1351,10 @@
 % \fancyhead[LE,RO]{\mymarks}
 % \fancyhead[LO,RE]{\thepage}
 % \end{verbatim}
-% 
+%
 % \section{Fancy layouts}
 % \label{sec:fancy}
-% 
+%
 % \index{multi-line}
 % You can make a multi-line field with the \bsbs{} command.  It is also
 % possible to put extra space in a field with the \cs{vspace} command.
@@ -1346,11 +1369,11 @@
 %   have to do this, because \LaTeX's defaults are quite small}. See the
 % warning below.
 % See also Section 4.1 of the \latex/ \emph{Companion} for detail.
-% 
+%
 % For instance, the following code will place  the section title and the
 % subsection title of an article in two lines in the upper right hand
 % corner:
-% 
+%
 % \begin{verbatim}
 % \documentclass{article}
 % \usepackage{fancyhdr}
@@ -1360,10 +1383,10 @@
 % \renewcommand{\subsectionmark}[1]{\markright{#1}}
 % \fancyhead[R]{\leftmark\\\rightmark}
 % \end{verbatim}
-% 
+%
 % You can also customize the decorative lines.  You can make the decorative
 % line in the header quite thick with
-% 
+%
 % \CmdIndex{headrulewidth}
 % \begin{verbatim}
 % \renewcommand{\headrulewidth}{0.6pt}
@@ -1373,12 +1396,12 @@
 % \begin{verbatim}
 % \renewcommand{\footrulewidth}{0pt}
 % \end{verbatim}
-% 
+%
 % The decorative lines, themselves, are defined in the two macros
 % \cs{headrule} and \cs{footrule}.  For instance,
 % if you want a dotted line rather than a solid line in the header,
 % redefine the command \cs{headrule}:
-% 
+%
 % \begin{verbatim}
 % \renewcommand{\headrule}{\vbox to 0pt{\hbox
 %     to\headwidth{\dotfill}\vss}}
@@ -1389,7 +1412,7 @@
 % Package fancyhdr Warning: \headheight is too small (12.0pt):
 % (fancyhdr)                Make it at least 14.0pt, for example:
 % (fancyhdr)                \setlength{\headheight}{14.0pt}.
-% (fancyhdr)                You might also make \topmargin smaller:
+% (fancyhdr)                You might also make \topmargin smaller to compensate:
 % (fancyhdr)                \addtolength{\topmargin}{-2.0pt}.
 % \end{verbatim}
 % \label{sec:warning}\index{Warning}
@@ -1399,7 +1422,7 @@
 % to come out lower than on this page. This appeared to be confusing, so
 % since version~4.0 this is no longer done (except when you give the
 % \OPTindex{compatV3}%
-% \texttt{compatV3} package option; you should not give this as a
+% \texttt{compatV3} package option. You should not give this as a
 % permanent solution, however, but solve the problem). Therefore you are strongly advised to
 % redefine \cs{headheight} in the preamble, like this:
 % \begin{verbatim}
@@ -1429,7 +1452,7 @@
 % \end{verbatim}
 % Visually this makes no difference, but it is more difficult to restore
 % it later to its default value.
-% 
+%
 % Finally, let us make a real `decorative' line\footnote{Based upon an idea by Wayne Chan.}.
 % \begin{verbatim}
 % \usepackage{fourier-orns}
@@ -1441,7 +1464,7 @@
 %       \hrulefill}
 % \end{verbatim}
 % This gives us the following headrule:
-% 
+%
 % \noindent\makebox[\textwidth]{\hrulefill
 % \raisebox{-2.1pt}[10pt][10pt]{\quad\decofourleft\decotwo\decofourright\quad}\hrulefill}
 %
@@ -1477,27 +1500,34 @@
 % the normal line distance. You can increase or decrease this distance
 % \CmdIndex{headruleskip}
 % \DescribeMacro{\headruleskip}
-% by defining the macro \cs{headruleskip}, similar to \cs{footruleskip}.
+% by defining the macro \cs{headruleskip}, similar to \cs{footruleskip}
+% \footnote{(But \cs{headruleskip} is only available since version~4.0.)}.
 % This defines the extra distance. The default value is 0pt, and
 % positive values make the distance larger, and negative values make the
-% distance shorter. Please note that this does not change the position
+% distance shorter.
+% Please note that this does not change the position
 % of the decorative line with respect to the page, but it shifts the
 % header text. If you want to keep the header text fixed, but move the
 % decorative line, then you must also change the parameter \cs{headsep}
-% (see figure~\ref{fig:layout}). The header and footer in this page
-% \thispagestyle{showstruts}
+% (see figure~\ref{fig:layout}). \strut
+%
+% \pagestyle{showstruts}
+% \noindent\begin{minipage}{\textwidth}
+% \label{showstruts}
+% \indent The header and footer in this page
 % show the \emph{strut} (the amount of space in the text area above and
 % below the baseline), and the \cs{headruleskip} and \cs{footruleskip}.
 % For this page \cs{headruleskip} is 4pt.
-% 
+% \end{minipage}
+%
 % \section{Two book examples}
 % \label{sec:book-examples}
-% 
+%
 % The following definitions give an approximation of the style
 % used in L. Lamport's \latex/ book.
-% 
+%
 % Lamport's header overhangs the outside margin.  This is done as follows.
-% 
+%
 % The width of headers and footers is \cs{headwidth}, which by default
 % equals the width of the text: \cs{textwidth}. You can make the width
 % \CmdIndex{headwidth}
@@ -1508,19 +1538,27 @@
 % \CmdIndex{marginparwidth}
 % printed, add both \cs{marginparsep} and \cs{marginparwidth} to
 % \cs{headwidth} with the commands:
-% 
+%
 % \begin{verbatim}
 % \addtolength{\headwidth}{\marginparsep}
 % \addtolength{\headwidth}{\marginparwidth}
 % \end{verbatim}
-% 
+%
 % \begin{flushleft}
 % It is safest to issue these commands \emph{after} the first
 % \Cmd{pagestyle\{fancy\}} command.
 % \end{flushleft}
-% 
-% And now a complete definition of Lamport's book style:
-% 
+%
+% And now a complete definition of Lamport's book style. The header has
+% the width of the text plus the marginpar area. The header on even
+% pages has the page number on the left, and the chapter title on the
+% right. On odd pages it has the section title preceded by the section
+% number on the left and the page number on the right. All in boldface.
+% There is no footer. The \texttt{plain} style is redefined to have no
+% header and no footer. (In the \LaTeX{} book this makes sense because
+% each chapter begins with a page that contains only a drawing. In most
+% other cases you probably would want a page number on the page.)
+%
 % \begin{verbatim}
 % \documentclass{book}
 % \usepackage{fancyhdr}
@@ -1539,15 +1577,15 @@
 % }
 % \end{verbatim}
 % \PSindex{plain}
-% 
+%
 % Notice that the \cs{chaptermark} and \cs{sectionmark} commands have
 % been redefined to eliminate the chapter numbers and the uppercaseness.
-% 
+%
 % For more control about the horizontal position of the headers and/or
 % footers, \Package{fancyhdr} has additional commands to specify the
 % offset of the header and/or footer elements. Use
-% \Cmd{fancyhfoffset[place]\{length\}}  
-% \CmdIndex{fancyhfoffset} 
+% \Cmd{fancyhfoffset[place]\{length\}}
+% \CmdIndex{fancyhfoffset}
 % to offset one or more elements. The \texttt{place} parameter is like
 % the optional parameter of \cs{fancyhf}, like \texttt{L R E O}, except
 % that \texttt{C} cannot be used. It specifies for which elements the
@@ -1555,70 +1593,71 @@
 % actual offset. Positive values move the element outward (into the
 % margin), negative values inward. There are also specialised commands
 % \cs{fancyheadoffset} and \cs{fancyfootoffset}, which have the
-% \texttt{H} and \texttt{F} parameter pre-applied, respectively. 
-% \CmdIndex{fancyheadoffset} 
-% \CmdIndex{fancyfootoffset} 
-% 
+% \texttt{H} and \texttt{F} parameter pre-applied, respectively.
+% \CmdIndex{fancyheadoffset}
+% \CmdIndex{fancyfootoffset}
+%
 % When you use these commands, \latex/ will recalculate \cs{headwidth},
-% based on the given parameters. 
-% 
+% based on the given parameters.
+%
 % So the above example could also have been done with (N.B. You can only
 % use such an expression as a length parameter if the \Package{calc}
-% package is used): 
-% 
+% package is used):
+%
 % \begin{verbatim}
 % \fancyheadoffset[LE,RO]{\marginparsep+\marginparwidth}
 % \end{verbatim}
-% 
+%
 % For the second example, we take the \amslatex/ book\footnote{George Gratzer,
 % \textit{Math into LaTeX, An Introduction to \LaTeX{} and \amslatex/}, Birkhauser, Boston.}.
-% 
+%
 % Chapter pages have no headers or footers.  So we declare
-% 
+%
 % \begin{verbatim}
 % \thispagestyle{empty}
 % \end{verbatim}
 % for every chapter page, and we do not need to redefine plain.
-% 
-% Chapter and section titles appear in the form: 2.\ DO IT NOW, so we have
+%
+% Chapter and section titles appear in the form: 2.\ IMPLEMENTATION, so we have
 % to redefine \cs{chaptermark} and \cs{sectionmark} as follows (see
 % Section~\ref{sec:custom}):
-% 
+%
 % \begin{verbatim}
 % \renewcommand{\chaptermark}[1]%
 %    {\markboth{\MakeUppercase{\thechapter.\ #1}}{}}
 % \renewcommand{\sectionmark}[1]%
 %    {\markright{\MakeUppercase{\thesection.\ #1}}}
 % \end{verbatim}
-% 
-% In an even-header, the page number is printed as the LeftHeader and
-% the chapter info as the RightHeader; in an odd-header, the section info
-% is printed as the LeftHeader and the page number as the RightHeader.  The
-% CenteredHeaders are empty.  There are no footers.
-% 
+%
+% On an even page, the page number is printed as the left header and
+% the chapter info as the right header; on an odd page, the section info
+% is printed as the left header and the page number as the right header.  The
+% center headers are empty.  There are no footers.
+%
 % There is a decorative line in the header.  It is 0.5pt wide, so we need
 % the commands:
-% 
+%
 % \begin{verbatim}
 % \renewcommand{\headrulewidth}{0.5pt}
 % \renewcommand{\footrulewidth}{0pt}
 % \end{verbatim}
-% 
+%
 % The font used in the headers is 9 pt bold Helvetica.  The \PSNFSS\ system
 % by Sebastian Rahtz uses the short (Karl Berry) name \verb|phv| for
 % Helvetica, so this font is selected with the commands:
 % \begin{verbatim}
 % \fontfamily{phv}\fontseries{b}\fontsize{9}{11}\selectfont
 % \end{verbatim}
-% (See Sections 7.6.1 and 11.9.1 of the \latex/ \emph{Companion}.)
+% (See Sections 7.6.1 and 11.9.1 of the \latex/ \emph{Companion} or
+% Sections 7.6 and 7.9.1 of \emph{The \latex/ Companion, Second Edition}.)
 % Let us define a shorthand for this:
 % \begin{verbatim}
 % \newcommand{\helv}{%
 %    \fontfamily{phv}\fontseries{b}\fontsize{9}{11}\selectfont}
 % \end{verbatim}
-% 
+%
 % Now we are ready for the page layout:
-% 
+%
 % \begin{verbatim}
 % \documentclass{book}
 % \usepackage{fancyhdr}
@@ -1636,11 +1675,11 @@
 % \fancyhead[LO]{\helv \rightmark}
 % \fancyhead[RE]{\helv \leftmark}
 % \end{verbatim}
-% 
-% 
+%
+%
 % \section{Special page layout for float pages}
 % \label{sec:float}
-% 
+%
 % \index{float page}
 % Some people want to have a special layout for float pages (pages only
 % containing floats). As these pages
@@ -1649,44 +1688,50 @@
 % of the page style will at least also affect the page before the float page.
 % With \Package{fancyhdr}, however, you can specify in each of
 % the header- or footer fields
-% 
-% \Cmd{iffloatpage\{}value for float page\verb|}{|value for other pages\verb|}|
-% 
+%
+% \medskip
+% \Cmd{iffloatpage\{}\meta{value for float page}\verb|}{|\meta{value for other pages}\verb|}|
+% \medskip
+%
 % You can even use this to get rid of the decorative line on float pages only
 % by defining:
-% 
+%
 % \begin{verbatim}
 % \renewcommand{\headrulewidth}{\iffloatpage{0pt}{0.4pt}}
 % \end{verbatim}
-% 
+%
 % Sometimes you may want to change the layout also for pages that contain a
 % float on the top of the page, a float on the bottom of the page or a footnote on the bottom of the page.
-% 
+%
 % \Package{fancyhdr} gives you the commands \cs{iftopfloat}, \cs{ifbotfloat} and \cs{iffootnote}
-% similar to \cs{iffloatpage}.
-% 
+% similar to \cs{iffloatpage}. For example:
+% \begin{verbatim}
+% \fancyhead[R]{\iftopfloat{This page has a topfloat}
+%                          {There is no topfloat here}}
+% \end{verbatim}
+%
 % Note: Marks in floats will not be visible in \latex/'s output routine, so
 % it is not useful to put marks in floats. So there is currently no way to
 % let a float (e.g.\ a figure caption) influence the page header or footer.
-% 
+%
 % \section{Those blank pages}
 % \label{sec:blank}
-% 
+%
 % In the \texttt{book} class when the \texttt{openany} option is not given or
 % in the \texttt{report} class when the \texttt{openright} option is given,
 % chapters start at odd-numbered pages, half of the time causing a blank page
-% to be inserted. Some people prefer this page to be completely empty, i.e.\ 
+% to be inserted. Some people prefer this page to be completely empty, i.e.\
 % without headers and footers. This cannot be done with \cs{thispagestyle}
 % as this command would have to be issued on the \emph{previous} page. There
 % is, however, no magic necessary to get this done:
-% 
+%
 % \PSindex{empty}
 % \CmdIndex{clearpage}
 % \CmdIndex{cleardoublepage}
 % \begin{verbatim}
-% \clearpage{\pagestyle{empty}\cleardoublepage}
+% \clearpage\begingroup\pagestyle{empty}\cleardoublepage\endgroup
 % \end{verbatim}
-% 
+%
 % As the \Cmd{pagestyle\{empty\}} is enclosed in a group it only affects the
 % page that may be generated by the \cs{cleardoublepage}.  You can of
 % course put the above in a private command. If you want to have this done
@@ -1696,7 +1741,8 @@
 % \begin{verbatim}
 % \makeatletter
 % \def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
-%   \hbox{}
+%  \begingroup
+%   \mbox{}
 %   \vspace*{\fill}
 %   \begin{center}
 %     This page intentionally contains only this sentence.
@@ -1704,18 +1750,19 @@
 %   \vspace{\fill}
 %   \thispagestyle{empty}
 %   \newpage
-%   \if@twocolumn\hbox{}\newpage\fi\fi\fi}
+%   \if@twocolumn\mbox{}\newpage\fi
+%  \endgroup\fi\fi}
 % \makeatother
 % \end{verbatim}
-% 
+%
 % \section{\textsf{N} of \textsf{M} style page numbers}
 % \label{sec:nofm}
-% 
+%
 % Some document writers prefer the pages to be numbered as \textsf{n} of
 % \textsf{m} where \textsf{m} is the number of pages in the document.
 % There is a package \Package{lastpage}
 % available which you can use with \Package{fancyhdr} as follows:
-% 
+%
 % \begin{verbatim}
 % \usepackage{lastpage}
 % ...
@@ -1729,13 +1776,13 @@
 % \end{verbatim}
 % We clear all the headers including its rule. The footer will be
 % ``inherited'' from the pagestyle \texttt{fancy}.
-% 
+%
 % The value of the \texttt{LastPage} label can be used to
 % make different headers or footers on the last page of a document. E.g.\ if
 % you want the footer of every odd page, except if it is the last one, to
 % contain the text ``please turn over'', this can be done as
 % follows:
-% 
+%
 % \begin{verbatim}
 % \usepackage{lastpage}
 % \usepackage{ifthen}
@@ -1743,33 +1790,37 @@
 % \fancyfoot[R]{\ifthenelse{\isodd{\value{page}} \and \not
 %      \(\value{page}=\pageref{LastPage}\)}{please turn over}{}}
 % \end{verbatim}
-% 
+%
+% In order to get the number of pages correctly used, you usually have
+% to do one additional \LaTeX{} run.
+%
+%
 % \section{Chapter or section related page numbers}
-% 
+%
 % In technical documentation very often page numbers are used of the form
 % 2-10 where the first number is the chapter number and the second is the
 % pagenumber relative to the chapter. Sometimes section is used rather than
-% chapter. The package \Package{chappg} can be used to get this format. 
-% 
-% Basically this package redefines \cs{thepage} as 
+% chapter. The package \Package{chappg} can be used to get this format.
+%
+% Basically this package redefines \cs{thepage} as
 % \cs{thechapter}\cs{chappgsep}\Cmd{arabic\{page\}}, where
 % \cs{chappgsep} by default is `-'. If you want do use a different
 % separator, you must redefine \cs{chappgsep}, for example to use an
 % en-dash:
-% 
+%
 % \begin{verbatim}
 % \renewcommand{\chappgsep}{--}
 % \end{verbatim}
-% 
+%
 % To use a different prefix, for example the section number, use the
 % \Cmd{pagenumbering\{bychapter\}} command with an optional argument
 % specifying the prefix.
 % \CmdIndex{pagenumbering}
-% 
+%
 % \begin{verbatim}
 % \pagenumbering[\thesection]{bychapter}
 % \end{verbatim}
-% 
+%
 % What the package also does is reset the page number to 1 at the beginning
 % of each chapter.
 %
@@ -1788,12 +1839,12 @@
 % \pagenumbering{bychapter}
 % \chapter{Introduction}
 % \end{verbatim}
-% 
+%
 % There is a caveat when you have appendices in your document. Before the
 % \cs{appendix} command you should give a \cs{clearpage} or
 % \cs{cleardoublepage}. See the \Package{chappg} documentation for
 % details.
-% 
+%
 % There is a fundamental difference between the page numbering of the style
 % ``\emph{m} of \emph{n}'' as described in the previous section and the
 % current one. The \emph{m} of \emph{n} style is only used in the page header
@@ -1801,12 +1852,12 @@
 % ``\emph{See page \emph{xx}}''. Therefore it does not change the command
 % \cs{thepage}. The page numbering style ``2-10'', however should be used
 % in all references to the page number, therefore it must be done by redefining
-% \cs{thepage}. 
-% 
-% 
+% \cs{thepage}.
+%
+%
 % \section{When to change the headers and footers?}
 % \label{sec:change}
-% 
+%
 % Sometimes you want to change the header or footer layout in the course of a
 % document. Some of these changes can be accomplished by using the mark
 % mechanism as may be seen in section~\ref{sec:custom} and \ref{sec:xmarks}.
@@ -1820,7 +1871,7 @@
 % at the next page you must make sure that the current page is finished. In
 % \CmdIndex{clearpage}
 % most cases this can be done by issuing a \cs{newpage} or \cs{clearpage} command before
-% any of the above mentioned changes. If this is not possible you can use the 
+% any of the above mentioned changes. If this is not possible you can use the
 % \TTindex{afterpage.sty}
 % \Package{afterpage} package with:\\
 % \Cmd{afterpage\{}\Cmd{fancyhead[L]\{new value\}\}} or
@@ -1830,8 +1881,8 @@
 % are local in a group, and the \cs{pagestyle} command makes only local
 % changes. The \cs{pagenumbering} and the \Package{fancyhdr} commands
 % make global changes so they will work, as will the \cs{thispagestyle}
-% command. 
-% 
+% command.
+%
 % It should be noted that although the \Package{fancyhdr} commands like
 % \cs{fancyhead} take effect immediately, this does not mean that any
 % ``variables'' used in these commands get the value they have at the place
@@ -1840,36 +1891,205 @@
 % of the page where this command is given, but rather the page number of
 % the actual page where the footer is constructed. Of course for the page
 % number this is what you expect, but it is also true for other commands.
-% 
+%
 % So if you have a book where each chapter is written by a different author
-% and you want the name of the author in the lower left-hand corner you can
-% use the following commands:
-% 
+% and you want the name of the author in the header opposite the chapter
+% title, you can use the following commands:
+%
 % \begin{verbatim}
 % \newcommand{\TheAuthor}{}
 % \newcommand{\Author}[1]{\renewcommand{\TheAuthor}{#1}}
-% \fancyfoot[L]{\TheAuthor}
+% \fancyhead[LE,RO]{\TheAuthor}
 % \end{verbatim}
-% 
-% \noindent and start each chapter with the command 
+%
+% \noindent and start each chapter with the command
 % \Cmd{Author\{Real Name\}}.
 %  If however, the author name would be changed before a page is
 % completed the wrong author could come in the footer. This would be the case
 % if you gave the above command \emph{before} the \cs{chapter} command
-% rather than after it. 
+% rather than after it.
 % Another source of problems is the fact that \tex/'s output routine processes
 % commands ahead, so it may already have processed some commands that produce
-% text that will appear on the next page. See the next section for an example.
+% text that will appear on the next page.
+%
+% So now we are giving an example how to change the headers and footers
+% only on one specific page. In some cases this can be done by the
+% \CmdIndex{thispagestyle}
+% \cs{thispagestyle} command. This changes the page style for the
+% ``current'' page only. But then we may be hit by the problem mentioned
+% in the previous paragraph. \LaTeX{} may have a different idea about
+% the ``current'' page than you. The use of \cs{thispagestyle} is OK if
+% you can be sure that the text where the command \cs{thispagestyle} is
+% executed is the same page as where the surrounding text appears. So
+% for example directly after a \cs{chapter} command, or after a
+% \cs{newpage}. However, when the command is given near the end of a
+% page, \LaTeX{} may execute the command, and then decide that the page
+% is full and move the text that contains the command to the next page.
+% So now the page style is changed on one page earlier than was intended.
+%
+% The solution to this problem is to put a label, like
+% \Cmd{label\{otherpagestyle\}} in the text where you want the different
+% page style, and then in the header and/or footer definitions compare
+% the page number with the label page number and choose the proper
+% value. For example, if we want to replace the section title on the
+% special page with ``MYFANCY SECTION'', like in
+% \begin{verbatim}
+% \fancypagestyle{myfancy}{
+%   \fancyhead[LE,RO]{MYFANCY SECTION}
+% }
+% \end{verbatim}
+% ^^A\Example
+% we define a new pagestyle that makes the choice:
+% \begin{verbatim}
+% \usepackage{ifthen}
+% . . .
+% \fancypagestyle{switch}{
+%   \fancyhead[LE,RO]{%
+%     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
+%       {MYFANCY SECTION}
+%       {\textsl{\rightmark}}}
+% }
+% \end{verbatim}
+% \CmdIndex{ifthenelse}
+% where \verb|\textsl{\rightmark}| is the normal value of the header
+% field from \Cmd{pagestyle\{fancy\}}.
+% Now we choose \Cmd{pagestyle\{switch\}} before our text, or even for
+% the whole document.
+%
+% There can still be some ambiguity on which page gets the different
+% header. For example, if the text says:
+% \begin{quote}
+%   This page gets a different header than the surrounding pages.
+% \end{quote}
+% where do you put the \cs{label}? \LaTeX{} could break the page between
+% ``This'' and ``page'', and then would you want the special heading on
+% the page where ``This'' appears, or on the page where ``page''
+% appears. It depends on the positioning of the \cs{label} command.
+% Probably it is safer to make sure the sentence isn't broken. This can
+% be dome by putting the text in a \cs{parbox} or \texttt{minipage} environment.
+% \begin{verbatim}
+% \noindent
+% \begin{minipage}{\textwidth}
+%   This page should have a different header than the surrounding pages.
+%   \label{otherpagestyle}
+%   It is done with the \verb|\pagestyle{switch}| command, that
+%   has tests in the header field definitions. This chooses the actual
+%   header depending on the page number.
+% \end{minipage}
+% \end{verbatim}
+% The \cs{noindent} is necessary, otherwise the whole \texttt{minipage}
+% will be shifted right by the paragraph indentation.
+%
+% Note that you cannot reset the page style immediately after this code,
+% as this may still influence the current page. If you want to reset it,
+% for example to \Cmd{pagestyle\{fancy\}}, you must be sure that it
+% happens on a following page. But in this case it isn't even necessary,
+% as the special page style acts as the default on all pages except the
+% special page.
+%
+% The special header and footer in page~\pageref{showstruts}, which
+% show the struts are done in a similar way, although the header and
+% footer are a bit more elaborated there.
+% Also there is another complication there, as we also want to make both
+% \cs{headruleskip} and \cs{footrulewidth} dependent on the page number.
+% Unfortunately, this cannot be done with a simple \cs{ifthenelse}
+% \CmdIndex{ifthenelse}
+% command.
+% Both \cs{headruleskip} and \cs{footrulewidth} are eventually
+% used as length parameters, and this requires that they are
+% \emph{expandable}. However, the \cs{ifthenelse} construct is not
+% expandable, so you will get strange error messages if you use
+% something like
+% \begin{verbatim}
+% %%% NOTE: This does not work %%%%
+% \renewcommand{\footrulewidth}{%
+%   \ifthenelse{\value{page}=\pageref{otherpagestyle}}{0.4pt}{0pt}%
+% }
+% \end{verbatim}
+% For cases like this \Package{fancyhdr} version~4.0 and later has some
+% new commands \cs{fancyheadinit}, \cs{fancyfootinit} and \cs{fancyhfinit}.
+% \DescribeMacro{\fancyheadinit}
+% With \Cmd{fancyheadinit\{\meta{code}\}} you can define some code that will be executed
+% just before the construction of the header. As it is executed in the
+% header, it can test the correct page number, because the counter
+% \texttt{page} is guaranteed to have the correct value in the headers
+% and footers. Similarly, the code in \Cmd{fancyfootinit\{\meta{code}\}} is executed in
+% \DescribeMacro{\fancyfootinit}
+% the footer. And \Cmd{fancyhfinit\{\meta{code}\}} sets its code for both the header
+% \DescribeMacro{\fancyhfinit}
+% and the footer. Now we can set for example \cs{headruleskip} or
+% \cs{footrulewidth} depending on the page number. So instead of putting
+% the test inside the definition of \cs{headruleskip}, we can put it
+% outside, and then we can use the command \cs{ifthenelse}. So we put
+% the following in \Cmd{pagestyle\{switch\}}:
+% \begin{verbatim}
+%   \fancyheadinit{%
+%     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
+%       {\renewcommand{\headruleskip}{6pt}}
+%       {\renewcommand{\headruleskip}{0pt}}
+%   }
+%   \fancyfootinit{%
+%     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
+%       {\renewcommand{\footrulewidth}{4pt}}
+%       {\renewcommand{\footrulewidth}{0pt}}
+%   }
+% \end{verbatim}
+% Now here is the definition of the page style used for page~\pageref{showstruts}.
+% \begin{verbatim}
+% \fancypagestyle{showstruts}{%
+%   \fancyhead[L]{%
+%     \ifthenelse{\value{page}=\pageref{showstruts}}%
+%       {\strutheader}%
+%       {\rightmark}%
+%   }
+%   \fancyfoot[L]{%
+%     \ifthenelse{\value{page}=\pageref{showstruts}}%
+%       {\strutfooter}%
+%       {}%
+%   }
+%   \fancyheadinit{%
+%     \ifthenelse{\value{page}=\pageref{showstruts}}%
+%       {\renewcommand{\headruleskip}{6pt}}%
+%       {\renewcommand{\headruleskip}{0pt}}%
+%   }
+%   \fancyfootinit{%
+%     \ifthenelse{\value{page}=\pageref{showstruts}}%
+%       {\renewcommand{\footrulewidth}{0.4pt}}%
+%       {\renewcommand{\footrulewidth}{0pt}}%
+%   }
+% }
+% \end{verbatim}
+% The label used on that page is \texttt{showstruts}. \cs{strutheader}
+% and \cs{strutfooter} are macros that contain the code to draw these
+% pictures. In this example the values for \cs{headruleskip} and
+% \cs{footrulewidth} in the \emph{else} case are the same as the global
+% values. So we could have left these \emph{else} parts empty. Then they
+% would keep the global values.
+% However, often explicit is better than implicit.
 % 
+% These initialisation commands cannot be used to make global changes to
+% the page, for example to \cs{headheight}. Neither can you use them to
+% change \cs{fancyhead} or \cs{fancyfoot}, because these have already
+% been set up. But you can use it to set the color and font of the
+% header and/or footer, for example to get large, red text in the
+% headers and footers on this specific page:
+% \begin{verbatim}
+%   \fancyhfinit{%
+%     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
+%       {\color{red}\Large}
+%       {}
+%     }
+% \end{verbatim}
+%
 % \section{Headers and footers induced by the text}
 % \label{sec:xmarks}
-% 
+%
 % We have seen how we can use \LaTeX's marks to get information from the
 % document contents to the headers and footers. The marks mechanism is the
 % only reliable mechanism that you can use to get changing information to the
 % headers or footers. This is because \latex/ may be processing your document
-% ahead before deciding to break the page. 
-% 
+% ahead before deciding to break the page.
+%
 % Sometimes the two marks that \latex/ offers are not enough. An example is
 % the following:
 % \begin{quote}
@@ -1878,14 +2098,14 @@
 % \index{Continued\ldots}
 %  first page and ``(Continued\ldots)'' at the top in the margin of the next page.
 % \end{quote}
-% 
+%
 % You cannot use \latex/'s mark mechanisms for this if you also want to use
 % chapter and section information.
-% 
+%
 % The \Package{extramarks} package gives you
 % two extra marks that can be used in this situation.
 % Here is a way to use this package:
-% 
+%
 % \begin{verbatim}
 % \usepackage{extramarks}
 % ...
@@ -1898,14 +2118,14 @@
 % \extramarks{Continued\ldots}{} %2
 % \extramarks{}{} %3
 % \end{verbatim}
-% 
+%
 % \CmdIndex{extramarks}
 % Note that the \cs{extramarks} command must be close to the text, i.e no
 % empty lines (paragraph boundaries) should intervene. Otherwise the page may
 % be broken at that boundary and the extramarks would come on the wrong page.
 % The final \verb+\extramarks{}{}+ is to prevent the `Continued\ldots'
 % header to appear on the following pages.
-% 
+%
 % Explanation: There are two new marks that can be used in the page layout with this
 % package: If commands of the form
 % \verb|\extramarks{|$m_1$\verb|}{|$m_2$\verb|}| are given
@@ -1920,12 +2140,12 @@
 % \cs{extramarks} command (indicated by \texttt{\%3}).
 %
 % However, when the page break falls in the block, the mark generated by
-% \%1 will be the last one on the first page. Therefore on that page
+% \texttt{\%1} will be the last one on the first page. Therefore on that page
 % \cs{lastxmark} will be `Continued on next page\ldots'. On the second
 % page, the first mark will be \texttt{\%2}, therefore \cs{firstxmark} will be `Continued\ldots'.
 % On all the following pages the values of \texttt{\%3} will be used,
 % i.e. empty ones. Of course in real life you would leave out the \texttt{\%} indicators.
-% 
+%
 % In case you want the last $m_1$ value or the first $m_2$ value, you
 % can use the \cs{lastleftxmark} or \cs{firstrightxmark}, respectively.
 % For symmetry reasons there are also commands \cs{firstleftxmark}
@@ -1938,17 +2158,17 @@
 % \CmdIndex{lastrightxmark}
 % \CmdIndex{topleftxmark}
 % \CmdIndex{toprightxmark}
-% 
+%
 % The package also gives you the \cs{firstleftmark} and \cs{lastrightmark}
 % commands that complement the standard \latex/ marks.
 % \CmdIndex{firstleftmark}
 % \CmdIndex{lastrightmark}
-% 
+%
 % To stress the point that marks are the correct way to do this, let me
 % give you a ``solution'' that will not work\footnote{Actually there is
 %   another way but it requires two \latex/ passes: you can put \cs{label}
 %   commands before and after the text and compare the \cs{pageref}s.}:
-% 
+%
 % \begin{verbatim}
 % \fancyhead[L]{Continued}
 % \fancyfoot[R]{Continued on next page\ldots}
@@ -1956,7 +2176,7 @@
 % \fancyhead[L]{}
 % \fancyfoot[R]{}
 % \end{verbatim}
-% 
+%
 % You may be tempted to think that the first \cs{fancyhead} and \cs{fancyfoot}
 % will be in effect when \tex/ breaks the page in the middle of the text,
 % and the last ones when the page breaks after the text. This is not true as
@@ -1969,21 +2189,21 @@
 % the first definitions to be in effect when \tex/ decides to break the page
 % exactly at this boundary. Actually the marks mechanism was invented to get
 % rid of these kinds of problems.
-% 
+%
 % In the above example the text ``Continued'' appears in the page header. It
 % \index{margin}
 % may be nicer to put it in the  margin. This can be easily
 % accomplished by positioning it at a fixed place relative to the page header.
 % In plain \tex/ you would use a concoction of \Cmd{hbox to 0pt},
 % \Cmd{vbox to 0pt}, \cs{hskip},\cs{vskip}, \cs{hss} and
-% \cs{vss} but fortunately 
+% \cs{vss} but fortunately
 % \latex/'s \texttt{picture} environment gives a much cleaner way to do this.
 % In order not to disturb the normal header layout we put the text in a zero-sized
 % \texttt{picture}. Generally this is the best way to position things on fixed
 % places on the page. You can then also use the normal headings. See also
-% section~\ref{sec:thumb} for another example of 
+% section~\ref{sec:thumb} for another example of
 % this technique.
-% 
+%
 % \TTindex{picture}
 % \begin{verbatim}
 % \fancyhead[L]{\setlength{\unitlength}{\baselineskip}%
@@ -1991,34 +2211,34 @@
 %   \put(-2,-3){\makebox(0,0)[r]{\firstxmark}}
 %   \end{picture}\leftmark}
 % \end{verbatim}
-% 
+%
 % This solution can of course also be used for the footer. Make sure you put the
 % \texttt{picture} as the first thing in left-handside entries and last in right-handside
 % ones.
-% 
+%
 % Finally you may want to put ``(Continued\ldots)'' in the \emph{text}
 % rather than in the header or the margin. Then you have to use the
 % \TTindex{afterpage.sty}
 % \Package{afterpage} package. We also decide to make a separate
 % environment for it.
-% 
+%
 % \begin{verbatim}
 % \newenvironment{continued}{\par
 %   \extramarks{}{Continued on next page\ldots}
 %   \afterpage{\noindent\firstxmark\vspace{1ex}}
 %   }{\extramarks{(Continued\ldots)}{}\par}
 % \end{verbatim}
-% 
+%
 % It is a bit dangerous to use \cs{firstxmark} outside the page layout
 % routine, but apparently with \cs{afterpage} this works. If you would
 % need the information further on in the page you must remember the state of
 % the marks in your own variable. You can set this in one of the
 % \Package{fancyhdr} fields. For example if you want to add something
 % \emph{after} the broken piece of text you can use the following:
-% 
+%
 % \begin{verbatim}
 % \newcommand{\mysaved}{}
-% 
+%
 % \newenvironment{continued}{\par
 %   \extramarks{}{Continued on next page\ldots}
 %   }{\extramarks{(Continued\ldots)}{}\par\vspace{1ex}\mysaved}
@@ -2027,14 +2247,14 @@
 %   {\gdef\mysaved{}}
 %   {\gdef\mysaved{\noindent[Continued from previous page]}}}
 % \end{verbatim}
-% 
+%
 % If you want to include one of the marks or other varying information in the
 % saved text, you must use \cs{xdef} rather than \cs{gdef}.
-% 
-% 
+%
+%
 % \section{A movie}
 % \label{sec:movie}
-% 
+%
 % \index{movie}
 % \TTindex{picture}
 % If you put at each page on the same place a picture that slightly changes
@@ -2043,27 +2263,27 @@
 % simplicity we assume that each picture is in a postscript (EPS) file called
 % \texttt{pic}$\langle n\rangle$.\texttt{ps} where $\langle n\rangle$ is the page number and that we use
 % the \Package{graphics} or  \Package{graphicx} package\footnote{If you use an older version of
-%   \LaTeX{} you could use the \Package{epsf} or \Package{epsfig} package.}. 
+%   \LaTeX{} you could use the \Package{epsf} or \Package{epsfig} package.}.
 % \TTindex{graphics}
 % \TTindex{graphicx}
 % \TTindex{epsf}
 % \TTindex{epsfig}
 % To put the movie in the  righthandside bottom corner the following will work:
-% 
+%
 % \begin{verbatim}
 % \fancyfoot[R]{\setlength{\unitlength}{1mm}
 %   \begin{picture}(0,0)
 %     \put(5,0){\includegraphics{pic\thepage.ps}}
 %   \end{picture}}
 % \end{verbatim}
-% 
+%
 % Notice that the \cs{unitlength} parameter should
 % be set locally in the fancyhdr field in order to avoid unwanted
 % interference with its value in the text.
-% 
+%
 % \section{Thumb-indexes}
 % \label{sec:thumb}
-% 
+%
 % \index{bible}
 % Some railroad guides and expensive bibles have so called
 % \index{thumb-index}
@@ -2074,7 +2294,7 @@
 % independent of the contents of the page, we print these blobs as part of
 % the header in a zero-sized \texttt{picture} as described in the previous
 % section.
-% 
+%
 % Of course we have to take care of two-sided printing, and we may want to
 % have an index page with all the blobs in the correct position. The solution
 % requires some hand-tuning to get the blobs nicely spaced out vertically.
@@ -2084,10 +2304,10 @@
 % \cs{unitlength} set to 18~mm. Page numbers are set in the headers at the
 % outer sides, and the blobs are attached to these. In this example the
 % section numbers are used to position the blobs, but you can replace this
-% with any numeric value. 
+% with any numeric value.
 % See figure~\ref{fig:overview} for the resulting
 % overview page and figure~\ref{fig:thumb} for the code.
-% 
+%
 % \begin{figure}[htbp]
 % \setlength{\unitlength}{9mm}
 % \newcommand{\blob}{\rule[-.2\unitlength]{1\unitlength}{.5\unitlength}}
@@ -2096,14 +2316,14 @@
 %   \put(1,-\value{line}){\blob}
 %   \put(-7.5,-\value{line}){\arabic{line}}
 %   \put(-7,-\value{line}){#1}}
-% 
+%
 % \newcommand{\overview}{1
 %   \begin{picture}(0,0)
 %     \secname{Introduction}
 %     \secname{The first year}
 %     \secname{Specialisation}
 %   \end{picture}}
-%  
+%
 %   \begin{center}
 %     \leavevmode
 %     \begin{picture}(11.3,5)
@@ -2118,27 +2338,27 @@
 % \begin{verbatim}
 % \setlength{\unitlength}{18mm}
 % \newcommand{\blob}{\rule[-.2\unitlength]{2\unitlength}{.5\unitlength}}
-% 
+%
 % \newcommand\rblob{\thepage
 %   \begin{picture}(0,0)
 %     \put(1,-\value{section}){\blob}
 %   \end{picture}}
-% 
+%
 % \newcommand\lblob{^^A
 %   \begin{picture}(0,0)
 %     \put(-3,-\value{section}){\blob}
 %   \end{picture}^^A
 %   \thepage}
-% 
+%
 % \pagestyle{fancy}
 % \fancyfoot[C]{}
-% 
+%
 % \newcounter{line}
 % \newcommand{\secname}[1]{\addtocounter{line}{1}^^A
 %   \put(1,-\value{line}){\blob}
 %   \put(-7.5,-\value{line}){\Large \arabic{line}}
 %   \put(-7,-\value{line}){\Large #1}}
-% 
+%
 % \newcommand{\overview}{\thepage
 %   \begin{picture}(0,0)
 %     \secname{Introduction}
@@ -2146,7 +2366,7 @@
 %     \secname{Specialisation}
 % ...etc...
 %   \end{picture}}
-% 
+%
 % \begin{document}
 % \fancyhead[R]{\overview}\mbox{}\newpage % This produces the overview page
 % \fancyhead[R]{} % Front matter may follow here
@@ -2160,9 +2380,9 @@
 %   \caption{Thumb-index code}
 %   \label{fig:thumb}
 % \end{figure}
-% 
+%
 % \section{Float placement}
-% 
+%
 % Floats are page elements that float with respect to the rest of the
 % document. Standard floats are tables and figures, but with the
 % \Package{float} package you can easily make new ones, like algorithms. Most
@@ -2172,7 +2392,7 @@
 % however be some pathological cases where it is impossible to convince
 % \LaTeX{} to do things your way. In the following we will use figures as an
 % example but everything applies to other floats as well.
-% 
+%
 % The most encountered problems with floats are:
 % \begin{enumerate}
 % \item You want a float at a certain position in the text, but \LaTeX{}
@@ -2181,7 +2401,7 @@
 %   the document or the end of a chapter.
 % \item \LaTeX{} complains about ``Too many floats''.
 % \end{enumerate}
-% 
+%
 % In the first two cases you must first check if you have given the correct
 % ``placement'' parameter to you float, e.g. \Cmd{begin\{figure\}[htp]}
 % specifies that your figure may be placed either: Here (i.e. in the text
@@ -2190,7 +2410,7 @@
 % could also have specified ``b'' for Bottom of the page. The order of the
 % letters is insignificant, you cannot force \LaTeX{} to try Bottom first
 % and then Top by specifying \texttt{[bt]}.
-% 
+%
 % If \LaTeX{} doesn't put the float at the place where you expected it, it is
 % usually caused by the following:
 % \begin{enumerate}
@@ -2227,13 +2447,13 @@
 %     \bs bottomfraction & max fraction of page for floats at bottom & 0.3 \\
 %     \bs textfraction & min fraction of page for text & 0.2 \\
 %     \bs floatpagefraction & min fraction of floatpage that should have
-%     floats  & 0.5 \\ 
+%     floats  & 0.5 \\
 %     \bottomrule
 %   \end{tabular}
 % \end{center}
-% 
+%
 % There are also some others for double column floats in two-column documents.
-% 
+%
 % The values in the righthand column are the defaults for the standard
 % \latex/ classes. Other classes could use different defaults. As you see
 % with the default values a float will not be put in the bottom of a page if
@@ -2252,18 +2472,18 @@
 % \end{verbatim}
 % You may want to be careful not to make \cs{floatpagefraction} too small,
 % otherwise you may get too many small floatpages.
-% 
+%
 % You can force \latex/ to ignore most of the parameters for one specific float
 % occurrence by
 % including an exclamation mark (!) in the placement parameters, e.g.
 % \begin{verbatim}
 % \begin{figure}[!htb]
 % \end{verbatim}
-% 
+%
 % Floats which contain a ``\texttt{t}'' in the position parameter could be
 % placed before the place where they are referenced (but on the same page).
 % This is normal behaviour for \latex/ but some people just don't like it.
-% There are a number of ways to prevent this: 
+% There are a number of ways to prevent this:
 % \begin{enumerate}
 % \item Of course deleting the ``\texttt{t}'' will help, but in general this is
 %   undesirable, as you may want the float to be placed at the top of the
@@ -2275,7 +2495,7 @@
 %   moved to the next page. This can also be done with \texttt{[b]} or
 %   without parameter for all floats on this page.
 % \end{enumerate}
-% 
+%
 % If in spite of all your attempts \latex/ still moves your floats to the end
 % of the document or the end of a chapter, you can insert a \cs{clearpage}
 % command. This will start a new page and insert all pending floats before
@@ -2284,11 +2504,11 @@
 % \begin{verbatim}
 % \afterpage{clearpage}
 % \end{verbatim}
-% 
+%
 % This will wait until the current page is finished and then flush all
 % outstanding floats. In some pathological circumstances \Package{afterpage}
 % may give strange results, however.
-% 
+%
 % Finally, if you want a float only at the place where you define it, without
 % \latex/ moving it whatsoever, you can use the \Package{float} package and
 % give the command:
@@ -2304,7 +2524,7 @@
 % \begin{verbatim}
 % \afterpage{\clearpage \begin{figure}[H] ... \end{figure}}
 % \end{verbatim}
-% 
+%
 % Complaints from \latex/ about ``Too many floats'' are usually caused by one
 % of the above problems: floats not being able to be placed and \latex/
 % collecting too many of them. The solutions given above, especially those
@@ -2314,9 +2534,9 @@
 % this number. If you need still more then you must edit a private copy of
 % this file, but even then there will be some limit that you cannot pass.
 % Then your only resort will be to change your document.
-% 
+%
 % \section{Multipage Floats}
-% 
+%
 % \LaTeX's floats cannot be split across pages. Sometimes, however, you want
 % to have a table or figure that doesn't fit on one page. The easiest way is
 % to split these into multiple table or figure environments, but this has a
@@ -2327,12 +2547,12 @@
 % \item How do you keep them together?
 % \item You don't want more than one entry in the list of figures/tables.
 % \end{itemize}
-% 
+%
 % Although these problems are not fully solvable in all cases, here are a
 % couple of suggestions:
-% 
+%
 % \subsection{Tables}
-% 
+%
 % For tables longer than a page you can use the \Package{longtable} package.
 % \TTindex{longtable}
 % This package defines a \texttt{longtable} environment that is a kind of
@@ -2359,16 +2579,16 @@
 % \end{verbatim}
 % The last form has the additional advantage that most of the outstanding
 % floats will be printed first.
-% 
-% 
+%
+%
 % \subsection{Figures}
-% 
+%
 % There isn't an equivalent \texttt{longfigure} solution, so for figures you
 % will usually have to split it yourself. In general this is less of a
 % problem. However, the problem you get now is how to keep them together,
 % i.e. how to get the parts on subsequent pages, and how to get a single
 % entry in the list of figures.
-% 
+%
 % You will have to split the figure into pieces and put each part
 % in a separate \texttt{figure} environment. To keep them together it is best
 % to use only the \texttt{[p]} placement, so that they will be put on
@@ -2396,13 +2616,13 @@
 % \end{center}
 % \end{figure}
 % \end{verbatim}
-% 
+%
 % You have to make sure that the last part is big enough, otherwise \LaTeX{}
 % could decide to postpone it until it has collected some more floats. This
 % can be done either by making the figure big enough (e.g. by adding some
-% \cs{vspace}), or by tweaking the \cs{floatpagefraction} 
+% \cs{vspace}), or by tweaking the \cs{floatpagefraction}
 % \CmdIndex{floatpagefraction} parameter.
-% 
+%
 % If you want your multipage figure to start at a lefthand-side
 % (even-numbered) page you can use a test in the \cs{afterpage} command
 % (using the \Package{ifthen} package):
@@ -2413,18 +2633,18 @@
 % \end{verbatim}
 % If there are too many floats on the skipped page, this may still fail to
 % start your multipage figure on an even page, however.
-% 
+%
 % \section{Deprecated commands}
 % \label{sec:depr}
-% 
+%
 % This section contains the description of deprecated commands. These
 % were parts of the original implementation of \Package{fancyheadings}.
-% They continue to work for compatibility reasons, 
+% They continue to work for compatibility reasons,
 % but it is recommended not to use them anymore. This description is
 % given so that you know what they mean and how to convert them to the
 % standard commands. To be honest, I use these sometimes myself in quick
 % examples, because \cs{lhead} is less typing than \Cmd{fancyhead[L]}.
-% 
+%
 % These commands for specifying the header or footer fields and their translation to
 % the modern commands are given in table~\ref{tab:depr}.
 %
@@ -2477,7 +2697,7 @@
 % The \cs{fancyplain} command is only useful within the pagestyle \texttt{fancyplain}.
 % Nowadays you would just redefine pagestyle \texttt{plain} with the
 % \Cmd{fancypagestyle\{plain\}\{xxxx\}} command (see section~\ref{sec:pagestyle-plain}).
-% 
+%
 % \CmdIndex{plainheadrulewidth}
 % \CmdIndex{plainfootrulewidth}
 % There are also \cs{plainheadrulewidth} and \cs{plainfootrulewidth}
@@ -2487,15 +2707,15 @@
 % redefine pagestyle \texttt{plain} with the \cs{fancypagestyle} command.
 %
 % \section{Contact information}
-% 
+%
 % Piet van Oostrum\\
 % E-mail: piet@vanoostrum.org \\
 % WWW: http://piet.vanoostrum.org
-% 
+%
 % \section{Version information}
 % \begin{itemize}
-% \item  Version 1.0. March 11,  2003. This is the version that was distributed for a 
-%   long time on CTAN. Version history before this has been lost. 
+% \item  Version 1.0. March 11,  2003. This is the version that was distributed for a
+%   long time on CTAN. Version history before this has been lost.
 % \item Version 2.0. August 27, 2016:
 %   \begin{itemize}
 %   \item Removed references to fixmarks.sty as that is no longer used.
@@ -2555,22 +2775,24 @@
 %     behaviour is kept. \\
 %     The \texttt{nocheck} option now eliminates these checks completely, on
 %     your own risk. (See section~\ref{sec:warning} on page~\pageref{sec:warning}.)
-%   \item Eliminated \cs{f@nch@gbl}. All definitions are now local.
+%   \item Eliminated global definitions. All definitions are now local.
 %     The \cs{global} case was originally so that you could do definitions in
 %     a group and they would be applied globally. This was a mistake. If
-%     you make them locally they should stay local. And it caused several
+%     you make them locally they should stay local. And it caused
 %     problems with switching page styles, because then the global style
 %     would be changed, which you generally don't want.\\
 %     However, when the package option \texttt{compatV3} is given, the old
 %     behaviour is kept. (See section~\ref{sec:options}.)
+%   \item The page style \texttt{fancydefault}.
+%   \item The \cs{headruleskip} parameter.
+%   \item The \cs{fancyheadinit}, \cs{fancyfootinit}, and
+%     \cs{fancyhfinit} commands.
 %   \item[] \textbf{Note:} The following changes were mostly copied from the
 %     \texttt{nccfancyhdr} package by Alexander I. Rozhenko.
 %   \item The \cs{fancycenter} command (section~\ref{sec:fancycenter}).
 %   \item The \texttt{headings} and \texttt{myheadings} package options
 %     (see section~\ref{sec:options}).
 %   \item The \cs{fancypagestyle} command has an optional parameter \oarg{base-style}.
-%   \item The page style \texttt{fancydefault}.
-%   \item The \cs{headruleskip} parameter.
 %
 %   \end{itemize}
 %
@@ -2785,69 +3007,69 @@
 %
 %<*fancyhdr>
 % \changes{fancyhdr v1.4}{1994/09/16}{Correction for use with \cs{reversemarginpar}}
-% 
+%
 % \changes{fancyhdr v1.5}{1994/09/29}{Added the \cs{iftopfloat},
 % \cs{ifbotfloat} and \cs{iffloatpage} commands}
-% 
+%
 % \changes{fancyhdr v1.6}{1994/10/04}{Reset single spacing in headers/footers for use with
 % \Package{setspace.sty} or \Package{doublespace.sty}}
-% 
+%
 % \changes{fancyhdr v1.7}{1994/10/04}{Changed \cs{let}\cs{@mkboth}\cs{markboth} to
 % \texttt{\cs{def}\cs{@mkboth}\{\cs{protect}\cs{markboth}\}} to make it more robust.}
-% 
+%
 % \changes{fancyhdr v1.8}{1994/12/05}{corrections for
 % \Package{amsbook}/\Package{amsart}: define \cs{@chapapp} and (more
 % importantly) use the \cs{chapter/sectionmark} definitions from \texttt{ps@headings} if
 % they exist (which should be true for all standard classes).}
-% 
-% \changes{fancyhdr v1.9}{1995/03/31}{The proposed 
+%
+% \changes{fancyhdr v1.9}{1995/03/31}{The proposed
 % \texttt{\cs{renewcommand}\{\cs{headrulewidth}\}} \texttt{\{\cs{iffloatpage}\ldots}
 % construction in the doc did not work properly with the \texttt{fancyplain} style.}
-% 
-% \changes{fancyhdr v1.91}{1995/06/01}{The definition of \cs{@mkboth} wasn't 
+%
+% \changes{fancyhdr v1.91}{1995/06/01}{The definition of \cs{@mkboth} wasn't
 % restored on subsequent \texttt{\cs{pagestyle}\{fancy\}}'s.}
-% 
+%
 % \changes{fancyhdr v1.92}{1995/06/01}{The sequence
 % \texttt{\cs{pagestyle}\{fancyplain\} \cs{pagestyle}\{plain\}
 % \cs{pagestyle}\{fancy\}} would erroneously select the plain version.}
-% 
+%
 % \changes{fancyhdr v1.93}{1995/06/01}{\cs{fancypagestyle} command added.}
-% 
+%
 % \changes{fancyhdr v1.94}{1995/12/11}{(suggested by Conrad Hughes
 % \texttt{<chughes@maths.tcd.ie!>}): added \cs{footruleskip} to allow control over footrule
 % position (old hardcoded value of .3\cs{normalbaselineskip} is far too high
 % when used with very small footer fonts).}
-% 
-% \changes{fancyhdr v1.95}{1996/01/31}{call \cs{@normalsize} in the reset code if that is defined, 
+%
+% \changes{fancyhdr v1.95}{1996/01/31}{call \cs{@normalsize} in the reset code if that is defined,
 % otherwise \cs{normalsize}. This is to solve a problem with
 % \Package{ucthesis.cls}, as this doesn't define \cs{@currsize}.
 % Unfortunately for latex209 calling \cs{normalsize} doesn't
 % work as this is optimized to do very little, so there \cs{@normalsize} should
 % be called. Hopefully this code works for all versions of LaTeX known to
 % mankind.}
-% 
-% \changes{fancyhdr v1.96}{1996/04/25}{Initialize \cs{headwidth} to a
+%
+% \changes{fancyhdr v1.96}{1996/04/25}{Initialise \cs{headwidth} to a
 % magic (negative) value to catch most common cases that people change
-% it before calling \texttt{\cs{pagestyle}\{fancy\}}. 
-% Note it can't be initialized when reading in this file, because
+% it before calling \texttt{\cs{pagestyle}\{fancy\}}.
+% Note it can't be initialised when reading in this file, because
 % \cs{textwidth} could be changed afterwards. This is quite probable.
 % We also switch to \cs{MakeUppercase} rather than \cs{uppercase} and introduce a
 % \cs{nouppercase} command for use in headers. and footers.}
-% 
+%
 % \changes{fancyhdr v1.97}{1996/05/03}{Two changes: \\
 % 1. Undo the change in version 1.8
-% (using the \texttt{\cs{pagestyle}\{headings\}} defaults 
+% (using the \texttt{\cs{pagestyle}\{headings\}} defaults
 % for the chapter and section marks). The current version of amsbook and
 % amsart classes don't seem to need them anymore. Moreover the standard
 % \LaTeX{} classes don't use \cs{markboth} if twoside isn't selected, and this is
 % confusing as \cs{leftmark} doesn't work as expected.\\
 % 2. Include a call to \cs{ps@empty}
-% in \cs{ps@@fancy}. This is to solve a problem 
+% in \cs{ps@@fancy}. This is to solve a problem
 % in the amsbook and amsart classes, that make global changes to \cs{topskip},
 % which are reset in \cs{ps@empty}. Hopefully this doesn't break other things.}
-% 
+%
 % \changes{fancyhdr v1.98}{1996/05/07}{Added \% after the line  \cs{def}\cs{nouppercase}}
-% 
+%
 % \changes{fancyhdr v1.99}{1996/05/07}{This is the alpha version of fancyhdr 2.0\\
 % Introduced the new commands \cs{fancyhead}, \cs{fancyfoot}, and \cs{fancyhf}.
 % Changed \cs{headrulewidth}, \cs{footrulewidth}, \cs{footruleskip} to
@@ -2856,31 +3078,31 @@
 % to have them as length registers unless you want to do calculations with
 % them, which is unlikely. Note that this may make some uses of them
 % incompatible (i.e. if you have a file that uses \cs{setlength} or \cs{xxxx}!=)}
-% 
+%
 % \changes{fancyhdr v1.99a}{1996/05/10}{Added a few more \% signs.}
-% 
+%
 % \changes{fancyhdr v1.99b}{1996/05/10}{Changed the syntax of
 % \cs{f@nch@for} to be resistent to catcode changes of \texttt{:!=}.\protect\\
 % Removed the \texttt{[1]} from the defs of \cs{lhead} etc. because the parameter is
 % consumed by the \cs{@[xy]lhead} etc. macros.}
-% 
+%
 % \changes{fancyhdr v1.99c}{1997/06/24}{Corrected \cs{nouppercase} to
-% also include the protected form of \cs{MakeUppercase}.\\ 
+% also include the protected form of \cs{MakeUppercase}.\\
 % \cs{global} added to manipulation of \cs{headwidth}.\\
 % \cs{iffootnote} command added.\\
 % Some comments added about \cs{f@nch@head} and \cs{f@nch@foot}.}
-% 
+%
 % \changes{fancyhdr v1.99d}{1998/08/24}{Changed the default
 % \cs{ps@empty} to \cs{ps@@empty} in order to allow
 % \texttt{\cs{fancypagestyle}\{empty\}} redefinition.}
-% 
+%
 % \changes{fancyhdr v2.0}{2000/10/11}{Added LPPL license clause.\\
 % A check for \cs{headheight} is added. An errormessage is given (once) if the
 % header is too large. Empty headers don't generate the error even if
 % \cs{headheight} is very small or even 0pt. \\
 % Warning added for the use of '\texttt{E}' option when twoside option is not used.
 % In this case the '\texttt{E}' fields will never be used.}
-% 
+%
 % \changes{fancyhdr v2.1beta}{2002/03/10}{New command:
 % \texttt{\cs{fancyhfoffset}[place]\{length\}} defines offsets to be applied to
 % the header/footer to let it stick into the margins (if length $!>$ 0).
@@ -2889,9 +3111,9 @@
 % area.
 % \cs{headwidth} will be dynamically calculated in the headers/footers when
 % this is used.}
-% 
+%
 % \changes{fancyhdr v2.1beta2}{2002/03/26}{\cs{fancyhfoffset} now also
-% takes \texttt{H,F} as possible letters in the argument to 
+% takes \texttt{H,F} as possible letters in the argument to
 % allow the header and footer widths to be different.\\
 % New commands \cs{fancyheadoffset} and \cs{fancyfootoffset} added comparable to
 % \cs{fancyhead} and \cs{fancyfoot}.\\
@@ -2908,28 +3130,28 @@
 % \changes{fancyhdr v3.1}{2004/10/07}{Added '\texttt{\cs{endlinechar}!=13}' to
 % \cs{f@nch@reset} to prevent problems with \cs{includegraphics} in
 % header/footer when \environment{verbatiminput} is active.}
-% 
+%
 % \changes{fancyhdr v3.2}{2005/03/22}{Reset \cs{everypar} (the real one)
 % in \cs{f@nch@reset} because spanish.ldf does strange things with
 % \cs{everypar} between \guillemotleft\ and \guillemotright.}
-% 
+%
 % \changes{fancyhdr v3.3}{2016/08/20}{Replace
-% `\texttt{\cs{@ifundefined}\{chapter\}}' with `\cs{ifx}\cs{chapter}\cs{@undefined}' 
+% `\texttt{\cs{@ifundefined}\{chapter\}}' with `\cs{ifx}\cs{chapter}\cs{@undefined}'
 % because the former subtly makes \cs{chapter} equal to \cs{relax}, which may be
 % undesirable in some cases.}
-% 
+%
 % \changes{fancyhdr v3.4}{2016/08/21}{Replace \cs{rm} by
 % \cs{normalfont}\cs{rmfamily} and \cs{sl} by \cs{normalfont}\cs{slshape}.}
-% 
+%
 % \changes{fancyhdr v3.5}{2016/08/21}{Don't define \cs{footruleskip} if it is already defined.}
-% 
+%
 % \changes{fancyhdr v3.6}{2016/08/27}{Added a \cs{ProvidesPackage} line.\\
 % Updated contact information.}
-% 
+%
 % \changes{fancyhdr v3.7}{2016/08/28}{Removed \cs{normalfont} from default values, as every field
 % is already initialised with \cs{normalfont}.\\
 % Set \cs{hsize} to \cs{headwidth} in header/footer.}
-% 
+%
 % \changes{fancyhdr v3.8}{2016/09/06}{Reset \bsbs, \cs{raggedleft},
 % \cs{raggedright} and \cs{centering} to their default values to avoid a
 % clash with the tabu package.\\
@@ -2960,14 +3182,14 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\iff@nch@compatViii}
 % Define \cs{iff@nch@compatViii} to track the \texttt{compatV3} option.
 %    \begin{macrocode}
 \newif\iff@nch@compatViii
 %    \end{macrocode}
 % \begin{macro}{\f@nch@gbl}
-% Initialize \cs{f@nch@gbl} to do nothing (except with the \texttt{compatV3}
+% Initialise \cs{f@nch@gbl} to do nothing (except with the \texttt{compatV3}
 % option).
 % \changes{fancyhdr v4.0}{2019/03/19}{Remove the \cs{global} in definitions}
 % \changes{fancyhdr v4.0}{2019/03/16}{Implement the \texttt{compatV3} option}
@@ -3204,7 +3426,7 @@
   \ifx\@empty#1\def#1{#2}\fi}
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\f@nch@ifin}
 %   Usage: \cs{f@nch@ifin} \meta{char} \meta{set} \meta{truecase} \meta{falsecase} \\
 % If \meta{char} is in \meta{set}, then \meta{truecase} else \meta{falsecase}.
@@ -3281,14 +3503,14 @@
     e\f@nch@warning {\string#1's `E' option without twoside option is
       useless}\fi\fi \f@nch@default\f@nch@@lcr{lcr}\temp@c
     \f@nch@default\f@nch@@hf{hf}{#2\temp@c}%
-    \f@nch@forc\f@nch@eo\f@nch@@eo 
-        {\f@nch@forc\f@nch@lcr\f@nch@@lcr 
+    \f@nch@forc\f@nch@eo\f@nch@@eo
+        {\f@nch@forc\f@nch@lcr\f@nch@@lcr
           {\f@nch@forc\f@nch@hf\f@nch@@hf
             {\expandafter\f@nch@def\csname
               f@nch@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#4}}}}}}
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\f@nch@fancyhfoffs}
 % This macro interprets the parameters for the header and footer
 % offsets.\\
@@ -3302,7 +3524,7 @@
 %   The header and footer offsets are stored in command sequences with
 %   names of the form: \cs{f@nch@O@}\meta{x}\meta{y}\meta{z} with \meta{x} from
 %   \texttt{[eo]}, \meta{y} from \texttt{[lr]} and \meta{z} from \texttt{[hf]}.
-% 
+%
 %    \begin{macrocode}
 \def\f@nch@fancyhfoffs#1#2[#3]#4{%
   \def\temp@c{}%
@@ -3316,7 +3538,7 @@
     e\f@nch@warning {\string#1's `E' option without twoside option is
       useless}\fi\fi \f@nch@default\f@nch@@lcr{lr}\temp@c
     \f@nch@default\f@nch@@hf{hf}{#2\temp@c}%
-    \f@nch@forc\f@nch@eo\f@nch@@eo 
+    \f@nch@forc\f@nch@eo\f@nch@@eo
         {\f@nch@forc\f@nch@lcr\f@nch@@lcr
           {\f@nch@forc\f@nch@hf\f@nch@@hf
             {\expandafter\setlength\csname
@@ -3384,28 +3606,28 @@
 % \begin{macro}{\f@nch@headwidth}
 % Length parameter to be used for \cs{headwidth}. We use this rather
 % than defining \cs{headwidth} as a length paramater directly to protect
-% ourself to someone saying: \verb+\let\headwidth\textwidth+. 
+% ourself to someone saying: \verb+\let\headwidth\textwidth+.
 %    \begin{macrocode}
 \newlength{\f@nch@headwidth} \let\headwidth\f@nch@headwidth
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@O@elh} 
-% \begin{macro}{\f@nch@O@erh} 
+% \begin{macro}{\f@nch@O@elh}
+% \begin{macro}{\f@nch@O@erh}
 % \begin{macro}{\f@nch@O@olh}
-% \begin{macro}{\f@nch@O@orh} 
-% \begin{macro}{\f@nch@O@elf} 
+% \begin{macro}{\f@nch@O@orh}
+% \begin{macro}{\f@nch@O@elf}
 % \begin{macro}{\f@nch@O@erf}
-% \begin{macro}{\f@nch@O@olf} 
+% \begin{macro}{\f@nch@O@olf}
 % \begin{macro}{\f@nch@O@orf}
 % Length parameters for the offsets.
 %    \begin{macrocode}
-\newlength{\f@nch@O@elh} 
-\newlength{\f@nch@O@erh} 
+\newlength{\f@nch@O@elh}
+\newlength{\f@nch@O@erh}
 \newlength{\f@nch@O@olh}
-\newlength{\f@nch@O@orh} 
-\newlength{\f@nch@O@elf} 
+\newlength{\f@nch@O@orh}
+\newlength{\f@nch@O@elf}
 \newlength{\f@nch@O@erf}
-\newlength{\f@nch@O@olf} 
+\newlength{\f@nch@O@olf}
 \newlength{\f@nch@O@orf}
 %    \end{macrocode}
 % \end{macro}
@@ -3416,16 +3638,16 @@
 % \end{macro}
 % \end{macro}
 % \end{macro}
-% 
+%
 % \begin{macro}{\headrulewidth}
 % \begin{macro}{\footrulewidth}
 %    \begin{macrocode}
-\newcommand{\headrulewidth}{0.4pt} 
+\newcommand{\headrulewidth}{0.4pt}
 \newcommand{\footrulewidth}{0pt}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
-% 
+%
 %  \begin{macro}{\headruleskip}
 %  Don't define \cs{headruleskip} if it is already defined.
 % \changes{fancyhdr v4.0}{2019/03/22}{Parameter \cs{headruleskip}.}
@@ -3434,7 +3656,7 @@
       {\newcommand{\headruleskip}{0pt}}{}
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 %  \begin{macro}{\footruleskip}
 %  Memoir also defines \cs{footruleskip}.
 %  Don't define \cs{footruleskip} if it is already defined.
@@ -3443,7 +3665,7 @@
       {\newcommand{\footruleskip}{.3\normalbaselineskip}}{}
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 %  \begin{macro}{\plainheadrulewidth}
 %  \begin{macro}{\plainfootrulewidth}
 %   Fancyplain stuff shouldn't be used anymore (rather
@@ -3456,14 +3678,14 @@
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
-% 
+%
 % \begin{macro}{\if@fancyplain}
 % Boolean for the implementation of \cs{fancyplain}
 %    \begin{macrocode}
 \newif\if@fancyplain \@fancyplainfalse
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\fancyplain}
 % Deprecated macro
 %    \begin{macrocode}
@@ -3472,7 +3694,7 @@
 % \end{macro}
 %
 % \begin{macro}{\headwidth}
-%   Initialize \cs{headwidth} with a magic constant.
+%   Initialise \cs{headwidth} with a magic constant.
 %    \begin{macrocode}
 \headwidth=-123456789sp
 %    \end{macrocode}
@@ -3487,7 +3709,7 @@
 % typesetting the headers and footers. Some packages change these to
 % incompatible values.
 %    \begin{macrocode}
-\let\f@nch@raggedleft\raggedleft 
+\let\f@nch@raggedleft\raggedleft
 \let\f@nch@raggedright\raggedright
 \let\f@nch@centering\centering
 \let\f@nch@everypar\everypar
@@ -3598,6 +3820,49 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\fancyheadinit}
+% This macro can be used to define initialisation code that will be run
+% before the construction of the header. It can for example set the
+% color or the font, or change \cs{headrulewidth} or \cs{headruleskip}.
+% It cannot make global changes, just changes for the header.
+% \begin{macro}{\f@nch@headinit}
+%   Storage for the header initialisation code.
+%    \begin{macrocode}
+\newcommand{\f@nch@headinit}{}
+\newcommand{\fancyheadinit}[1]{%
+  \def\f@nch@headinit{#1}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\fancyfootinit}
+% This macro can be used to define initialisation code that will be run
+% before the construction of the footer. It can for example set the
+% color or the font, or change \cs{footrulewidth} or \cs{footruleskip}.
+% It cannot make global changes, just changes for the footer.
+% \begin{macro}{\f@nch@footinit}
+%   Storage for the footer initialisation code.
+%    \begin{macrocode}
+\newcommand{\f@nch@footinit}{}
+\newcommand{\fancyfootinit}[1]{%
+  \def\f@nch@footinit{#1}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\fancyhfinit}
+% This macro sets both the header and the footer initialisation codes to
+% the same value.
+%    \begin{macrocode}
+\newcommand{\fancyhfinit}[1]{%
+  \def\f@nch@headinit{#1}%
+  \def\f@nch@footinit{#1}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\f@nch@vbox}
 % Make a \cs{vbox} with the header or footer. Check whether there is
 % enough space and give a warning if not.
@@ -3646,7 +3911,9 @@
 % \end{macro}
 %
 % \begin{macro}{\f@nch@head}
-% \begin{macro}{\f@nch@foot}
+% \changes{fancyhdr v4.0}{2019/03/22}{Parameter \cs{headruleskip}.}
+% \changes{fancyhdr v4.0}{2019/03/25}{\cs{fancyheadinit} initialisation
+% code added and \cs{f@nch@reset} moved up.}
 %   Put together a header or footer given the left, center and right
 %   text, fillers at left and right and a rule. The \cs{xlap} commands put
 %   the text into an hbox of zero size, so overlapping text does not
@@ -3662,13 +3929,15 @@
 %   This is the right component. \\
 %   5. RIGHTSIDE BEARING. This is always \cs{relax} or \cs{hss}
 %   (after expansion).
-%
-% \changes{fancyhdr v4.0}{2019/03/22}{Parameter \cs{headruleskip}.}
+% Before constructing the header or footer, the environment is reset to
+% a known state, and then the corresponding initialisation code as given
+% in \cs{fancyheadinit} or \cs{fancyfootinit}, respectively, is run.
 %    \begin{macrocode}
 \newcommand\f@nch@head[5]{%
+  \f@nch@reset
+  \f@nch@headinit\relax
   #1%
   \hbox to\headwidth{%
-    \f@nch@reset
     \f@nch@vbox\headheight{%
       \hbox{%
         \rlap{\parbox[b]{\headwidth}{\raggedright#2}}%
@@ -3685,12 +3954,15 @@
 }
 %    \end{macrocode}
 %
+% \begin{macro}{\f@nch@foot}
 % \changes{fancyhdr v3.10}{2019/01/26}{Put \cs{footrule} in a \cs{vbox}
 % to accommodate for flexible footrules.}
 % \changes{fancyhdr v3.10}{2019/01/28}{Use \cs{unvbox} on the footrule \cs{vbox}
 % to preserve vertical spacing.}
 % \changes{fancyhdr v3.10}{2019/01/28}{Move \cs{footruleskip} outside of the \cs{footrule}
 % definition.}
+% \changes{fancyhdr v4.0}{2019/03/25}{\cs{fancyfootinit} initialisation
+% code added and \cs{f@nch@reset} moved up.}
 % We put the \cs{footrule} in a \cs{vbox} to accommodate for flexible
 % footrules (e.g. using \cs{hrulefill}), so that the \cs{headwidth} will
 % be used as the line width. But to preserve the vertical spacing we
@@ -3698,9 +3970,10 @@
 %
 %    \begin{macrocode}
 \newcommand\f@nch@foot[5]{%
+  \f@nch@reset
+  \f@nch@footinit\relax
   #1%
   \hbox to\headwidth{%
-    \f@nch@reset
     \f@nch@vbox\footskip{%
       \setbox0=\vbox{\footrule}\unvbox0
       \vskip\footruleskip
@@ -3743,12 +4016,12 @@
 %    \begin{macrocode}
 \def\f@nch@initialise{%
 %    \end{macrocode}
-% 
+%
 % \begin{macro}{\chaptermark}
 % \begin{macro}{\sectionmark}
 % \begin{macro}{\subsectionmark}
 % Standard definitions for \cs{chaptermark}, \cs{sectionmark} and \cs{subsectionmark}.
-% 
+%
 %    \begin{macrocode}
   \f@nch@ifundefined{chapter}%
    {\def\sectionmark##1{\markboth{\MakeUppercase{\ifnum \c@secnumdepth>\z@
@@ -3791,7 +4064,7 @@
   \def\headruleskip{0pt}%
   \def\footruleskip{0.3\normalbaselineskip}%
 %    \end{macrocode}
-% Initialization of the head and foot text.
+% Initialisation of the head and foot text.
 %
 % The default values still contain \cs{fancyplain} for compatibility:
 % lefthead empty on ``plain'' pages, \cs{rightmark} on even, \cs{leftmark} on odd pages;
@@ -3827,12 +4100,12 @@
 %    \begin{macrocode}
 \def\ps@f@nch@fancyproto{%
 %    \end{macrocode}
-% Initialize \cs{headwidth} if the user didn't. If \cs{headwidth} ${}< 0$,
+% Initialise \cs{headwidth} if the user didn't. If \cs{headwidth} ${}< 0$,
 % then the user did not initialise it, or they just added something to
 % it in the expectation that
 % it was initialised to \cs{textwidth}. We compensate this now. This loses if
 % the user intended to multiply it by a factor. But that case is more
-% likely done by saying something like \verb+\setlength{\headwidth}{1.2\textwidth}+. 
+% likely done by saying something like \verb+\setlength{\headwidth}{1.2\textwidth}+.
 % The documentation advises to change \cs{headwidth} after the first call to
 % \verb+\pagestyle{fancy}+. This code is just to catch the most common cases were
 % that is not the case.
@@ -3863,22 +4136,22 @@
 %
 % \begin{macro}{\ps@fancyplain}
 % The pagestyle \texttt{fancyplain} (deprecated).
-% 
+%
 %    \begin{macrocode}
 \def\ps@fancyplain{\ps@fancy \let\ps@plain\ps@plain@fancy}
 \def\ps@plain@fancy{\@fancyplaintrue\f@nch@fancycore}
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\f@nch@ps@empty}
 % Save the definition of \cs{ps@empty} (pagestyle \texttt{empty}).
 % \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@empty} to \cs{f@nch@ps@empty}}
-% 
+%
 %    \begin{macrocode}
 \let\f@nch@ps@empty\ps@empty
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\f@nch@fancycore}
 % \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@fancy} to \cs{f@nch@fancycore}}
 % The actual implementation of pagestyle \texttt{fancy}. For amsbook/amsart, which do
@@ -3911,7 +4184,7 @@
 %    \end{macrocode}
 %
 % \end{macro}
-% 
+%
 % \begin{macro}{\f@nch@Oolh}
 % \begin{macro}{\f@nch@Oorh}
 % \begin{macro}{\f@nch@Oelh}
@@ -3927,7 +4200,7 @@
 %    \begin{macrocode}
 \def\f@nch@Oolh{\if@reversemargin\hss\else\relax\fi}
 \def\f@nch@Oorh{\if@reversemargin\relax\else\hss\fi}
-\let\f@nch@Oelh\f@nch@Oorh 
+\let\f@nch@Oelh\f@nch@Oorh
 \let\f@nch@Oerh\f@nch@Oolh
 \let\f@nch@Oolf\f@nch@Oolh
 \let\f@nch@Oorf\f@nch@Oorh
@@ -3962,7 +4235,7 @@
 % \begin{macro}{\f@nch@offsolh}
 % \begin{macro}{\f@nch@offselh}
 % The same for the footer.
-% 
+%
 %    \begin{macrocode}
 \def\f@nch@offsolf{\headwidth=\textwidth\advance\headwidth\f@nch@O@olf
                    \advance\headwidth\f@nch@O@orf\hskip-\f@nch@O@olf}
@@ -3999,7 +4272,7 @@
 %   We need a boolean \cs{iff@nch@footnote} to capture if there was a footnote.
 %
 %    \begin{macrocode}
-\newif\iff@nch@footnote 
+\newif\iff@nch@footnote
 \AtBeginDocument{%
   \let\latex@makecol\@makecol
   \def\@makecol{\ifvoid\footins\f@nch@footnotefalse\else\f@nch@footnotetrue\fi
@@ -4008,7 +4281,7 @@
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
-% 
+%
 % \begin{macro}{\iftopfloat}
 % \begin{macro}{\ifbotfloat}
 % \begin{macro}{\iffloatpage}
@@ -4072,7 +4345,7 @@
 % \changes{extramarks v2.1}{2016/08/27}{Added a \cs{ProvidesPackage} line.\\
 % Updated contact information.}
 % \changes{extramarks v3.9}{2016/10/12}{Unify version number with \Package{fancyhdr.sty}.}
-% 
+%
 % \changes{extramarks v3.9a}{2017/06/30}{Restore \cs{newtoks}\cs{@temptokenb}}
 % \begin{macro}{\@temptokenb}
 % A token register to store some marks information
@@ -4088,7 +4361,7 @@
   \let\protect\@unexpandable@protect \xdef}
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\markboth}
 % Our own definition of \cs{markboth}, mainly because \cs{@markboth}
 % gets more parameters.
@@ -4106,7 +4379,7 @@
 % \begin{macro}{\markright}
 %   We use the standard definition of \cs{markright}. No use to duplicate here.
 % \end{macro}
-% 
+%
 % \begin{macro}{\@markboth}
 %   Note: put \texttt{\#3\#4} in toks register.
 %    \begin{macrocode}
@@ -4114,7 +4387,7 @@
   \unrestored@protected@xdef\@themark{{#5}{#6}\the\@temptokena}}
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\@markright}
 %   Note: put \texttt{\#1} and \texttt{\#3\#4} in toks registers.
 %   Maybe I can get rid of the extra \cs{@temptokenb} by doing the expansion
@@ -4130,7 +4403,7 @@
 % \begin{macro}{\@rightmark}
 % Internal macros to get the standard marks.
 %    \begin{macrocode}
-\def\@leftmark#1#2#3#4{#1} 
+\def\@leftmark#1#2#3#4{#1}
 \def\@rightmark#1#2#3#4{#2}
 %    \end{macrocode}
 % \end{macro}
@@ -4182,7 +4455,7 @@
   \if@nobreak\ifvmode\nobreak\fi\fi}
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\@markextra}
 % Internal macro to store the extra marks in the marks storage.\\
 %   Note: Put \texttt{\#1\#2} in toks register.
@@ -4191,7 +4464,7 @@
   \unrestored@protected@xdef\@themark{\the\@temptokena{#5}{#6}}}
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\firstleftxmark}
 % \begin{macro}{\firstrightxmark}
 % \begin{macro}{\topleftxmark}
@@ -4228,7 +4501,7 @@
 % \end{macro}
 % \end{macro}
 % \end{macro}
-% 
+%
 % \begin{macro}{\@tleftxmark}
 % \begin{macro}{\@rightxmark}
 % Internal macros to extract the extra marks out of the marks storage.
@@ -4238,7 +4511,7 @@
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
-% 
+%
 %</extramarks>
 %
 % \section{fancyheadings.sty}
@@ -4270,7 +4543,7 @@
   \MessageBreak
   fancyhdr is 99 percent compatible with\MessageBreak
   fancyheadings. The only incompatibility is\MessageBreak
-  that \protect\headrulewidth\space and \protect\footrulewidth\space 
+  that \protect\headrulewidth\space and \protect\footrulewidth\space
      and\MessageBreak
   their \protect\plain... versions are no longer length\MessageBreak
   parameters, but normal macros (to be changed\MessageBreak

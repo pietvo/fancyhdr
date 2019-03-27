@@ -262,6 +262,18 @@
                       {#4}\hskip \@tempskipb {#5}\color@endgroup}%
   \fi
 }
+\newcommand{\f@nch@headinit}{}
+\newcommand{\fancyheadinit}[1]{%
+  \def\f@nch@headinit{#1}%
+}
+\newcommand{\f@nch@footinit}{}
+\newcommand{\fancyfootinit}[1]{%
+  \def\f@nch@footinit{#1}%
+}
+\newcommand{\fancyhfinit}[1]{%
+  \def\f@nch@headinit{#1}%
+  \def\f@nch@footinit{#1}%
+}
 \newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
   \ifdim\ht0>#1\relax
@@ -292,9 +304,10 @@
   \fi
   \box0}
 \newcommand\f@nch@head[5]{%
+  \f@nch@reset
+  \f@nch@headinit\relax
   #1%
   \hbox to\headwidth{%
-    \f@nch@reset
     \f@nch@vbox\headheight{%
       \hbox{%
         \rlap{\parbox[b]{\headwidth}{\raggedright#2}}%
@@ -310,9 +323,10 @@
   #5%
 }
 \newcommand\f@nch@foot[5]{%
+  \f@nch@reset
+  \f@nch@footinit\relax
   #1%
   \hbox to\headwidth{%
-    \f@nch@reset
     \f@nch@vbox\footskip{%
       \setbox0=\vbox{\footrule}\unvbox0
       \vskip\footruleskip
