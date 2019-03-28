@@ -1891,17 +1891,39 @@
 % at the next page you must make sure that the current page is finished. In
 % \CmdIndex{clearpage}
 % most cases this can be done by issuing a \cs{newpage} or \cs{clearpage} command before
-% any of the above mentioned changes. If this is not possible you can use the
-% \TTindex{afterpage.sty}
-% \Package{afterpage} package with:\\
-% \Cmd{afterpage\{}\Cmd{fancyhead[L]\{new value\}\}} or
-% \CmdIndex{pagenumbering}
-% \Cmd{afterpage\{}\Cmd{pagenumbering\{roman\}\}}. You cannot use \cs{afterpage}
+% any of the above mentioned changes. However, this will immediately end
+% the current page, possibly leaving you with a half-empty page, which
+% may be undesirable.
+%
+% If this is not what you want, you can use the
+% \TTindex{afterpage.sty}%
+% \Package{afterpage} package with:\\[1ex]
+% \CmdIndex{afterpage}\Cmd{afterpage\{}\Cmd{fancyhead[L]\{new value\}\}} or\\
+% \CmdIndex{pagenumbering}\Cmd{afterpage\{}\Cmd{pagenumbering\{roman\}\}}.
+% \\[1ex]
+% You cannot use \cs{afterpage}
 % to change the \cs{pagestyle} as the commands issued by \cs{afterpage}
 % are local in a group, and the \cs{pagestyle} command makes only local
-% changes. The \cs{pagenumbering} and the \Package{fancyhdr} commands
-% make global changes so they will work, as will the \cs{thispagestyle}
-% command.
+% changes. The \cs{pagenumbering} and the \cs{thispagestyle}
+% command make global changes, as well as changes to \LaTeX's counters,
+% such as \cs{setcounter} and \cs{addtocounter}.
+% So these can be used\footnote{In \Package{fancyhdr} version~3 and
+% earlier the commands like \cs{fancyhead} and \cs{fancyfoot} also made
+% global changes. This is no longer the case in version~4.0 and later.}.
+% Here is an example to change the page style of the next page with \cs{afterpage}:
+% \Example
+% \begin{verbatim}
+% \usepackage{afterpage}
+% \usepackage{fancyhdr}
+% \fancypagestyle{myfancy}{
+%   \fancyhead[LE,RO]{\textbf{MYFANCY SECTION}}
+%   \fancyhead[LO,RE]{\textbf{MYFANCY CHAPTER}}
+%   \fancyfoot[C]{\textbf{--~\thepage~--}}
+% }
+% . . .
+% \afterpage{\thispagestyle{myfancy}}
+% \end{verbatim}
+% Then the page after this code will have the page style \texttt{myfancy}.
 %
 % It should be noted that although the \Package{fancyhdr} commands like
 % \cs{fancyhead} take effect immediately, this does not mean that any
