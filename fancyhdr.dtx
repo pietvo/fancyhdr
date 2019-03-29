@@ -953,6 +953,24 @@
 % to define them (including page style \texttt{fancy}) with
 % \cs{fancypagestyle} and put all the relevant definitions inside them.
 %
+% There is another caveat, when switching page styles, if they have
+% different definitions of \cs{chaptermark} in the \texttt{book} or
+% \texttt{report} document class or similar ones. When you put the
+% \cs{pagestyle} command \emph{after} the \cs{chapter} command, then the
+% \cs{chapter} command calls the \cs{chaptermark} of the previous page
+% style, which is probably not what you intended. So you must issue the
+% \cs{pagestyle} command \emph{before} the \cs{chapter} command. But
+% this would probably change the page style of the previous page, which
+% is too early. Therefore you would have to give a \cs{newpage},
+% \cs{clearpage} or \cs{cleardoublepage} command
+% before the \cs{pagestyle} command, so that the last page will be
+% finished with the previous page style. I.e., the proper sequence is:
+% \begin{verbatim}
+% \newpage % (or \clearpage or \cleardoublepage)
+% \pagestyle{newstyle}
+% \chapter{My New Chapter}
+% \end{verbatim}
+%
 % \section{Package options}
 % \label{sec:options}
 %
