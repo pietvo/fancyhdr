@@ -86,6 +86,25 @@
 \newenvironment{xvspace}{\vspace{1ex}}{{\vspace{1ex}}}
 \setcounter{tocdepth}{1}
 
+% Compare section numbers in references
+\usepackage{refcount}
+\newcounter{secnum}
+% #1=current section label #2=ref section label
+\newcommand{\smartref}[2]{%
+  \setcounterref{secnum}{#1}%
+  \addtocounter{secnum}{-1}%
+  \ifnum\value{secnum}=\getrefnumber{#2}
+    the previous section%
+  \else
+    \addtocounter{secnum}{2}%
+    \ifnum\value{secnum}=\getrefnumber{#2}
+      the next section%
+    \else
+      section~\ref{#2}%
+    \fi
+  \fi
+}
+
 % Our own page style:
 \pagestyle{fancy}
 \addtolength{\headwidth}{\marginparsep}
@@ -899,73 +918,6 @@
 % \texttt{fancy} changes with it. The page style \texttt{fancydefault}
 % does not change, however. However, \texttt{fancydefault} is only available
 % since fancyhdr version~4.0.
-%
-% \section{Switching page styles}
-% \label{sec:switching}
-%
-% Page style \texttt{fancy}, if not redefined, does not have the definitions of the
-% headers and footers built-in, but they are defined in the document,
-% globally, or locally in a group. This also applies to the definitions of the
-% \cs{chaptermark} and/or \cs{[sub]sectionmark} commands. So if you want
-% to switch from another page style to the \texttt{fancy} page style
-% later in the document, and that other page style has changed for
-% example the \cs{chaptermark} and/or \cs{[sub]sectionmark} commands,
-% you will have to redefine these yourself and maybe also
-% the definitions of the headers and footers, at that point.
-% For example
-% \begin{verbatim}
-% \pagestyle{fancy}
-% \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
-% \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
-% \end{verbatim}
-% Please note that you have to double the \verb|#| signs, because the
-% definitions are inside a macro.
-%
-% If the previous page style was one of the standard \LaTeX{} page
-% styles, or some page style that is not based on \Package{fancyhdr},
-% then the definitions of \cs{fancyhead} or \cs{fancyfoot} are not
-% affected. So strictly you don't have to include them. But if it was
-% based on \Package{fancyhdr} and had different definitions, you will
-% get the wrong headers and/or footers when you switch back to page
-% style \texttt{fancy}. So it is safer to include them anyway.
-%
-% A better possibility is to define your own page style, and include
-% these definitions in that page style:
-% \begin{verbatim}
-% \fancypagestyle{myfancy}{
-%   \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
-%   \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
-%   \fancyhead{...}
-% }
-% ...
-% \pagestyle{myfancy}
-% \end{verbatim}
-%
-% In general, when you use only one page style \texttt{fancy} in your
-% document, with the occasional \cs{thispagestyle} excursion to page
-% style \texttt{plain} or \texttt{empty}, you can just keep the
-% definitions globally in your document, but as soon as you use more
-% than one page style, and swicth between them, it is highly advisable
-% to define them (including page style \texttt{fancy}) with
-% \cs{fancypagestyle} and put all the relevant definitions inside them.
-%
-% There is another caveat, when switching page styles, if they have
-% different definitions of \cs{chaptermark} in the \texttt{book} or
-% \texttt{report} document class or similar ones. When you put the
-% \cs{pagestyle} command \emph{after} the \cs{chapter} command, then the
-% \cs{chapter} command calls the \cs{chaptermark} of the previous page
-% style, which is probably not what you intended. So you must issue the
-% \cs{pagestyle} command \emph{before} the \cs{chapter} command. But
-% this would probably change the page style of the previous page, which
-% is too early. Therefore you would have to give a \cs{newpage},
-% \cs{clearpage} or \cs{cleardoublepage} command
-% before the \cs{pagestyle} command, so that the last page will be
-% finished with the previous page style. I.e., the proper sequence is:
-% \begin{verbatim}
-% \newpage % (or \clearpage or \cleardoublepage)
-% \pagestyle{newstyle}
-% \chapter{My New Chapter}
-% \end{verbatim}
 %
 % \section{Package options}
 % \label{sec:options}
@@ -1871,7 +1823,73 @@
 % \cs{thepage}. The page numbering style ``2-10'', however should be used
 % in all references to the page number, therefore it must be done by redefining
 % \cs{thepage}.
+%%
+% \section{Switching page styles}
+% \label{sec:switching}
 %
+% Page style \texttt{fancy}, if not redefined, does not have the definitions of the
+% headers and footers built-in, but they are defined in the document,
+% globally, or locally in a group. This also applies to the definitions of the
+% \cs{chaptermark} and/or \cs{[sub]sectionmark} commands. So if you want
+% to switch from another page style to the \texttt{fancy} page style
+% later in the document, and that other page style has changed for
+% example the \cs{chaptermark} and/or \cs{[sub]sectionmark} commands,
+% you will have to redefine these yourself and maybe also
+% the definitions of the headers and footers, at that point.
+% For example
+% \begin{verbatim}
+% \pagestyle{fancy}
+% \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
+% \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
+% \end{verbatim}
+% Please note that you have to double the \verb|#| signs, because the
+% definitions are inside a macro.
+%
+% If the previous page style was one of the standard \LaTeX{} page
+% styles, or some page style that is not based on \Package{fancyhdr},
+% then the definitions of \cs{fancyhead} or \cs{fancyfoot} are not
+% affected. So strictly you don't have to include them. But if it was
+% based on \Package{fancyhdr} and had different definitions, you will
+% get the wrong headers and/or footers when you switch back to page
+% style \texttt{fancy}. So it is safer to include them anyway.
+%
+% A better possibility is to define your own page style, and include
+% these definitions in that page style:
+% \begin{verbatim}
+% \fancypagestyle{myfancy}{
+%   \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
+%   \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
+%   \fancyhead{...}
+% }
+% ...
+% \pagestyle{myfancy}
+% \end{verbatim}
+%
+% In general, when you use only one page style \texttt{fancy} in your
+% document, with the occasional \cs{thispagestyle} excursion to page
+% style \texttt{plain} or \texttt{empty}, you can just keep the
+% definitions globally in your document, but as soon as you use more
+% than one page style, and swicth between them, it is highly advisable
+% to define them (including page style \texttt{fancy}) with
+% \cs{fancypagestyle} and put all the relevant definitions inside them.
+%
+% There is another caveat, when switching page styles, if they have
+% different definitions of \cs{chaptermark} in the \texttt{book} or
+% \texttt{report} document class or similar ones. When you put the
+% \cs{pagestyle} command \emph{after} the \cs{chapter} command, then the
+% \cs{chapter} command calls the \cs{chaptermark} of the previous page
+% style, which is probably not what you intended. So you must issue the
+% \cs{pagestyle} command \emph{before} the \cs{chapter} command. But
+% this would probably change the page style of the previous page, which
+% is too early. Therefore you would have to give a \cs{newpage},
+% \cs{clearpage} or \cs{cleardoublepage} command
+% before the \cs{pagestyle} command, so that the last page will be
+% finished with the previous page style. I.e., the proper sequence is:
+% \begin{verbatim}
+% \newpage % (or \clearpage or \cleardoublepage)
+% \pagestyle{newstyle}
+% \chapter{My New Chapter}
+% \end{verbatim}
 %
 % \section{When to change the headers and footers?}
 % \label{sec:change}
