@@ -1056,7 +1056,7 @@
 % The header text is turned into all uppercase by the standard \LaTeX{}
 % code in \verb|book.cls|.
 %
-% \section{The scoop on \latex/'s marks}\label{sec:custom}
+% \section{The scoop on \latex/'s marks}
 % \label{sec:scoop}
 %
 % Usually, for documents of class \verb|book| and \verb|report|, you may
@@ -1590,7 +1590,7 @@
 %
 % Chapter and section titles appear in the form: 2.\ IMPLEMENTATION, so we have
 % to redefine \cs{chaptermark} and \cs{sectionmark} as follows (see
-% Section~\ref{sec:custom}):
+% Section~\ref{sec:scoop}):
 %
 % \begin{verbatim}
 % \renewcommand{\chaptermark}[1]%
@@ -1823,7 +1823,7 @@
 % \cs{thepage}. The page numbering style ``2-10'', however should be used
 % in all references to the page number, therefore it must be done by redefining
 % \cs{thepage}.
-%%
+%
 % \section{Switching page styles}
 % \label{sec:switching}
 %
@@ -1894,52 +1894,10 @@
 % \section{When to change the headers and footers?}
 % \label{sec:change}
 %
-% Sometimes you want to change the header or footer layout in the course of a
-% document. Some of these changes can be accomplished by using the mark
-% mechanism as may be seen in section~\ref{sec:custom} and \ref{sec:xmarks}.
-% However, sometimes we want a more drastic change, e.g.\ to change the page
-% numbering from roman to arabic (with \cs{pagenumbering}), to change one of
-% \index{page style>changes}
-% the \Package{fancyhdr} fields or to change to another page style.
-% Sometimes you may be surprised to find the change to occur too early. In
-% general the above mentioned changes take effect immediately, i.e.\ on the
-% page that is currently being built. If you want the change to take effect
-% at the next page you must make sure that the current page is finished. In
-% \CmdIndex{clearpage}
-% most cases this can be done by issuing a \cs{newpage} or \cs{clearpage} command before
-% any of the above mentioned changes. However, this will immediately end
-% the current page, possibly leaving you with a half-empty page, which
-% may be undesirable.
-%
-% If this is not what you want, you can use the
-% \TTindex{afterpage.sty}%
-% \Package{afterpage} package with:\\[1ex]
-% \CmdIndex{afterpage}\Cmd{afterpage\{}\Cmd{fancyhead[L]\{new value\}\}} or\\
-% \CmdIndex{pagenumbering}\Cmd{afterpage\{}\Cmd{pagenumbering\{roman\}\}}.
-% \\[1ex]
-% You cannot use \cs{afterpage}
-% to change the \cs{pagestyle} as the commands issued by \cs{afterpage}
-% are local in a group, and the \cs{pagestyle} command makes only local
-% changes. The \cs{pagenumbering} and the \cs{thispagestyle}
-% command make global changes, as well as changes to \LaTeX's counters,
-% such as \cs{setcounter} and \cs{addtocounter}.
-% So these can be used\footnote{In \Package{fancyhdr} version~3 and
-% earlier the commands like \cs{fancyhead} and \cs{fancyfoot} also made
-% global changes. This is no longer the case in version~4.0 and later.}.
-% Here is an example to change the page style of the next page with \cs{afterpage}:
-% ^^A \Example
-% \begin{verbatim}
-% \usepackage{afterpage}
-% \usepackage{fancyhdr}
-% \fancypagestyle{myfancy}{
-%   \fancyhead[LE,RO]{\textbf{MYFANCY SECTION}}
-%   \fancyhead[LO,RE]{\textbf{MYFANCY CHAPTER}}
-%   \fancyfoot[C]{\textbf{--~\thepage~--}}
-% }
-% . . .
-% \afterpage{\thispagestyle{myfancy}}
-% \end{verbatim}
-% Then the page after this code will have the page style \texttt{myfancy}.
+% In \smartref{sec:change}{sec:switching} we switched page styles at a
+% point that has a clear page break (the beginning of a chapter).
+% Sometimes you want to change only a header or footer without changing
+% the whole page style.
 %
 % It should be noted that although the \Package{fancyhdr} commands like
 % \cs{fancyhead} take effect immediately, this does not mean that any
@@ -1948,11 +1906,15 @@
 % the page number that will be inserted in the footer is not the page number
 % of the page where this command is given, but rather the page number of
 % the actual page where the footer is constructed. Of course for the page
-% number this is what you expect, but it is also true for other commands.
+% number this is what you expect, but it is also true for other
+% commands. There is a difference, however. The page number is
+% incremented \emph{after} the page has been constructed. When we have
+% our own ``variables'', however, these are usually changed in the
+% middle of our text.
 %
-% So if you have a book where each chapter is written by a different author
-% and you want the name of the author in the header opposite the chapter
-% title, you can use the following commands:
+% As an example we take a book where each chapter is written by a different author.
+% If we want the name of the author in the header opposite the chapter
+% title, we can use the following commands:
 %
 % \begin{verbatim}
 % \newcommand{\TheAuthor}{}
@@ -1962,20 +1924,55 @@
 %
 % \noindent and start each chapter with the command
 % \Cmd{Author\{Real Name\}}.
-%  If however, the author name would be changed before a page is
-% completed the wrong author could come in the footer. This would be the case
+% If, however, the author name would be changed before a page is
+% completed the wrong author could come in the header. This would be the case
 % if you gave the above command \emph{before} the \cs{chapter} command
-% rather than after it.
+% rather than after it. So we give the \cs{Author} command after the
+% \cs{chapter} command:
+% \begin{verbatim}
+% \chapter{Chapter Title}
+% \Author{Author Name}
+% \end{verbatim}
+% As a chapter starts on a new page, we can be sure that the \cs{Author}
+% command comes at the same page as the chapter start.
+%
 % Another source of problems is the fact that \tex/'s output routine processes
 % commands ahead, so it may already have processed some commands that produce
-% text that will appear on the next page.
+% text that will appear on the next page. So if our book was not divided
+% into chapters, but into sections, we cannot use the similar system:
+% \begin{verbatim}
+% %%% NOTE: This may not work %%%%
+% \section{Chapter Title}
+% \Author{Author Name}
+% \end{verbatim}
+% because in this case, when this command comes at the end of a page,
+% the ``variable'' \cs{TheAuthor} could be set at that page, but then
+% \TeX{} could decide to move the section title to the next page. And
+% then the author name would appear one page too early. This problem can
+% be solved using marks. In fact this is the whole reason the mark
+% mechanism was developed in \TeX. See section~\ref{sec:xmarks}.
 %
-% So now we are giving an example how to change the headers and footers
-% only on one specific page. In some cases this can be done by the
-% \CmdIndex{thispagestyle}
+% The same applies to other changes in the middle of a page, e.g.\ to change the page
+% numbering from roman to arabic (with \cs{pagenumbering}). For the same
+% reason \Cmd{thispagestyle\{mystyle\}} will not always work in the
+% middle of a page.
+%
+% Some of these changes can be accomplished by using the mark
+% mechanism as may be seen in \smartref{sec:change}{sec:scoop} and
+% \smartref{sec:change}{sec:xmarks}.
+%
+% In the remainder of this section we look at two different cases of
+% changing the page style in the middle of a page: changing the style of
+% the current page and changing the style of the next page.
+%
+% \subsection{Changing the page style of the current page}
+%
+% So now we are giving an example how to change the headers and footers,
+% only on the current page. In some cases this can be done by the
+% \CmdIndex{thispagestyle}%
 % \cs{thispagestyle} command. This changes the page style for the
 % ``current'' page only. But then we may be hit by the problem mentioned
-% in the previous paragraph. \LaTeX{} may have a different idea about
+% above. \LaTeX{} may have a different idea about
 % the ``current'' page than you. The use of \cs{thispagestyle} is OK if
 % you can be sure that the text where the command \cs{thispagestyle} is
 % executed is the same page as where the surrounding text appears. So
@@ -1985,7 +1982,7 @@
 % is full and move the text that contains the command to the next page.
 % So now the page style is changed on one page earlier than was intended.
 %
-% The solution to this problem is to put a label, like
+% A good solution to this problem is to put a label, like
 % \Cmd{label\{otherpagestyle\}} in the text where you want the different
 % page style, and then in the header and/or footer definitions compare
 % the page number with the label page number and choose the proper
@@ -2138,6 +2135,46 @@
 %       {}
 %     }
 % \end{verbatim}
+%
+% \subsection{Changing the page style of the next page}
+%
+% If you want the change of the page style to take effect
+% at the next page you must make sure that the current page is finished. In
+% most cases this can be done by issuing a
+% \CmdIndex{clearpage}\CmdIndex{newpage}%
+% \cs{newpage} or \cs{clearpage} command before % any changes. However,
+% this will immediately end the current page, possibly leaving you with a
+% half-empty page, which may be undesirable.
+%
+% If this is not what you want, you can use the
+% \TTindex{afterpage.sty}%
+% \Package{afterpage} package with:\\[1ex]
+% \CmdIndex{afterpage}\Cmd{afterpage\{}\Cmd{fancyhead[L]\{new value\}\}} or\\
+% \CmdIndex{pagenumbering}\Cmd{afterpage\{}\Cmd{pagenumbering\{roman\}\}}.
+% \\[1ex]
+% You cannot use \cs{afterpage}
+% to change the \cs{pagestyle} as the commands issued by \cs{afterpage}
+% are local in a group, and the \cs{pagestyle} command makes only local
+% changes. The \cs{pagenumbering} and the \cs{thispagestyle}
+% command make global changes, as well as changes to \LaTeX's counters,
+% such as \cs{setcounter} and \cs{addtocounter}.
+% So these can be used\footnote{In \Package{fancyhdr} version~3 and
+% earlier the commands like \cs{fancyhead} and \cs{fancyfoot} also made
+% global changes. This is no longer the case in version~4.0 and later.}.
+% Here is an example to change the page style of the next page with \cs{afterpage}:
+% ^^A \Example
+% \begin{verbatim}
+% \usepackage{afterpage}
+% \usepackage{fancyhdr}
+% \fancypagestyle{myfancy}{
+%   \fancyhead[LE,RO]{\textbf{MYFANCY SECTION}}
+%   \fancyhead[LO,RE]{\textbf{MYFANCY CHAPTER}}
+%   \fancyfoot[C]{\textbf{--~\thepage~--}}
+% }
+% . . .
+% \afterpage{\thispagestyle{myfancy}}
+% \end{verbatim}
+% Then the page after this code will have the page style \texttt{myfancy}.
 %
 % \section{Headers and footers induced by the text}
 % \label{sec:xmarks}
