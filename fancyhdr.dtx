@@ -4206,9 +4206,10 @@
 % \begin{macro}{\ps@f@nch@fancyproto}
 % \cs{ps@f@nch@fancyproto} is the
 % initial value for pagestyle \texttt{fancy}. The real page style
-% is \cs{f@nch@fancycore} This definition is for the first use. It
-% also initialises \cs{headwidth}, and then resets itself to
-% \cs{f@nch@fancycore}. For backwards compatibility it still
+% is \cs{ps@f@nch@fancycore} but \cs{ps@f@nch@fancyproto} for the first use
+% of \Cmd{pagestyle\{fancy\}} or any of its derivatives. It
+% initialises \cs{headwidth}, and then resets itself to
+% \cs{ps@f@nch@fancycore}. For backwards compatibility it still
 % contains \cs{@fancyplainfalse}.
 % The reason we have \cs{ps@f@nch@fancyproto} is so that page style
 % \texttt{fancy} can be redefined.
@@ -4230,11 +4231,11 @@
     \global\advance\headwidth123456789sp\global\advance\headwidth\textwidth
   \fi
 %    \end{macrocode}
-% Now we reset \cs{ps@f@nch@fancyproto} to \cs{f@nch@fancycore} with \cs{@fancyplainfalse}
+% Now we reset \cs{ps@f@nch@fancyproto} to \cs{ps@f@nch@fancycore} with \cs{@fancyplainfalse}
 % and call that version.
 %    \begin{macrocode}
-  \gdef\ps@f@nch@fancyproto{\@fancyplainfalse\f@nch@fancycore}%
-  \@fancyplainfalse\f@nch@fancycore
+  \gdef\ps@f@nch@fancyproto{\@fancyplainfalse\ps@f@nch@fancycore}%
+  \@fancyplainfalse\ps@f@nch@fancycore
 }%
 %    \end{macrocode}
 % Let the system know this is a \texttt{fancyhdr} pagestyle.
@@ -4252,10 +4253,13 @@
 %
 % \begin{macro}{\ps@fancyplain}
 % The pagestyle \texttt{fancyplain} (deprecated).
+% After initializing by calling \cs{ps@f@nch@fancyproto} it sets page style
+% \texttt{plain} to our version \cs{ps@plain@fancy}, which just sets
+% \cs{@fancyplaintrue} and then calls the page style fancy implementation.
 %
 %    \begin{macrocode}
-\def\ps@fancyplain{\ps@fancy \let\ps@plain\ps@plain@fancy}
-\def\ps@plain@fancy{\@fancyplaintrue\f@nch@fancycore}
+\def\ps@fancyplain{\ps@f@nch@fancyproto \let\ps@plain\ps@plain@fancy}
+\def\ps@plain@fancy{\@fancyplaintrue\ps@f@nch@fancycore}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -4268,14 +4272,14 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@fancycore}
-% \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@fancy} to \cs{f@nch@fancycore}}
+% \begin{macro}{\ps@f@nch@fancycore}
+% \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@fancy} to \cs{ps@f@nch@fancycore}}
 % The actual implementation of pagestyle \texttt{fancy}. For amsbook/amsart, which do
 % strange things with \cs{topskip}, we start with \cs{f@nch@ps@empty}. We
 % construct the even and odd headers and footers from all the parts that
 % we have collected.
 %    \begin{macrocode}
-\def\f@nch@fancycore{%
+\def\ps@f@nch@fancycore{%
   \f@nch@ps@empty
   \def\@mkboth{\protect\markboth}%
   \def\@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh}%
