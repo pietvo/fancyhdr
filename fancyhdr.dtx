@@ -270,10 +270,10 @@
 % Option & Meaning \\
 % \midrule
 % \texttt{nocheck} & do not check the heights of the header and footer \\
-%                  & (see section~\ref{sec:warning} on page~\pageref{sec:warning})\\
+%                  & (see section~\ref{sec:warning} on page~\pageref{page:warning})\\
 % \texttt{compatV3} & keep some behaviour (now considered undesirable) as in version~3 \\
 %          & (see section~\ref{sec:options} and section~\ref{sec:warning} on
-%                                              page~\pageref{sec:warning}) \\
+%                                              page~\pageref{page:warning}) \\
 % \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
 % \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
 % \bottomrule
@@ -945,7 +945,7 @@
 %
 % \begin{itemize}
 % \item \OPTindex{nocheck}Option \texttt{nocheck} is described in section~\ref{sec:warning} on
-%   page~\pageref{sec:warning}.
+%   page~\pageref{page:warning}.
 %
 % \item \OPTindex{compatV3}Option \texttt{compatV3} keeps two fancyhdr
 %   version~3.x (or earlier) features that are now considered undesirable.
@@ -953,7 +953,7 @@
 %   \item The automatic adjustment of \cs{headheight} or \cs{footskip}
 %     when these are too small. This causes the page layout to become
 %     inconsistent. See section~\ref{sec:warning} on
-%     page~\pageref{sec:warning}.
+%     page~\pageref{page:warning}.
 %   \item In these previous versions the changes to the
 %     \Package{fancyhdr} headers and footers (including those by
 %     \cs{fancyhead}, \cs{fancyheadoffset} and similar commands) are
@@ -1323,7 +1323,7 @@
 % \end{verbatim}
 %
 % \section{Fancy layouts}
-% \label{sec:fancy}
+% \label{sec:fancy}\label{sec:warning}
 %
 % \index{multi-line}
 % You can make a multi-line field with the \bsbs{} command.  It is also
@@ -1385,7 +1385,7 @@
 % (fancyhdr)                You might also make \topmargin smaller to compensate:
 % (fancyhdr)                \addtolength{\topmargin}{-2.0pt}.
 % \end{verbatim}
-% \label{sec:warning}\index{Warning}
+% \label{page:warning}\index{Warning}
 % You will probably get this warning on every page.
 % \textbf{Note:} Before version 4.0, \Package{fancyhdr} would change the
 % \cs{headheight} itself, causing the text on the following pages
@@ -2869,7 +2869,7 @@
 %     confusing. However, when the package option \texttt{compatV3} is given, the old
 %     behaviour is kept. \\
 %     The \texttt{nocheck} option now eliminates these checks completely, on
-%     your own risk. (See section~\ref{sec:warning} on page~\pageref{sec:warning}.)
+%     your own risk. (See section~\ref{sec:warning} on page~\pageref{page:warning}.)
 %   \item Eliminated global definitions. All definitions are now local.
 %     The \cs{global} case was originally so that you could do definitions in
 %     a group and they would be applied globally. This was a mistake. If
