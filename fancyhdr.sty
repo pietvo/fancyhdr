@@ -379,16 +379,16 @@
   \ifdim\headwidth<0sp
     \global\advance\headwidth123456789sp\global\advance\headwidth\textwidth
   \fi
-  \gdef\ps@f@nch@fancyproto{\@fancyplainfalse\f@nch@fancycore}%
-  \@fancyplainfalse\f@nch@fancycore
+  \gdef\ps@f@nch@fancyproto{\@fancyplainfalse\ps@f@nch@fancycore}%
+  \@fancyplainfalse\ps@f@nch@fancycore
 }%
 \@namedef{f@nch@ps@f@nch@fancyproto-is-fancyhdr}{}
 \def\ps@fancy{\ps@f@nch@fancyproto}
 \@namedef{f@nch@ps@fancy-is-fancyhdr}{}
-\def\ps@fancyplain{\ps@fancy \let\ps@plain\ps@plain@fancy}
-\def\ps@plain@fancy{\@fancyplaintrue\f@nch@fancycore}
+\def\ps@fancyplain{\ps@f@nch@fancyproto \let\ps@plain\ps@plain@fancy}
+\def\ps@plain@fancy{\@fancyplaintrue\ps@f@nch@fancycore}
 \let\f@nch@ps@empty\ps@empty
-\def\f@nch@fancycore{%
+\def\ps@f@nch@fancycore{%
   \f@nch@ps@empty
   \def\@mkboth{\protect\markboth}%
   \def\@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh}%
