@@ -22,7 +22,8 @@ just loads fancyhdr with a warning message.
 The documentation (fancyhdr.dtx/fancyhdr.pdf) describes both
 fancyhdr.sty and extramarks.sty.
 In order to latex the documentation you need to have a copy of
-boxedminipage.sty (CTAN:/macros/latex/contrib/boxedminipage) installed.
+boxedminipage.sty (CTAN:/macros/latex/contrib/boxedminipage) and
+refcount.sty (CTAN:/macros/latex/contrib/oberdiek/) installed.
 
 Fancyhdr.sty version 3 and extramarks.sty version 2 are the packages as
 described in the second edition of The LaTeX Companion. But that
