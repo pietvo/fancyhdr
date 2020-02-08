@@ -159,14 +159,11 @@
   }
 }
 
-\newcounter{example}
-\newcommand{\Example}{%
-  \refstepcounter{example}%
-  \marginpar{\vspace{\baselineskip}\hfill Example \theexample\quad\quad}%
+\newcommand{\Example}[1]{%
+  \marginpar{\vspace{\baselineskip}\hfill Example #1\quad\quad}%
 }
-\newcommand{\FExample}{%
-  \refstepcounter{example}%
-  \makebox[0pt][r]{{Example \theexample}\quad\quad}%
+\newcommand{\FExample}[1]{%
+  \noindent\makebox[0pt][r]{{Example #1}\quad\quad}%
 }
 
 \begin{document}
@@ -613,7 +610,7 @@
 % \CmdIndex{fancyfoot}
 % \CmdIndex{headrulewidth}
 % \CmdIndex{footrulewidth}
-% \Example
+% \Example{1}
 % \begin{verbatim}
 % \fancyhead[L,C]{}
 % \fancyhead[R]{\textbf{The performance of new graduates}}
@@ -630,7 +627,7 @@
 % all these headers and footers.  To eliminate all but the
 % centered page number, issue the command
 %
-% \Example
+% \Example{2}
 % \CmdIndex{thispagestyle}
 % \begin{verbatim}
 % \thispagestyle{plain}
@@ -737,7 +734,7 @@
 %
 % Here are the commands:
 %
-% \Example
+% \Example{3}
 % \begin{verbatim}
 % \fancyhead{} % clear all header fields
 % \fancyhead[RO,LE]{\textbf{The performance of new graduates}}
@@ -843,7 +840,7 @@
 % making the page number bold and enclosing it in en-dashes without any rules.
 % \PSindex{plain}
 %
-% \Example
+% \Example{4}
 % \begin{verbatim}
 % \fancypagestyle{plain}{%
 %   \fancyhf{}% clear all header and footer fields
@@ -1040,7 +1037,7 @@
 % \noindent where the header text is slanted uppercase.
 %
 % This default layout is produced by the following commands:
-% \Example
+% \Example{5}
 % \CmdIndex{rightmark}
 % \CmdIndex{leftmark}
 % \begin{verbatim}
@@ -1124,7 +1121,7 @@
 % So if ``2. Implementation'' is the current chapter
 % and ``2.1.\ First steps'' is the current section, then
 %
-% \Example
+% \Example{6}
 % \begin{verbatim}
 % \renewcommand{\chaptermark}[1]{%
 %   \markboth{\chaptername\ \thechapter.\ #1}{}}
@@ -1147,7 +1144,7 @@
 % this command typesets its argument in an environment where
 % \cs{MakeUppercase} and \cs{uppercase} are changed into do-nothing operations.
 %
-% \Example
+% \Example{7}
 % \begin{verbatim}
 % \fancyhead[L]{\nouppercase{\rightmark}}
 % \fancyhead[R]{\nouppercase{\leftmark}}
@@ -1169,32 +1166,32 @@
 % \begin{multicols}{2}
 % \noindent Code:\\
 % \mbox{}\\
-% \FExample
+% \FExample{8}^^A
 % \verb|\renewcommand{\chaptermark}[1]{%|\\
 % \verb| \markboth{\chaptername|\\
 % \verb| \ \thechapter.\ #1}{}}|\\
 % \mbox{}\\
-% \FExample
+% \FExample{9}^^A
 % \verb|\renewcommand{\chaptermark}[1]{%|\\
 % \verb| \markboth{\MakeUppercase{%|\\
 % \verb| \chaptername}\ \thechapter.%|\\
 % \verb| \ #1}{}}|\\
 % \mbox{}\\
-% \FExample
+% \FExample{10}^^A
 % \verb|\renewcommand{\chaptermark}[1]{%|\\
 % \verb| \markboth{\MakeUppercase{%|\\
 % \verb| \chaptername\ \thechapter.%|\\
 % \verb| \ #1}}{}}|\\
 % \mbox{}\\
-% \FExample
+% \FExample{11}^^A
 % \verb|\renewcommand{\chaptermark}[1]{%|\\
 % \verb| \markboth{#1}{}}|\\
 % \mbox{}\\
-% \FExample
+% \FExample{12}^^A
 % \verb|\renewcommand{\chaptermark}[1]{%|\\
 % \verb| \markboth{\thechapter.\ #1}{}}|\\
 % \mbox{}\\
-% \FExample
+% \FExample{13}^^A
 % \verb|\renewcommand{\chaptermark}[1]{%|\\
 % \verb| \markboth{\thechapter.%|\\
 % \verb| \ \chaptername.\ #1}{}}|\\
@@ -1257,7 +1254,8 @@
 % on the page in the header. This might be the best solution in this
 % situation. Now the header will contain ``Section 1.'' in the situation
 % described above.
-% \Example
+% 
+% \FExample{14}
 % \begin{verbatim}
 % \usepackage{extramarks}
 %  . . .
@@ -1324,7 +1322,7 @@
 % \TTindex{ifthen}
 % Fortunately the \Package{ifthen} package works well:
 %
-% \Example
+% \Example{15}
 % \begin{verbatim}
 % \newcommand{\mymarks}{
 %   \ifthenelse{\equal{\leftmark}{\rightmark}}
@@ -1356,7 +1354,7 @@
 % subsection title of an article in two lines in the upper right hand
 % corner:
 %
-% \Example
+% \Example{16}
 % \begin{verbatim}
 % \documentclass{article}
 % \usepackage{fancyhdr}
@@ -1457,7 +1455,7 @@
 % should change \cs{headheight} as given above. Another problem is that
 % the distance between the line and the header text is quite big. We can
 % reduce this by putting a negative \cs{vspace} above it, like
-% \Example
+% \Example{17}
 % \begin{verbatim}
 % \renewcommand\headrule{%
 %       \vspace{-6pt}
@@ -1543,7 +1541,7 @@
 % each chapter begins with a page that contains only a drawing. In most
 % other cases you probably would want a page number on the page.)
 %
-% \Example
+% \Example{18}
 % \begin{verbatim}
 % \documentclass{book}
 % \usepackage{fancyhdr}
@@ -1589,7 +1587,7 @@
 % use such an expression as a length parameter if the \Package{calc}
 % package is used):
 %
-% \Example
+% \Example{19}
 % \begin{verbatim}
 % \fancyheadoffset[LE,RO]{\marginparsep+\marginparwidth}
 % \end{verbatim}
@@ -1644,7 +1642,7 @@
 %
 % Now we are ready for the page layout:
 %
-% \Example
+% \Example{20}
 % \begin{verbatim}
 % \documentclass{book}
 % \usepackage{fancyhdr}
@@ -1683,7 +1681,7 @@
 % You can even use this to get rid of the decorative line on float pages only
 % by defining:
 %
-% \Example
+% \Example{21}
 % \begin{verbatim}
 % \renewcommand{\headrulewidth}{\iffloatpage{0pt}{0.4pt}}
 % \end{verbatim}
@@ -1751,7 +1749,7 @@
 % There is a package \Package{lastpage}
 % available which you can use with \Package{fancyhdr} as follows:
 %
-% \Example
+% \Example{22}
 % \begin{verbatim}
 % \usepackage{lastpage}
 % ...
@@ -1801,7 +1799,7 @@
 % \renewcommand{\chappgsep}{--}
 % \end{verbatim}
 %
-% \Example
+% \Example{23}
 % To use a different prefix, for example the section number, use the
 % \Cmd{pagenumbering\{bychapter\}} command with an optional argument
 % specifying the prefix.
@@ -1936,7 +1934,7 @@
 % If we want the name of the author in the header opposite the chapter
 % title, we can use the following commands:
 %
-% \Example
+% \Example{24}
 % \begin{verbatim}
 % \newcommand{\TheAuthor}{}
 % \newcommand{\Author}[1]{\renewcommand{\TheAuthor}{#1}}
@@ -2014,7 +2012,7 @@
 %   \fancyhead[LE,RO]{MYFANCY SECTION}
 % }
 % \end{verbatim}
-% \Example
+% \Example{25}
 % we define a new pagestyle that makes the choice:
 % \begin{verbatim}
 % \usepackage{ifthen}
@@ -2183,7 +2181,7 @@
 % earlier the commands like \cs{fancyhead} and \cs{fancyfoot} also made
 % global changes. This is no longer the case in version~4.0 and later.}.
 % Here is an example to change the page style of the next page with \cs{afterpage}:
-% \Example
+% \Example{26}
 % \begin{verbatim}
 % \usepackage{afterpage}
 % \usepackage{fancyhdr}
