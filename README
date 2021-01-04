@@ -25,11 +25,15 @@ In order to latex the documentation you need to have a copy of
 boxedminipage.sty (CTAN:/macros/latex/contrib/boxedminipage) and
 refcount.sty (CTAN:/macros/latex/contrib/oberdiek/) installed.
 
-Fancyhdr.sty version 3 and extramarks.sty version 2 are the packages as
-described in the second edition of The LaTeX Companion. But that
-documentation can also be used for the newer versions, but some of the
-newer features will be missing. The third edition of The LaTeX Companion
-will describe fancyhdr version 4. Extramarks.sty has not been changed.
+This is version 4.0 of fancyhdr.sty and extramarks.sty. They are
+described in the forthcoming third edition of The LaTeX Companion.
+Extramarks.sty has not been changed, except for the version and
+copyright information.
+
+The older versions fancyhdr.sty version 3 and extramarks.sty version 2
+are the packages as described in the second edition of The LaTeX
+Companion. That documentation can still be used for the newer
+versions, but some of the newer features will be missing.
 
 LICENCE: All files in this package may be distributed under the terms of
 the LaTeX Project Public License, as described in lppl.txt in the base
