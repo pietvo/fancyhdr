@@ -48,6 +48,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{url}
 \usepackage[fit]{truncate}
+\usepackage{fancyvrb}
 \usepackage{ifthen}
 \usepackage{fancyhdr}
 \GetFileInfo{fancyhdr.sty}
@@ -159,12 +160,17 @@
   }
 }
 
-\newcommand{\Example}[1]{%
-  \marginpar{\vspace{\baselineskip}\hfill Example #1\quad\quad}%
-}
+\newcommand{\ExampleNumber}{1}
+\newcommand{\Example}[1]{\renewcommand{\ExampleNumber}{#1}}
+\newcommand{\formatexample}{\hbox{\hspace{-2.5cm}%
+    \raisebox{-\baselineskip}[0pt][0pt]{\normalfont\normalsize
+      Example~\ExampleNumber}}\nopagebreak}
+
 \newcommand{\FExample}[1]{%
-  \noindent\makebox[0pt][r]{{Example #1}\quad\quad}%
-}
+  \noindent\makebox[0pt][l]{\hspace{-2.5cm}\normalfont\normalsize Example #1}}%
+
+% print the Example number in the margin and gobble the % sign of ltxdoc
+\DefineVerbatimEnvironment{example}{Verbatim}{formatcom=\formatexample,gobble=1}
 
 \begin{document}
   \DeleteShortVerb{\|}
@@ -620,7 +626,7 @@
 % \CmdIndex{headrulewidth}
 % \CmdIndex{footrulewidth}
 % \Example{1}
-% \begin{verbatim}
+% \begin{example}
 % \fancyhead[L,C]{}
 % \fancyhead[R]{\textbf{The performance of new graduates}}
 % \fancyfoot[L]{From: K. Grant}
@@ -628,7 +634,7 @@
 % \fancyfoot[R]{\thepage}
 % \renewcommand{\headrulewidth}{0.4pt}
 % \renewcommand{\footrulewidth}{2pt}
-% \end{verbatim}
+% \end{example}
 % (The \cs{thepage} macro displays the current page number.
 % \cs{textbf} puts it in bold face.)
 %
@@ -638,9 +644,9 @@
 %
 % \Example{2}
 % \CmdIndex{thispagestyle}
-% \begin{verbatim}
+% \begin{example}
 % \thispagestyle{plain}
-% \end{verbatim}
+% \end{example}
 % after the
 % \Cmd{begin\{document\}}
 % and the
@@ -744,7 +750,7 @@
 % Here are the commands:
 %
 % \Example{3}
-% \begin{verbatim}
+% \begin{example}
 % \fancyhead{} % clear all header fields
 % \fancyhead[RO,LE]{\textbf{The performance of new graduates}}
 % \fancyfoot{} % clear all footer fields
@@ -753,7 +759,7 @@
 % \fancyfoot[CO,RE]{To: Dean A. Smith}
 % \renewcommand{\headrulewidth}{0.4pt}
 % \renewcommand{\footrulewidth}{0.4pt}
-% \end{verbatim}
+% \end{example}
 %
 % \CmdIndex{fancyhead}
 % \CmdIndex{fancyfoot}
@@ -850,14 +856,14 @@
 % \PSindex{plain}
 %
 % \Example{4}
-% \begin{verbatim}
+% \begin{example}
 % \fancypagestyle{plain}{%
 %   \fancyhf{}% clear all header and footer fields
 %   \fancyfoot[C]{\textbf{--~\thepage~--}} % except the center
 %   \renewcommand{\headrulewidth}{0pt}%
 %   \renewcommand{\footrulewidth}{0pt}%
 % }
-% \end{verbatim}
+% \end{example}
 %
 %
 % \section{Defining other page styles}
@@ -1049,11 +1055,11 @@
 % \Example{5}
 % \CmdIndex{rightmark}
 % \CmdIndex{leftmark}
-% \begin{verbatim}
+% \begin{example}
 % \fancyhead[LE,RO]{\textsl{\rightmark}}
 % \fancyhead[LO,RE]{\textsl{\leftmark}}
 % \fancyfoot[C]{\thepage}
-% \end{verbatim}
+% \end{example}
 %
 % The following settings are used for the decorative lines:
 %
@@ -1131,11 +1137,11 @@
 % and ``2.1.\ First steps'' is the current section, then
 %
 % \Example{6}
-% \begin{verbatim}
+% \begin{example}
 % \renewcommand{\chaptermark}[1]{%
 %   \markboth{\chaptername\ \thechapter.\ #1}{}}
 % \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
-% \end{verbatim}
+% \end{example}
 % will give
 %    ``Chapter 2. Implementation'' and ``2.1.\ First steps''
 %
@@ -1154,10 +1160,10 @@
 % \cs{MakeUppercase} and \cs{uppercase} are changed into do-nothing operations.
 %
 % \Example{7}
-% \begin{verbatim}
+% \begin{example}
 % \fancyhead[L]{\nouppercase{\rightmark}}
 % \fancyhead[R]{\nouppercase{\leftmark}}
-% \end{verbatim}
+% \end{example}
 %
 % Figure~\ref{fig:markers} shows some variants for ``Chapter 2.\ Implementation''
 % (the last example is appropriate in some non-English languages). The \texttt{\%}
@@ -1263,13 +1269,13 @@
 % on the page in the header. This might be the best solution in this
 % situation. Now the header will contain ``Section 1.'' in the situation
 % described above.
-% 
-% \FExample{14}
-% \begin{verbatim}
+%
+% \Example{14}
+% \begin{example}
 % \usepackage{extramarks}
 %  . . .
 % \fancyhead[R]{\firstleftmark}
-% \end{verbatim}
+% \end{example}
 %
 % Another problem with the marks in the standard \latex/ classes is that the
 % higher level sectioning commands (e.g. \cs{chapter}) call
@@ -1332,14 +1338,14 @@
 % Fortunately the \Package{ifthen} package works well:
 %
 % \Example{15}
-% \begin{verbatim}
+% \begin{example}
 % \newcommand{\mymarks}{
 %   \ifthenelse{\equal{\leftmark}{\rightmark}}
 %     {\rightmark} % if equal
 %     {\rightmark--\leftmark}} % if not equal
 % \fancyhead[LE,RO]{\mymarks}
 % \fancyhead[LO,RE]{\thepage}
-% \end{verbatim}
+% \end{example}
 %
 % \section{Fancy layouts}
 % \label{sec:fancy}\label{sec:warning}
@@ -1364,7 +1370,7 @@
 % corner:
 %
 % \Example{16}
-% \begin{verbatim}
+% \begin{example}
 % \documentclass{article}
 % \usepackage{fancyhdr}
 % \pagestyle{fancy}
@@ -1372,7 +1378,7 @@
 % \renewcommand{\sectionmark}[1]{\markboth{#1}{}}
 % \renewcommand{\subsectionmark}[1]{\markright{#1}}
 % \fancyhead[R]{\leftmark\\\rightmark}
-% \end{verbatim}
+% \end{example}
 %
 % You can also customize the decorative lines.  You can make the decorative
 % line in the header quite thick with
@@ -1465,14 +1471,14 @@
 % the distance between the line and the header text is quite big. We can
 % reduce this by putting a negative \cs{vspace} above it, like
 % \Example{17}
-% \begin{verbatim}
+% \begin{example}
 % \renewcommand\headrule{%
 %       \vspace{-6pt}
 %       \hrulefill
 %       \raisebox{-2.1pt}
 %           {\quad\decofourleft\decotwo\decofourright\quad}%
 %       \hrulefill}
-% \end{verbatim}
+% \end{example}
 %
 % We can use the same code for the \cs{footrule}, but we wouldn't need
 % the \cs{vspace}. If you want to change the distance between that
@@ -1551,7 +1557,7 @@
 % other cases you probably would want a page number on the page.)
 %
 % \Example{18}
-% \begin{verbatim}
+% \begin{example}
 % \documentclass{book}
 % \usepackage{fancyhdr}
 % \pagestyle{fancy}
@@ -1567,7 +1573,7 @@
 %    \fancyhead{} % get rid of headers
 %    \renewcommand{\headrulewidth}{0pt} % and the line
 % }
-% \end{verbatim}
+% \end{example}
 % \PSindex{plain}
 %
 % Notice that the \cs{chaptermark} and \cs{sectionmark} commands have
@@ -1597,9 +1603,9 @@
 % package is used):
 %
 % \Example{19}
-% \begin{verbatim}
+% \begin{example}
 % \fancyheadoffset[LE,RO]{\marginparsep+\marginparwidth}
-% \end{verbatim}
+% \end{example}
 %
 % For the second example, we take the \amslatex/ book\footnote{George Gratzer,
 % \textit{Math into LaTeX, An Introduction to \LaTeX{} and \amslatex/}, Birkhauser, Boston.}.
@@ -1652,7 +1658,7 @@
 % Now we are ready for the page layout:
 %
 % \Example{20}
-% \begin{verbatim}
+% \begin{example}
 % \documentclass{book}
 % \usepackage{fancyhdr}
 % \pagestyle{fancy}
@@ -1668,7 +1674,7 @@
 % \fancyhead[LE,RO]{\helv \thepage}
 % \fancyhead[LO]{\helv \rightmark}
 % \fancyhead[RE]{\helv \leftmark}
-% \end{verbatim}
+% \end{example}
 %
 %
 % \section{Special page layout for float pages}
@@ -1691,9 +1697,9 @@
 % by defining:
 %
 % \Example{21}
-% \begin{verbatim}
+% \begin{example}
 % \renewcommand{\headrulewidth}{\iffloatpage{0pt}{0.4pt}}
-% \end{verbatim}
+% \end{example}
 %
 % Sometimes you may want to change the layout also for pages that contain a
 % float on the top of the page, a float on the bottom of the page or a footnote on the bottom of the page.
@@ -1759,11 +1765,11 @@
 % available which you can use with \Package{fancyhdr} as follows:
 %
 % \Example{22}
-% \begin{verbatim}
+% \begin{example}
 % \usepackage{lastpage}
 % ...
 % \fancyfoot[C]{\thepage\ of \pageref{LastPage}}
-% \end{verbatim}
+% \end{example}
 % Because you want the pages with pagestyle \texttt{plain} to contain
 % the same style of page numbers, you will have to redefine this
 % pagestyle too.
@@ -1808,15 +1814,15 @@
 % \renewcommand{\chappgsep}{--}
 % \end{verbatim}
 %
-% \Example{23}
 % To use a different prefix, for example the section number, use the
 % \Cmd{pagenumbering\{bychapter\}} command with an optional argument
 % specifying the prefix.
 % \CmdIndex{pagenumbering}
 %
-% \begin{verbatim}
+% \Example{23}
+% \begin{example}
 % \pagenumbering[\thesection]{bychapter}
-% \end{verbatim}
+% \end{example}
 %
 % What the package also does is reset the page number to 1 at the beginning
 % of each chapter.
@@ -1944,11 +1950,11 @@
 % title, we can use the following commands:
 %
 % \Example{24}
-% \begin{verbatim}
+% \begin{example}
 % \newcommand{\TheAuthor}{}
 % \newcommand{\Author}[1]{\renewcommand{\TheAuthor}{#1}}
 % \fancyhead[LE,RO]{\TheAuthor}
-% \end{verbatim}
+% \end{example}
 %
 % \noindent and start each chapter with the command
 % \Cmd{Author\{Real Name\}}.
@@ -2023,7 +2029,7 @@
 % \end{verbatim}
 % \Example{25}
 % we define a new pagestyle that makes the choice:
-% \begin{verbatim}
+% \begin{example}
 % \usepackage{ifthen}
 % . . .
 % \fancypagestyle{switch}{
@@ -2032,7 +2038,7 @@
 %       {MYFANCY SECTION}
 %       {\textsl{\rightmark}}}
 % }
-% \end{verbatim}
+% \end{example}
 % \CmdIndex{ifthenelse}
 % where \verb|\textsl{\rightmark}| is the normal value of the header
 % field from \Cmd{pagestyle\{fancy\}}.
@@ -2149,7 +2155,7 @@
 % values. So we could have left these \emph{else} parts empty. Then they
 % would keep the global values.
 % However, often explicit is better than implicit.
-% 
+%
 % These initialisation commands cannot be used to make global changes to
 % the page, for example to \cs{headheight}. Neither can you use them to
 % change \cs{fancyhead} or \cs{fancyfoot}, because these have already
@@ -2190,8 +2196,9 @@
 % earlier the commands like \cs{fancyhead} and \cs{fancyfoot} also made
 % global changes. This is no longer the case in version~4.0 and later.}.
 % Here is an example to change the page style of the next page with \cs{afterpage}:
+%
 % \Example{26}
-% \begin{verbatim}
+% \begin{example}
 % \usepackage{afterpage}
 % \usepackage{fancyhdr}
 % \fancypagestyle{myfancy}{
@@ -2201,7 +2208,7 @@
 % }
 % . . .
 % \afterpage{\thispagestyle{myfancy}}
-% \end{verbatim}
+% \end{example}
 % Then the page after this code will have the page style \texttt{myfancy}.
 %
 % \section{Headers and footers induced by the text}
