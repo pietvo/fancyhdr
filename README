@@ -21,9 +21,15 @@ just loads fancyhdr with a warning message.
 
 The documentation (fancyhdr.dtx/fancyhdr.pdf) describes both
 fancyhdr.sty and extramarks.sty.
-In order to latex the documentation you need to have a copy of
-boxedminipage.sty (CTAN:/macros/latex/contrib/boxedminipage) and
-refcount.sty (CTAN:/macros/latex/contrib/oberdiek/) installed.
+In order to run the documentation through latex you need to have
+the following packages installed:
+- boxedminipage.sty (CTAN:/macros/latex/contrib/boxedminipage)
+- refcount.sty (CTAN:/macros/latex/contrib/refcount)
+- booktabs (CTAN:/macros/latex/contrib/booktabs)
+- fourier-orns (CTAN:/fonts/fourier-GUT)
+- truncate (CTAN:/macros/latex/contrib/truncate)
+- fancyvrb (CTAN:/macros/latex/contrib/fancyvrb)
+- hyperref (CTAN:/macros/latex/contrib/hyperref)
 
 This is version 4.0 of fancyhdr.sty and extramarks.sty. They are
 described in the forthcoming third edition of The LaTeX Companion.
