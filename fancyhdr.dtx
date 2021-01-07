@@ -49,6 +49,7 @@
 \usepackage{url}
 \usepackage[fit]{truncate}
 \usepackage{fancyvrb}
+\usepackage[colorlinks,linktocpage]{hyperref}
 \usepackage{ifthen}
 \usepackage{fancyhdr}
 \GetFileInfo{fancyhdr.sty}
@@ -61,8 +62,8 @@
 \newcommand{\PSNFSS}{{\sf
     PSNFSS}}
 \newcommand{\bs}{\symbol{'134}}
-\let\environment\texttt
-\let\Package\textsf
+\newcommand{\env}[1]{\texttt{#1}}
+\newcommand{\Package}[1]{\textsf{#1}}
 \renewcommand{\partname}{Part}
 \DisableCrossrefs
 \CodelineIndex
@@ -375,7 +376,7 @@
 % This command lets you (re)define page styles for use in special
 % situations. See section~\ref{sec:fancypagestyle} for more details.
 %
-% \section{Using extramarks}
+% \section{Using \Package{extramarks}}
 % \label{sec:using-extramarks}
 %
 % The \Package{extramarks} gives you some extra marks in \latex/,
@@ -3264,7 +3265,7 @@
 %
 % \changes{fancyhdr v3.1}{2004/10/07}{Added '\texttt{\cs{endlinechar}!=13}' to
 % \cs{f@nch@reset} to prevent problems with \cs{includegraphics} in
-% header/footer when \environment{verbatiminput} is active.}
+% header/footer when \env{verbatiminput} is active.}
 %
 % \changes{fancyhdr v3.2}{2005/03/22}{Reset \cs{everypar} (the real one)
 % in \cs{f@nch@reset} because spanish.ldf does strange things with
