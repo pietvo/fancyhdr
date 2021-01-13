@@ -1399,8 +1399,8 @@
 % redefine the command \cs{headrule}:
 %
 % \begin{verbatim}
-% \renewcommand{\headrule}{\vbox to 0pt{\hbox
-%     to\headwidth{\dotfill}\vss}}
+% \renewcommand{\headrule}{\vbox to 0pt
+%     {\makebox[\headwidth]{\dotfill}\vss}}
 % \end{verbatim}
 %
 % The redefined \cs{headrule} should preferably take up no vertical space, as in the example above, and as in the standard definition. If it does take vertical space, the header may come too close to the text, or even intrude in the text. In that case \Package{fancyhdr} will give you a warning that \cs{headheight} is too small. Like
