@@ -2305,31 +2305,7 @@
 % \CmdIndex{firstleftmark}
 % \CmdIndex{lastrightmark}
 %
-% To stress the point that marks are the correct way to do this, let me
-% give you a ``solution'' that will not work\footnote{Actually there is
-%   another way but it requires two \latex/ passes: you can put \cs{label}
-%   commands before and after the text and compare the \cs{pageref}s.}:
-%
-% \begin{verbatim}
-% \fancyhead[L]{Continued}
-% \fancyfoot[R]{Continued on next page\ldots}
-% Some text that may or may not cross a page boundary...
-% \fancyhead[L]{}
-% \fancyfoot[R]{}
-% \end{verbatim}
-%
-% You may be tempted to think that the first \cs{fancyhead} and \cs{fancyfoot}
-% will be in effect when \tex/ breaks the page in the middle of the text,
-% and the last ones when the page breaks after the text. This is not true as
-% the whole paragraph (including the last definitions) will be processed
-% \index{page break}
-% before \tex/ considers the page break, so at the time of the page break the
-% last definitions are effective, whether the page break occurs inside the text
-% or outside of it. Putting a paragraph boundary between the
-% text and the last definitions will not work either, because you don't want
-% the first definitions to be in effect when \tex/ decides to break the page
-% exactly at this boundary. Actually the marks mechanism was invented to get
-% rid of these kinds of problems.
+% \medskip
 %
 % In the above example the text ``Continued'' appears in the page header. It
 % \index{margin}
@@ -2345,17 +2321,48 @@
 % section~\ref{sec:thumb} for another example of
 % this technique.
 %
+% \Example{28}
 % \TTindex{picture}
-% \begin{verbatim}
+% \begin{example}
 % \fancyhead[L]{\setlength{\unitlength}{\baselineskip}%
 % \begin{picture}(0,0)
 %   \put(-2,-3){\makebox(0,0)[r]{\firstxmark}}
-%   \end{picture}\leftmark}
-% \end{verbatim}
+%   \end{picture}\rightmark} % \rightmark = section title
+% \end{example}
 %
 % This solution can of course also be used for the footer. Make sure you put the
 % \texttt{picture} as the first thing in left-handside entries and last in right-handside
 % ones.
+%
+% \medskip
+%
+% To stress the point that marks are the correct way to do this, let me
+% give you a ``solution'' that will not work\footnote{Actually there is
+%   another way but it requires two \latex/ passes: you can put \cs{label}
+%   commands before and after the text and compare the \cs{pageref}s.}:
+%
+% \begin{verbatim}
+% \fancyhead[L]{Continued}
+% \fancyfoot[R]{Continued on next page\ldots}
+% ...
+% Some text that may or may not cross a page boundary...
+% ...
+% \fancyhead[L]{}
+% \fancyfoot[R]{}
+% \end{verbatim}
+%
+% You may be tempted to think that the first \cs{fancyhead} and \cs{fancyfoot}
+% will be in effect when \tex/ breaks the page in the middle of the text,
+% and the last ones when the page breaks after the text. This is incorrect,
+% however, as the whole paragraph (including the last definitions) will be processed
+% \index{page break}
+% before \tex/ considers the page break, so at the time of the page break the
+% last definitions are effective, whether the page break occurs inside the text
+% or outside of it. Putting a paragraph boundary between the
+% text and the last definitions will not work either, because you don't want
+% the first definitions to be in effect when \tex/ decides to break the page
+% exactly at this boundary. Actually the marks mechanism was invented to get
+% rid of these kinds of problems.
 %
 % Finally you may want to put ``(Continued\ldots)'' in the \emph{text}
 % rather than in the header or the margin. Then you have to use the
