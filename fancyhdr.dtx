@@ -160,6 +160,13 @@
       {\renewcommand{\footrulewidth}{0pt}}%
   }
 }
+% Change \MacroFont to have verbatim in normal size
+\renewcommand{\MacroFont}%
+  {\fontencoding\encodingdefault
+    \fontfamily\ttdefault
+    \fontseries\mddefault
+    \fontshape\shapedefault
+    \normalsize}
 
 \newcommand{\ExampleNumber}{1}
 \newcommand{\Example}[1]{\renewcommand{\ExampleNumber}{#1}}
