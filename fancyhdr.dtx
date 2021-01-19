@@ -330,7 +330,8 @@
 % \end{verbatim}
 % These define offsets to let the headers stick into the margin (or to
 % the inside if negative). Places cannot contain the \texttt{C}
-% specifier. See section~\ref{sec:book-examples} for more details.
+% specifier. See sections~\ref{sec:book-examples}  and
+% \ref{sec:headwidth} for more details.
 %
 % \DescribeMacro{\headrulewidth}
 % \DescribeMacro{\footrulewidth}
@@ -347,8 +348,7 @@
 % respectively. (But \cs{headruleskip} is only available since version~4.0.)
 % \cs{headrule} and \cs{footrule} are macros to completely redefine
 % these lines. And \cs{headwidth} is a length parameter that defines the
-% total width of the headers and footers. See sections~\ref{sec:simple},
-% \ref{sec:fancy} and \ref{sec:book-examples} for more details.
+% total width of the headers and footers. See section~\ref{sec:headwidth} for more details.
 %
 % \DescribeMacro{\fancyheadinit}
 % \DescribeMacro{\fancyfootinit}
@@ -694,6 +694,7 @@
 % \cs{fancycenter}\oarg{distance}\oarg{stretch}\\
 % \verb|            |\marg{left-mark}\marg{center-mark}\marg{right-mark}
 % \end{quote}
+% \CmdIndex{fancycenter}
 % This command works like
 % \begin{center}
 % \verb|\hbox to\linewidth{|\marg{left-mark}\cs{hfil}\marg{center-mark}\cs{hfil}\marg{right-mark}\verb|}|
@@ -724,12 +725,23 @@
 % \end{quote}
 % and leave the \texttt{[L,R]} parts empty.
 %
-% \textbf{Note 1}: If the whole of the \cs{fancycenter} is wider than
-% \cs{headheight} it will stick out on the right. See
+% \textbf{Note 1}:
+% When \cs{fancycenter} is used inside a header or
+% \CmdIndex{linewidth}%
+% \CmdIndex{headwidth}%
+% footer, \cs{linewidth} usually is the same as \cs{headwidth}. Only
+% when  \cs{fancycenter} is used inside a box with a different width,
+% \cs{linewidth} will be the width of that box.
+%
+% \textbf{Note 2}:
+% If the whole of the \cs{fancycenter} is wider than
+% \cs{linewidth} it will stick out on the right. See
 % section~\ref{sec:longtitles} for possible solutions.
 %
-% \textbf{Note 2}: The usage of \cs{fancycenter} command is not limited to the
-% argument of header/footer marks. You can use it anywhere in your document.
+% \textbf{Note 3}: The usage of \cs{fancycenter} command is not limited to the
+% argument of header/footer marks. You can use it anywhere in your
+% document. Then \cs{linewidth} will be the width of the box or text in
+% which it is used.
 %
 % \section{An example of two-sided printing}\label{two-sided}
 %
@@ -1683,6 +1695,34 @@
 % \fancyhead[RE]{\helv \leftmark}
 % \end{example}
 %
+%
+%\section{Summary of \cs{headwidth} calculation}
+%\label{sec:headwidth}
+%
+% Here is a summary of the calculation of the widths of headers and
+% footers, as illustrated in \smartref{sec:headwidth}{sec:book-examples}.
+% \begin{itemize}
+% \CmdIndex{headwidth}%
+% \CmdIndex{textwidth}%
+% \CmdIndex{fancyhfoffset}%
+% \CmdIndex{fancyheadoffset}%
+% \CmdIndex{fancyfootoffset}%
+% \item If no \cs{fancy...offset} commands are given, the default value
+% for \cs{headwidth} is \cs{textwidth}. This is used for the width of
+% both the header and the footer. It is possible to change the value of
+% \cs{headwidth}, for example with \cs{setlength} or \cs{addtolength}.
+% The excess or deficit will be applied to the right for a onesided
+% document, and for a twosided document to the right on odd pages and to
+% the left on even pages. The header and the footer will have the same
+% width, \cs{headwidth}.
+% \item If some \cs{fancy...offset} command is given, the header and
+% footer widths are independently calculated by adding the appropriate
+% offsets to \cs{textwidth}. Any changes made to \cs{headwidth} will not
+% be taken into account. The header/footer will stick in/out at the proper
+% side(s) specified by the offsets.
+% \end{itemize}
+% The file \texttt{example-headwidth.tex} in the \texttt{Examples}
+% branch of the repository illustrates this.
 %
 % \section{Special page layout for float pages}
 % \label{sec:float}
