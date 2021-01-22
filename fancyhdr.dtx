@@ -1529,11 +1529,13 @@
 %
 % \pagestyle{showstruts}
 % \noindent\begin{minipage}{\textwidth}
-% \label{showstruts}
+% \phantomsection\label{showstruts}
 % \indent The header and footer in this page
 % show the \emph{strut} (the amount of space in the text area above and
 % below the baseline), and the \cs{headruleskip} and \cs{footruleskip}.
 % For this page \cs{headruleskip} is 4pt.
+%
+% The code for this can be found in section~\ref{sec:curpagestyle}.
 % \end{minipage}
 %
 % \section{Two book examples}
@@ -2047,6 +2049,7 @@
 % the current page and changing the style of the next page.
 %
 % \subsection{Changing the page style of the current page}
+% \label{sec:curpagestyle}
 %
 % So now we are giving an example how to change the headers and footers,
 % only on the current page. In some cases this can be done by the
@@ -2074,7 +2077,7 @@
 %   \fancyhead[LE,RO]{MYFANCY SECTION}
 % }
 % \end{verbatim}
-% \Example{25}
+% \Example{25 (a)}
 % we define a new pagestyle that makes the choice:
 % \begin{example}
 % \usepackage{ifthen}
@@ -2171,7 +2174,8 @@
 %   }
 % \end{verbatim}
 % Now here is the definition of the page style used for page~\pageref{showstruts}.
-% \begin{verbatim}
+% \Example{25 (b)}
+% \begin{example}
 % \fancypagestyle{showstruts}{%
 %   \fancyhead[L]{%
 %     \ifthenelse{\value{page}=\pageref{showstruts}}%
@@ -2194,7 +2198,7 @@
 %       {\renewcommand{\footrulewidth}{0pt}}%
 %   }
 % }
-% \end{verbatim}
+% \end{example}
 % The label used on that page is \texttt{showstruts}. \cs{strutheader}
 % and \cs{strutfooter} are macros that contain the code to draw these
 % pictures. In this example the values for \cs{headruleskip} and
