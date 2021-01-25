@@ -2295,6 +2295,7 @@
 % \pagestyle{fancy}
 % \fancyhead[L]{\firstleftxmark} % = \firstxmark
 % \fancyfoot[R]{\lastrightxmark} % = \lastxmark
+% \fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrule}{}}
 % ...
 % \extramarks{}{}% 1
 % \extramarks{Continued\ldots}{Continued on next page\ldots}% 2
@@ -2306,7 +2307,11 @@
 % \end{example}
 %
 % \CmdIndex{extramarks}
-% Note that the \cs{extramarks} command must be close to the text, i.e no
+% Note that we redefine the \texttt{plain} page style, so that on the
+% first page of a chapter also the footer will be given if necessary. We
+% assume that a `Continued' block will not cross chapter boundaries, so no
+% header will be necessary on these pages.
+% Also the \cs{extramarks} command must be close to the text, i.e no
 % empty lines (paragraph boundaries) should intervene. Otherwise the page may
 % be broken at that boundary and the extramarks would come on the wrong page.
 %
