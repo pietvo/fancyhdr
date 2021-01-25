@@ -168,11 +168,12 @@
     \fontshape\shapedefault
     \normalsize}
 
-\newcommand{\ExampleNumber}{1}
-\newcommand{\Example}[1]{\renewcommand{\ExampleNumber}{#1}}
+\newcommand{\ExampleLabel}{}
+\newcommand{\Example}[1]{\renewcommand{\ExampleLabel}{Example~#1}}
+\newcommand{\NoExample}[1]{\renewcommand{\ExampleLabel}{#1}}
 \newcommand{\formatexample}{\hbox{\hspace{-2.5cm}%
     \raisebox{-\baselineskip}[0pt][0pt]{\normalfont\normalsize
-      Example~\ExampleNumber}}\nopagebreak}
+      \ExampleLabel}}\nopagebreak}
 
 \newcommand{\FExample}[1]{%
   \noindent\makebox[0pt][l]{\hspace{-2.5cm}\normalfont\normalsize Example #1}}%
