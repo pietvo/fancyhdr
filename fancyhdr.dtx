@@ -2607,28 +2607,56 @@
 % Similarly we can add some text in the footer in line 20, to see where
 % the \cs{clearAPcommand} is called.
 %
-% \medskip
+% \subsubsection*{Another use}
 %
-% need the information further on in the page you must remember the state of
-% the marks in your own variable. You can set this in one of the
-% \Package{fancyhdr} fields. For example if you want to add something
-% \emph{after} the broken piece of text you can use the following:
+% If you would need the information further on in the page you must
+% remember the state of the marks in your own variable. You can set this
+% in one of the \Package{fancyhdr} header or footer fields. For example
+% if you want to add something \emph{after} the broken block of text you
+% can use the following:
 %
-% \begin{verbatim}
-% \newcommand{\mysaved}{}
+% \Example{29c}
+% \begin{example}
+% \newcommand*{\mysaved}{}
 %
-% \newenvironment{continued}{\par
-%   \extramarks{}{Continued on next page\ldots}
-%   }{\extramarks{(Continued\ldots)}{}\par\vspace{1ex}\mysaved}
-% \fancyhead[L]{\leftmark}
+% \fancyfoot[R]{\lastxmark}
 % \fancyhead[C]{\ifthenelse{\equal{\lastxmark}{}}
 %   {\gdef\mysaved{}}
-%   {\gdef\mysaved{\noindent[Continued from previous page]}}}
-% \end{verbatim}
+%   {\gdef\mysaved{\\[1ex]\noindent\textbf{[Continued from previous page]}}}}
+%
+% \newenvironment{continued}{%
+%   \par
+%   \extramarks{}{}%
+%   \extramarks{Continued}{Continued on next page\ldots}%
+% }{
+%    \extramarks{Continued}{}%
+%    \extramarks{}{}%
+%    \mysaved\par
+%  }
+% \end{example}
+%
+% Now if the block crosses a page boundary, the previous page footer has
+% a non-empty \cs{lastxmark}. In the \texttt{[C]} header field we use
+% this information to put a text in the macro \cs{mysaved}, and this is
+% typeset after the block ends. The \texttt{extramarks} left fields
+% (\cs{firstxmark}) are not used, they are only given for documentary purposes.
+%
+% \textbf{NOTE:} This example is not completely safe; there can still be timing
+% issues. For example, when the end of the block is already typeset,
+% including an empty value of \cs{mysave}, but then is pushed to the
+% next page. So you have to be very careful in using this kind of mechanism.
+%
+% In this example we cannot use \cs{firstxmark} to put in \cs{mysaved},
+% because we would need the value of the header on \emph{this} page, but
+% that is only available at the end of the page, when the whole page has
+% been typeset, and the headers and footers are added. If we use it to
+% put it in \cs{mysaved}, we would get the value of the previous page,
+% which is of no use in this example. On the other hand, the value of
+% \cs{lastxmark} of the previous page is just what we need, because that
+% indicates if the block crosses a page boundary.
 %
 % If you want to include one of the marks or other varying information in the
 % saved text, you must use \cs{xdef} rather than \cs{gdef}.
-%
 %
 % \section{A movie}
 % \label{sec:movie}
