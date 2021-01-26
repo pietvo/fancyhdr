@@ -2512,6 +2512,103 @@
 % routine, but as the  \cs{afterpage} text is executed while still in
 % the page layout routine, this appears to works.
 %
+% \subsection{More sophisticated solutions}
+% \label{sec:afterpage2}
+%
+% In this subsection we present some more sophisticated, and therefore
+% a little more tricky solutions and variations to the previous example.
+% If you want to avoid that trickery, you can just skip this subsection.
+%
+% First we change the example such that the sequence of \cs{afterpage}
+% invocations will stop as soon as possible. We do this by not using a
+% fixed text as argument for \cs{afterpage} but by using a macro \cs{APcommand}
+% as argument. When we want to stop the sequence of \cs{afterpage} calls,
+% we make this macro empty. To get a proper timing we reset this macro
+% in the righthand footer field when this is empty, which indicates that
+% we are outside of a `Continued' block.
+%
+% We must then take care of restarting the \cs{afterpage} sequence when
+% a new `Continued' block is started, and making sure that we don't get
+% more than one such sequence is activated. We do this by changing
+% \cs{startAP} such that it only start an \cs{afterpage} if
+% \cs{APcommand} is empty.
+%
+% \Example{29b}
+% \newcommand{\R}{\color{red}}
+% \begin{example}[numbers=left,numbersep=1pt,commandchars=|<>]
+% \newcommand*{\LM}{\noindent Continued from previous page\ldots\\[1ex]}
+% |R\newcommand*{\APcommand}{}
+% |R\newcommand*{\setAPcommand}{\gdef\APcommand{\firstxmark\setAP}}
+% |R\newcommand*{\clearAPcommand}{\gdef\APcommand{}}
+% |R\newcommand*{\setAP}{\afterpage{\APcommand}}
+% |R\newcommand*{\startAP}{\ifx\APcommand\empty\setAPcommand\setAP\fi}
+%
+% \fancyhead[L]{Example 29b}
+% \fancyhead[R]{\rightmark}
+% \fancyfoot[R]{\lastxmark}
+% \fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrule}{}}
+%
+% \newenvironment{continued}{%
+%   \par\noindent\rule{\textwidth}{1mm}\\*
+%   \extramarks{}{}%
+%   \extramarks{\LM}{Continued on next page\ldots}%
+%   \startAP }{
+%   \noindent\rule{\textwidth}{1mm}%
+%   \extramarks{\LM}{}%
+% |R  \extramarks{}{\noexpand\clearAPcommand}\par
+% }
+% \end{example}
+%
+% We have numbered the lines for easy reference. The changes are in
+% the red lines (2-6 and 20). \\
+% 2.~Here we define \cs{APcommand}.\\
+% 3,~4.~These are commands to set en clear \cs{APcommand}, respectively.\\
+% 5.~The \cs{afterpage} now uses \cs{APcommand} as argument.\\
+% 6.~\cs{startAP} now checks if \cs{APcommand} is empty, and if it is,
+% it first fills \cs{APcommand} with the required value and then starts a
+% new \cs{afterpage} (with the \cs{setAP} command).
+% When \cs{APcommand} is not empty this means that a \cs{afterpage} is
+% already active.\\
+% 20.~In the right part of the marks we now call \cs{clearAPcommand} to
+% clear our variable \cs{APcommand}. This effectively stops the
+% \cs{afterpage} sequence.
+%
+% \textbf{Note 1.} We use \cs{gdef} to change \cs{APcommand} because
+% these occur inside a \TeX{} group (\env{continued} environment and
+% footer). With \cs{renewcommand} they would be local to these groups
+% but we need them outside of these groups, therefore we use \cs{gdef}
+% to make the change globally.
+%
+% \textbf{Note 2.} We define \cs{APcommand} with \cs{newcommand*} rather
+% than \cs{newcommand} to make it compatible with \cs{gdef}. Without the
+% \texttt{*} it would be compatible with \cs{long}\cs{gdef}, but then it
+% would not compare equal to \cs{empty} in line 6. For the other
+% definitions it does not make a difference, but it looks nicer to use
+% it there too.
+%
+% \textbf{Note 3.} In line 20 we use \cs{noexpand} to
+% delay the expansion of \cs{clearAPcommand}. The marks in
+% \cs{extramarks} are expanded at the time they are given, so that they
+% can pick up section numbers and titles and similar information at that
+% point. However, \cs{clearAPcommand} should not be expanded at that
+% moment, but when it is used in the footer. That is exactly what
+% \cs{noexpand} does.
+%
+% \textbf{Note 4.} We test the value of \cs{APcommand} with \cs{ifx},
+% not with \cs{ifthenelse} from the \Package{ifthen} package. The
+% latter completely expands its parameters, and because \cs{APcommand}
+% has a recursive definition when it is not empty, that would cause
+% \TeX{} to fail. We only want to check the definition of
+% \cs{APcommand}, not its expansion.
+%
+% \textbf{Note 5.} For debugging we can add some text in the
+% \cs{afterpage} command in line 5, to see the difference between an
+% empty \cs{afterpage} and no \cs{afterpage} at all.
+% Similarly we can add some text in the footer in line 20, to see where
+% the \cs{clearAPcommand} is called.
+%
+% \medskip
+%
 % need the information further on in the page you must remember the state of
 % the marks in your own variable. You can set this in one of the
 % \Package{fancyhdr} fields. For example if you want to add something
