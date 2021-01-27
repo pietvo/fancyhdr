@@ -2666,22 +2666,28 @@
 % If you put at each page on the same place a picture that slightly changes
 % from page to page you can get a movie-like effect by flipping through the
 % pages. You can create such a movie easily with fancyhdr. For
-% simplicity we assume that each picture is in a postscript (EPS) file called
-% \texttt{pic}$\langle n\rangle$.\texttt{ps} where $\langle n\rangle$ is the page number and that we use
-% the \Package{graphics} or  \Package{graphicx} package\footnote{If you use an older version of
-%   \LaTeX{} you could use the \Package{epsf} or \Package{epsfig} package.}.
+% simplicity we assume that we use a PDF-producing \LaTeX{} (such as
+% \texttt{pdflatex}) and each picture is in a PNG file called
+% \texttt{pic}$\langle n\rangle$.\texttt{png}%
+% \footnote{With \texttt{pdflatex} we could also use PDF or JPG
+% pictures. With a DVI based \texttt{latex} we could use PS or EPS
+% pictures. Or any other supported image format.}
+% where $\langle n\rangle$ is
+% the page number and that we use the \Package{graphics} or  \Package{graphicx} package.
 % \TTindex{graphics}
 % \TTindex{graphicx}
-% \TTindex{epsf}
-% \TTindex{epsfig}
 % To put the movie in the  righthandside bottom corner the following will work:
 %
-% \begin{verbatim}
+% \Example{30}
+% \begin{example}
 % \fancyfoot[R]{\setlength{\unitlength}{1mm}
 %   \begin{picture}(0,0)
-%     \put(5,0){\includegraphics{pic\thepage.ps}}
+%     \put(5,-20){\includegraphics[width=1cm]{pic\thepage}}
 %   \end{picture}}
-% \end{verbatim}
+% \end{example}
+%
+% If the document is two-sided, it would be better to put them only on
+% the odd pages, by specifying \verb|\fancyfoot[RO]|.
 %
 % Notice that the \cs{unitlength} parameter should
 % be set locally in the fancyhdr field in order to avoid unwanted
