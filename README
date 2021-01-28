@@ -31,7 +31,7 @@ the following packages installed:
 - fancyvrb (CTAN:/macros/latex/contrib/fancyvrb)
 - hyperref (CTAN:/macros/latex/contrib/hyperref)
 
-This is version 4.0 of fancyhdr.sty and extramarks.sty. They are
+This is version 4.0.1 of fancyhdr.sty and extramarks.sty. They are
 described in the forthcoming third edition of The LaTeX Companion.
 Extramarks.sty has not been changed, except for the version and
 copyright information.
