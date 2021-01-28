@@ -48,6 +48,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{url}
 \usepackage[fit]{truncate}
+\usepackage[colorlinks,linktocpage]{hyperref}
 \usepackage{ifthen}
 \usepackage{fancyhdr}
 \GetFileInfo{fancyhdr.sty}
@@ -60,8 +61,8 @@
 \newcommand{\PSNFSS}{{\sf
     PSNFSS}}
 \newcommand{\bs}{\symbol{'134}}
-\let\environment\texttt
-\let\Package\textsf
+\newcommand{\env}[1]{\texttt{#1}}
+\newcommand{\Package}[1]{\textsf{#1}}
 \renewcommand{\partname}{Part}
 \DisableCrossrefs
 \CodelineIndex
@@ -158,6 +159,13 @@
       {\renewcommand{\footrulewidth}{0pt}}%
   }
 }
+% Change \MacroFont to have verbatim in normal size
+\renewcommand{\MacroFont}%
+  {\fontencoding\encodingdefault
+    \fontfamily\ttdefault
+    \fontseries\mddefault
+    \fontshape\shapedefault
+    \normalsize}
 
 \newcounter{example}
 \newcommand{\Example}{%
@@ -269,7 +277,7 @@
 % headers and footers of the pages in a \latex/ document.
 % You load the package with the following command in the preamble:
 % \begin{quote}
-% \verb|\usepackage|\oarg{options}|{fancyhdr}|
+% \verb|\usepackage|\oarg{options}\verb|{fancyhdr}|
 % \end{quote}
 % (Options are available since version~4.0)
 % The following options are supported:
@@ -336,8 +344,7 @@
 % respectively. (But \cs{headruleskip} is only available since version~4.0.)
 % \cs{headrule} and \cs{footrule} are macros to completely redefine
 % these lines. And \cs{headwidth} is a length parameter that defines the
-% total width of the headers and footers. See sections~\ref{sec:simple},
-% \ref{sec:fancy} and \ref{sec:book-examples} for more details.
+% total width of the headers and footers. See section~\ref{sec:book-examples} for more details.
 %
 % \DescribeMacro{\fancyheadinit}
 % \DescribeMacro{\fancyfootinit}
@@ -357,12 +364,11 @@
 % \DescribeMacro{\iffloatpage}
 % \DescribeMacro{\iffootnote}
 %
-% The macros \cs{iftopfloat}, \cs{ifbotfloat}, \cs{iffloatpage},
-% \cs{iffloatpage}, \cs{iffootnote}
-% are used to detect if there is a float on the top or the bottom
-% of the page, or the page is a float page, or if there is a footnote at
-% the bottom of the page. These can be used to choose different headers
-% and/or footers if these conditions are met. See
+% The macros \cs{iftopfloat}, \cs{ifbotfloat}, \cs{iffloatpage} and
+% \cs{iffootnote} are used to detect if there is a float on the top or
+% the bottom of the page, or the page is a float page, or if there is
+% a footnote at the bottom of the page. These can be used to choose
+% different headers and/or footers if these conditions are met. See
 % section~\ref{sec:float} for more details.
 %
 % \begin{quote}
@@ -372,7 +378,7 @@
 % This command lets you (re)define page styles for use in special
 % situations. See section~\ref{sec:fancypagestyle} for more details.
 %
-% \section{Using extramarks}
+% \section{Using \Package{extramarks}}
 % \label{sec:using-extramarks}
 %
 % The \Package{extramarks} gives you some extra marks in \latex/,
@@ -682,6 +688,7 @@
 % \cs{fancycenter}\oarg{distance}\oarg{stretch}\\
 % \verb|            |\marg{left-mark}\marg{center-mark}\marg{right-mark}
 % \end{quote}
+% \CmdIndex{fancycenter}
 % This command works like
 % \begin{center}
 % \verb|\hbox to\linewidth{|\marg{left-mark}\cs{hfil}\marg{center-mark}\cs{hfil}\marg{right-mark}\verb|}|
@@ -713,7 +720,7 @@
 % and leave the \texttt{[L,R]} parts empty.
 %
 % \textbf{Note 1}: If the whole of the \cs{fancycenter} is wider than
-% \cs{headheight} it will stick out on the right. See
+% \cs{headwidth} it will stick out on the right. See
 % section~\ref{sec:longtitles} for possible solutions.
 %
 % \textbf{Note 2}: The usage of \cs{fancycenter} command is not limited to the
@@ -935,7 +942,7 @@
 %
 % You can supply options to the \cs{usepackage} command:
 % \begin{quote}
-% \verb|\usepackage|\oarg{options}|{fancyhdr}|
+% \verb|\usepackage|\oarg{options}\verb|{fancyhdr}|
 % \end{quote}
 % % The following options are supported:
 % \begin{center}
@@ -1382,8 +1389,8 @@
 % redefine the command \cs{headrule}:
 %
 % \begin{verbatim}
-% \renewcommand{\headrule}{\vbox to 0pt{\hbox
-%     to\headwidth{\dotfill}\vss}}
+% \renewcommand{\headrule}{\vbox to 0pt
+%     {\makebox[\headwidth]{\dotfill}\vss}}
 % \end{verbatim}
 %
 % The redefined \cs{headrule} should preferably take up no vertical space, as in the example above, and as in the standard definition. If it does take vertical space, the header may come too close to the text, or even intrude in the text. In that case \Package{fancyhdr} will give you a warning that \cs{headheight} is too small. Like
@@ -1492,7 +1499,7 @@
 %
 % \pagestyle{showstruts}
 % \noindent\begin{minipage}{\textwidth}
-% \label{showstruts}
+% \phantomsection\label{showstruts}
 % \indent The header and footer in this page
 % show the \emph{strut} (the amount of space in the text area above and
 % below the baseline), and the \cs{headruleskip} and \cs{footruleskip}.
@@ -2130,7 +2137,7 @@
 % values. So we could have left these \emph{else} parts empty. Then they
 % would keep the global values.
 % However, often explicit is better than implicit.
-% 
+%
 % These initialisation commands cannot be used to make global changes to
 % the page, for example to \cs{headheight}. Neither can you use them to
 % change \cs{fancyhead} or \cs{fancyfoot}, because these have already
@@ -2216,15 +2223,23 @@
 % \pagestyle{fancy}
 % \fancyhead[L]{\firstxmark}
 % \fancyfoot[R]{\lastxmark}
+% \fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrule}{}}
 % ...
-% \extramarks{}{Continued on next page\ldots} %1
+% \extramarks{}{}% 1
+% \extramarks{Continued\ldots}{Continued on next page\ldots}% 2
+% ...
 % Some text that may or may not cross a page boundary...
-% \extramarks{Continued\ldots}{} %2
-% \extramarks{}{} %3
+% ...
+% \extramarks{Continued\ldots}{}% 3
+% \extramarks{}{}% 4
 % \end{verbatim}
 %
 % \CmdIndex{extramarks}
-% Note that the \cs{extramarks} command must be close to the text, i.e no
+% Note that we redefine the \texttt{plain} page style, so that on the
+% first page of a chapter also the footer will be given if necessary. We
+% assume that a `Continued' block will not cross chapter boundaries, so no
+% header will be necessary on these pages.
+% Also the \cs{extramarks} command must be close to the text, i.e no
 % empty lines (paragraph boundaries) should intervene. Otherwise the page may
 % be broken at that boundary and the extramarks would come on the wrong page.
 % The final \verb+\extramarks{}{}+ is to prevent the `Continued\ldots'
@@ -2239,16 +2254,24 @@
 % \cs{lastxmark} gives you the last $m_2$ value
 % of the current page. In the above example, when the complete block
 % falls on the same page, the \cs{firstxmark} will be the empty
-% parameter of the first \cs{extramarks} command (indicated by \texttt{\%1}), and
+% parameter of the first \cs{extramarks} command (indicated by \texttt{\%~1}), and
 % the \cs{lastxmark} will be the empty parameter from the last
-% \cs{extramarks} command (indicated by \texttt{\%3}).
+% \cs{extramarks} command (indicated by \texttt{\%~4}).
 %
-% However, when the page break falls in the block, the mark generated by
-% \texttt{\%1} will be the last one on the first page. Therefore on that page
-% \cs{lastxmark} will be `Continued on next page\ldots'. On the second
-% page, the first mark will be \texttt{\%2}, therefore \cs{firstxmark} will be `Continued\ldots'.
-% On all the following pages the values of \texttt{\%3} will be used,
-% i.e. empty ones. Of course in real life you would leave out the \texttt{\%} indicators.
+% However, when the page break falls inside the block, the mark generated by
+% \texttt{\%~2} will be the last one on the first page. Therefore on that page
+% \cs{lastxmark} will be `Continued on next page\ldots'. On the following
+% pages, there are two possibilities: (1) when the block ends
+% on that page the first mark will be \texttt{\%~3}, therefore
+% \cs{firstxmark} will be `Continued\ldots'; (2) the block ends at a
+% later page, therefore it does not contribute any marks to that page,
+% and the marks are `inherited' from the last values of the previous page,
+% i.e. those from \texttt{\%~2}.
+% On all of the pages after the block the values of \texttt{\%~4} will be used,
+% i.e. empty ones.
+% This final \verb+\extramarks{}{}+ is to prevent the `Continued\ldots'
+% header to spill over to the following pages.
+% Of course in real life you would leave out the numbers.
 %
 % In case you want the last $m_1$ value or the first $m_2$ value, you
 % can use the \cs{lastleftxmark} or \cs{firstrightxmark}, respectively.
@@ -2313,7 +2336,7 @@
 % \fancyhead[L]{\setlength{\unitlength}{\baselineskip}%
 % \begin{picture}(0,0)
 %   \put(-2,-3){\makebox(0,0)[r]{\firstxmark}}
-%   \end{picture}\leftmark}
+%   \end{picture}\rightmark} % \rightmark = section title
 % \end{verbatim}
 %
 % This solution can of course also be used for the footer. Make sure you put the
@@ -2328,9 +2351,12 @@
 %
 % \begin{verbatim}
 % \newenvironment{continued}{\par
-%   \extramarks{}{Continued on next page\ldots}
-%   \afterpage{\noindent\firstxmark\vspace{1ex}}
-%   }{\extramarks{(Continued\ldots)}{}\par}
+%   \extramarks{}{}%
+%   \extramarks{(Continued\ldots)}{Continued on next page\ldots}%
+%   \afterpage{\noindent\firstxmark\vspace{1ex}}%
+%   }{\extramarks{(Continued\ldots)}{}%
+%   \extramarks{}{}\par
+% }
 % \end{verbatim}
 %
 % It is a bit dangerous to use \cs{firstxmark} outside the page layout
@@ -2344,8 +2370,11 @@
 % \newcommand{\mysaved}{}
 %
 % \newenvironment{continued}{\par
-%   \extramarks{}{Continued on next page\ldots}
-%   }{\extramarks{(Continued\ldots)}{}\par\vspace{1ex}\mysaved}
+%   \extramarks{}{}%
+%   \extramarks{(Continued\ldots)}{Continued on next page\ldots}%
+%   }{\extramarks{(Continued\ldots)}{}%
+%   \extramarks{}{}\par\vspace{1ex}\mysaved}%
+% }
 % \fancyhead[L]{\leftmark}
 % \fancyhead[C]{\ifthenelse{\equal{\lastxmark}{}}
 %   {\gdef\mysaved{}}
@@ -2364,22 +2393,27 @@
 % If you put at each page on the same place a picture that slightly changes
 % from page to page you can get a movie-like effect by flipping through the
 % pages. You can create such a movie easily with fancyhdr. For
-% simplicity we assume that each picture is in a postscript (EPS) file called
-% \texttt{pic}$\langle n\rangle$.\texttt{ps} where $\langle n\rangle$ is the page number and that we use
-% the \Package{graphics} or  \Package{graphicx} package\footnote{If you use an older version of
-%   \LaTeX{} you could use the \Package{epsf} or \Package{epsfig} package.}.
+% simplicity we assume that we use a PDF-producing \LaTeX{} (such as
+% \texttt{pdflatex}) and each picture is in a PNG file called
+% \texttt{pic}$\langle n\rangle$.\texttt{png}%
+% \footnote{With \texttt{pdflatex} we could also use PDF or JPG
+% pictures. With a DVI based \texttt{latex} we could use PS or EPS
+% pictures. Or any other supported image format.}
+% where $\langle n\rangle$ is
+% the page number and that we use the \Package{graphics} or  \Package{graphicx} package.
 % \TTindex{graphics}
 % \TTindex{graphicx}
-% \TTindex{epsf}
-% \TTindex{epsfig}
 % To put the movie in the  righthandside bottom corner the following will work:
 %
 % \begin{verbatim}
 % \fancyfoot[R]{\setlength{\unitlength}{1mm}
 %   \begin{picture}(0,0)
-%     \put(5,0){\includegraphics{pic\thepage.ps}}
+%     \put(5,-20){\includegraphics[width=1cm]{pic\thepage}}
 %   \end{picture}}
 % \end{verbatim}
+%
+% If the document is two-sided, it would be better to put them only on
+% the odd pages, by specifying \verb|\fancyfoot[RO]|.
 %
 % Notice that the \cs{unitlength} parameter should
 % be set locally in the fancyhdr field in order to avoid unwanted
@@ -2416,7 +2450,7 @@
 % \setlength{\unitlength}{9mm}
 % \newcommand{\blob}{\rule[-.2\unitlength]{1\unitlength}{.5\unitlength}}
 % \newcounter{line}
-% \newcommand{\secname}[1]{\addtocounter{line}{1}^^A
+% \newcommand{\secname}[1]{\addtocounter{line}{1}%
 %   \put(1,-\value{line}){\blob}
 %   \put(-7.5,-\value{line}){\arabic{line}}
 %   \put(-7,-\value{line}){#1}}
@@ -2448,17 +2482,17 @@
 %     \put(1,-\value{section}){\blob}
 %   \end{picture}}
 %
-% \newcommand\lblob{^^A
+% \newcommand\lblob{%
 %   \begin{picture}(0,0)
 %     \put(-3,-\value{section}){\blob}
-%   \end{picture}^^A
+%   \end{picture}%
 %   \thepage}
 %
 % \pagestyle{fancy}
 % \fancyfoot[C]{}
 %
 % \newcounter{line}
-% \newcommand{\secname}[1]{\addtocounter{line}{1}^^A
+% \newcommand{\secname}[1]{\addtocounter{line}{1}%
 %   \put(1,-\value{line}){\blob}
 %   \put(-7.5,-\value{line}){\Large \arabic{line}}
 %   \put(-7,-\value{line}){\Large #1}}
@@ -2819,7 +2853,9 @@
 % The source code can be found on Github:\\
 % \url{https://github.com/pietvo/fancyhdr}\\
 % Bugs and suggestions for improvements can be reported at\\
-% \url{https://github.com/pietvo/fancyhdr/issues}
+% \url{https://github.com/pietvo/fancyhdr/issues}\\
+% Example files can be found at\\
+% \url{https://github.com/pietvo/fancyhdr/tree/Examples}
 %
 % \section{Version information}
 % \begin{itemize}
@@ -2874,7 +2910,7 @@
 % Version 4 is a significant rewrite of the package. It also introduces
 % a number of new features.
 % \begin{itemize}
-% \item Version 4.0, March 15, 2020--Jan 04, 2021
+% \item Version 4.0, March 15, 2019--Jan 04, 2021
 %   \begin{itemize}
 %   \item Options introduced on the \cs{usepackage} command.
 %   \item The check whether the header or footer fits in
@@ -3238,7 +3274,7 @@
 %
 % \changes{fancyhdr v3.1}{2004/10/07}{Added '\texttt{\cs{endlinechar}!=13}' to
 % \cs{f@nch@reset} to prevent problems with \cs{includegraphics} in
-% header/footer when \environment{verbatiminput} is active.}
+% header/footer when \env{verbatiminput} is active.}
 %
 % \changes{fancyhdr v3.2}{2005/03/22}{Reset \cs{everypar} (the real one)
 % in \cs{f@nch@reset} because spanish.ldf does strange things with
