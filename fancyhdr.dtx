@@ -1045,7 +1045,16 @@
 % \pagestyle{fancy}
 % \end{verbatim}
 % and let \Package{fancyhdr} take care of everything.  As mentioned
-% before, we get a layout that is very similar to the page style \texttt{headings}.
+% before, we get a layout that is similar to the page style
+% \texttt{headings}, but it is not exactly the same. If you want to have
+% the same layout as the page style \texttt{headings}, but with a line
+% under the header, use (you need \Package{fancyhdr} version 4 or later
+% for this):
+% \PSindex{headings}
+% \begin{verbatim}
+% \usepackage[headings]{fancyhdr}
+% \pagestyle{headings}
+% \end{verbatim}
 %
 % On the pages where new chapters start, we get a centered page number
 % in the footer; there is no header, and there are no decorative lines.
@@ -1070,6 +1079,14 @@
 % \end{fblock}
 %
 % \noindent where the header text is slanted uppercase.
+%
+% In the \texttt{article} documentclass, we get section and subsection
+% instead of chapter and section.
+%
+% And in a one-sided document, all pages get the same layout as the even pages
+% above. It would probably have been more logical to choose the odd page
+% layout, but changing that now would break some existing documents.
+% Anyway, you can change the layout easily yourself.
 %
 % This default layout is produced by the following commands:
 % \Example{5}
