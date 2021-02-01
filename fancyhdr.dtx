@@ -2727,30 +2727,32 @@
 % Of course we have to take care of two-sided printing, and we may want to
 % have an index page with all the blobs in the correct position. The solution
 % requires some hand-tuning to get the blobs nicely spaced out vertically.
-% For the application that I had there were 12 sections, so I made the blobs
+% For the application that I originally designed this for, there were 12 sections,
+% so I made the blobs
 % 18 mm apart, i.e. 9~mm blob separated by 9~mm whitespace. In order to avoid
 % calculations they are set in a \texttt{picture} environment with the
 % \cs{unitlength} set to 18~mm. Page numbers are set in the headers at the
 % outer sides, and the blobs are attached to these. In this example the
-% section numbers are used to position the blobs, but you can replace this
+% chapter numbers are used to position the blobs, but you can replace this
 % with any numeric value.
-% See figure~\ref{fig:overview} for the resulting
-% overview page and figure~\ref{fig:thumb} for the code.
+% See figure~\ref{fig:overview} for the resulting overview page.
 %
-% \begin{figure}[htbp]
+% ^^A Picture with thumb index overview
+%
+% \begin{figure}[!htbp]
 % \setlength{\unitlength}{9mm}
 % \newcommand{\blob}{\rule[-.2\unitlength]{1\unitlength}{.5\unitlength}}
 % \newcounter{line}
-% \newcommand{\secname}[1]{\addtocounter{line}{1}^^A
+% \newcommand{\chapname}[1]{\addtocounter{line}{1}%
 %   \put(1,-\value{line}){\blob}
 %   \put(-7.5,-\value{line}){\arabic{line}}
 %   \put(-7,-\value{line}){#1}}
 %
 % \newcommand{\overview}{1
 %   \begin{picture}(0,0)
-%     \secname{Introduction}
-%     \secname{The first year}
-%     \secname{Specialisation}
+%     \chapname{Introduction}
+%     \chapname{Another chapter}
+%     \chapname{Third case}
 %   \end{picture}}
 %
 %   \begin{center}
@@ -2763,52 +2765,82 @@
 %   \caption{Thumb-index overview page}
 %   \label{fig:overview}
 % \end{figure}
-% \begin{figure}[hp]\small
-% \begin{verbatim}
+%
+% ^^A The code
+% \Example{31}
+% \begin{example}
 % \setlength{\unitlength}{18mm}
-% \newcommand{\blob}{\rule[-.2\unitlength]{2\unitlength}{.5\unitlength}}
+% \newcommand{\blob}{%
+%   \rule[-.2\unitlength]{2\unitlength}{.5\unitlength}}
 %
 % \newcommand\rblob{\thepage
 %   \begin{picture}(0,0)
-%     \put(1,-\value{section}){\blob}
+%     \put(1,-\value{chapter}){\blob}
 %   \end{picture}}
 %
-% \newcommand\lblob{^^A
+% \newcommand\lblob{%
 %   \begin{picture}(0,0)
-%     \put(-3,-\value{section}){\blob}
-%   \end{picture}^^A
+%     \put(-3,-\value{chapter}){\blob}
+%   \end{picture}%
 %   \thepage}
 %
 % \pagestyle{fancy}
-% \fancyfoot[C]{}
+% \fancyfoot{}
 %
 % \newcounter{line}
-% \newcommand{\secname}[1]{\addtocounter{line}{1}^^A
+% \newcommand{\chapname}[1]{\addtocounter{line}{1}%
 %   \put(1,-\value{line}){\blob}
-%   \put(-7.5,-\value{line}){\Large \arabic{line}}
-%   \put(-7,-\value{line}){\Large #1}}
+%   % Adjust these numbers for the proper indentation
+%   \put(-5.5,-\value{line}){\Large \arabic{line}}
+%   \put(-5,-\value{line}){\Large #1}}
 %
-% \newcommand{\overview}{\thepage
+% \newcommand{\overview}{%
 %   \begin{picture}(0,0)
-%     \secname{Introduction}
-%     \secname{The first year}
-%     \secname{Specialisation}
-% ...etc...
-%   \end{picture}}
+%     \chapname{Introduction}
+%     \chapname{Another chapter}
+%     \chapname{Third case}
+%     . . .
+%   \end{picture}
+% }
+% \end{example}
+% The overview page:\\
+% The page doesn't have `contents' --
+% all the visual contents is generated
+% by the \verb|\overview| command in the header
+% \begin{example}
+% \fancyhead[L]{Overview}
+% \fancyhead[R]{\overview}
+% \mbox{}\newpage % This produces the overview page
 %
-% \begin{document}
-% \fancyhead[R]{\overview}\mbox{}\newpage % This produces the overview page
-% \fancyhead[R]{} % Front matter may follow here
-% \clearpage
+% % Front matter -- doesn't have blobs.
+%
 % \fancyhead[RE]{\rightmark}
+% \fancyhead[RO,LE]{}
+% \fancyhead[LO]{\leftmark}
+%
+% \pagenumbering{roman}
+% \thispagestyle{plain}
+% \tableofcontents
+%  . . .
+% \newpage
+%
+% % Here the document begins
+%
+% \pagenumbering{arabic}
+%
+% % Now activate the blobs
+%
 % \fancyhead[RO]{\rblob}
 % \fancyhead[LE]{\lblob}
-% \fancyhead[LO]{{\leftmark}
-% ...
-% \end{verbatim}
-%   \caption{Thumb-index code}
-%   \label{fig:thumb}
-% \end{figure}
+%
+% % Page style 'plain' does not have the usual header,
+% % but it does have the blobs.
+%
+% \fancypagestyle{plain}{%
+%   \fancyhead[RE,LO]{}
+%   \renewcommand{\headrule}{}%
+% }
+% \end{example}
 %
 % \section{Float placement}
 %
