@@ -172,14 +172,47 @@
 \newcommand{\Example}[1]{\renewcommand{\ExampleLabel}{Example~#1}}
 \newcommand{\NoExample}[1]{\renewcommand{\ExampleLabel}{#1}}
 \newcommand{\formatexample}{\hbox{\hspace{-2.5cm}%
-    \raisebox{-\baselineskip}[0pt][0pt]{\normalfont\normalsize
+    \raisebox{-2\baselineskip}[0pt][0pt]{\normalfont\normalsize
       \ExampleLabel}}\nopagebreak}
 
 \newcommand{\FExample}[1]{%
   \noindent\makebox[0pt][l]{\hspace{-2.5cm}\normalfont\normalsize Example #1}}%
 
+\newcommand{\VL}{0.008} % size of vertical line segments
+\newcommand{\upperline}{%
+  \hbox to 0pt{%
+    \kern\leftmargin
+    \begin{picture}(0pt,0pt)
+      \setlength{\unitlength}{\linewidth}
+      \put(0,0){\line(1,0){1}}
+      \put(0,0){\line(0,-1){\VL}}
+      \put(1,0){\line(0,-1){\VL}}
+    \end{picture}\hss}%
+  \nopagebreak
+}
+
+\newcommand{\lowerline}{
+\nopagebreak\noindent
+\begin{picture}(0pt,0pt)
+  \setlength{\unitlength}{\linewidth}
+  \put(0,\VL){\line(1,0){1}}
+  \put(0,\VL){\line(0,1){\VL}}
+  \put(1,\VL){\line(0,1){\VL}}
+\end{picture}\par
+}
+
+% fancyvrb hacking
+\makeatletter
+\def\FV@Frame@mylines{%
+  \let\FV@BeginListFrame\upperline
+  \let\FV@LeftListFrame\relax
+  \let\FV@RightListFrame\relax
+  \let\FV@EndListFrame\lowerline}
+\makeatother
+
 % print the Example number in the margin and gobble the % sign of ltxdoc
-\DefineVerbatimEnvironment{example}{Verbatim}{formatcom=\formatexample,gobble=1}
+\DefineVerbatimEnvironment{example}{Verbatim}{formatcom=\formatexample,gobble=1,
+                                              vspace=0pt,frame=mylines}
 
 \begin{document}
   \DeleteShortVerb{\|}
