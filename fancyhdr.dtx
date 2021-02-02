@@ -160,13 +160,6 @@
       {\renewcommand{\footrulewidth}{0pt}}%
   }
 }
-% Change \MacroFont to have verbatim in normal size
-\renewcommand{\MacroFont}%
-  {\fontencoding\encodingdefault
-    \fontfamily\ttdefault
-    \fontseries\mddefault
-    \fontshape\shapedefault
-    \normalsize}
 
 \newcommand{\ExampleLabel}{}
 \newcommand{\Example}[1]{\renewcommand{\ExampleLabel}{Example~#1}}
@@ -213,6 +206,7 @@
 % print the Example number in the margin and gobble the % sign of ltxdoc
 \DefineVerbatimEnvironment{example}{Verbatim}{formatcom=\formatexample,gobble=1,
                                               vspace=0pt,frame=mylines}
+\DefineVerbatimEnvironment{code}{Verbatim}{gobble=1,vspace=0pt,frame=mylines}
 
 \begin{document}
   \DeleteShortVerb{\|}
@@ -441,7 +435,7 @@
 % \cs{rightmark} and \cs{lastleftmark} = \cs{leftmark}. As with the
 % standard marks, these are meant to be used in headers and footers. In
 % other places they will not work properly.
-% \begin{verbatim}
+% \begin{code}
 % \extramarks{aa}{bb}
 % \firstleftxmark
 % \firstrightxmark
@@ -452,7 +446,7 @@
 % \firstxmark
 % \lastxmark
 % \topxmark
-% \end{verbatim}
+% \end{code}
 % The command \Cmd{extramarks\{aa\}\{bb\}} defines two extra marks,
 % similar to the standard ones by \latex/, where \texttt{aa} is the left
 % one and \texttt{bb} is the right one. The other commands are to
@@ -615,10 +609,10 @@
 % the commands:
 %
 % \PSindex{fancy}
-% \begin{verbatim}
+% \begin{code}
 % \usepackage{fancyhdr}
 % \pagestyle{fancy}
-% \end{verbatim}
+% \end{code}
 %
 % We can visualize the page layout we can create with \Package{fancyhdr}
 % as follows:
@@ -696,9 +690,9 @@
 % commands.
 %
 % Alternatively, issue
-% \begin{verbatim}
+% \begin{code}
 % \thispagestyle{empty}
-% \end{verbatim}
+% \end{code}
 % if you do not want any headers or footers.
 %
 % In fact the standard \latex/ classes have the command \cs{maketitle}
@@ -898,9 +892,9 @@
 %
 %  As an example, let us redefine the \texttt{plain} style so that it will
 % be the same as page style \texttt{fancy}:
-% \begin{verbatim}
+% \begin{code}
 % \fancypagestyle{plain}{}
-% \end{verbatim}
+% \end{code}
 % Now when these special pages use the \texttt{plain} page style, they use your redefined version.
 %
 % As another example, let us
@@ -933,14 +927,14 @@
 % As you see, there is an optional argument between the two mandatory arguments.
 %
 % For example:
-% \begin{verbatim}
+% \begin{code}
 % \fancypagestyle{toc}{%
 %   \fancyhf{}%
 %   \fancyhead[RO]{\thepage}%
 %   \fancyhead[RO]{\textsl{TABLE OF CONTENTS}}%
 %   \fancyfoot[C]{\thepage}
 % }
-% \end{verbatim}
+% \end{code}
 % This defines a special page style \texttt{toc} for use in the table
 % of contents with \Cmd{pagestyle\{toc\}}.
 % Inside the definition you can define the headers and/or footers,
@@ -972,11 +966,11 @@
 %
 % If you want to restore the original default definitions
 % from page style \texttt{fancy}  as described in section~\ref{sec:default}, you can use
-% \begin{verbatim}
+% \begin{code}
 % \fancypagestyle{myfancy}[fancydefault]{
 %   . . . override some here
 % }
-% \end{verbatim}
+% \end{code}
 % \PSindex{fancydefault}
 % Page style \texttt{fancydefault} is the version of page style
 % \texttt{fancy} that has all the initialisation embedded. Contrary to
@@ -1073,10 +1067,10 @@
 % \Package{fancyhdr}; so we don't use any of the page style options in
 % the \Cmd{usepackage\{fancyhdr\}} command, and we don't redefine any
 % headers or footers. So just:
-% \begin{verbatim}
+% \begin{code}
 % \usepackage{fancyhdr}
 % \pagestyle{fancy}
-% \end{verbatim}
+% \end{code}
 % and let \Package{fancyhdr} take care of everything.  As mentioned
 % before, we get a layout that is similar to the page style
 % \texttt{headings}, but it is not exactly the same. If you want to have
@@ -1084,10 +1078,10 @@
 % under the header, use (you need \Package{fancyhdr} version 4 or later
 % for this):
 % \PSindex{headings}
-% \begin{verbatim}
+% \begin{code}
 % \usepackage[headings]{fancyhdr}
 % \pagestyle{headings}
-% \end{verbatim}
+% \end{code}
 %
 % On the pages where new chapters start, we get a centered page number
 % in the footer; there is no header, and there are no decorative lines.
@@ -1366,16 +1360,16 @@
 % the table of contents, you must issue the \cs{markboth} command
 % yourself, e.g.
 %
-% \begin{verbatim}
+% \begin{code}
 % \chapter*{Preface}
 % \markboth{Preface}{}
-% \end{verbatim}
+% \end{code}
 %
 % Or in a documentclass without chapters:
-% \begin{verbatim}
+% \begin{code}
 % \section*{Preface}
 % \markboth{Preface}{}
-% \end{verbatim}
+% \end{code}
 %
 % \section{Dictionary style headers}
 %
@@ -1389,10 +1383,10 @@
 % if there are also chapters and sections present, you must redefine the
 % \cs{chaptermark} and \cs{sectionmark} to make them harmless:
 %
-% \begin{verbatim}
+% \begin{code}
 % \renewcommand{\chaptermark}[1]{}
 % \renewcommand{\sectionmark}[1]{}
-% \end{verbatim}
+% \end{code}
 %
 % Now you do a \Cmd{markboth\{\#1\}\{\#1\}} for each dictionary or concordance
 % entry \verb|#1| and use \cs{rightmark} for the first entry defined on
@@ -1454,33 +1448,33 @@
 % line in the header quite thick with
 %
 % \CmdIndex{headrulewidth}
-% \begin{verbatim}
+% \begin{code}
 % \renewcommand{\headrulewidth}{0.6pt}
-% \end{verbatim}
+% \end{code}
 % or you can make the decorative line in the footer disappear with
 % \CmdIndex{footrulewidth}
-% \begin{verbatim}
+% \begin{code}
 % \renewcommand{\footrulewidth}{0pt}
-% \end{verbatim}
+% \end{code}
 %
 % The decorative lines, themselves, are defined in the two macros
 % \cs{headrule} and \cs{footrule}.  For instance,
 % if you want a dotted line rather than a solid line in the header,
 % redefine the command \cs{headrule}:
 %
-% \begin{verbatim}
+% \begin{code}
 % \renewcommand{\headrule}{\vbox to 0pt
 %     {\makebox[\headwidth]{\dotfill}\vss}}
-% \end{verbatim}
+% \end{code}
 %
 % The redefined \cs{headrule} should preferably take up no vertical space, as in the example above, and as in the standard definition. If it does take vertical space, the header may come too close to the text, or even intrude in the text. In that case \Package{fancyhdr} will give you a warning that \cs{headheight} is too small. Like
-% \begin{verbatim}
+% \begin{code}
 % Package fancyhdr Warning: \headheight is too small (12.0pt):
 % (fancyhdr)                Make it at least 14.0pt, for example:
 % (fancyhdr)                \setlength{\headheight}{14.0pt}.
 % (fancyhdr)                You might also make \topmargin smaller to compensate:
 % (fancyhdr)                \addtolength{\topmargin}{-2.0pt}.
-% \end{verbatim}
+% \end{code}
 % \label{page:warning}\index{Warning}
 % You will probably get this warning on every page.
 % \textbf{Note:} Before version 4.0, \Package{fancyhdr} would change the
@@ -1491,15 +1485,15 @@
 % \texttt{compatV3} package option. You should not give this as a
 % permanent solution, however, but solve the problem). Therefore you are strongly advised to
 % redefine \cs{headheight} in the preamble, like this:
-% \begin{verbatim}
+% \begin{code}
 % \setlength{\headheight}{14pt}
-% \end{verbatim}
+% \end{code}
 % This would cause the main text to be put 2pt lower on the page, which
 % might be undesirable. You can compensate this by making \cs{topmargin}
 % correspondingly smaller, for example
-% \begin{verbatim}
+% \begin{code}
 % \addtolength{\topmargin}{-2pt}
-% \end{verbatim}
+% \end{code}
 % A similar change would be necessary for \cs{footskip} if the footer comes out too tall.
 %
 % You can also eliminate this check completely by using the
@@ -1513,14 +1507,14 @@
 %
 % As an alternative to changing \cs{headrulewidth} to 0 to have the rule
 % disappear, you can also make it empty with
-% \begin{verbatim}
+% \begin{code}
 % \renewcommand{\headrule}{}
-% \end{verbatim}
+% \end{code}
 % Visually this makes no difference, but it is more difficult to restore
 % it later to its default value.
 %
 % Finally, let us make a real `decorative' line\footnote{Based upon an idea by Wayne Chan.}.
-% \begin{verbatim}
+% \begin{code}
 % \usepackage{fourier-orns}
 % ...
 % \renewcommand\headrule{%
@@ -1528,7 +1522,7 @@
 %       \raisebox{-2.1pt}
 %           {\quad\decofourleft\decotwo\decofourright\quad}%
 %       \hrulefill}
-% \end{verbatim}
+% \end{code}
 % This gives us the following headrule:
 %
 % \noindent\makebox[\textwidth]{\hrulefill
@@ -1608,10 +1602,10 @@
 % printed, add both \cs{marginparsep} and \cs{marginparwidth} to
 % \cs{headwidth} with the commands:
 %
-% \begin{verbatim}
+% \begin{code}
 % \addtolength{\headwidth}{\marginparsep}
 % \addtolength{\headwidth}{\marginparwidth}
-% \end{verbatim}
+% \end{code}
 %
 % \begin{flushleft}
 % It is safest to issue these commands \emph{after} the first
@@ -1684,21 +1678,21 @@
 %
 % Chapter pages have no headers or footers.  So we declare
 %
-% \begin{verbatim}
+% \begin{code}
 % \thispagestyle{empty}
-% \end{verbatim}
+% \end{code}
 % for every chapter page, and we do not need to redefine plain.
 %
 % Chapter and section titles appear in the form: 2.\ IMPLEMENTATION, so we have
 % to redefine \cs{chaptermark} and \cs{sectionmark} as follows (see
 % Section~\ref{sec:scoop}):
 %
-% \begin{verbatim}
+% \begin{code}
 % \renewcommand{\chaptermark}[1]%
 %    {\markboth{\MakeUppercase{\thechapter.\ #1}}{}}
 % \renewcommand{\sectionmark}[1]%
 %    {\markright{\MakeUppercase{\thesection.\ #1}}}
-% \end{verbatim}
+% \end{code}
 %
 % On an even page, the page number is printed as the left header and
 % the chapter info as the right header; on an odd page, the section info
@@ -1708,24 +1702,24 @@
 % There is a decorative line in the header.  It is 0.5pt wide, so we need
 % the commands:
 %
-% \begin{verbatim}
+% \begin{code}
 % \renewcommand{\headrulewidth}{0.5pt}
 % \renewcommand{\footrulewidth}{0pt}
-% \end{verbatim}
+% \end{code}
 %
 % The font used in the headers is 9 pt bold Helvetica.  The \PSNFSS\ system
 % by Sebastian Rahtz uses the short (Karl Berry) name \verb|phv| for
 % Helvetica, so this font is selected with the commands:
-% \begin{verbatim}
+% \begin{code}
 % \fontfamily{phv}\fontseries{b}\fontsize{9}{11}\selectfont
-% \end{verbatim}
+% \end{code}
 % (See Sections 7.6.1 and 11.9.1 of the \latex/ \emph{Companion} or
 % Sections 7.6 and 7.9.1 of \emph{The \latex/ Companion, Second Edition}.)
 % Let us define a shorthand for this:
-% \begin{verbatim}
+% \begin{code}
 % \newcommand{\helv}{%
 %    \fontfamily{phv}\fontseries{b}\fontsize{9}{11}\selectfont}
-% \end{verbatim}
+% \end{code}
 %
 % Now we are ready for the page layout:
 %
@@ -1806,10 +1800,10 @@
 %
 % \Package{fancyhdr} gives you the commands \cs{iftopfloat}, \cs{ifbotfloat} and \cs{iffootnote}
 % similar to \cs{iffloatpage}. For example:
-% \begin{verbatim}
+% \begin{code}
 % \fancyhead[R]{\iftopfloat{This page has a topfloat}
 %                          {There is no topfloat here}}
-% \end{verbatim}
+% \end{code}
 %
 % Note: Marks in floats will not be visible in \latex/'s output routine, so
 % it is not useful to put marks in floats. So there is currently no way to
@@ -1829,9 +1823,9 @@
 % \PSindex{empty}
 % \CmdIndex{clearpage}
 % \CmdIndex{cleardoublepage}
-% \begin{verbatim}
+% \begin{code}
 % \clearpage\begingroup\pagestyle{empty}\cleardoublepage\endgroup
-% \end{verbatim}
+% \end{code}
 %
 % As the \Cmd{pagestyle\{empty\}} is enclosed in a group it only affects the
 % page that may be generated by the \cs{cleardoublepage}.  You can of
@@ -1839,7 +1833,7 @@
 % automatically at each chapter start or when you want some other text on the
 % page then you must redefine the \cs{cleardoublepage} command.
 % \index{blank page}
-% \begin{verbatim}
+% \begin{code}
 % \makeatletter
 % \def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
 %  \begingroup
@@ -1854,7 +1848,7 @@
 %   \if@twocolumn\mbox{}\newpage\fi
 %  \endgroup\fi\fi}
 % \makeatother
-% \end{verbatim}
+% \end{code}
 %
 % \section{\textsf{N} of \textsf{M} style page numbers}
 % \label{sec:nofm}
@@ -1873,9 +1867,9 @@
 % Because you want the pages with pagestyle \texttt{plain} to contain
 % the same style of page numbers, you will have to redefine this
 % pagestyle too.
-% \begin{verbatim}
+% \begin{code}
 % \fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrule}{}}
-% \end{verbatim}
+% \end{code}
 % We clear all the headers including its rule. The footer will be
 % ``inherited'' from the pagestyle \texttt{fancy}.
 %
@@ -1885,13 +1879,13 @@
 % contain the text ``please turn over'', this can be done as
 % follows:
 %
-% \begin{verbatim}
+% \begin{code}
 % \usepackage{lastpage}
 % \usepackage{ifthen}
 % ...
 % \fancyfoot[R]{\ifthenelse{\isodd{\value{page}} \and \not
 %      \(\value{page}=\pageref{LastPage}\)}{please turn over}{}}
-% \end{verbatim}
+% \end{code}
 %
 % In order to get the number of pages correctly used, you usually have
 % to do one additional \LaTeX{} run.
@@ -1910,9 +1904,9 @@
 % separator, you must redefine \cs{chappgsep}, for example to use an
 % en-dash:
 %
-% \begin{verbatim}
+% \begin{code}
 % \renewcommand{\chappgsep}{--}
-% \end{verbatim}
+% \end{code}
 %
 % To use a different prefix, for example the section number, use the
 % \Cmd{pagenumbering\{bychapter\}} command with an optional argument
@@ -1935,13 +1929,13 @@
 % after the first \cs{chapter} command. If you want to do it before the
 % \cs{chapter} command you must precede it
 % by a \cs{newpage} command (see the next section).
-% \begin{verbatim}
+% \begin{code}
 % \pagenumbering{roman}
 % \tableofcontents
 % \newpage
 % \pagenumbering{bychapter}
 % \chapter{Introduction}
-% \end{verbatim}
+% \end{code}
 %
 % There is a caveat when you have appendices in your document. Before the
 % \cs{appendix} command you should give a \cs{clearpage} or
@@ -1970,11 +1964,11 @@
 % you will have to redefine these yourself and maybe also
 % the definitions of the headers and footers, at that point.
 % For example
-% \begin{verbatim}
+% \begin{code}
 % \pagestyle{fancy}
 % \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
 % \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
-% \end{verbatim}
+% \end{code}
 % Please note that you have to double the \verb|#| signs, because the
 % definitions are inside a macro.
 %
@@ -1988,7 +1982,7 @@
 %
 % A better possibility is to define your own page style, and include
 % these definitions in that page style:
-% \begin{verbatim}
+% \begin{code}
 % \fancypagestyle{myfancy}{
 %   \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
 %   \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
@@ -1996,7 +1990,7 @@
 % }
 % ...
 % \pagestyle{myfancy}
-% \end{verbatim}
+% \end{code}
 %
 % In general, when you use only one page style \texttt{fancy} in your
 % document, with the occasional \cs{thispagestyle} excursion to page
@@ -2018,11 +2012,11 @@
 % \cs{clearpage} or \cs{cleardoublepage} command
 % before the \cs{pagestyle} command, so that the last page will be
 % finished with the previous page style. I.e., the proper sequence is:
-% \begin{verbatim}
+% \begin{code}
 % \newpage % (or \clearpage or \cleardoublepage)
 % \pagestyle{newstyle}
 % \chapter{My New Chapter}
-% \end{verbatim}
+% \end{code}
 %
 % \section{When to change the headers and footers?}
 % \label{sec:change}
@@ -2063,10 +2057,10 @@
 % if you gave the above command \emph{before} the \cs{chapter} command
 % rather than after it. So we give the \cs{Author} command after the
 % \cs{chapter} command:
-% \begin{verbatim}
+% \begin{code}
 % \chapter{Chapter Title}
 % \Author{Author Name}
-% \end{verbatim}
+% \end{code}
 % As a chapter starts on a new page, we can be sure that the \cs{Author}
 % command comes at the same page as the chapter start.
 %
@@ -2074,11 +2068,11 @@
 % commands ahead, so it may already have processed some commands that produce
 % text that will appear on the next page. So if our book was not divided
 % into chapters, but into sections, we cannot use the similar system:
-% \begin{verbatim}
+% \begin{code}
 % %%% NOTE: This may not work %%%%
 % \section{Chapter Title}
 % \Author{Author Name}
-% \end{verbatim}
+% \end{code}
 % because in this case, when this command comes at the end of a page,
 % the ``variable'' \cs{TheAuthor} could be set at that page, but then
 % \TeX{} could decide to move the section title to the next page. And
@@ -2123,11 +2117,11 @@
 % the page number with the label page number and choose the proper
 % value. For example, if we want to replace the section title on the
 % special page with ``MYFANCY SECTION'', like in
-% \begin{verbatim}
+% \begin{code}
 % \fancypagestyle{myfancy}{
 %   \fancyhead[LE,RO]{MYFANCY SECTION}
 % }
-% \end{verbatim}
+% \end{code}
 % \Example{25 (a)}
 % we define a new pagestyle that makes the choice:
 % \begin{example}
@@ -2166,7 +2160,7 @@
 %   has tests in the header field definitions. This chooses the actual
 %   header depending on the page number.
 % \end{minipage}
-% \end{verbatim}
+% \end{code}
 % The \cs{noindent} is necessary, otherwise the whole \texttt{minipage}
 % will be shifted right by the paragraph indentation.
 %
@@ -2190,12 +2184,12 @@
 % \emph{expandable}. However, the \cs{ifthenelse} construct is not
 % expandable, so you will get strange error messages if you use
 % something like
-% \begin{verbatim}
+% \begin{code}
 % %%% NOTE: This does not work %%%%
 % \renewcommand{\footrulewidth}{%
 %   \ifthenelse{\value{page}=\pageref{otherpagestyle}}{0.4pt}{0pt}%
 % }
-% \end{verbatim}
+% \end{code}
 % For cases like this \Package{fancyhdr} version~4.0 and later has some
 % new commands \cs{fancyheadinit}, \cs{fancyfootinit} and \cs{fancyhfinit}.
 % \DescribeMacro{\fancyheadinit}
@@ -2212,7 +2206,7 @@
 % the test inside the definition of \cs{headruleskip}, we can put it
 % outside, and then we can use the command \cs{ifthenelse}. So we put
 % the following in \Cmd{pagestyle\{switch\}}:
-% \begin{verbatim}
+% \begin{code}
 %   \fancyheadinit{%
 %     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
 %       {\renewcommand{\headruleskip}{4pt}}
@@ -2223,7 +2217,7 @@
 %       {\renewcommand{\footrulewidth}{0.4pt}}
 %       {\renewcommand{\footrulewidth}{0pt}}
 %   }
-% \end{verbatim}
+% \end{code}
 % Now here is the definition of the page style used for page~\pageref{showstruts}.
 % \Example{25 (b)}
 % \begin{example}
@@ -2264,13 +2258,13 @@
 % been set up. But you can use it to set the color and font of the
 % header and/or footer, for example to get large, red text in the
 % headers and footers on this specific page:
-% \begin{verbatim}
-%   \fancyhfinit{%
-%     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
-%       {\color{red}\Large}
-%       {}
-%     }
-% \end{verbatim}
+% \begin{code}
+%  \fancyhfinit{%
+%    \ifthenelse{\value{page}=\pageref{otherpagestyle}}
+%      {\color{red}\Large}
+%      {}
+%  }
+% \end{code}
 %
 % \subsection{Changing the page style of the next page}
 %
@@ -2492,9 +2486,9 @@
 % We can solve this by repeating the \cs{afterpage} command in the
 % \cs{afterpage} text. To do this we have to put it in a macro
 % (\texttt{AP} stands for \texttt{afterpage}):
-% \begin{verbatim}
+% \begin{code}
 % \newcommand{\setAP}{\afterpage{\firstxmark\setAP}}
-% \end{verbatim}
+% \end{code}
 % There is a disadvantage that the \cs{afterpage} will be continued on
 % all pages after the block has ended. But as \cs{firstxmark} will be
 % empty then, no harm will be done. However, the following subsection (\ref{sec:afterpage2})
@@ -2525,15 +2519,14 @@
 % \env{continued} environment) we must do a \emph{global} redefine.
 % \LaTeX{} does not have a command for this, so we use the low-level
 % \TeX{} command \cs{gdef} for this.
-% \begin{verbatim}
+% \begin{code}
 % \newcommand{\startAP}{\setAP\gdef\startAP{}}
 %  . . .
 % \newenvironment{continued}{%
 %   . . .
 %   \startAP
 % } . . .
-% \end{verbatim}
-%
+% \end{code}
 % \end{enumerate}
 %
 % We also put some thick black rules around the environment.
@@ -2957,22 +2950,22 @@
 % are given before a float page can be filled to satisfy the
 % \cs{floatpagefraction} parameter. If you have this kind of behaviour you
 % can easily adapt the parameters, e.g. with:
-% \begin{verbatim}
+% \begin{code}
 % \renewcommand{\textfraction}{0.05}
 % \renewcommand{\topfraction}{0.95}
 % \renewcommand{\bottomfraction}{0.95}
 % \renewcommand{\floatpagefraction}{0.35}
 % \setcounter{totalnumber}{5}
-% \end{verbatim}
+% \end{code}
 % You may want to be careful not to make \cs{floatpagefraction} too small,
 % otherwise you may get too many small floatpages.
 %
 % You can force \latex/ to ignore most of the parameters for one specific float
 % occurrence by
 % including an exclamation mark (!) in the placement parameters, e.g.
-% \begin{verbatim}
+% \begin{code}
 % \begin{figure}[!htb]
-% \end{verbatim}
+% \end{code}
 %
 % Floats which contain a ``\texttt{t}'' in the position parameter could be
 % placed before the place where they are referenced (but on the same page).
@@ -2995,9 +2988,9 @@
 % command. This will start a new page and insert all pending floats before
 % continueing. If it is undesirable to have a pagebreak you can use the
 % \Package{afterpage} package and the following command:
-% \begin{verbatim}
+% \begin{code}
 % \afterpage{\clearpage}
-% \end{verbatim}
+% \end{code}
 %
 % This will wait until the current page is finished and then flush all
 % outstanding floats. In some pathological circumstances \Package{afterpage}
@@ -3006,18 +2999,18 @@
 % Finally, if you want a float only at the place where you define it, without
 % \latex/ moving it whatsoever, you can use the \Package{float} package and
 % give the command:
-% \begin{verbatim}
+% \begin{code}
 % \restylefloat{figure}
-% \end{verbatim}
+% \end{code}
 %  in the preamble. Now you will be able to
 % specify \texttt{[H]} as the position parameter, which will mean ``HERE
 % and only HERE''. This may cause an unwanted page break however.
 % If you want to avoid the unwanted pagebreak, i.e. let
 % \LaTeX{} move the float only if it doesn't fit on the page, then use the
 % \Package{afterpage} package with:
-% \begin{verbatim}
+% \begin{code}
 % \afterpage{\clearpage \begin{figure}[H] ... \end{figure}}
-% \end{verbatim}
+% \end{code}
 %
 % Complaints from \latex/ about ``Too many floats'' are usually caused by one
 % of the above problems: floats not being able to be placed and \latex/
@@ -3065,12 +3058,13 @@
 % package). As a \texttt{longtable} is by definition large, it is best to put
 % it in a separate file, and \cs{input} it in the \cs{afterpage} command:
 % \CmdIndex{afterpage}
-% \begin{verbatim}
+% \begin{code}
 % \afterpage{\input{mytable}}
-% \end{verbatim}
-% \begin{verbatim}
+% \end{code}
+% or
+% \begin{code}
 % \afterpage{\clearpage\input{mytable}}
-% \end{verbatim}
+% \end{code}
 % The last form has the additional advantage that most of the outstanding
 % floats will be printed first.
 %
@@ -3093,11 +3087,11 @@
 % the list of figures. It may also be desirable to issue a \cs{clearpage}
 % first, just like we did for the \texttt{longtable}, and to encapsulate this
 % in the \cs{afterpage} command. E.g.
-% \begin{verbatim}
+% \begin{code}
 % \afterpage{\clearpage\input{myfigure}}
-% \end{verbatim}
+% \end{code}
 % where \texttt{myfigure.tex} contains:
-% \begin{verbatim}
+% \begin{code}
 % \begin{figure}[p]
 % \includegraphics{myfig1.eps}
 % \caption{This is a multipage figure}
@@ -3109,7 +3103,7 @@
 % Figure~\ref{fig:xxx} (continued)
 % \end{center}
 % \end{figure}
-% \end{verbatim}
+% \end{code}
 %
 % You have to make sure that the last part is big enough, otherwise \LaTeX{}
 % could decide to postpone it until it has collected some more floats. This
@@ -3120,11 +3114,11 @@
 % If you want your multipage figure to start at a lefthand-side
 % (even-numbered) page you can use a test in the \cs{afterpage} command
 % (using the \Package{ifthen} package):
-% \begin{verbatim}
+% \begin{code}
 % \afterpage{\clearpage
 % \ifthenelse{\isodd{\value{page}}{\afterpage{\input{myfigure}}} % odd page
 %     {\input{myfigure}}}} % even page
-% \end{verbatim}
+% \end{code}
 % If there are too many floats on the skipped page, this may still fail to
 % start your multipage figure on an even page, however.
 %
@@ -3180,13 +3174,14 @@
 % There was also a special pagestyle \texttt{fancyplain} that could be
 % used to define both the pagestyle \texttt{fancy} and to redefine the
 % pagestyle \texttt{plain} at the same time. In order to use that you say
-% \begin{verbatim}
+% \begin{code}
 % \pagestyle{fancyplain}}
-% \end{verbatim}
+% \end{code}
 % and then in the headers/footers you use for example:
-% \begin{verbatim}
-% \fancyhead[L]{\fancyplain{value for `plain' page}{value for other pages}}}
-% \end{verbatim}
+% \begin{code}
+% \fancyhead[L]{\fancyplain{value for `plain' page}
+%              {value for other pages}}}
+% \end{code}
 %
 % The \cs{fancyplain} command is only useful within the pagestyle \texttt{fancyplain}.
 % Nowadays you would just redefine pagestyle \texttt{plain} with the
@@ -3327,7 +3322,7 @@
 % header/footer without changing the actual title?
 %
 % Here is an example:
-% \begin{verbatim}
+% \begin{code}
 % \fancyhead[LE,RO]{\nouppercase{\rightmark}} % Section title
 % \fancyhead[LO,RE]{\nouppercase{\leftmark}} % Chapter title
 % \fancyfoot[C]{\thepage}
@@ -3336,7 +3331,7 @@
 %  . . .
 % \section{This is a very long section title that will not fit in the header}
 %  . . .
-% \end{verbatim}
+% \end{code}
 % With these settings the header will come out as:
 %
 % \medskip
@@ -3360,12 +3355,12 @@
 % least in the \texttt{book} and \texttt{report} documentclasses. In the
 % \texttt{article} class this would be the \cs{section} and
 % \cs{subsection} commands.}
-% \begin{verbatim}
+% \begin{code}
 % \chapter[Short chapter title]{This is a very long chapter title}
 %  . . .
 % \section[Short section title]
 %         {This is a very long section title that will not fit in the header}
-% \end{verbatim}
+% \end{code}
 % The short titles will now appear in the header. However, these will
 % also appear in the table of contents. If that is what you want than
 % you are ready. But if you want to use the long titles in the table of
@@ -3382,10 +3377,10 @@
 % value that is supplied by the \cs{chapter} command, by supplying an
 % additional \cs{chaptermark} command after the \cs{chapter} command,
 % like this:
-% \begin{verbatim}
+% \begin{code}
 % \chapter{This is a very long chapter title that does not fit in the header}
 % \chaptermark{This is a not so long chapter title}
-% \end{verbatim}
+% \end{code}
 % For the section titles the situation is more complicated. Here we use
 % the \cs{rightmark}, which uses the first mark of its kind on the page.
 % So you might think putting a \cs{sectionmark}\CmdIndex{sectionmark} before the \cs{section}
@@ -3414,25 +3409,27 @@
 % our included \cs{sectionmark} commands
 %
 % So the complete code would be:
-% \begin{verbatim}
+% \begin{code}
 % \section[Long title]{Long title\sectionmark{Short title}}
 % \sectionmark{Short title}
-% \end{verbatim}
+% \end{code}
 % To avoid all the repetitions, it is better to make a macro:
-% \begin{verbatim}
-% \newcommand{\Section}[2]{\section[#1]{#1\sectionmark{#2}}\sectionmark{#2}}
+% \begin{code}
+% \newcommand{\Section}[2]{%
+%             \section[#1]{#1\sectionmark{#2}}\sectionmark{#2}}
 %  . . .
 % \Section{Text title}{Header title}
-% \end{verbatim}
+% \end{code}
 % And if you want to use yet a different text in the table of contents,
 % you can make a macro with three parameters. The third parameter is the
 % text to be put in the table of contents. We use this parameter as the
 % optional argument for the \cs{section} command.
-% \begin{verbatim}
-% \newcommand{\Sectioniii}[3]{\section[#3]{#1\sectionmark{#2}}\sectionmark{#2}}
+% \begin{code}
+% \newcommand{\Sectioniii}[3]{%
+%             \section[#3]{#1\sectionmark{#2}}\sectionmark{#2}}
 %  . . .
 % \Sectioniii{Text title}{Header title}{TOC title}
-% \end{verbatim}
+% \end{code}
 % Please note that if you use the \texttt{article} class, instead of
 % \cs{chaptermark} and \cs{sectionmark}, you would probably use \cs{sectionmark}\cs{subsectionmark}.
 %
@@ -3443,11 +3440,11 @@
 % truncates a text to a maximum size, when it exceeds that size. We put
 % both headers in \cs{truncate} to limit it to half the \cs{headwidth}.
 % Of course it is also possible to make asymmetric arrangements.
-% \begin{verbatim}
+% \begin{code}
 % \usepackage[fit]{truncate}
 % \fancyhead[LE,RO]{\nouppercase{\truncate{0.5\headwidth}{\rightmark}}}
 % \fancyhead[LO,RE]{\nouppercase{\truncate{0.5\headwidth}{\leftmark}}}
-% \end{verbatim}
+% \end{code}
 % We don't have to make any changes to the chaper and section titles
 % because \cs{truncate} will take care of this.
 % This arrangement gives the following header when both titles are too
@@ -3495,7 +3492,7 @@
 % just have to repeat them at the point where you switch back to
 % pagestyle \texttt{fancy}.
 %
-% \begin{verbatim}
+% \begin{code}
 % \begin{document}
 % \frontmatter
 % \pagestyle{myheadings}
@@ -3503,7 +3500,7 @@
 % \mainmatter
 % \pagestyle{fancy}
 % \renewcommand{\chaptermark}[1]{....}
-% \end{verbatim}
+% \end{code}
 %
 %
 % \newpage
