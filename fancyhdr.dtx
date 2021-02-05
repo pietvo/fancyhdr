@@ -208,6 +208,9 @@
                                               vspace=0pt,frame=mylines}
 \DefineVerbatimEnvironment{code}{Verbatim}{gobble=1,vspace=0pt,frame=mylines}
 
+\newlength{\normalparindent}
+\setlength{\normalparindent}{\parindent}
+
 \begin{document}
   \DeleteShortVerb{\|}
   \DocInput{\jobname.dtx}
@@ -1574,6 +1577,7 @@
 %
 % \pagestyle{showstruts}
 % \noindent\begin{minipage}{\textwidth}
+% \parindent=\normalparindent
 % \phantomsection\label{showstruts}
 % \indent The header and footer in this page
 % show the \emph{strut} (the amount of space in the text area above and
