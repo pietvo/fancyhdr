@@ -30,6 +30,7 @@ the following packages installed:
 - truncate (CTAN:/macros/latex/contrib/truncate)
 - fancyvrb (CTAN:/macros/latex/contrib/fancyvrb)
 - hyperref (CTAN:/macros/latex/contrib/hyperref)
+- subcaption (CTAN:/macros/latex/contrib/caption)
 
 This is version 4.0.1 of fancyhdr.sty and extramarks.sty. They are
 described in the forthcoming third edition of The LaTeX Companion.

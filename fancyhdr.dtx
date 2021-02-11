@@ -46,7 +46,7 @@
 \usepackage{boxedminipage}
 \usepackage{fourier-orns}
 \usepackage[T1]{fontenc}
-\usepackage{url}
+\usepackage[hyphens]{url}
 \usepackage[fit]{truncate}
 \usepackage{fancyvrb}
 \usepackage[colorlinks,linktocpage]{hyperref}
@@ -2880,13 +2880,17 @@
 %
 % \section{Float placement}
 %
+% \textbf{Note: This section is not about \Package{fancyhdr}, but about
+% page layout, especially about the placement of floats.}
+%
 % Floats are page elements that float with respect to the rest of the
 % document. Standard floats are tables and figures, but with the
+% \TTindex{float}%
 % \Package{float} package you can easily make new ones, like algorithms. Most
 % of the time floats work satisfactory, but sometimes \LaTeX{} seems too
 % stubborn to do what you want. This section describes how you can influence
 % \LaTeX{} so that it will do most of the time what you want. There might,
-% however be some pathological cases where it is impossible to convince
+% however, be some pathological cases where it is impossible to convince
 % \LaTeX{} to do things your way. In the following we will use figures as an
 % example but everything applies to other floats as well.
 %
@@ -2896,7 +2900,8 @@
 %   moves it, usually to the next page.
 % \item From a certain point, \LaTeX{} moves all your floats to the end of
 %   the document or the end of a chapter.
-% \item \LaTeX{} complains about ``Too many floats''.
+% \item \index{Too many floats}%
+%   \LaTeX{} complains about ``Too many floats''.
 % \end{enumerate}
 %
 % In the first two cases you must first check if you have given the correct
@@ -2904,7 +2909,7 @@
 % specifies that your figure may be placed either: Here (i.e. in the text
 % position where the command is given), on the Top of a page (which may be
 % the page where you put the command), or on a separate Page of floats. You
-% could also have specified ``b'' for Bottom of the page. The order of the
+% could also have specified ``\texttt{b}'' for Bottom of the page. The order of the
 % letters is insignificant, you cannot force \LaTeX{} to try Bottom first
 % and then Top by specifying \texttt{[bt]}.
 %
@@ -2916,13 +2921,14 @@
 %   \texttt{[b]} in the position parameter, \latex/ must save it until it has
 %   enough for a page of floats. So don't specify only \texttt{[h]}. If you
 %   want to give \latex/ a chance to put the float on a page of floats, you
-%   must also specify ``p''.
+%   must also specify ``\texttt{p}''.
 % \item The placement would violate the constraints imposed by \latex/'s
 %   float placement parameters. This is one of the most occurring causes and
 %   it can easily be corrected by changing the parameters. Here is a list of
-%   them:
+%   them with their default values:
 % \end{enumerate}
 % \begin{center}
+% \small
 % \CmdIndex{topfraction}
 % \CmdIndex{bottomfraction}
 % \CmdIndex{textfraction}
@@ -2951,13 +2957,14 @@
 %
 % There are also some others for double column floats in two-column documents.
 %
-% The values in the righthand column are the defaults for the standard
+% The default values are for the standard
 % \latex/ classes. Other classes could use different defaults. As you see
 % with the default values a float will not be put in the bottom of a page if
-% its height is more than 30\% of the page height. So if you specify [hb] for
+% its height is more than 30\% of the page height. So if you specify \texttt{[hb]} for
 % a float which is taller it has to move to a float page. But if it is less
 % than 50\% of the page height it will have to wait until some more floats
 % are given before a float page can be filled to satisfy the
+% \phantomsection\label{page:floatpagefraction}^^A
 % \cs{floatpagefraction} parameter. If you have this kind of behaviour you
 % can easily adapt the parameters, e.g. with:
 % \begin{code}
@@ -2972,7 +2979,7 @@
 %
 % You can force \latex/ to ignore most of the parameters for one specific float
 % occurrence by
-% including an exclamation mark (!) in the placement parameters, e.g.
+% including an exclamation mark (\texttt{!}) in the placement parameters, e.g.
 % \begin{code}
 % \begin{figure}[!htb]
 % \end{code}
@@ -2985,9 +2992,11 @@
 % \item Of course deleting the ``\texttt{t}'' will help, but in general this is
 %   undesirable, as you may want the float to be placed at the top of the
 %   next page.
-% \item use the \Package{flafter} package which causes floats never to be
+% \item \TTindex{flafter}%
+%   use the \Package{flafter} package which causes floats never to be
 %   placed ``backwards''.
 % \item use the command \cs{suppressfloats[t]}.  This
+% \CmdIndex{suppressfloats}%
 %   command will cause floats for the top position \emph{on this page} to be
 %   moved to the next page. This can also be done with \texttt{[b]} or
 %   without parameter for all floats on this page.
@@ -2996,8 +3005,9 @@
 % If in spite of all your attempts \latex/ still moves your floats to the end
 % of the document or the end of a chapter, you can insert a \cs{clearpage}
 % command. This will start a new page and insert all pending floats before
-% continueing. If it is undesirable to have a pagebreak you can use the
+% continuing. If it is undesirable to have a pagebreak you can use the
 % \Package{afterpage} package and the following command:
+% \TTindex{afterpage}\CmdIndex{afterpage}\CmdIndex{clearpage}%
 % \begin{code}
 % \afterpage{\clearpage}
 % \end{code}
@@ -3009,6 +3019,7 @@
 % Finally, if you want a float only at the place where you define it, without
 % \latex/ moving it whatsoever, you can use the \Package{float} package and
 % give the command:
+% \TTindex{float}\CmdIndex{restylefloat}%
 % \begin{code}
 % \restylefloat{figure}
 % \end{code}
@@ -3018,19 +3029,32 @@
 % If you want to avoid the unwanted pagebreak, i.e. let
 % \LaTeX{} move the float only if it doesn't fit on the page, then use the
 % \Package{afterpage} package with:
+% \TTindex{afterpage}\CmdIndex{afterpage}\CmdIndex{clearpage}%
 % \begin{code}
 % \afterpage{\clearpage \begin{figure}[H] ... \end{figure}}
 % \end{code}
 %
+% \index{Too many floats}%
 % Complaints from \latex/ about ``Too many floats'' are usually caused by one
 % of the above problems: floats not being able to be placed and \latex/
 % collecting too many of them. The solutions given above, especially those
 % with \cs{clearpage} in them will usually help. In some cases there
 % really are too many floats, as \latex/ has a limited number of ``boxes'' to
-% store the floats. The package \Package{morefloats} can be used to increase
+% store the floats. The package
+% \TTindex{morefloats}%
+% \Package{morefloats} can be used to increase
 % this number. If you need still more then you must edit a private copy of
 % this file, but even then there will be some limit that you cannot pass.
 % Then your only resort will be to change your document.
+%
+% A much more elaborate article about float placement by Frank
+% Mittelbach appeared in 2014 in TUGboat\footnote{%
+% Frank Mittelbach, \emph{How to influence the position of float
+% environments like figure and table in LATEX?}, TUGboat, Volume 35
+% (2014), No. 3, pp. 248–254.\\
+% \url{https://www.latex-project.org/publications/2014-FMi-TUB-tb111mitt-float-placement.pdf}
+% \\Also on Stackexchange:\\
+%  \url{https://tex.stackexchange.com/questions/39017/how-to-influence-the-position-of-float-environments-like-figure-and-table-in-lat}}.
 %
 % \section{Multipage Floats}
 %
