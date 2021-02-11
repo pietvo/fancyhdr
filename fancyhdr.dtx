@@ -49,6 +49,8 @@
 \usepackage[hyphens]{url}
 \usepackage[fit]{truncate}
 \usepackage{fancyvrb}
+\usepackage{graphicx}
+\usepackage{subcaption}
 \usepackage[colorlinks,linktocpage]{hyperref}
 \usepackage{ifthen}
 \usepackage{fancyhdr}
@@ -3063,8 +3065,8 @@
 % to split these into multiple table or figure environments, but this has a
 % number of undesirable effects:
 % \begin{itemize}
-% \item Where do you split it? This is in general more difficult for tables
-%   than for figures.
+% \item Where do you split it? This is in generally a more difficult decision
+%   for tables than for figures.
 % \item How do you keep them together?
 % \item You don't want more than one entry in the list of figures/tables.
 % \end{itemize}
@@ -3091,7 +3093,7 @@
 % to include it in an \cs{afterpage} command (using the \Package{afterpage}
 % package). As a \texttt{longtable} is by definition large, it is best to put
 % it in a separate file, and \cs{input} it in the \cs{afterpage} command:
-% \CmdIndex{afterpage}
+% \CmdIndex{afterpage}\TTindex{afterpage}\CmdIndex{clearpage}%
 % \begin{code}
 % \afterpage{\input{mytable}}
 % \end{code}
@@ -3102,59 +3104,248 @@
 % The last form has the additional advantage that most of the outstanding
 % floats will be printed first.
 %
-%
 % \subsection{Figures}
 %
-% There isn't an equivalent \texttt{longfigure} solution, so for figures you
-% will usually have to split it yourself. In general this is less of a
+% There isn't an equivalent ``\texttt{longfigure}'' solution, so for figures you
+% will have to split yourself. In general this is less of a
 % problem. However, the problem you get now is how to keep them together,
 % i.e. how to get the parts on subsequent pages, and how to get a single
 % entry in the list of figures.
 %
 % You will have to split the figure into pieces and put each part
-% in a separate \texttt{figure} environment. To keep them together it is best
-% to use only the \texttt{[p]} placement, so that they will be put on
-% floatpages. As they are bigger than a page this is appropriate. The first
+% in a separate \texttt{figure} environment. The first
 % part would then get a \cs{caption}, the subsequent parts would be used
-% without a caption. If you want to add a caption-like text, enter it as
+% without a caption, or a caption that will not go to the list of figures.
+% If you want to add a caption-like text, enter it as
 % normal text rather than a \cs{caption}, so that it will not be entered in
 % the list of figures. It may also be desirable to issue a \cs{clearpage}
-% first, just like we did for the \texttt{longtable}, and to encapsulate this
-% in the \cs{afterpage} command. E.g.
-% \begin{code}
-% \afterpage{\clearpage\input{myfigure}}
-% \end{code}
-% where \texttt{myfigure.tex} contains:
-% \begin{code}
-% \begin{figure}[p]
-% \includegraphics{myfig1.eps}
-% \caption{This is a multipage figure}
-% \label{fig:xxx}
-% \end{figure}
-% \begin{figure}[p]
-% \includegraphics{myfig2.eps}
-% \begin{center}
-% Figure~\ref{fig:xxx} (continued)
-% \end{center}
-% \end{figure}
-% \end{code}
+% first, just like we did for the \texttt{longtable}.
 %
-% You have to make sure that the last part is big enough, otherwise \LaTeX{}
-% could decide to postpone it until it has collected some more floats. This
-% can be done either by making the figure big enough (e.g. by adding some
-% \cs{vspace}), or by tweaking the \cs{floatpagefraction}
-% \CmdIndex{floatpagefraction} parameter.
+% We give a series of possible solutions here, which can be found in
+% Example 33.
+%
+% First we include the \texttt{figure}s with the \texttt{[!htbp]}
+% position option to give \LaTeX{} maximum freedom to place them. This
+% way we hope they keep them together, although there is no guarantee.
+%
+% \Example{33\\(A)}
+% \begin{example}
+% \newcommand{\fakecaption}[2]{% #1 = figure label #2 = caption
+%   \par Figure~\ref{#1}: #2
+% }
+% \begin{figure}[!htbp]
+%   \centering
+%   \includegraphics[scale=0.5]{example-image-a}
+%   \caption[This is a multipart figure] % For the list of figures
+%           {This is a multipart figure (a)}
+%   \label{fig:first}
+% \end{figure}
+% \begin{figure}[!htbp]
+%   \centering
+%   \includegraphics[scale=0.5]{example-image-b}
+%   \fakecaption{fig:first}{This is a multipart figure (b)}
+% \end{figure}
+%  . . .
+% \end{example}
+%
+% There will most probably some of the normal text between the figure
+% parts, unless they happen to fit perfectly on the page, which isn't
+% very probable. But, what also can come between them is other floats,
+% such as \env{table}. We can prevent that previous floats can intrude
+% here by issuing a \cs{clearpage} command, but this will abruptly end
+% the current page. As we have seen before, we can do better by
+% \CmdIndex{afterpage}\CmdIndex{clearpage}%
+% including the \cs{clearpage} command in \cs{afterpage}, and we would
+% also put the figures in the \cs{afterpage}. To keep the \cs{afterpage}
+% command more tidy, it is advised to put the code for the figures in a
+% macro, or in the file that is included with \cs{input}. For example:
+%
+% \Example{33\\(B)}
+% \begin{example}
+% \newcommand{\myfigures}{%
+%   \begin{figure}[!htbp]
+%     \centering
+%     \includegraphics[scale=0.5]{example-image-a}
+%     \caption[This is a multipart figure] % For the list of figures
+%             {This is a multipart figure (a)}
+%     \label{fig:second}
+%   \end{figure}
+%   \begin{figure}[!htbp]
+%     \centering
+%     \includegraphics[scale=0.5]{example-image-b}
+%     \fakecaption{fig:second}{This is a multipart figure (b)}
+%  . . .
+% }
+%  . . .
+% \afterpage{\clearpage\myfigures}
+% \end{example}
+% \CmdIndex{afterpage}
 %
 % If you want your multipage figure to start at a lefthand-side
 % (even-numbered) page you can use a test in the \cs{afterpage} command
 % (using the \Package{ifthen} package):
+% \CmdIndex{afterpage}
+% \CmdIndex{ifthenelse}
 % \begin{code}
 % \afterpage{\clearpage
-% \ifthenelse{\isodd{\value{page}}{\afterpage{\input{myfigure}}} % odd page
-%     {\input{myfigure}}}} % even page
+%   \ifthenelse{\isodd{\value{page}}
+%     {\afterpage{\myfigures}} % odd page
+%     {\myfigures}}} % even page
 % \end{code}
+%
 % If there are too many floats on the skipped page, this may still fail to
 % start your multipage figure on an even page, however.
+%
+% But if there is enough space left on a page, some of the text will go
+% between the figures. Also, if there is still some figure part of a
+% previous sequence that has not yet found a place, it will be forced out
+% because of the \cs{clearpage} and the a new page will start, with the
+% previous page not optimally filled.
+%
+% So using \cs{clearpage} may also not be optimal. We could also try
+% to put the figure parts only on float pages, so that no intervening
+% text will come between them. This can be done by using the position
+% parameter \texttt{[p]}. This could cause them to be pushed towards
+% the back of the document. This is because float pages need to be
+% reasonably full before they are generated. You could try to cure this
+% for example by adding some \cs{vspace} to the last part, or by
+% tweaking the \cs{floatpagefraction}
+% \CmdIndex{floatpagefraction} parameter (see
+% section~\ref{page:floatpagefraction} on page~\pageref{page:floatpagefraction}).
+% To prevent previous floats to intrude in the float page, we also
+% combine this with the \cs{afterpage} and \cs{clearpage}, as in the
+% previous example, but this will probably push the figures even further
+% towards the back.
+%
+% \Example{33\\(C)}
+% \begin{example}
+% \newcommand{\myfigures}{%
+%   \begin{figure}[p]
+%     \centering
+%     \includegraphics[scale=0.5]{example-image-a}
+%     \caption[This is a multipart figure] % For the list of figures
+%             {This is a multipart figure (a)}
+%     \label{fig:third}
+%   \end{figure}
+%   \begin{figure}[p]
+%     \centering
+%     \includegraphics[scale=0.5]{example-image-b}
+%     \fakecaption{fig:third}{This is a multipart figure (b)}
+%  . . .
+% }
+%  . . .
+% \afterpage{\clearpage\myfigures}
+% \end{example}
+%
+% So maybe just use the previous example without \cs{afterpage} and
+% \cs{clearpage}.
+%
+% \Example{33\\(D)}
+% \begin{example}
+% \myfigures % (with the [p] placement)
+% \end{example}
+%
+% The defects of the above approach are
+% \begin{enumerate}
+% \item It is clumsy to make the captions of all but the first part of the figure
+% \item It is hard to refer to the parts separately
+% \end{enumerate}
+% \TTindex{subcaption}%
+% For this the \Package{subcaption} package comes to the rescue. First it
+% \CmdIndex{ContinuedFloat}%
+% has a \cs{ContinuedFloat} command to indicate that a figure is a
+% continuation of a previous one, and therefore will not get a new
+% number, and if you wish, neither a separate entry in the list of figures.
+%
+% \CmdIndex{subcaptionbox}\TTindex{subfigure}%
+% Second, it has a \cs{subcaptionbox} command and a \env{subfigure}
+% environment for the parts, where a subcaption can be given, that can
+% also have a \cs{label} to refer to in the document. The
+% \cs{subcaptionbox} is a specialized \cs{parbox} but its \emph{width}
+% parameter is optional. The \env{subfigure} environment is a
+% specialized \env{minipage}, so it has the same parameters.
+%
+% These should be used inside a \env{figure} environment, so all the
+% placement methods of the previous part (Examples 33 A–D) should still apply.
+%
+% The \env{subfigure} environment has a \cs{subcaption} command for
+% the subcaption; the \cs{subcaptionbox} has the subcaption (with its
+% \cs{label} if desired) as its first argument. When more than one
+% \cs{subcaptionbox} is horizontally next to each other, the subcaptions
+% will be aligned.
+%
+% In the following example (figure~\ref{fig:subfigures})
+%  we use a \cs{subcaptionbox} for the first two
+% parts, which are together in a single \env{figure} environment. We
+% use a \env{subfigure} environments for the other two, each one in
+% its own \env{figure} environment. These use a
+% \cs{caption}\texttt{[]\{\ldots\}}. The empty optional argument
+% \texttt{[]} causes the caption not to appear in the list of figures.
+% The last subfigure (\ref{subfig:last} on page~\pageref{subfig:last})
+% has a label on the \cs{subcaption} that we refer to in this sentence.
+%
+% \Example{33\\(E)}
+% \begin{example}
+% \begin{figure}[p]
+%   \centering
+%     \subcaptionbox{a subfigure in a \cs{subcaptionbox}}
+%       {\includegraphics[scale=0.3]{example-image-a}}
+%   \quad
+%     \subcaptionbox{another subfigure, also in a \cs{subcaptionbox}}
+%       {\includegraphics[scale=0.4]{example-image-b}}
+%   \caption{A figure with subfigures}
+%   \label{fig:subfigures}
+% \end{figure}
+%
+% \begin{figure}[p]\ContinuedFloat
+%   \begin{subfigure}{\textwidth}
+%     \centering
+%     \includegraphics[scale=0.5]{example-image-c}
+%     \subcaption{subfigure}
+%   \end{subfigure}
+%   \caption[]{A figure with subfigures}
+% \end{figure}
+%
+% \begin{figure}[p]\ContinuedFloat
+%   \begin{subfigure}{\textwidth}
+%     \centering
+%     \includegraphics[scale=0.5]{example-image}
+%     \subcaption{last subfigure}
+%     \label{subfig:last}
+%   \end{subfigure}
+%   \caption[]{A fake caption just for demo}
+% \end{figure}
+% \end{example}
+%
+% \begin{figure}[p]
+%   \centering
+%     \subcaptionbox{a subfigure in a \cs{subcaptionbox}}
+%       {\includegraphics[scale=0.3]{example-image-a}}
+%   \quad
+%     \subcaptionbox{another subfigure, also in a \cs{subcaptionbox}}
+%       {\includegraphics[scale=0.4]{example-image-b}}
+%   \caption{A figure with subfigures}
+%   \label{fig:subfigures}
+% \end{figure}
+%
+% \begin{figure}[p]\ContinuedFloat
+%   \begin{subfigure}{\textwidth}
+%     \centering
+%     \includegraphics[scale=0.5]{example-image-c}
+%     \subcaption{subfigure}
+%   \end{subfigure}
+%   \caption[]{A figure with subfigures (cont.)}
+% \end{figure}
+%
+% \begin{figure}[p]\ContinuedFloat
+%   \begin{subfigure}{\textwidth}
+%     \centering
+%     \includegraphics[scale=0.5]{example-image}
+%     \subcaption{last subfigure}
+%     \label{subfig:last}
+%   \end{subfigure}
+%   \caption[]{A fake caption just for demo}
+% \end{figure}
 %
 % \section{Deprecated commands}
 % \label{sec:depr}
