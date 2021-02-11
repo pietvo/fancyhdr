@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2021/01/28 v4.0.1
+%<fancyhdr|fancyheadings|extramarks>           [2021/02/11 v4.1beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -1482,7 +1482,7 @@
 % Package fancyhdr Warning: \headheight is too small (12.0pt):
 % (fancyhdr)                Make it at least 14.0pt, for example:
 % (fancyhdr)                \setlength{\headheight}{14.0pt}.
-% (fancyhdr)                You might also make \topmargin smaller to compensate:
+% (fancyhdr)                You might also make \topmargin:
 % (fancyhdr)                \addtolength{\topmargin}{-2.0pt}.
 % \end{code}
 % \label{page:warning}\index{Warning}
@@ -3522,6 +3522,11 @@
 %   \item Some documentation corrections, especially in sections
 %     \ref{sec:xmarks} and \ref{sec:movie}.
 %   \end{itemize}
+% \item Version 4.1, Feb 11, 2021
+%   \begin{itemize}
+%   \item Shorten Warning message about \cs{headheight}/\cs{footskip}
+% too large.
+%   \end{itemize}
 % \end{itemize}
 %
 %
@@ -4605,6 +4610,8 @@
 % \changes{fancyhdr v4.0}{2019/03/15}{Don't adjust the
 % \cs{headheight}/\cs{footskip}, except when the \texttt{compatV3} option is given.}
 % \changes{fancyhdr v4.0}{2019/03/15}{Don't check when the \texttt{nocheck} option is given.}
+% \changes{fancyhdr v4.1}{2021/02/11}{Shorten one sentence in the
+% warning message.}
 %    \begin{macrocode}
 \newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
@@ -4620,7 +4627,7 @@
         This may cause the page layout to be inconsistent, however
         \fi
         \ifx#1\headheight .\MessageBreak
-          You might also make \topmargin smaller to compensate:\MessageBreak
+          You might also make \topmargin smaller:\MessageBreak
           \string\addtolength{\string\topmargin}{\the\dimen0}%
         \fi
         \@gobble

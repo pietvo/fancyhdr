@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2021/01/28 v4.0.1
+           [2021/02/11 v4.1beta
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -288,7 +288,7 @@
         This may cause the page layout to be inconsistent, however
         \fi
         \ifx#1\headheight .\MessageBreak
-          You might also make \topmargin smaller to compensate:\MessageBreak
+          You might also make \topmargin smaller:\MessageBreak
           \string\addtolength{\string\topmargin}{\the\dimen0}%
         \fi
         \@gobble
