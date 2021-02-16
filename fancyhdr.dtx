@@ -5038,6 +5038,17 @@
 % \end{macro}
 % \end{macro}
 %
+% \changes{fancyhdr v4.1}{2021/02/16}{Define \cs{newtoks}\cs{@temptokenb}}
+% \begin{macro}{\@temptokenb}
+% A token register to collect information for \cs{fancypagestyle*}. The
+% same token register is declared and used in the \Package{extramarks}
+% package, but their use is independent. Both definitions are
+% conditional on the non-existence of it.
+%    \begin{macrocode}
+\ifx\@temptokenb\undefined \csname newtoks\endcsname\@temptokenb\fi
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\fancypagestyle}
 % Define a new page style. The optional second argument is the base page style.
 % It defaults to \cs{ps@f@nch@fancyproto}.
@@ -5087,10 +5098,11 @@
 % \changes{extramarks v3.9}{2016/10/12}{Unify version number with \Package{fancyhdr.sty}.}
 %
 % \changes{extramarks v3.9a}{2017/06/30}{Restore \cs{newtoks}\cs{@temptokenb}}
+% \changes{extramarks v4.1}{2021/02/16}{Make \cs{newtoks}\cs{@temptokenb} conditional}
 % \begin{macro}{\@temptokenb}
 % A token register to store some marks information
 %    \begin{macrocode}
-\newtoks\@temptokenb
+\ifx\@temptokenb\undefined \csname newtoks\endcsname\@temptokenb\fi
 %    \end{macrocode}
 % \end{macro}
 %

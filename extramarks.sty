@@ -25,7 +25,7 @@
                   Extra marks for LaTeX]
 % Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newtoks\@temptokenb
+\ifx\@temptokenb\undefined \csname newtoks\endcsname\@temptokenb\fi
 \providecommand\unrestored@protected@xdef{%
   \let\protect\@unexpandable@protect \xdef}
 \def\markboth#1#2{%

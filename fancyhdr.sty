@@ -435,6 +435,7 @@
 \newcommand\ifbotfloat[2]{\ifx\botfloat\empty #2\else #1\fi}%
 \newcommand\iffloatpage[2]{\if@fcolmade #1\else #2\fi}%
 \newcommand\iffootnote[2]{\iff@nch@footnote #1\else #2\fi}%
+\ifx\@temptokenb\undefined \csname newtoks\endcsname\@temptokenb\fi
 \newcommand{\fancypagestyle}[1]{%
   \@ifnextchar[{\f@nch@pagestyle{#1}}{\f@nch@pagestyle{#1}[f@nch@fancyproto]}%
 }
