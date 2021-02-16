@@ -293,13 +293,15 @@
         \fi
         \@gobble
       }%
-    \fi
-    \iff@nch@compatViii
-      \dimen0=#1\relax
-      \global#1=\ht0\relax
-      \ht0=\dimen0 %
+      \iff@nch@compatViii
+        \dimen0=#1\relax
+        \global#1=\ht0\relax
+        \ht0=\dimen0 %
+      \else
+        \ht0=#1\relax
+      \fi
     \else
-      \ht0=#1%
+      \ht0=#1\relax
     \fi
   \fi
   \box0}

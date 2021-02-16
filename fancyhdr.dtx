@@ -3526,6 +3526,9 @@
 %   \begin{itemize}
 %   \item Shorten Warning message about \cs{headheight}/\cs{footskip}
 % too large.
+% \item If the option \texttt{[nocheck]} is given, just keep quiet and
+% don't change the \cs{headheight}/\cs{footskip} even if the
+% \texttt{[compatV3]} option is given.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -4610,18 +4613,31 @@
 % \changes{fancyhdr v4.0}{2019/03/15}{Don't adjust the
 % \cs{headheight}/\cs{footskip}, except when the \texttt{compatV3} option is given.}
 % \changes{fancyhdr v4.0}{2019/03/15}{Don't check when the \texttt{nocheck} option is given.}
-% \changes{fancyhdr v4.1}{2021/02/11}{Shorten one sentence in the
-% warning message.}
+% \changes{fancyhdr v4.1}{2021/02/11}{Shorten one sentence in the warning message.}
+% \changes{fancyhdr v4.1}{2021/02/11}{If the option \texttt{[nocheck]}
+% is given, just keep quiet and don't change the
+% \cs{headheight}/\cs{footskip} even if the \texttt{[compatV3]} option
+% is given.}
 %    \begin{macrocode}
 \newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
   \ifdim\ht0>#1\relax
+%    \end{macrocode}
+% This is the part where the the header/footer is too tall for the vertical space.
+% If the \texttt{[nocheck]} package option is not given, we give a
+% warning message.
+%    \begin{macrocode}
     \iff@nch@check
       \dimen0=#1\advance\dimen0-\ht0
       \f@nch@warning{%
         \string#1 is too small (\the#1): \MessageBreak
         Make it at least \the\ht0, for example:\MessageBreak
         \string\setlength{\string#1}{\the\ht0}%
+%    \end{macrocode}
+% If the \texttt{[compatV3} option was given (and not
+% \texttt{[nocheck]}), we will also change the
+% \cs{headheight}/\cs{footskip} globally below, and announce this in the warning message.
+%    \begin{macrocode}
         \iff@nch@compatViii .\MessageBreak
         We now make it that large for the rest of the document.\MessageBreak
         This may cause the page layout to be inconsistent, however
@@ -4632,13 +4648,25 @@
         \fi
         \@gobble
       }%
-    \fi
-    \iff@nch@compatViii
-      \dimen0=#1\relax
-      \global#1=\ht0\relax
-      \ht0=\dimen0 %
+%    \end{macrocode}
+% Here we do the actual global changing of the \cs{headheight}/\cs{footskip}.
+%    \begin{macrocode}
+      \iff@nch@compatViii
+        \dimen0=#1\relax
+        \global#1=\ht0\relax
+        \ht0=\dimen0 %
+      \else
+        \ht0=#1\relax
+      \fi
+%    \end{macrocode}
+% However, if the \texttt{[nocheck]} options is given, we just make the
+% height of the header/footer equal to the reserved space, so that no
+% warning about ``Overfull vbox'' will be given. So we pretend that it
+% fits, and it is the users's responsibility to make sure no unwanted
+% effects take place.
+%    \begin{macrocode}
     \else
-      \ht0=#1%
+      \ht0=#1\relax
     \fi
   \fi
   \box0}
