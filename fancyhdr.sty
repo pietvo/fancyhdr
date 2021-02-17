@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2021/02/11 v4.1beta
+           [2021/02/17 v4.1beta
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -438,10 +438,15 @@
 \newcommand\iffloatpage[2]{\if@fcolmade #1\else #2\fi}%
 \newcommand\iffootnote[2]{\iff@nch@footnote #1\else #2\fi}%
 \ifx\@temptokenb\undefined \csname newtoks\endcsname\@temptokenb\fi
-\newcommand{\fancypagestyle}[1]{%
-  \@ifnextchar[{\f@nch@pagestyle{#1}}{\f@nch@pagestyle{#1}[f@nch@fancyproto]}%
+\newif\iff@nch@pagestyle@star
+\newcommand\fancypagestyle{%
+  \@ifstar{\f@nch@pagestyle@startrue\f@nch@pagestyle}%
+          {\f@nch@pagestyle@starfalse\f@nch@pagestyle}%
 }
-\long\def\f@nch@pagestyle#1[#2]#3{%
+\newcommand\f@nch@pagestyle[1]{%
+  \@ifnextchar[{\f@nch@@pagestyle{#1}}{\f@nch@@pagestyle{#1}[f@nch@fancyproto]}%
+}
+\long\def\f@nch@@pagestyle#1[#2]#3{%
   \f@nch@ifundefined{ps@#2}{%
     \f@nch@errmsg{\string\fancypagestyle: Unknown base page style `#2'}%
   }{%
@@ -449,11 +454,36 @@
       \f@nch@errmsg{\string\fancypagestyle: Base page style `#2' is not fancyhdr-based}%
     }%
     {%
-      \@namedef{ps@#1}{\let\f@nch@gbl\relax\@nameuse{ps@#2}#3\relax}%
+      \f@nch@pagestyle@setup
+      \def\temp@b{\@namedef{ps@#1}}%
+      \expandafter\temp@b\expandafter{\the\@temptokenb
+          \let\f@nch@gbl\relax\@nameuse{ps@#2}#3\relax}%
       \@namedef{f@nch@ps@#1-is-fancyhdr}{}%
     }%
   }%
-}%
+}
+\newcommand\f@nch@pagestyle@setup{%
+  \iff@nch@pagestyle@star
+    \iff@nch@check\@temptokenb={\f@nch@checktrue}\else\@temptokenb={\f@nch@checkfalse}\fi
+    \@tfor\myname:=
+      \f@nch@olh\f@nch@och\f@nch@orh\f@nch@elh\f@nch@ech\f@nch@erh
+      \f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@elf\f@nch@ecf\f@nch@erf
+      \f@nch@Oolh\f@nch@Oorh\f@nch@Oelh\f@nch@Oerh
+      \f@nch@Oolf\f@nch@Oorf\f@nch@Oelf\f@nch@Oerf
+      \f@nch@headinit\f@nch@footinit
+      \headrule\headrulewidth\footrule\footrulewidth
+    \do {
+      \toks@=\expandafter\expandafter\expandafter{\myname}%
+      \toks@=\expandafter\expandafter\expandafter{%
+        \expandafter\expandafter\expandafter\def
+        \expandafter\expandafter\myname\expandafter{\the\toks@}}%
+      \edef\temp@b{\@temptokenb={\the\@temptokenb\the\toks@}}%
+      \temp@b
+    }%
+  \else
+    \@temptokenb={}%
+  \fi
+}
 \endinput
 %%
 %% End of file `fancyhdr.sty'.
