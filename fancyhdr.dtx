@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2021/02/17 v4.1beta
+%<fancyhdr|fancyheadings|extramarks>           [2021/02/20 v4.1beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -3522,13 +3522,14 @@
 %   \item Some documentation corrections, especially in sections
 %     \ref{sec:xmarks} and \ref{sec:movie}.
 %   \end{itemize}
-% \item Version 4.1, Feb 11, 2021
+% \item Version 4.1, Feb 11-20, 2021
 %   \begin{itemize}
 %   \item Shorten Warning message about \cs{headheight}/\cs{footskip} too large.
 %   \item If the option \texttt{[nocheck]} is given, just keep quiet and
 %     don't change the \cs{headheight}/\cs{footskip} even if the
 %     \texttt{[compatV3]} option is given.
 %   \item Added \cs{fancypagestyle*} variant.
+%   \item Added command \cs{fancyhdrsettoheight}.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -4599,6 +4600,38 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\f@nch@height}
+% \changes{fancyhdr v4.1}{2021/02/20}{Length variable \cs{f@nch@height} added}
+% Length variable to store heigth of header/footer for use in \cs{fancyhdrsettoheight}
+%    \begin{macrocode}
+\newlength\f@nch@height
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\fancyhdrsettoheight}
+% \changes{fancyhdr v4.1}{2021/02/20}{Macro \cs{fancyhdrsettoheight} added}
+% Macro to store the height of a header/footer in a length variable.\\
+% \cs{fancyhdrsettoheight}\texttt{\{}\meta{lengthvar}\texttt{\}\{}\meta{header/footer}\texttt{\}}.\\
+% The second parameter can be \texttt{oddhead}, \texttt{evenhead},
+% \texttt{oddfoot}, or \texttt{evenfoot}.
+%    \begin{macrocode}
+\newcommand\fancyhdrsettoheight[2]{%
+  \expandafter\ifx\csname f@nch@#2\endcsname\fancyhdrsettoheight
+    \else\f@nch@errmsg{Unknown parameter #2 in \string\fancyhdrsettoheight}\fi
+  \setbox\@tempboxa\hbox{{\f@nch@checkfalse\csname @#2\endcsname}}%
+  \setlength{#1}\f@nch@height
+  \setbox\@tempboxa\box\voidb@x
+}
+%    \end{macrocode}
+% Define commands that specify the valid arguments for the second parameter.
+%    \begin{macrocode}
+\let\f@nch@oddhead\fancyhdrsettoheight
+\let\f@nch@evenhead\fancyhdrsettoheight
+\let\f@nch@oddfoot\fancyhdrsettoheight
+\let\f@nch@evenfoot\fancyhdrsettoheight
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\f@nch@vbox}
 % Make a \cs{vbox} with the header or footer. Check whether there is
 % enough space and give a warning if not.
@@ -4618,9 +4651,11 @@
 % is given, just keep quiet and don't change the
 % \cs{headheight}/\cs{footskip} even if the \texttt{[compatV3]} option
 % is given.}
+% \changes{fancyhdr v4.1}{2021/02/20}{Set \cs{f@nch@height} to height of box}
 %    \begin{macrocode}
 \newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
+  \global\f@nch@height=\ht0
   \ifdim\ht0>#1\relax
 %    \end{macrocode}
 % This is the part where the the header/footer is too tall for the vertical space.

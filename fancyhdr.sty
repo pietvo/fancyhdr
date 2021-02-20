@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2021/02/17 v4.1beta
+           [2021/02/20 v4.1beta
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -274,8 +274,21 @@
   \def\f@nch@headinit{#1}%
   \def\f@nch@footinit{#1}%
 }
+\newlength\f@nch@height
+\newcommand\fancyhdrsettoheight[2]{%
+  \expandafter\ifx\csname f@nch@#2\endcsname\fancyhdrsettoheight
+    \else\f@nch@errmsg{Unknown parameter #2 in \string\fancyhdrsettoheight}\fi
+  \setbox\@tempboxa\hbox{{\f@nch@checkfalse\csname @#2\endcsname}}%
+  \setlength{#1}\f@nch@height
+  \setbox\@tempboxa\box\voidb@x
+}
+\let\f@nch@oddhead\fancyhdrsettoheight
+\let\f@nch@evenhead\fancyhdrsettoheight
+\let\f@nch@oddfoot\fancyhdrsettoheight
+\let\f@nch@evenfoot\fancyhdrsettoheight
 \newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
+  \global\f@nch@height=\ht0
   \ifdim\ht0>#1\relax
     \iff@nch@check
       \dimen0=#1\advance\dimen0-\ht0
