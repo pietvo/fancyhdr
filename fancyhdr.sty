@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2021/02/20 v4.1beta
+           [2021/02/24 v4.1beta
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -31,8 +31,8 @@
 \DeclareOption{nocheck}{%
   \f@nch@checkfalse
 }
-\newif\iff@nch@compatViii
 \let\f@nch@gbl\relax
+\newif\iff@nch@compatViii
 \DeclareOption{compatV3}{%
   \let\f@nch@gbl\global
   \f@nch@compatViiitrue
