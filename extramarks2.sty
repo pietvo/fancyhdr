@@ -26,14 +26,10 @@
 % Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{etoolbox}
-\newcommand\@@setxmarkleft{%
-        \letcs\firstleftxmark{@firstcolfirstxmark@left}%
-        \letcs\topleftxmark{@firstcoltopxmark@left}%
-        }
-\newcommand\@@setxmarkright{%
-        \letcs\firstrightxmark{@firstcolfirstxmark@right}%
-        \letcs\toprightxmark{@firstcoltopxmark@right}%
-}
+\newcommand\@@setxmarks[1]{% %1 = left/right
+   \csletcs{first#1xmark}{@firstcolfirstxmark@#1}%
+   \csletcs{top#1xmark}{@firstcoltopxmark@#1}%
+ }
 
 \newcommand\@savefirstxmark[1]{% 1 = left/right
     \toks@\expandafter{\topmarks\csname extramarks@#1\endcsname}%
@@ -42,8 +38,8 @@
     \csxdef{@firstcolfirstxmark@#1}{\the\toks@}%
     \ifcsempty{@firstcolfirstxmark@#1}
         {\global\cslet{@setxmark#1}\relax}
-        {\global\csletcs{@setxmark#1}{@@setxmark#1}}%
-    %\expandafter\show\csname @setmark#1\endcsname
+       {\csgdef{@setxmark#1}{\@@setxmarks{#1}}}%
+%    \expandafter\show\csname @setxmark#1\endcsname
 }
 
 \patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty\global\let\@setmarks\relax}
