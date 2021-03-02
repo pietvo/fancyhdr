@@ -1,0 +1,154 @@
+%%
+%% This is file `extramarks.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% fancyhdr.dtx  (with options: `extramarks')
+%% 
+%% This is a generated file.
+%% 
+%% This file may be distributed and/or modified under the conditions of
+%% the LaTeX Project Public License, either version 1.3 of this license
+%% or (at your option) any later version.  The latest version of this
+%% license is in:
+%% 
+%%    http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3 or later is part of all distributions of LaTeX version
+%% 2005/12/01 or later.
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{extramarks2}
+           [2021/03/02 v4.1
+                  Extra marks for LaTeX]
+% Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{etoolbox}
+\newcommand\@@setxmarkleft{%
+        \letcs\firstleftxmark{@firstcolfirstxmark@left}%
+        \letcs\topleftxmark{@firstcoltopxmark@left}%
+        }
+\newcommand\@@setxmarkright{%
+        \letcs\firstrightxmark{@firstcolfirstxmark@right}%
+        \letcs\toprightxmark{@firstcoltopxmark@right}%
+}
+
+\newcommand\@savefirstxmark[1]{% 1 = left/right
+    \toks@\expandafter{\topmarks\csname extramarks@#1\endcsname}%
+    \csxdef{@firstcoltopxmark@#1}{\the\toks@}%
+    \toks@\expandafter{\splitfirstmarks\csname extramarks@#1\endcsname}%
+    \csxdef{@firstcolfirstxmark@#1}{\the\toks@}%
+    \ifcsempty{@firstcolfirstxmark@#1}
+        {\global\cslet{@setxmark#1}\relax}
+        {\global\csletcs{@setxmark#1}{@@setxmark#1}}%
+    %\expandafter\show\csname @setmark#1\endcsname
+}
+
+\patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty\global\let\@setmarks\relax}
+   {\@savefirstxmark{left}%
+    \@savefirstxmark{right}%
+    \ifx\@firstcolfirstmark\@empty
+    \gdef\@setmarks{%
+        \@setxmarkleft
+        \@setxmarkright
+        }
+      }
+     {}{\ERROR patch 1 \string\ifx\string\@firstcolfirstmark}
+
+\patchcmd{\@outputdblcol}{\gdef\@setmarks}
+   {\@savefirstxmark{left}\@savefirstxmark{right}\gdef\@setmarks}
+   {}{\ERROR patch 2 \string\gdef\string\@setmarks}
+
+\patchcmd{\@outputdblcol}{\let\topmark\@firstcoltopmark}
+   {\message{patch}\let\topmark\@firstcoltopmark
+        \@setmarkleft
+        \@setmarkright
+   }
+   {}{\ERROR patch 3 \string\gdef\string\@setmarks}
+
+%\input newoutput
+
+% \newtoks\@temptokenb
+% \providecommand\unrestored@protected@xdef{%
+%   \let\protect\@unexpandable@protect \xdef}
+% \def\markboth#1#2{%
+%   \begingroup
+%   \let\label\relax \let\index\relax \let\glossary\relax
+%   \expandafter\@markboth\@themark{#1}{#2}%
+%   \@temptokena \expandafter{\@themark}%
+%   \mark{\the\@temptokena}%
+%   \endgroup
+%   \if@nobreak\ifvmode\nobreak\fi\fi}
+% \def\@markboth#1#2#3#4#5#6{\@temptokena{{#3}{#4}}%
+%   \unrestored@protected@xdef\@themark{{#5}{#6}\the\@temptokena}}
+% \def\@markright#1#2#3#4#5{\@temptokena{#1}\@temptokenb{{#3}{#4}}%
+%   \unrestored@protected@xdef\@themark{{\the\@temptokena}{#5}\the\@temptokenb}}
+% 
+% \def\@leftmark#1#2#3#4{#1}
+% \def\@rightmark#1#2#3#4{#2}
+% 
+% \def\leftmark{\expandafter\@leftmark
+%       \botmark\@empty\@empty\@empty\@empty}
+% \def\rightmark{\expandafter\@rightmark
+%       \firstmark\@empty\@empty\@empty\@empty}
+% \def\firstleftmark{\expandafter\@leftmark
+%       \firstmark\@empty\@empty\@empty\@empty}
+% \def\lastrightmark{\expandafter\@rightmark
+%       \botmark\@empty\@empty\@empty\@empty}
+\let\firstrightmark \rightmark
+\let\lastleftmark \leftmark
+
+% \def\@themark{{}{}{}{}}
+
+\newmarks\extramarks@left
+\newmarks\extramarks@right
+
+\newcommand{\extraleftmark}[1]{\marks\extramarks@left{#1}}
+\newcommand{\extrarightmark}[1]{\marks\extramarks@right{#1}}
+\newcommand\extramarks[2]{\extraleftmark{#1}\extrarightmark{#2}}
+
+%   \begingroup
+%   \let\label\relax \let\index\relax \let\glossary\relax
+%   \expandafter\@markextra\@themark{#1}{#2}%
+%   \@temptokena \expandafter{\@themark}%
+%   \mark{\the\@temptokena}%
+%   \endgroup
+%   \if@nobreak\ifvmode\nobreak\fi\fi}
+% \def\@markextra#1#2#3#4#5#6{\@temptokena {{#1}{#2}}%
+%   \unrestored@protected@xdef\@themark{\the\@temptokena{#5}{#6}}}
+% \def\firstleftxmark{\expandafter\@leftxmark
+%       \firstmark\@empty\@empty\@empty\@empty}
+% \def\firstrightxmark{\expandafter\@rightxmark
+%       \firstmark\@empty\@empty\@empty\@empty}
+% \def\topleftxmark{\expandafter\@leftxmark
+%       \topmark\@empty\@empty\@empty\@empty}
+% \def\toprightxmark{\expandafter\@rightxmark
+%       \topmark\@empty\@empty\@empty\@empty}
+% \def\lastleftxmark{\expandafter\@leftxmark
+%       \botmark\@empty\@empty\@empty\@empty}
+% \def\lastrightxmark{\expandafter\@rightxmark
+%       \botmark\@empty\@empty\@empty\@empty}
+
+\def\firstleftxmark{\firstmarks\extramarks@left}
+\def\firstrightxmark{\firstmarks\extramarks@right}
+\def\topleftxmark{\topmarks\extramarks@left}
+\def\toprightxmark{\topmarks\extramarks@right}
+\def\lastleftxmark{\botmarks\extramarks@left}
+\def\lastrightxmark{\botmarks\extramarks@right}
+
+% \let\firstxmark\firstleftxmark
+% \let\lastxmark\lastrightxmark
+% \let\topxmark\topleftxmark
+
+\def\firstxmark{\firstleftxmark}
+\def\lastxmark{\lastrightxmark}
+\def\topxmark{\topleftxmark}
+
+
+% \def\@leftxmark#1#2#3#4{#3}
+% \def\@rightxmark#1#2#3#4{#4}
+% \endinput
+%%
+%% End of file `extramarks2.sty'.
