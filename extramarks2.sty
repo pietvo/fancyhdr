@@ -18,6 +18,7 @@
                   Extra marks for LaTeX]
 % Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{expl3,xparse}
 \RequirePackage{etoolbox}
 \newcommand\@@setxmarks[1]{% %1 = left/right
    \csletcs{first#1xmark}{@firstcolfirstxmark@#1}%
