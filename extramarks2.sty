@@ -20,43 +20,39 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{expl3,xparse}
 \RequirePackage{etoolbox}
-\newcommand\@@setxmarks[1]{% %1 = left/right
-   \csletcs{first#1xmark}{@firstcolfirstxmark@#1}%
-   \csletcs{top#1xmark}{@firstcoltopxmark@#1}%
+
+\newcommand\extramarks@savemarks{%
+  \extramarks@savefirstxmark{left}%
+  \extramarks@savefirstxmark{right}%
+}
+
+\newcommand\extramarks@setmarks{%
+  \extramarks@setxmarkleft
+  \extramarks@setxmarkright
+}
+
+\newcommand\extramarks@@setxmarks[1]{% %1 = left/right
+  \csletcs{first#1xmark}{@firstcolfirstxmark@#1}%
+  \csletcs{top#1xmark}{@firstcoltopxmark@#1}%
  }
 
-\newcommand\@savefirstxmark[1]{% 1 = left/right
+\newcommand\extramarks@savefirstxmark[1]{% 1 = left/right
     \toks@\expandafter{\topmarks\csname extramarks@#1\endcsname}%
     \csxdef{@firstcoltopxmark@#1}{\the\toks@}%
     \toks@\expandafter{\splitfirstmarks\csname extramarks@#1\endcsname}%
     \csxdef{@firstcolfirstxmark@#1}{\the\toks@}%
     \ifcsempty{@firstcolfirstxmark@#1}
-        {\global\cslet{@setxmark#1}\relax}
-       {\csgdef{@setxmark#1}{\@@setxmarks{#1}}}%
-%    \expandafter\show\csname @setxmark#1\endcsname
+      {\global\cslet{extramarks@setxmark#1}\relax}
+      {\csgdef{extramarks@setxmark#1}{\extramarks@@setxmarks{#1}}}%
 }
 
-\patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty\global\let\@setmarks\relax}
-   {\@savefirstxmark{left}%
-    \@savefirstxmark{right}%
-    \ifx\@firstcolfirstmark\@empty
-    \gdef\@setmarks{%
-        \@setxmarkleft
-        \@setxmarkright
-        }
-      }
-     {}{\ERROR patch 1 \string\ifx\string\@firstcolfirstmark}
+\patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
+  {\extramarks@savemarks\ifx\@firstcolfirstmark\@empty}
+  {}{\ERROR patch 1 \string\ifx\string\@firstcolfirstmark}
 
-\patchcmd{\@outputdblcol}{\gdef\@setmarks}
-   {\@savefirstxmark{left}\@savefirstxmark{right}\gdef\@setmarks}
-   {}{\ERROR patch 2 \string\gdef\string\@setmarks}
-
-\patchcmd{\@outputdblcol}{\let\topmark\@firstcoltopmark}
-   {\message{patch}\let\topmark\@firstcoltopmark
-        \@setmarkleft
-        \@setmarkright
-   }
-   {}{\ERROR patch 3 \string\gdef\string\@setmarks}
+\patchcmd{\@outputdblcol}{\@combinedblfloats}
+  {\@combinedblfloats\extramarks@setmarks}
+  {}{\ERROR patch 2 \string\gdef\string\@setmarks}
 
 \let\firstrightmark \rightmark
 \let\lastleftmark \leftmark
@@ -64,9 +60,9 @@
 \newmarks\extramarks@left
 \newmarks\extramarks@right
 
-\newcommand{\extraleftmark}[1]{\marks\extramarks@left{#1}}
-\newcommand{\extrarightmark}[1]{\marks\extramarks@right{#1}}
-\newcommand\extramarks[2]{\extraleftmark{#1}\extrarightmark{#2}}
+\newcommand\extramarksleft[1]{\marks\extramarks@left{#1}}
+\newcommand\extramarksright[1]{\marks\extramarks@right{#1}}
+\newcommand\extramarks[2]{\extramarksleft{#1}\extramarksright{#2}}
 
 \def\firstleftxmark{\firstmarks\extramarks@left}
 \def\firstrightxmark{\firstmarks\extramarks@right}
