@@ -60,17 +60,25 @@
 \newmarks\extramarks@left
 \newmarks\extramarks@right
 
-\newcommand\extramarksleft[1]{\marks\extramarks@left{#1}}
-\newcommand\extramarksright[1]{\marks\extramarks@right{#1}}
+% Put extra pair of braces around the marks, to distinguish
+% an empty mark from the absence of a mark
+%
+\newcommand\extramarksleft[1]{\marks\extramarks@left{{#1}}}
+\newcommand\extramarksright[1]{\marks\extramarks@right{{#1}}}
 \newcommand\extramarks[2]{\extramarksleft{#1}\extramarksright{#2}}
 
-\def\firstleftxmark{\firstmarks\extramarks@left}
-\def\firstrightxmark{\firstmarks\extramarks@right}
-\def\topleftxmark{\topmarks\extramarks@left}
-\def\toprightxmark{\topmarks\extramarks@right}
-\def\lastleftxmark{\botmarks\extramarks@left}
-\def\lastrightxmark{\botmarks\extramarks@right}
+% Remove outer braces from the marks
+%
+\def\firstleftxmark{\expandafter\@firstofone{\firstmarks\extramarks@left}}
+\def\firstrightxmark{\expandafter\@firstofone{\firstmarks\extramarks@right}}
+\def\topleftxmark{\expandafter\@firstofone{\topmarks\extramarks@left}}
+\def\toprightxmark{\expandafter\@firstofone{\topmarks\extramarks@right}}
+\def\lastleftxmark{\expandafter\@firstofone{\botmarks\extramarks@left}}
+\def\lastrightxmark{\expandafter\@firstofone{\botmarks\extramarks@right}}
 
+% Use \def here instead of \et, because \firstleftxmark
+% and \topleftxmark can be temporarily changed in the output routine
+%
 \def\firstxmark{\firstleftxmark}
 \def\lastxmark{\lastrightxmark}
 \def\topxmark{\topleftxmark}
