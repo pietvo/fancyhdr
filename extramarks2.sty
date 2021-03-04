@@ -1,25 +1,45 @@
 %%
 %% This is file `extramarks2.sty',
-%% 
+%%
 %% This file may be distributed and/or modified under the conditions of
 %% the LaTeX Project Public License, either version 1.3 of this license
 %% or (at your option) any later version.  The latest version of this
 %% license is in:
-%% 
+%%
 %%    http://www.latex-project.org/lppl.txt
-%% 
+%%
 %% and version 1.3 or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
 %% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks2}
-           [2021/03/02 v4.1
+           [2021/03/04 v0.1
                   Extra marks for LaTeX]
 % Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{expl3,xparse}
 \RequirePackage{etoolbox}
+
+\ExplSyntaxOn
+
+% Pick up traditional macros
+%
+\cs_new_eq:NN \newmarks:N \newmarks
+\cs_generate_variant:Nn \newmarks:N { c }
+
+\seq_new:N \l__extramarks_xmarks_seq
+
+% Create a new mark
+
+\NewDocumentCommand \extramarksnewmark { m } {
+  \newmarks:c {extramarks@#1}
+  \seq_put_right:Nn \l__extramarks_xmarks_seq { #1 }
+}
+
+\ExplSyntaxOff
+
+% For internal use in \@outputdblcol
 
 \newcommand\extramarks@savemarks{%
   \extramarks@savefirstxmark{left}%
@@ -54,11 +74,27 @@
   {\@combinedblfloats\extramarks@setmarks}
   {}{\ERROR patch 2 \string\@combinedblfloats}
 
+% End of \@outputdblcol patching code
+
 \let\firstrightmark \rightmark
 \let\lastleftmark \leftmark
 
-\newmarks\extramarks@left
-\newmarks\extramarks@right
+% Variables and commands for a new mark ⟨xxxx⟩ :
+% \extramarks@⟨xxxx⟩ : the mark
+% \extramarks⟨xxxx⟩ : command to set the mark
+% \extramarks@firstmark@⟨xxxx⟩ : firstmark (braced)
+% \extramarks@topmark@⟨xxxx⟩ : topmark (braced)
+% \extramarks@botmark@⟨xxxx⟩ : botmark (braced)
+% \first⟨xxxx⟩xmark : firstmark (user level)
+% \top⟨xxxx⟩xmark : topmark (user level)
+% \last⟨xxxx⟩xmark : lastmark (user level)
+%  In \@outputdblcol:
+%  \extramarks@setxmark⟨xxxx⟩
+%  \@firstcolfirstxmark@⟨xxxx⟩
+%  \@firstcoltopxmark@⟨xxxx⟩
+ 
+\extramarksnewmark{left}
+\extramarksnewmark{right}
 
 % Put extra pair of braces around the marks, to distinguish
 % an empty mark from the absence of a mark
