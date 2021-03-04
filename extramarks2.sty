@@ -32,8 +32,8 @@
 }
 
 \newcommand\extramarks@@setxmarks[1]{% %1 = left/right
-  \csletcs{first#1xmark}{@firstcolfirstxmark@#1}%
-  \csletcs{top#1xmark}{@firstcoltopxmark@#1}%
+  \csletcs{extramarks@firstmark@#1}{@firstcolfirstxmark@#1}%
+  \csletcs{extramarks@topmark@#1}{@firstcoltopxmark@#1}%
  }
 
 \newcommand\extramarks@savefirstxmark[1]{% 1 = left/right
@@ -52,7 +52,7 @@
 
 \patchcmd{\@outputdblcol}{\@combinedblfloats}
   {\@combinedblfloats\extramarks@setmarks}
-  {}{\ERROR patch 2 \string\gdef\string\@setmarks}
+  {}{\ERROR patch 2 \string\@combinedblfloats}
 
 \let\firstrightmark \rightmark
 \let\lastleftmark \leftmark
@@ -62,26 +62,34 @@
 
 % Put extra pair of braces around the marks, to distinguish
 % an empty mark from the absence of a mark
-%
+
 \newcommand\extramarksleft[1]{\marks\extramarks@left{{#1}}}
 \newcommand\extramarksright[1]{\marks\extramarks@right{{#1}}}
 \newcommand\extramarks[2]{\extramarksleft{#1}\extramarksright{#2}}
 
-% Remove outer braces from the marks
-%
-\def\firstleftxmark{\expandafter\@firstofone{\firstmarks\extramarks@left}}
-\def\firstrightxmark{\expandafter\@firstofone{\firstmarks\extramarks@right}}
-\def\topleftxmark{\expandafter\@firstofone{\topmarks\extramarks@left}}
-\def\toprightxmark{\expandafter\@firstofone{\topmarks\extramarks@right}}
-\def\lastleftxmark{\expandafter\@firstofone{\botmarks\extramarks@left}}
-\def\lastrightxmark{\expandafter\@firstofone{\botmarks\extramarks@right}}
+% These are variables for the marks with braces.
+% The \extramarks@firstmark@... and \extramarks@topmark@...
+% can be temporarily changed inside the output routine
 
-% Use \def here instead of \et, because \firstleftxmark
-% and \topleftxmark can be temporarily changed in the output routine
-%
-\def\firstxmark{\firstleftxmark}
-\def\lastxmark{\lastrightxmark}
-\def\topxmark{\topleftxmark}
+\def\extramarks@firstmark@left{\firstmarks\extramarks@left}
+\def\extramarks@topmark@left{\topmarks\extramarks@left}
+\def\extramarks@botmark@left{\botmarks\extramarks@left}
+\def\extramarks@firstmark@right{\firstmarks\extramarks@right}
+\def\extramarks@topmark@right{\topmarks\extramarks@right}
+\def\extramarks@botmark@right{\botmarks\extramarks@right}
+
+% Remove outer braces from the marks
+
+\def\firstleftxmark{\expandafter\@firstofone{\extramarks@firstmark@left}}
+\def\firstrightxmark{\expandafter\@firstofone{\extramarks@firstmark@right}}
+\def\topleftxmark{\expandafter\@firstofone{\extramarks@topmark@left}}
+\def\toprightxmark{\expandafter\@firstofone{\extramarks@topmark@right}}
+\def\lastleftxmark{\expandafter\@firstofone{\extramarks@botmark@left}}
+\def\lastrightxmark{\expandafter\@firstofone{\extramarks@botmark@right}}
+
+\let\firstxmark\firstleftxmark
+\let\lastxmark\lastrightxmark
+\let\topxmark\topleftxmark
 
 % \endinput
 %%
