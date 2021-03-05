@@ -14,7 +14,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks2}
-           [2021/03/04 v0.1
+           [2021/03/05 v0.1
                   Extra marks for LaTeX]
 % Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -33,99 +33,101 @@
 % Create a new mark
 
 \NewDocumentCommand \extramarksnewmark { m } {
-  \newmarks:c {extramarks@#1}
+  % Create the mark
+  \newmarks:c {g__extramarks_#1}
+  % Put it in the list of marks
   \seq_put_right:Nn \l__extramarks_xmarks_seq { #1 }
 }
 
-\ExplSyntaxOff
-
 % For internal use in \@outputdblcol
 
-\newcommand\extramarks@savemarks{%
-  \extramarks@savefirstxmark{left}%
-  \extramarks@savefirstxmark{right}%
+\newcommand\__extramarks_savemarks{%
+  \seq_map_tokens:Nn \l__extramarks_xmarks_seq {\__extramarks_savefirstxmark}
 }
 
-\newcommand\extramarks@setmarks{%
-  \extramarks@setxmarkleft
-  \extramarks@setxmarkright
+\newcommand\__extramarks_setmarks{%
+  \seq_map_inline:Nn \l__extramarks_xmarks_seq { 
+    \cs:w __extramarks_setxmark ##1 \cs_end:
+  }
 }
 
-\newcommand\extramarks@@setxmarks[1]{% %1 = left/right
-  \csletcs{extramarks@firstmark@#1}{@firstcolfirstxmark@#1}%
-  \csletcs{extramarks@topmark@#1}{@firstcoltopxmark@#1}%
+\newcommand\__extramarks__setxmarks[1]{ %1 = left/right
+  \csletcs{extramarks_firstmark_#1}{g__extramarks_save_firstxmark_#1}%
+  \csletcs{extramarks_topmark_#1}{g__extramarks_save_topxmark_#1}%
  }
 
-\newcommand\extramarks@savefirstxmark[1]{% 1 = left/right
-    \toks@\expandafter{\topmarks\csname extramarks@#1\endcsname}%
-    \csxdef{@firstcoltopxmark@#1}{\the\toks@}%
-    \toks@\expandafter{\splitfirstmarks\csname extramarks@#1\endcsname}%
-    \csxdef{@firstcolfirstxmark@#1}{\the\toks@}%
-    \ifcsempty{@firstcolfirstxmark@#1}
-      {\global\cslet{extramarks@setxmark#1}\relax}
-      {\csgdef{extramarks@setxmark#1}{\extramarks@@setxmarks{#1}}}%
+\newcommand\__extramarks_savefirstxmark[1]{ %1 = left/right
+    \toks@\exp_after:wN{\topmarks\csname g__extramarks_#1\endcsname}%
+    \csxdef{g__extramarks_save_topxmark_#1}{\the\toks@}%
+    \toks@\exp_after:wN{\splitfirstmarks\csname g__extramarks_#1\endcsname}%
+    \csxdef{g__extramarks_save_firstxmark_#1}{\the\toks@}%
+    \ifcsempty{g__extramarks_save_firstxmark_#1}
+      {\global\cslet{__extramarks_setxmark#1}\relax}
+      {\csgdef{__extramarks_setxmark#1}{\__extramarks__setxmarks{#1}}}%
 }
 
 \patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
-  {\extramarks@savemarks\ifx\@firstcolfirstmark\@empty}
-  {}{\ERROR patch 1 \string\ifx\string\@firstcolfirstmark}
+  {\__extramarks_savemarks\ifx\@firstcolfirstmark\@empty}
+  {}{\ERROR patch 1 \string\ifx\string\g__extramarks_save_firstmark}
 
 \patchcmd{\@outputdblcol}{\@combinedblfloats}
-  {\@combinedblfloats\extramarks@setmarks}
+  {\@combinedblfloats\__extramarks_setmarks}
   {}{\ERROR patch 2 \string\@combinedblfloats}
 
 % End of \@outputdblcol patching code
 
-\let\firstrightmark \rightmark
-\let\lastleftmark \leftmark
-
 % Variables and commands for a new mark ⟨xxxx⟩ :
-% \extramarks@⟨xxxx⟩ : the mark
+% \g__extramarks_⟨xxxx⟩ : the mark
 % \extramarks⟨xxxx⟩ : command to set the mark
-% \extramarks@firstmark@⟨xxxx⟩ : firstmark (braced)
-% \extramarks@topmark@⟨xxxx⟩ : topmark (braced)
-% \extramarks@botmark@⟨xxxx⟩ : botmark (braced)
+% \extramarks_firstmark_⟨xxxx⟩ : firstmark (braced)
+% \extramarks_topmark_⟨xxxx⟩ : topmark (braced)
+% \extramarks_botmark_⟨xxxx⟩ : botmark (braced)
 % \first⟨xxxx⟩xmark : firstmark (user level)
 % \top⟨xxxx⟩xmark : topmark (user level)
 % \last⟨xxxx⟩xmark : lastmark (user level)
 %  In \@outputdblcol:
-%  \extramarks@setxmark⟨xxxx⟩
-%  \@firstcolfirstxmark@⟨xxxx⟩
-%  \@firstcoltopxmark@⟨xxxx⟩
- 
-\extramarksnewmark{left}
-\extramarksnewmark{right}
+%  \__extramarks_setxmark⟨xxxx⟩
+%  \g__extramarks_save_firstxmark_⟨xxxx⟩
+%  \g__extramarks_save_topxmark_⟨xxxx⟩
 
 % Put extra pair of braces around the marks, to distinguish
 % an empty mark from the absence of a mark
 
-\newcommand\extramarksleft[1]{\marks\extramarks@left{{#1}}}
-\newcommand\extramarksright[1]{\marks\extramarks@right{{#1}}}
+\newcommand\extramarksleft[1]{\marks\g__extramarks_left{{#1}}}
+\newcommand\extramarksright[1]{\marks\g__extramarks_right{{#1}}}
 \newcommand\extramarks[2]{\extramarksleft{#1}\extramarksright{#2}}
 
 % These are variables for the marks with braces.
-% The \extramarks@firstmark@... and \extramarks@topmark@...
+% The \extramarks_firstmark_... and \extramarks_topmark_...
 % can be temporarily changed inside the output routine
 
-\def\extramarks@firstmark@left{\firstmarks\extramarks@left}
-\def\extramarks@topmark@left{\topmarks\extramarks@left}
-\def\extramarks@botmark@left{\botmarks\extramarks@left}
-\def\extramarks@firstmark@right{\firstmarks\extramarks@right}
-\def\extramarks@topmark@right{\topmarks\extramarks@right}
-\def\extramarks@botmark@right{\botmarks\extramarks@right}
+\def\extramarks_firstmark_left{\firstmarks\g__extramarks_left}
+\def\extramarks_topmark_left{\topmarks\g__extramarks_left}
+\def\extramarks_botmark_left{\botmarks\g__extramarks_left}
+\def\extramarks_firstmark_right{\firstmarks\g__extramarks_right}
+\def\extramarks_topmark_right{\topmarks\g__extramarks_right}
+\def\extramarks_botmark_right{\botmarks\g__extramarks_right}
 
 % Remove outer braces from the marks
 
-\def\firstleftxmark{\expandafter\@firstofone{\extramarks@firstmark@left}}
-\def\firstrightxmark{\expandafter\@firstofone{\extramarks@firstmark@right}}
-\def\topleftxmark{\expandafter\@firstofone{\extramarks@topmark@left}}
-\def\toprightxmark{\expandafter\@firstofone{\extramarks@topmark@right}}
-\def\lastleftxmark{\expandafter\@firstofone{\extramarks@botmark@left}}
-\def\lastrightxmark{\expandafter\@firstofone{\extramarks@botmark@right}}
+\def\firstleftxmark{\exp_after:wN\use:n{\extramarks_firstmark_left}}
+\def\firstrightxmark{\exp_after:wN\use:n{\extramarks_firstmark_right}}
+\def\topleftxmark{\exp_after:wN\use:n{\extramarks_topmark_left}}
+\def\toprightxmark{\exp_after:wN\use:n{\extramarks_topmark_right}}
+\def\lastleftxmark{\exp_after:wN\use:n{\extramarks_botmark_left}}
+\def\lastrightxmark{\exp_after:wN\use:n{\extramarks_botmark_right}}
+
+\ExplSyntaxOff
+ 
+\extramarksnewmark{left}
+\extramarksnewmark{right}
 
 \let\firstxmark\firstleftxmark
 \let\lastxmark\lastrightxmark
 \let\topxmark\topleftxmark
+
+\let\firstrightmark \rightmark
+\let\lastleftmark \leftmark
 
 % \endinput
 %%
