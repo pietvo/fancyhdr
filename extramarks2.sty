@@ -29,6 +29,7 @@
 \cs_generate_variant:Nn \newmarks:N { c }
 
 \seq_new:N \l__extramarks_xmarks_seq
+\tl_new:N \l__temp_tl
 
 % Create a new mark
 
@@ -41,43 +42,43 @@
 
 % For internal use in \@outputdblcol
 
-\newcommand\__extramarks_savemarks{%
-  \seq_map_tokens:Nn \l__extramarks_xmarks_seq {\__extramarks_savefirstxmark}
+\cs_new_protected:Nn \__extramarks_savemarks:{%
+  \seq_map_tokens:Nn \l__extramarks_xmarks_seq {\__extramarks_savefirstxmark:n}
 }
 
-\newcommand\__extramarks_setmarks{%
+\cs_new_protected:Nn \__extramarks_setmarks:{%
   \seq_map_inline:Nn \l__extramarks_xmarks_seq { 
-    \cs:w __extramarks_setxmark ##1 \cs_end:
+    \cs:w __extramarks_setxmark ##1: \cs_end:
   }
 }
 
-\newcommand\__extramarks__setxmarks[1]{ %1 = left/right
-  \csletcs{extramarks_firstmark_#1}{g__extramarks_save_firstxmark_#1}%
-  \csletcs{extramarks_topmark_#1}{g__extramarks_save_topxmark_#1}%
+\cs_new_protected:Npn \__extramarks__setxmarks:n #1 { % #1 = left/right
+  \cs_set_eq:cc {extramarks_firstmark_#1} {g__extramarks_save_firstxmark_#1}
+  \cs_set_eq:cc {extramarks_topmark_#1} {g__extramarks_save_topxmark_#1}
  }
 
-\newcommand\__extramarks_savefirstxmark[1]{ %1 = left/right
-    \toks@\exp_after:wN{\topmarks\csname g__extramarks_#1\endcsname}%
-    \csxdef{g__extramarks_save_topxmark_#1}{\the\toks@}%
-    \toks@\exp_after:wN{\splitfirstmarks\csname g__extramarks_#1\endcsname}%
-    \csxdef{g__extramarks_save_firstxmark_#1}{\the\toks@}%
-    \ifcsempty{g__extramarks_save_firstxmark_#1}
-      {\global\cslet{__extramarks_setxmark#1}\relax}
-      {\csgdef{__extramarks_setxmark#1}{\__extramarks__setxmarks{#1}}}%
+\cs_new_protected:Npn \__extramarks_savefirstxmark:n #1 { % #1 = left/right
+    \toks@ \exp_after:wN {\topmarks\csname g__extramarks_#1\endcsname}
+    \tl_gset:cx {g__extramarks_save_topxmark_#1} {\the\toks@}
+    \toks@ \exp_after:wN{\splitfirstmarks\csname g__extramarks_#1\endcsname}
+    \tl_gset:cx {g__extramarks_save_firstxmark_#1} {\the\toks@}
+    \tl_if_empty:cTF {g__extramarks_save_firstxmark_#1}
+      {\cs_gset_eq:cN {__extramarks_setxmark#1:} \relax}
+      {\cs_gset:cn {__extramarks_setxmark#1:} {\__extramarks__setxmarks:n{#1}}}
 }
 
 \patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
-  {\__extramarks_savemarks\ifx\@firstcolfirstmark\@empty}
+  {\__extramarks_savemarks:\ifx\@firstcolfirstmark\@empty}
   {}{\ERROR patch 1 \string\ifx\string\g__extramarks_save_firstmark}
 
 \patchcmd{\@outputdblcol}{\@combinedblfloats}
-  {\@combinedblfloats\__extramarks_setmarks}
+  {\@combinedblfloats\__extramarks_setmarks:}
   {}{\ERROR patch 2 \string\@combinedblfloats}
 
 % End of \@outputdblcol patching code
 
 % Variables and commands for a new mark ⟨xxxx⟩ :
-% \g__extramarks_⟨xxxx⟩ : the mark
+% \g__extramarks_⟨xxxx⟩ : the mark (number as a char)
 % \extramarks⟨xxxx⟩ : command to set the mark
 % \extramarks_firstmark_⟨xxxx⟩ : firstmark (braced)
 % \extramarks_topmark_⟨xxxx⟩ : topmark (braced)
@@ -86,7 +87,7 @@
 % \top⟨xxxx⟩xmark : topmark (user level)
 % \last⟨xxxx⟩xmark : lastmark (user level)
 %  In \@outputdblcol:
-%  \__extramarks_setxmark⟨xxxx⟩
+%  \__extramarks_setxmark⟨xxxx⟩:
 %  \g__extramarks_save_firstxmark_⟨xxxx⟩
 %  \g__extramarks_save_topxmark_⟨xxxx⟩
 
