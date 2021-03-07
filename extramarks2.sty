@@ -10,118 +10,180 @@
 %%
 %% and version 1.3 or later is part of all distributions of LaTeX version
 %% 2005/12/01 or later.
-%% 
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks2}
-           [2021/03/05 v0.1
+           [2021/03/06 v0.1
                   Extra marks for LaTeX]
 % Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{expl3,xparse}
 \RequirePackage{etoolbox}
 
+% This implementation only prepends some code to \@outputpage
+
 \ExplSyntaxOn
 
 % Pick up traditional macros
+
+\cs_new_eq:NN \__extramarks_newmarks:N \newmarks
+\cs_generate_variant:Nn \__extramarks_newmarks:N { c }
+
+% Global variables
+% Sequence of define extra marks
+
+\seq_new:N \g__extramarks_marks_seq
+
+% Temporary box
+
+\box_new:N \l__extramarks__temp_box
+
+% Temporary token lists
+
+\tl_new:N \l__extramarks_tempa_tl
+\tl_new:N \l__extramarks_tempb_tl
+
+% Variables for a new mark ⟨name⟩ :
+% \g__extramarks_⟨name⟩_int : the mark (number as a char)
+% \g__extramarks_previousmark_⟨name⟩_tl : last mark of previous page (braced)
+% \g__extramarks_topmark_⟨name⟩_tl : topmark (braced)
+% \g__extramarks_firstmark_⟨name⟩_tl : firstmark (braced)
+% \g__extramarks_botmark_⟨name⟩_tl : botmark (braced)
+
+% commands for a new mark ⟨name⟩ :
+% \extramarksput {⟨name⟩} {value} : command to set the mark
 %
-\cs_new_eq:NN \newmarks:N \newmarks
-\cs_generate_variant:Nn \newmarks:N { c }
+% \extramarkstop{⟨name⟩} : topmark (user level)
+% \extramarksfirst{⟨name⟩} : firstmark (user level)
+% \extramarkslast{⟨name⟩} : botmark (user level)
 
-\seq_new:N \l__extramarks_xmarks_seq
-\tl_new:N \l__temp_tl
-
-% Create a new mark
+% Create a new mark; parameter is a name, preferably alphabetical
 
 \NewDocumentCommand \extramarksnewmark { m } {
-  % Create the mark
-  \newmarks:c {g__extramarks_#1}
-  % Put it in the list of marks
-  \seq_put_right:Nn \l__extramarks_xmarks_seq { #1 }
+  % Test if not yet defined
+  \cs_if_exist:cTF {g__extramarks_#1_int}
+    { \msg_error:nnn {extramarks} {\token_to_str:N \extramarksnewmark:~already~defined} {#1} }
+    {
+      % Create the mark
+      \__extramarks_newmarks:c {g__extramarks_#1_int}
+
+      % Put it in the list of marks
+      \seq_put_right:Nn \g__extramarks_marks_seq { #1 }
+
+      % Create variables
+      \tl_new:c {g__extramarks_topmark_#1_tl}      % topmark (braced)
+      \tl_new:c {g__extramarks_firstmark_#1_tl}    % firstmark (braced)
+      \tl_new:c {g__extramarks_botmark_#1_tl}      % botmark (braced)
+      \tl_gset:cn {g__extramarks_botmark_#1_tl} {{}}   % initialize to empty for next topmark
+    }
 }
 
-% For internal use in \@outputdblcol
+% Patch the \@outputpage macro
 
-\cs_new_protected:Nn \__extramarks_savemarks:{%
-  \seq_map_tokens:Nn \l__extramarks_xmarks_seq {\__extramarks_savefirstxmark:n}
+\cs_new_protected:Nn \__extramarks_setmarks:
+{
+  \group_begin:
+    \dim_set:Nn \tex_splitmaxdepth:D \c_max_dim
+    \int_set:Nn \tex_vbadness:D      \c_max_int
+    % Make a temp copy of \@outputbox
+    \vbox_set:Nn \l__extramarks__temp_box { \unvcopy\@outputbox\unskip }
+    % `Split' the box (but no split)
+    \vbox_set_split_to_ht:NNn \l__extramarks__temp_box \l__extramarks__temp_box \c_max_dim
+    \seq_map_inline:Nn \g__extramarks_marks_seq
+      {
+        % save previous botmark - set as our topmark
+        \tl_set_eq:Nc \l__extramarks_tempa_tl { g__extramarks_botmark_##1_tl }
+        \tl_gset_eq:cN { g__extramarks_topmark_##1_tl } \l__extramarks_tempa_tl
+        % Get firstmark of our page
+        \tl_gset:No \l__extramarks_tempb_tl
+          { \splitfirstmarks \use:c{g__extramarks_##1_int} }
+        % If empty use the topmark, otherwise the new values
+        \tl_if_empty:NTF \l__extramarks_tempb_tl
+           {
+             \tl_gset_eq:cN { g__extramarks_firstmark_##1_tl } \l__extramarks_tempa_tl
+             \tl_gset_eq:cN { g__extramarks_botmark_##1_tl } \l__extramarks_tempa_tl
+           }
+           {
+             \tl_gset_eq:cN { g__extramarks_firstmark_##1_tl } \l__extramarks_tempb_tl
+             \tl_gset:No \l__extramarks_tempb_tl
+               { \splitbotmarks \use:c{g__extramarks_##1_int} }
+             \tl_gset_eq:cN { g__extramarks_botmark_##1_tl } \l__extramarks_tempb_tl
+           }
+      }
+  \group_end:
 }
 
-\cs_new_protected:Nn \__extramarks_setmarks:{%
-  \seq_map_inline:Nn \l__extramarks_xmarks_seq { 
-    \cs:w __extramarks_setxmark ##1: \cs_end:
-  }
-}
+\pretocmd { \@outputpage }
+  { \__extramarks_setmarks: }
+  { }
+  { \msg_error:nn {extramarks} {Cannot~plug~into~the~output~routine}}
 
-\cs_new_protected:Npn \__extramarks__setxmarks:n #1 { % #1 = left/right
-  \cs_set_eq:cc {extramarks_firstmark_#1} {g__extramarks_save_firstxmark_#1}
-  \cs_set_eq:cc {extramarks_topmark_#1} {g__extramarks_save_topxmark_#1}
- }
 
-\cs_new_protected:Npn \__extramarks_savefirstxmark:n #1 { % #1 = left/right
-    \toks@ \exp_after:wN {\topmarks\csname g__extramarks_#1\endcsname}
-    \tl_gset:cx {g__extramarks_save_topxmark_#1} {\the\toks@}
-    \toks@ \exp_after:wN{\splitfirstmarks\csname g__extramarks_#1\endcsname}
-    \tl_gset:cx {g__extramarks_save_firstxmark_#1} {\the\toks@}
-    \tl_if_empty:cTF {g__extramarks_save_firstxmark_#1}
-      {\cs_gset_eq:cN {__extramarks_setxmark#1:} \relax}
-      {\cs_gset:cn {__extramarks_setxmark#1:} {\__extramarks__setxmarks:n{#1}}}
-}
+% End of \@outputpage patching code
 
-\patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
-  {\__extramarks_savemarks:\ifx\@firstcolfirstmark\@empty}
-  {}{\ERROR patch 1 \string\ifx\string\g__extramarks_save_firstmark}
 
-\patchcmd{\@outputdblcol}{\@combinedblfloats}
-  {\@combinedblfloats\__extramarks_setmarks:}
-  {}{\ERROR patch 2 \string\@combinedblfloats}
+% \def\firstleftxmark{\exp_after:wN\use:n{\extramarks_firstmark_left}}
+% \def\firstrightxmark{\exp_after:wN\use:n{\extramarks_firstmark_right}}
+% \def\topleftxmark{\exp_after:wN\use:n{\extramarks_topmark_left}}
+% \def\toprightxmark{\exp_after:wN\use:n{\extramarks_topmark_right}}
+% \def\lastleftxmark{\exp_after:wN\use:n{\extramarks_botmark_left}}
+% \def\lastrightxmark{\exp_after:wN\use:n{\extramarks_botmark_right}}
 
-% End of \@outputdblcol patching code
-
-% Variables and commands for a new mark ⟨xxxx⟩ :
-% \g__extramarks_⟨xxxx⟩ : the mark (number as a char)
-% \extramarks⟨xxxx⟩ : command to set the mark
-% \extramarks_firstmark_⟨xxxx⟩ : firstmark (braced)
-% \extramarks_topmark_⟨xxxx⟩ : topmark (braced)
-% \extramarks_botmark_⟨xxxx⟩ : botmark (braced)
-% \first⟨xxxx⟩xmark : firstmark (user level)
-% \top⟨xxxx⟩xmark : topmark (user level)
-% \last⟨xxxx⟩xmark : lastmark (user level)
-%  In \@outputdblcol:
-%  \__extramarks_setxmark⟨xxxx⟩:
-%  \g__extramarks_save_firstxmark_⟨xxxx⟩
-%  \g__extramarks_save_topxmark_⟨xxxx⟩
+\extramarksnewmark{left}
+\extramarksnewmark{right}
 
 % Put extra pair of braces around the marks, to distinguish
 % an empty mark from the absence of a mark
 
-\newcommand\extramarksleft[1]{\marks\g__extramarks_left{{#1}}}
-\newcommand\extramarksright[1]{\marks\g__extramarks_right{{#1}}}
-\newcommand\extramarks[2]{\extramarksleft{#1}\extramarksright{#2}}
+\NewDocumentCommand \extramarksput { m m } {
+  \cs_if_exist:cTF {g__extramarks_#1_int}
+  {
+    % Put braced value in the mark
+    % TODO: protected eval
+    \tex_marks:D \use:c{g__extramarks_#1_int} {{ #2 }}
+  }
+  { \msg_error:nnn {extramarks} {\token_to_str:N \extramarksput:~not~defined} {#1} }
+}
 
-% These are variables for the marks with braces.
-% The \extramarks_firstmark_... and \extramarks_topmark_...
-% can be temporarily changed inside the output routine
+\NewDocumentCommand \extramarkstop { m } {
+  \cs_if_exist:cTF {g__extramarks_#1_int}
+  {
+    % Get unbraced value out of the mark
+     \tl_head:v { g__extramarks_topmark_#1_tl }
+  }
+  { \msg_error:nnn {extramarks} {\token_to_str:N \extramarkstop:~not~defined} {#1} }
+}
 
-\def\extramarks_firstmark_left{\firstmarks\g__extramarks_left}
-\def\extramarks_topmark_left{\topmarks\g__extramarks_left}
-\def\extramarks_botmark_left{\botmarks\g__extramarks_left}
-\def\extramarks_firstmark_right{\firstmarks\g__extramarks_right}
-\def\extramarks_topmark_right{\topmarks\g__extramarks_right}
-\def\extramarks_botmark_right{\botmarks\g__extramarks_right}
+\NewDocumentCommand \extramarksfirst { m } {
+  \cs_if_exist:cTF {g__extramarks_#1_int}
+  {
+    % Get unbraced value out of the mark
+     \tl_head:v { g__extramarks_firstmark_#1_tl }
+  }
+  { \msg_error:nnn {extramarks} {\token_to_str:N \extramarksfirst:~not~defined} {#1} }
+}
 
-% Remove outer braces from the marks
+\NewDocumentCommand \extramarkslast { m } {
+  \cs_if_exist:cTF {g__extramarks_#1_int}
+  {
+    % Get unbraced value out of the mark
+     \tl_head:v { g__extramarks_botmark_#1_tl }
+  }
+  { \msg_error:nnn {extramarks} {\token_to_str:N \extramarkslast:~not~defined} {#1} }
+}
 
-\def\firstleftxmark{\exp_after:wN\use:n{\extramarks_firstmark_left}}
-\def\firstrightxmark{\exp_after:wN\use:n{\extramarks_firstmark_right}}
-\def\topleftxmark{\exp_after:wN\use:n{\extramarks_topmark_left}}
-\def\toprightxmark{\exp_after:wN\use:n{\extramarks_topmark_right}}
-\def\lastleftxmark{\exp_after:wN\use:n{\extramarks_botmark_left}}
-\def\lastrightxmark{\exp_after:wN\use:n{\extramarks_botmark_right}}
+\newcommand\extramarks[2]{
+  \extramarksput{left}{#1}
+  \extramarksput{right}{#2}
+}
 
-\ExplSyntaxOff
- 
-\extramarksnewmark{left}
-\extramarksnewmark{right}
+\def\firstleftxmark  {\extramarksfirst {left}  }
+\def\firstrightxmark {\extramarksfirst {right} }
+\def\topleftxmark    {\extramarkstop   {left}  }
+\def\toprightxmark   {\extramarkstop   {right} }
+\def\lastleftxmark   {\extramarkslast  {left}  }
+\def\lastrightxmark  {\extramarkslast  {right} }
 
 \let\firstxmark\firstleftxmark
 \let\lastxmark\lastrightxmark
@@ -129,6 +191,8 @@
 
 \let\firstrightmark \rightmark
 \let\lastleftmark \leftmark
+
+\ExplSyntaxOff
 
 % \endinput
 %%
