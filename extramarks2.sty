@@ -79,42 +79,57 @@
     }
 }
 
+% Algorithm for extracting the marks from a sequence of boxes:
+% For each mark:
+% INIT:
+%     topmark <- previous botmark
+%     firstmark <- empty
+% For each box:
+%     (If the box was the result of a \vsplit skip this:)
+%     \vsplit box to maxdimen
+%     if splitfirstmark not empty:
+%         if firstmark = empty:
+%             firstmark <- splitfirstmark
+%             botmark <- splitbotmark
+% END:
+%     if firstmark = empty:
+%         firstmark <- botmark <- topmark
 
 % Patch the \@outputdblcol macro for the \twocolumn case
 % \@outputbox contains the first column, and has been \vsplit
 % so we can get its marks with \splitmarks
 
-% Overview of processing, depending on the presence of marks in the
-% first and second column:
-% Both empty (with regard to the marks):
-%   Use topmark for both firstmark and botmark
-% Both non-empty:
-%   Use firstmark from first column and botmark from second column
-% One of them empty, other empty:
-%   Use firstmark and botmark from the nonempty column
+% Extract the marks of the last vsplitted box.
+
+\cs_new_protected:Npn \__extramarks_get_boxmarks:n #1 % #1 = marks class
+{
+  \tl_gset:No \l__extramarks_tempa_tl
+    { \splitfirstmarks \use:c{g__extramarks_#1_int} }
+  \tl_if_empty:NF \l__extramarks_tempa_tl
+    % If not empty
+    {
+      \tl_if_empty:cT { g__extramarks_firstmark_#1_tl }
+        {
+          \tl_gset_eq:cN { g__extramarks_firstmark_#1_tl } \l__extramarks_tempa_tl
+        }
+      \tl_gset:co { g__extramarks_botmark_#1_tl }
+        { \splitbotmarks \use:c{g__extramarks_#1_int} }
+    }
+}
 
 \cs_new_protected:Nn \__extramarks_setfirstcolmarks:
 {
   \seq_map_inline:Nn \g__extramarks_marks_seq
     {
-      % save previous botmark - set as our topmark
+      % INIT:
+      %     topmark <- previous botmark
+      %     firstmark <- empty
       \tl_set_eq:Nc \l__extramarks_tempa_tl { g__extramarks_botmark_##1_tl }
       \tl_gset_eq:cN { g__extramarks_topmark_##1_tl } \l__extramarks_tempa_tl
-      % Get firstmark of our column
-      \tl_gset:No \l__extramarks_tempb_tl
-        { \splitfirstmarks \use:c{g__extramarks_##1_int} }
-      \tl_gset_eq:cN { g__extramarks_firstmark_##1_tl } \l__extramarks_tempb_tl
-      \tl_if_empty:NTF \l__extramarks_tempb_tl
-        % If empty we delay the decision until the second column
-        { \message{No~marks~in~first~column}
-%          \showboxdepth=100\showboxbreadth=100\showbox\@outputbox
-        }
-        % Otherwise use the new values (botmark tentatively)
-        { \message{Found~marks~in~first~column}
-          \tl_gset:No \l__extramarks_tempb_tl
-            { \splitbotmarks \use:c{g__extramarks_##1_int} }
-          \tl_gset_eq:cN { g__extramarks_botmark_##1_tl } \l__extramarks_tempb_tl
-        }
+      \tl_gset_eq:cN { g__extramarks_firstmark_##1_tl } \c_empty_tl
+
+      % Process any marks in the box
+      \__extramarks_get_boxmarks:n { ##1 }
     }
 }
 
@@ -122,10 +137,9 @@
   {\__extramarks_setfirstcolmarks:\ifx\@firstcolfirstmark\@empty}
   {}{\ERROR patch 1 \string\ifx\string\@firstcolfirstmark\@empty}
 
-
 % Patch the \@outputdblcol macro for the second column case
-% \@outputbox contains the second column.
-% Get the marks by \vsplit to the maximum height
+% \@outputbox contains the second column, not yet \vsplitted.
+% Get the marks by \vsplit to the maximum height.
 
 \cs_new_protected:Nn \__extramarks_setsecondcolmarks:
 {
@@ -138,44 +152,15 @@
     \vbox_set_split_to_ht:NNn \l__extramarks__temp_box \l__extramarks__temp_box \c_max_dim
     \seq_map_inline:Nn \g__extramarks_marks_seq
       {
-        % Get firstmark of the second column
-        \tl_gset:No \l__extramarks_tempb_tl
-          { \splitfirstmarks \use:c{g__extramarks_##1_int} }
-        % If empty, check if first column was also empty
-        \tl_if_empty:NTF \l__extramarks_tempb_tl
-          { \message{No~marks~in~second~column}
-%            \showboxdepth=100\showboxbreadth=100\showbox\@outputbox
-            \tl_set_eq:Nc \l__extramarks_tempa_tl { g__extramarks_firstmark_##1_tl }
-            \tl_if_empty:NTF \l__extramarks_tempa_tl
-            {
-              % First column also empty, use topmark for both
-              \message{Set~firstmark~and~botmark~to~topmark}
-              \tl_gset_eq:cc { g__extramarks_firstmark_##1_tl } { g__extramarks_topmark_##1_tl }
-              \tl_gset_eq:cc { g__extramarks_botmark_##1_tl } { g__extramarks_topmark_##1_tl }
-            }
-              % First column not empty, second column empty, leave as is
-              % The marks have been set in first column
-            { \message{Do~nothing}}
-          }
-          % Here the second column has marks, and \l__extramarks_tempb_tl
-          % contains its first mark
-          % We will use this if the first column had no marks,
-          % otherwise the firstmark was already set.
-          { \message{Found~marks~in~second~column}
-%            \showboxdepth=100\showboxbreadth=100\showbox\@outputbox
-            \tl_set_eq:Nc \l__extramarks_tempa_tl { g__extramarks_firstmark_##1_tl }
-            \tl_if_empty:NTF \l__extramarks_tempa_tl
-              {
-                % First column also empty, use our firstmark
-                \tl_gset_eq:cN { g__extramarks_firstmark_##1_tl } \l__extramarks_tempb_tl
-              }
-                % First column not empty, leave as is
-              { }
-            % But this column has a botmark, so we use that.
-            \tl_gset:No \l__extramarks_tempb_tl
-              { \splitbotmarks \use:c{g__extramarks_##1_int} }
-            \tl_gset_eq:cN { g__extramarks_botmark_##1_tl } \l__extramarks_tempb_tl
-            \message{Set~botmark~second~column \l__extramarks_tempb_tl}
+        % Process any marks in the box
+        \__extramarks_get_boxmarks:n { ##1 }
+        % END:
+        %     if firstmark = empty:
+        %         botmark <- firstmark <- topmark
+        \tl_if_empty:cT { g__extramarks_firstmark_##1_tl }
+          {
+            \tl_gset_eq:cc { g__extramarks_firstmark_##1_tl } { g__extramarks_topmark_##1_tl }
+            \tl_gset_eq:cc { g__extramarks_botmark_##1_tl } { g__extramarks_topmark_##1_tl }
           }
       }
   \group_end:
@@ -186,7 +171,6 @@
   {}{\ERROR patch 2 \string\@combinedblfloats}
 
 % End of \@outputdblcol patching code
-
 
 % Patch the \@outputpage macro for the single column case
 
@@ -231,7 +215,6 @@
 
 
 % End of \@outputpage patching code
-
 
 % \def\firstleftxmark{\exp_after:wN\use:n{\extramarks_firstmark_left}}
 % \def\firstrightxmark{\exp_after:wN\use:n{\extramarks_firstmark_right}}
