@@ -274,6 +274,18 @@
   { \msg_error:nnn {extramarks} {\token_to_str:N \extramarkslast:~not~defined} {#1} }
 }
 
+% Convenience functions
+
+\NewDocumentCommand \extramarksleft { m }
+{
+  \extramarksput{left}{#1}
+}
+
+\NewDocumentCommand \extramarksright { m }
+{
+  \extramarksput{right}{#1}
+}
+
 \NewDocumentCommand \extramarks { m m }
 {
   \extramarksput{left}{#1}
