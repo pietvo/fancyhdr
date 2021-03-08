@@ -41,8 +41,7 @@
 
 % Temporary token lists
 
-\tl_new:N \l__extramarks_tempa_tl
-\tl_new:N \l__extramarks_tempb_tl
+\tl_new:N \l__extramarks_temp_tl
 
 % Variables for a new mark ⟨name⟩ :
 % \g__extramarks_⟨name⟩_int : the mark (number as a char)
@@ -103,14 +102,14 @@
 
 \cs_new_protected:Npn \__extramarks_get_boxmarks:n #1 % #1 = marks class
 {
-  \tl_gset:No \l__extramarks_tempa_tl
+  \tl_gset:No \l__extramarks_temp_tl
     { \splitfirstmarks \use:c{g__extramarks_#1_int} }
-  \tl_if_empty:NF \l__extramarks_tempa_tl
+  \tl_if_empty:NF \l__extramarks_temp_tl
     % If not empty
     {
       \tl_if_empty:cT { g__extramarks_firstmark_#1_tl }
         {
-          \tl_gset_eq:cN { g__extramarks_firstmark_#1_tl } \l__extramarks_tempa_tl
+          \tl_gset_eq:cN { g__extramarks_firstmark_#1_tl } \l__extramarks_temp_tl
         }
       \tl_gset:co { g__extramarks_botmark_#1_tl }
         { \splitbotmarks \use:c{g__extramarks_#1_int} }
@@ -124,8 +123,8 @@
       % INIT:
       %     topmark <- previous botmark
       %     firstmark <- empty
-      \tl_set_eq:Nc \l__extramarks_tempa_tl { g__extramarks_botmark_##1_tl }
-      \tl_gset_eq:cN { g__extramarks_topmark_##1_tl } \l__extramarks_tempa_tl
+      \tl_set_eq:Nc \l__extramarks_temp_tl { g__extramarks_botmark_##1_tl }
+      \tl_gset_eq:cN { g__extramarks_topmark_##1_tl } \l__extramarks_temp_tl
       \tl_gset_eq:cN { g__extramarks_firstmark_##1_tl } \c_empty_tl
 
       % Process any marks in the box
@@ -185,25 +184,23 @@
     \vbox_set_split_to_ht:NNn \l__extramarks__temp_box \l__extramarks__temp_box \c_max_dim
     \seq_map_inline:Nn \g__extramarks_marks_seq
       {
-        % save previous botmark - set as our topmark
-        \tl_set_eq:Nc \l__extramarks_tempa_tl { g__extramarks_botmark_##1_tl }
-        \tl_gset_eq:cN { g__extramarks_topmark_##1_tl } \l__extramarks_tempa_tl
-        % Get firstmark of our page
-        \tl_gset:No \l__extramarks_tempb_tl
-          { \splitfirstmarks \use:c{g__extramarks_##1_int} }
-        % If empty use the topmark, otherwise the new values
-        \tl_if_empty:NTF \l__extramarks_tempb_tl
-           { \message{No~marks~in~outputbox}
-%             \showboxdepth=100\showboxbreadth=100\showbox\@outputbox
-             \tl_gset_eq:cN { g__extramarks_firstmark_##1_tl } \l__extramarks_tempa_tl
-             \tl_gset_eq:cN { g__extramarks_botmark_##1_tl } \l__extramarks_tempa_tl
-           }
-           { \message{Found~marks~in~outputbox}
-             \tl_gset_eq:cN { g__extramarks_firstmark_##1_tl } \l__extramarks_tempb_tl
-             \tl_gset:No \l__extramarks_tempb_tl
-               { \splitbotmarks \use:c{g__extramarks_##1_int} }
-             \tl_gset_eq:cN { g__extramarks_botmark_##1_tl } \l__extramarks_tempb_tl
-           }
+        % INIT:
+        %     topmark <- previous botmark
+        %     firstmark <- empty
+        \tl_set_eq:Nc \l__extramarks_temp_tl { g__extramarks_botmark_##1_tl }
+        \tl_gset_eq:cN { g__extramarks_topmark_##1_tl } \l__extramarks_temp_tl
+        \tl_gset_eq:cN { g__extramarks_firstmark_##1_tl } \c_empty_tl
+  
+        % Process any marks in the box
+        \__extramarks_get_boxmarks:n { ##1 }
+        % END:
+        %     if firstmark = empty:
+        %         botmark <- firstmark <- topmark
+        \tl_if_empty:cT { g__extramarks_firstmark_##1_tl }
+          {
+            \tl_gset_eq:cc { g__extramarks_firstmark_##1_tl } { g__extramarks_topmark_##1_tl }
+            \tl_gset_eq:cc { g__extramarks_botmark_##1_tl } { g__extramarks_topmark_##1_tl }
+          }
       }
   \group_end:
 }
