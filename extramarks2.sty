@@ -59,7 +59,8 @@
 
 % Create a new mark; parameter is a name, preferably alphabetical
 
-\NewDocumentCommand \extramarksnewmark { m } {
+\NewDocumentCommand \extramarksnewmark { m }
+{
   % Test if not yet defined
   \cs_if_exist:cTF {g__extramarks_#1_int}
     { \msg_error:nnn {extramarks} {\token_to_str:N \extramarksnewmark:~already~defined} {#1} }
@@ -232,7 +233,8 @@
 % Put extra pair of braces around the marks, to distinguish
 % an empty mark from the absence of a mark
 
-\NewDocumentCommand \extramarksput { m m } {
+\NewDocumentCommand \extramarksput { m m }
+{
   \cs_if_exist:cTF {g__extramarks_#1_int}
   {
     % Put braced value in the mark
@@ -242,7 +244,8 @@
   { \msg_error:nnn {extramarks} {\token_to_str:N \extramarksput:~not~defined} {#1} }
 }
 
-\NewDocumentCommand \extramarkstop { m } {
+\NewDocumentCommand \extramarkstop { m }
+{
   \cs_if_exist:cTF {g__extramarks_#1_int}
   {
     % Get unbraced value out of the mark
@@ -251,7 +254,8 @@
   { \msg_error:nnn {extramarks} {\token_to_str:N \extramarkstop:~not~defined} {#1} }
 }
 
-\NewDocumentCommand \extramarksfirst { m } {
+\NewDocumentCommand \extramarksfirst { m }
+{
   \cs_if_exist:cTF {g__extramarks_#1_int}
   {
     % Get unbraced value out of the mark
@@ -260,7 +264,8 @@
   { \msg_error:nnn {extramarks} {\token_to_str:N \extramarksfirst:~not~defined} {#1} }
 }
 
-\NewDocumentCommand \extramarkslast { m } {
+\NewDocumentCommand \extramarkslast { m }
+{
   \cs_if_exist:cTF {g__extramarks_#1_int}
   {
     % Get unbraced value out of the mark
