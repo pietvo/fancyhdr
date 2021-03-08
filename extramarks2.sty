@@ -43,6 +43,12 @@
 
 \tl_new:N \l__extramarks_temp_tl
 
+% Messages
+% 
+\msg_new:nnn {extramarks} {not-defined} {\token_to_str:N #1:~mark~#2~not~defined}
+\msg_new:nnn {extramarks} {already-defined} {\token_to_str:N #1:~mark~#2~already~defined}
+\msg_new:nnn {extramarks} {cannot-patch} {Cannot patch \token_to_str:N #1}
+
 % Variables for a new mark ⟨name⟩ :
 % \g__extramarks_⟨name⟩_int : the mark (number as a char)
 % \g__extramarks_previousmark_⟨name⟩_tl : last mark of previous page (braced)
@@ -63,7 +69,8 @@
 {
   % Test if not yet defined
   \cs_if_exist:cTF {g__extramarks_#1_int}
-    { \msg_error:nnn {extramarks} {\token_to_str:N \extramarksnewmark:~already~defined} {#1} }
+    { \msg_error:nnnn {extramarks} {already-defined}
+      {\extramarksnewmark} {#1} }
     {
       % Create the mark
       \__extramarks_newmarks:c {g__extramarks_#1_int}
@@ -155,7 +162,8 @@
 
 \patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
   {\__extramarks_setfirstcolmarks:\ifx\@firstcolfirstmark\@empty}
-  {}{\ERROR patch 1 \string\ifx\string\@firstcolfirstmark\@empty}
+  { }
+  { \msg_error:nnn {extramarks} {cannot-patch} {\@outputdblcol~patch~1} }
 
 % Patch the \@outputdblcol macro for the second column case
 % \@outputbox contains the second column, not yet \vsplitted.
@@ -183,7 +191,8 @@
 
 \patchcmd{\@outputdblcol}{\global\@firstcolumntrue}
   {\global\@firstcolumntrue\__extramarks_setsecondcolmarks:}
-  {}{\ERROR patch 2 \string\@combinedblfloats}
+  { }
+  { \msg_error:nnn {extramarks} {cannot-patch} {\@outputdblcol~patch~2} }
 
 % End of \@outputdblcol patching code
 
@@ -215,7 +224,7 @@
 \patchcmd { \@opcol } { \@outputpage }
   { \__extramarks_setmarks: \@outputpage }
   { }
-  { \msg_error:nn {extramarks} {Cannot~plug~into~the~output~routine}}
+  { \msg_error:nnn {extramarks} {cannot-patch} {\@outputpage} {} }
 
 
 % End of \@outputpage patching code
@@ -241,7 +250,7 @@
     % TODO: protected eval
     \tex_marks:D \use:c{g__extramarks_#1_int} {{ #2 }}
   }
-  { \msg_error:nnn {extramarks} {\token_to_str:N \extramarksput:~not~defined} {#1} }
+  { \msg_error:nnnn {extramarks} {not-defined} {\extramarksput} {#1} }
 }
 
 \NewDocumentCommand \extramarkstop { m }
@@ -251,7 +260,7 @@
     % Get unbraced value out of the mark
      \tl_head:v { g__extramarks_topmark_#1_tl }
   }
-  { \msg_error:nnn {extramarks} {\token_to_str:N \extramarkstop:~not~defined} {#1} }
+  { \msg_error:nnnn {extramarks} {not-defined} {\extramarkstop} {#1} }
 }
 
 \NewDocumentCommand \extramarksfirst { m }
@@ -261,7 +270,7 @@
     % Get unbraced value out of the mark
      \tl_head:v { g__extramarks_firstmark_#1_tl }
   }
-  { \msg_error:nnn {extramarks} {\token_to_str:N \extramarksfirst:~not~defined} {#1} }
+  { \msg_error:nnnn {extramarks} {not-defined} {\extramarksfirst} {#1} }
 }
 
 \NewDocumentCommand \extramarkslast { m }
@@ -271,7 +280,7 @@
     % Get unbraced value out of the mark
      \tl_head:v { g__extramarks_botmark_#1_tl }
   }
-  { \msg_error:nnn {extramarks} {\token_to_str:N \extramarkslast:~not~defined} {#1} }
+  { \msg_error:nnnn {extramarks} {not-defined} {\extramarkslast} {#1} }
 }
 
 % Convenience functions
