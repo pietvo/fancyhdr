@@ -98,6 +98,17 @@
 % \@outputbox contains the first column, and has been \vsplit
 % so we can get its marks with \splitmarks
 
+% INIT code
+%     topmark <- previous botmark
+%     firstmark <- empty
+
+\cs_new_protected:Npn \__extramarks_get_boxmarks_init:n #1 % #1 = marks class
+{
+  \tl_set_eq:Nc \l__extramarks_temp_tl { g__extramarks_botmark_#1_tl }
+  \tl_gset_eq:cN { g__extramarks_topmark_#1_tl } \l__extramarks_temp_tl
+  \tl_gset_eq:cN { g__extramarks_firstmark_#1_tl } \c_empty_tl
+}
+
 % Extract the marks of the last vsplitted box.
 
 \cs_new_protected:Npn \__extramarks_get_boxmarks:n #1 % #1 = marks class
@@ -116,16 +127,25 @@
     }
 }
 
+% END code
+%     if firstmark = empty:
+%         firstmark <- botmark <- topmark
+
+\cs_new_protected:Npn \__extramarks_get_boxmarks_end:n #1 % #1 = marks class
+{
+  \tl_if_empty:cT { g__extramarks_firstmark_#1_tl }
+  {
+    \tl_gset_eq:cc { g__extramarks_firstmark_#1_tl } { g__extramarks_topmark_#1_tl }
+    \tl_gset_eq:cc { g__extramarks_botmark_#1_tl } { g__extramarks_topmark_#1_tl }
+  }
+}
+
 \cs_new_protected:Nn \__extramarks_setfirstcolmarks:
 {
   \seq_map_inline:Nn \g__extramarks_marks_seq
     {
       % INIT:
-      %     topmark <- previous botmark
-      %     firstmark <- empty
-      \tl_set_eq:Nc \l__extramarks_temp_tl { g__extramarks_botmark_##1_tl }
-      \tl_gset_eq:cN { g__extramarks_topmark_##1_tl } \l__extramarks_temp_tl
-      \tl_gset_eq:cN { g__extramarks_firstmark_##1_tl } \c_empty_tl
+      \__extramarks_get_boxmarks_init:n { ##1 }
 
       % Process any marks in the box
       \__extramarks_get_boxmarks:n { ##1 }
@@ -153,14 +173,9 @@
       {
         % Process any marks in the box
         \__extramarks_get_boxmarks:n { ##1 }
+
         % END:
-        %     if firstmark = empty:
-        %         botmark <- firstmark <- topmark
-        \tl_if_empty:cT { g__extramarks_firstmark_##1_tl }
-          {
-            \tl_gset_eq:cc { g__extramarks_firstmark_##1_tl } { g__extramarks_topmark_##1_tl }
-            \tl_gset_eq:cc { g__extramarks_botmark_##1_tl } { g__extramarks_topmark_##1_tl }
-          }
+        \__extramarks_get_boxmarks_end:n { ##1 }
       }
   \group_end:
 }
@@ -185,22 +200,13 @@
     \seq_map_inline:Nn \g__extramarks_marks_seq
       {
         % INIT:
-        %     topmark <- previous botmark
-        %     firstmark <- empty
-        \tl_set_eq:Nc \l__extramarks_temp_tl { g__extramarks_botmark_##1_tl }
-        \tl_gset_eq:cN { g__extramarks_topmark_##1_tl } \l__extramarks_temp_tl
-        \tl_gset_eq:cN { g__extramarks_firstmark_##1_tl } \c_empty_tl
-  
+        \__extramarks_get_boxmarks_init:n { ##1 }
+    
         % Process any marks in the box
         \__extramarks_get_boxmarks:n { ##1 }
+
         % END:
-        %     if firstmark = empty:
-        %         botmark <- firstmark <- topmark
-        \tl_if_empty:cT { g__extramarks_firstmark_##1_tl }
-          {
-            \tl_gset_eq:cc { g__extramarks_firstmark_##1_tl } { g__extramarks_topmark_##1_tl }
-            \tl_gset_eq:cc { g__extramarks_botmark_##1_tl } { g__extramarks_topmark_##1_tl }
-          }
+        \__extramarks_get_boxmarks_end:n { ##1 }
       }
   \group_end:
 }
