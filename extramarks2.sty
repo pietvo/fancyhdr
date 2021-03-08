@@ -246,9 +246,15 @@
 {
   \cs_if_exist:cTF {g__extramarks_#1_int}
   {
-    % Put braced value in the mark
-    % TODO: protected eval
-    \tex_marks:D \use:c{g__extramarks_#1_int} {{ #2 }}
+    % Use protected eval
+    \group_begin:
+      \cs_set_eq:NN \label    \scan_stop:
+      \cs_set_eq:NN \index    \scan_stop:
+      \cs_set_eq:NN \glossary \scan_stop:
+      \unrestored@protected@xdef \l__extramarks_temp_tl { #2 }
+      % Put braced value in the mark
+      \tex_marks:D \use:c{g__extramarks_#1_int} {{ \l__extramarks_temp_tl }}
+      \endgroup
   }
   { \msg_error:nnnn {extramarks} {not-defined} {\extramarksput} {#1} }
 }
