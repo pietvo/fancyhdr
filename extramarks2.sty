@@ -274,17 +274,18 @@
   { \msg_error:nnn {extramarks} {\token_to_str:N \extramarkslast:~not~defined} {#1} }
 }
 
-\newcommand\extramarks[2]{
+\NewDocumentCommand \extramarks { m m }
+{
   \extramarksput{left}{#1}
   \extramarksput{right}{#2}
 }
 
-\def\firstleftxmark  {\extramarksfirst {left}  }
-\def\firstrightxmark {\extramarksfirst {right} }
-\def\topleftxmark    {\extramarkstop   {left}  }
-\def\toprightxmark   {\extramarkstop   {right} }
-\def\lastleftxmark   {\extramarkslast  {left}  }
-\def\lastrightxmark  {\extramarkslast  {right} }
+\NewDocumentCommand\firstleftxmark  { } {\extramarksfirst {left}  }
+\NewDocumentCommand\firstrightxmark { } {\extramarksfirst {right} }
+\NewDocumentCommand\topleftxmark    { } {\extramarkstop   {left}  }
+\NewDocumentCommand\toprightxmark   { } {\extramarkstop   {right} }
+\NewDocumentCommand\lastleftxmark   { } {\extramarkslast  {left}  }
+\NewDocumentCommand\lastrightxmark  { } {\extramarkslast  {right} }
 
 \let\firstxmark\firstleftxmark
 \let\lastxmark\lastrightxmark
