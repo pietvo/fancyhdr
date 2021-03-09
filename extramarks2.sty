@@ -50,7 +50,7 @@
 \msg_new:nnn {extramarks} {cannot-patch} {Cannot patch \token_to_str:N #1}
 
 % Variables for a new mark ⟨name⟩ :
-% \g__extramarks_⟨name⟩_int : the mark (number as a char)
+% \c__extramarks_⟨name⟩_int : the mark (number as a char)
 % \g__extramarks_previousmark_⟨name⟩_tl : last mark of previous page (braced)
 % \g__extramarks_topmark_⟨name⟩_tl : topmark (braced)
 % \g__extramarks_firstmark_⟨name⟩_tl : firstmark (braced)
@@ -68,12 +68,12 @@
 \NewDocumentCommand \extramarksnewmark { m }
 {
   % Test if not yet defined
-  \cs_if_exist:cTF {g__extramarks_#1_int}
+  \cs_if_exist:cTF {c__extramarks_#1_int}
     { \msg_error:nnnn {extramarks} {already-defined}
       {\extramarksnewmark} {#1} }
     {
       % Create the mark
-      \__extramarks_newmarks:c {g__extramarks_#1_int}
+      \__extramarks_newmarks:c {c__extramarks_#1_int}
 
       % Put it in the list of marks
       \seq_put_right:Nn \g__extramarks_marks_seq { #1 }
@@ -122,7 +122,7 @@
 \cs_new_protected:Npn \__extramarks_get_boxmarks:n #1 % #1 = marks class
 {
   \tl_gset:No \l__extramarks_temp_tl
-    { \splitfirstmarks \use:c{g__extramarks_#1_int} }
+    { \splitfirstmarks \use:c{c__extramarks_#1_int} }
   \tl_if_empty:NF \l__extramarks_temp_tl
     % If not empty
     {
@@ -131,7 +131,7 @@
           \tl_gset_eq:cN { g__extramarks_firstmark_#1_tl } \l__extramarks_temp_tl
         }
       \tl_gset:co { g__extramarks_botmark_#1_tl }
-        { \splitbotmarks \use:c{g__extramarks_#1_int} }
+        { \splitbotmarks \use:c{c__extramarks_#1_int} }
     }
 }
 
@@ -244,7 +244,7 @@
 
 \NewDocumentCommand \extramarksput { m m }
 {
-  \cs_if_exist:cTF {g__extramarks_#1_int}
+  \cs_if_exist:cTF {c__extramarks_#1_int}
   {
     % Use protected eval
     \group_begin:
@@ -253,7 +253,7 @@
       \cs_set_eq:NN \glossary \scan_stop:
       \unrestored@protected@xdef \l__extramarks_temp_tl { #2 }
       % Put braced value in the mark
-      \tex_marks:D \use:c{g__extramarks_#1_int} {{ \l__extramarks_temp_tl }}
+      \tex_marks:D \use:c{c__extramarks_#1_int} {{ \l__extramarks_temp_tl }}
       \endgroup
   }
   { \msg_error:nnnn {extramarks} {not-defined} {\extramarksput} {#1} }
@@ -261,7 +261,7 @@
 
 \NewDocumentCommand \extramarkstop { m }
 {
-  \cs_if_exist:cTF {g__extramarks_#1_int}
+  \cs_if_exist:cTF {c__extramarks_#1_int}
   {
     % Get unbraced value out of the mark
      \tl_head:v { g__extramarks_topmark_#1_tl }
@@ -271,7 +271,7 @@
 
 \NewDocumentCommand \extramarksfirst { m }
 {
-  \cs_if_exist:cTF {g__extramarks_#1_int}
+  \cs_if_exist:cTF {c__extramarks_#1_int}
   {
     % Get unbraced value out of the mark
      \tl_head:v { g__extramarks_firstmark_#1_tl }
@@ -281,7 +281,7 @@
 
 \NewDocumentCommand \extramarkslast { m }
 {
-  \cs_if_exist:cTF {g__extramarks_#1_int}
+  \cs_if_exist:cTF {c__extramarks_#1_int}
   {
     % Get unbraced value out of the mark
      \tl_head:v { g__extramarks_botmark_#1_tl }
