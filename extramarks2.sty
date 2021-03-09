@@ -21,8 +21,6 @@
 \RequirePackage{expl3,xparse}
 \RequirePackage{etoolbox}
 
-% This implementation only prepends some code to \@outputpage
-
 \ExplSyntaxOn
 
 % Pick up traditional macros
@@ -228,13 +226,6 @@
 
 
 % End of \@outputpage patching code
-
-% \def\firstleftxmark{\exp_after:wN\use:n{\extramarks_firstmark_left}}
-% \def\firstrightxmark{\exp_after:wN\use:n{\extramarks_firstmark_right}}
-% \def\topleftxmark{\exp_after:wN\use:n{\extramarks_topmark_left}}
-% \def\toprightxmark{\exp_after:wN\use:n{\extramarks_topmark_right}}
-% \def\lastleftxmark{\exp_after:wN\use:n{\extramarks_botmark_left}}
-% \def\lastrightxmark{\exp_after:wN\use:n{\extramarks_botmark_right}}
 
 \extramarksnewmark{left}
 \extramarksnewmark{right}
