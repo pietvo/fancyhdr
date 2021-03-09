@@ -312,6 +312,14 @@
 \cs_new_eq:NN \firstrightmark \rightmark
 \cs_new_eq:NN \lastleftmark \leftmark
 
+\AddToHook{begindocument}{
+  \@ifpackageloaded{multicol}
+  {
+    \RequirePackage{extramarks2-multicol}
+  }
+  { }
+}
+
 \ExplSyntaxOff
 
 % \endinput
