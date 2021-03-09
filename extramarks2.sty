@@ -305,12 +305,12 @@
 \NewDocumentCommand\lastleftxmark   { } {\extramarkslast  {left}  }
 \NewDocumentCommand\lastrightxmark  { } {\extramarkslast  {right} }
 
-\let\firstxmark\firstleftxmark
-\let\lastxmark\lastrightxmark
-\let\topxmark\topleftxmark
+\cs_new_eq:NN \firstxmark \firstleftxmark
+\cs_new_eq:NN \lastxmark \lastrightxmark
+\cs_new_eq:NN \topxmark \topleftxmark
 
-\let\firstrightmark \rightmark
-\let\lastleftmark \leftmark
+\cs_new_eq:NN \firstrightmark \rightmark
+\cs_new_eq:NN \lastleftmark \leftmark
 
 \ExplSyntaxOff
 
