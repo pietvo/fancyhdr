@@ -87,7 +87,7 @@
     \extramarks@return@nonemptymarks {#1}
   }
   {\message{Patch \string\return@nonemptymark\space  OK}}
-  {\message{Patch \string\return@nonemptymark\space  failed}}
+  {\msg_error:nnn {extramarks2} {cannot-patch} {\return@nonemptymark}}
   %\show\return@nonemptymark
 
 % (2)
@@ -96,7 +96,7 @@
     \extramarks@prep@keptmarks
   }
   {\message{Patch \string\prep@keptmarks\space  OK}}
-  {\message{Patch \string\prep@keptmarks\space  failed}}
+  {\msg_error:nnn {extramarks2} {cannot-patch} {\prep@keptmarks}}
   %\show\rprep@keptmarks
 
 \tracingpatches
@@ -106,7 +106,7 @@
     \extramarks@set@keptmarks
   }
   {\message{Patch \string\set@keptmarks\space  OK}}
-  {\message{Patch \string\set@keptmarks\space  failed}}
+  {\msg_error:nnn {extramarks2} {cannot-patch} {\set@keptmarks}}
   %\show\rprep@keptmarks
 
 % (4)
@@ -115,6 +115,9 @@
     \extramarks@multi@column@out
     \@outputpage
   }
+  {\message{Patch \string\set@keptmarks\space  OK}}
+  {\msg_error:nnn {extramarks2} {cannot-patch} {\multi@column@out}}
+  %\show\multi@column@out
 
 
 % \endinput
