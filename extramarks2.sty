@@ -14,7 +14,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks2}
-           [2021/03/07 v0.1
+           [2021/03/10 v0.1
                   Extra marks for LaTeX]
 % Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -22,11 +22,6 @@
 \RequirePackage{etoolbox}
 
 \ExplSyntaxOn
-
-% Pick up traditional macros
-
-\cs_new_eq:NN \__extramarks_newmarks:N \newmarks
-\cs_generate_variant:Nn \__extramarks_newmarks:N { c }
 
 % Global variables
 % Sequence of define extra marks
@@ -71,7 +66,7 @@
       {\extramarksnewmark} {#1} }
     {
       % Create the mark
-      \__extramarks_newmarks:c {c__extramarks_#1_int}
+      \exp_args:Nc \newmarks {c__extramarks_#1_int}
 
       % Put it in the list of marks
       \seq_put_right:Nn \g__extramarks_marks_seq { #1 }
