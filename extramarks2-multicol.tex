@@ -28,21 +28,13 @@
   \token_to_str:c { #1 } -> \use:c { #1 }\MessageBreak
 }
 
-\cs_new_protected:Npn \__extramarks_get_boxmarks_MC_init:n #1 % #1 = marks class
-{
-  \tl_set_eq:Nc \l__extramarks_temp_tl { g__extramarks_botmark_#1_tl }
-  \tl_gset_eq:cN { g__extramarks_topmark_#1_tl } \l__extramarks_temp_tl
-  \tl_gset_eq:cN { g__extramarks_firstmark_#1_tl } \c_empty_tl
-  \tl_gset_eq:cN { g__extramarks_botmark_#1_tl } \c_empty_tl
-}
-
 % Here comes the multicol patching code.
 %
 % For now:
 % (1)  patch \return@nonemptymark         => insert marks in stream
-% (2)  patch \prep@keptmarks              => INIT code
+% (2)  patch \prep@keptmarks              => INIT code (only clear marks)
 % (3)  patch \set@keptmarks               => For each box code
-% (4)  Patch where \@outputpage is called => END code
+% (4)  Patch where \@outputpage is called => END code before, INIT code after
 
 % (1)
 \cs_new_protected:Npn \extramarks@return@nonemptymarks #1
@@ -70,10 +62,9 @@
       % INIT:
       \tl_gset_eq:cN { g__extramarks_firstmark_##1_tl } \c_empty_tl
       \tl_gset_eq:cN { g__extramarks_botmark_##1_tl } \c_empty_tl
-%      \__extramarks_get_boxmarks_init:n { ##1 }
       \mult@info\tw@
         {
-          \string\__extramarks_get_boxmarks_init:n { ##1 }~in~\string\prep@keptmarks\MessageBreak
+          Clear marks { ##1 }~in~\string\prep@keptmarks\MessageBreak
           \extramarks_show_mark:n  { g__extramarks_topmark_##1_tl }
           \extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
        }
@@ -97,19 +88,15 @@
 }
 
 % (4)
-%
 \cs_new_protected:Npn \extramarks@multi@column@outputpage
 {
   \seq_map_inline:Nn \g__extramarks_marks_seq
     {
       % END code:
       \__extramarks_get_boxmarks_end:n { ##1 }
-
-
-
       \mult@info\tw@
         {
-          \string\__extramarks_get_boxmarks:n { ##1 }~in~\string\multi@column@out\MessageBreak
+          \string\__extramarks_get_boxmarks_end:n { ##1 }~in~\string\multi@column@out\MessageBreak
           \extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
           \extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
        }
@@ -118,22 +105,21 @@
   \seq_map_inline:Nn \g__extramarks_marks_seq
     {
       % INIT code
-      \__extramarks_get_boxmarks_MC_init:n { ##1 }
+      \__extramarks_get_boxmarks_init:n { ##1 }
       \mult@info\tw@
         {
-          \string\__extramarks_get_boxmarks_MC_init:n
+          \string\__extramarks_get_boxmarks_init:n
             { ##1 }~in~\string\multi@column@out\MessageBreak
           \extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
           \extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
        }
      }
 }
-%%%%%% Misschien hier (na outputpage) topmark zetten????
 
 \ExplSyntaxOff
 
 % The functions to be patched are in LaTeX2e syntax, so we can't use
-% expl3 here. So no _ and : in their names.
+% expl3 here. Therefore no _ and : in their names.
 
 % (1)
 \pretocmd{\return@nonemptymark}
@@ -161,7 +147,7 @@
   }
   {\message{Patch \string\set@keptmarks\space  OK}}
   {\msg@error@nnn {extramarks2} {cannot-patch} {\set@keptmarks}}
-  %\show\rprep@keptmarks
+  %\show\set@keptmarks
 
 % (4)
 \patchcmd{\multi@column@out} {\@makecol\@outputpage}
@@ -172,6 +158,6 @@
   {\msg@error@nnn {extramarks2} {cannot-patch} {\multi@column@out}}
   %\show\multi@column@out
 
-% \endinput
+\endinput
 %%
 %% End of file `extramarks2-multicol.tex'.
