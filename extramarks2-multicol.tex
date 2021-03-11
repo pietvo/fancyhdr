@@ -1,5 +1,5 @@
-%%
-%% This is file `extramarks2-multicol.sty',
+%% -*- mode: latex -*-
+%% This is file `extramarks2-multicol.tex',
 %%
 %% This file may be distributed and/or modified under the conditions of
 %% the LaTeX Project Public License, either version 1.3 of this license
@@ -13,20 +13,36 @@
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{extramarks2-multicol}
-           [2021/03/07 v0.1
-                  Extra marks for LaTeX]
+\ProvidesFile{extramarks2-multicol.tex}
+           [2021/03/11 v0.1
+                  Extra marks for LaTeX (multicol extension)]
 % Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \ExplSyntaxOn
-    % Here comes the multicol patching code.
-    %
-    % For now:
-    % (1)  patch \return@nonemptymark         => insert marks in stream
-    % (2)  patch \prep@keptmarks              => INIT code
-    % (3)  patch \set@keptmarks               => For each box code
-    % (4)  Patch where \@outputpage is called => END code
+
+% Debugging
+
+\cs_new:Nn \extramarks_show_mark:n
+{
+  \token_to_str:c { #1 } -> \use:c { #1 }\MessageBreak
+}
+
+\cs_new_protected:Npn \__extramarks_get_boxmarks_MC_init:n #1 % #1 = marks class
+{
+  \tl_set_eq:Nc \l__extramarks_temp_tl { g__extramarks_botmark_#1_tl }
+  \tl_gset_eq:cN { g__extramarks_topmark_#1_tl } \l__extramarks_temp_tl
+  \tl_gset_eq:cN { g__extramarks_firstmark_#1_tl } \c_empty_tl
+  \tl_gset_eq:cN { g__extramarks_botmark_#1_tl } \c_empty_tl
+}
+
+% Here comes the multicol patching code.
+%
+% For now:
+% (1)  patch \return@nonemptymark         => insert marks in stream
+% (2)  patch \prep@keptmarks              => INIT code
+% (3)  patch \set@keptmarks               => For each box code
+% (4)  Patch where \@outputpage is called => END code
 
 % (1)
 \cs_new_protected:Npn \extramarks@return@nonemptymarks #1
@@ -122,4 +138,4 @@
 
 % \endinput
 %%
-%% End of file `extramarks2-multicol.sty'.
+%% End of file `extramarks2-multicol.tex'.

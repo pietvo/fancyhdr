@@ -317,10 +317,19 @@
 \cs_new_eq:NN \firstrightmark \rightmark
 \cs_new_eq:NN \lastleftmark \leftmark
 
+% We check the presence of the multicol package in the 'begindocument'
+% hook, because that's the only place where we can be sure, and is still
+% early enough. However, we can't code patching code directly inside the
+% hook, because that won't work. So we input a file with the code. That
+% has the additional advantage that we don't load the code when it isn't needed.
+% But as we use `\input` we have to put it in \makeatletter/\makeatother.
+
 \AddToHook{begindocument}{
   \@ifpackageloaded{multicol}
   {
-    \RequirePackage{extramarks2-multicol}
+    \makeatletter
+    \input{extramarks2-multicol.tex}
+    \makeatother
   }
   { }
 }
