@@ -14,7 +14,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks2}
-           [2021/03/10 v0.1
+           [2021/03/11 v0.1
                   Extra marks for LaTeX]
 % Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,14 +37,19 @@
 \tl_new:N \l__extramarks_temp_tl
 
 % Messages
-% 
+
 \msg_new:nnn {extramarks2} {not-defined} {\token_to_str:N #1:~mark~#2~not~defined}
 \msg_new:nnn {extramarks2} {already-defined} {\token_to_str:N #1:~mark~#2~already~defined}
 \msg_new:nnn {extramarks2} {cannot-patch} {Patch \token_to_str:N #1~failed}
 
+% Use these name in the patching code (LaTeX2e syntax)
+
+\cs_new_eq:NN \msg@error@nnn  \msg_error:nnn
+\cs_new_eq:NN \msg@error@nnnn \msg_error:nnnn
+
+
 % Variables for a new mark ⟨name⟩ :
 % \c__extramarks_⟨name⟩_int : the mark (number as a char)
-% \g__extramarks_previousmark_⟨name⟩_tl : last mark of previous page (braced)
 % \g__extramarks_topmark_⟨name⟩_tl : topmark (braced)
 % \g__extramarks_firstmark_⟨name⟩_tl : firstmark (braced)
 % \g__extramarks_botmark_⟨name⟩_tl : botmark (braced)
@@ -60,7 +65,7 @@
 
 \NewDocumentCommand \extramarksnewmark { m }
 {
-  % Test if not yet defined
+  % Test if mark not yet defined
   \cs_if_exist:cTF {c__extramarks_#1_int}
     { \msg_error:nnnn {extramarks2} {already-defined}
       {\extramarksnewmark} {#1} }
@@ -75,39 +80,43 @@
       \tl_new:c {g__extramarks_topmark_#1_tl}      % topmark (braced)
       \tl_new:c {g__extramarks_firstmark_#1_tl}    % firstmark (braced)
       \tl_new:c {g__extramarks_botmark_#1_tl}      % botmark (braced)
-      \tl_gset:cn {g__extramarks_botmark_#1_tl} {{}}   % initialize to empty for next topmark
+      \tl_gset:cn {g__extramarks_topmark_#1_tl} {{}} % initialize topmark to empty mark (braced)
     }
 }
 
-% Algorithm for extracting the marks from a sequence of boxes:
+% Algorithm for extracting the marks from a sequence of boxes on a page:
+% for example in \twocolumn, or multicol, on each column.
+% In the 'normal' case, on the main vertical box (\@outputbox)
+%
 % For each mark:
 % INIT:
-%     topmark <- previous botmark
-%     firstmark <- empty
+%     topmark <- previous botmark (initial: {{}})
+%     botmark <- firstmark <- empty
 % For each box:
 %     (If the box was the result of a \vsplit skip this:)
 %     \vsplit box to maxdimen
-%     if splitfirstmark not empty:
+%     if splitfirstmark not empty: (i.e. there are marks in the box)
 %         if firstmark = empty:
 %             firstmark <- splitfirstmark
-%             botmark <- splitbotmark
+%         botmark <- splitbotmark
 % END:
 %     if firstmark = empty:
 %         firstmark <- botmark <- topmark
 
-% Patch the \@outputdblcol macro for the \twocolumn case
-% \@outputbox contains the first column, and has been \vsplit
-% so we can get its marks with \splitmarks
-
+% INIT code will be run at the creation of a mark,
+% and after a page has been output. (I.e. at the beginning of each page)
+%
+% END code will be run just before a page is output.
+%
 % INIT code
 %     topmark <- previous botmark
-%     firstmark <- empty
+%     botmark <- firstmark <- empty
 
 \cs_new_protected:Npn \__extramarks_get_boxmarks_init:n #1 % #1 = marks class
 {
-  \tl_set_eq:Nc \l__extramarks_temp_tl { g__extramarks_botmark_#1_tl }
-  \tl_gset_eq:cN { g__extramarks_topmark_#1_tl } \l__extramarks_temp_tl
+  \tl_gset_eq:cc { g__extramarks_topmark_#1_tl } { g__extramarks_botmark_#1_tl }
   \tl_gset_eq:cN { g__extramarks_firstmark_#1_tl } \c_empty_tl
+  \tl_gset_eq:cN { g__extramarks_botmark_##1_tl } \c_empty_tl
 }
 
 % Extract the marks of the last vsplitted box.
@@ -140,85 +149,86 @@
     \tl_gset_eq:cc { g__extramarks_botmark_#1_tl } { g__extramarks_topmark_#1_tl }
   }
 }
+% Patching the output routine:
+%
+% The patching must be done with \ExplSyntaxOff, because otherwise it
+% may fail if the macro to be patched contains _ : or significant
+% spaces. Therefore also the names of these macros are with @ instead of
+% _ and :
 
-\cs_new_protected:Nn \__extramarks_setfirstcolmarks:
+\cs_new_protected:Npn \extramarks@set@firstcolmarks
 {
   \seq_map_inline:Nn \g__extramarks_marks_seq
     {
-      % INIT:
-      \__extramarks_get_boxmarks_init:n { ##1 }
-
       % Process any marks in the box
       \__extramarks_get_boxmarks:n { ##1 }
     }
 }
 
+\cs_new_protected:Npn \extramarks@set@marks@outputbox
+{
+  \group_begin:
+    \dim_set:Nn \tex_splitmaxdepth:D \c_max_dim
+    \int_set:Nn \tex_vbadness:D      \c_max_int
+    % Make a temp copy of \@outputbox
+    \vbox_set:Nn \l__extramarks__temp_box { \unvcopy\@outputbox\unskip }
+    % `Split' the box (but no split)
+    \vbox_set_split_to_ht:NNn \l__extramarks__temp_box \l__extramarks__temp_box \c_max_dim
+    \seq_map_inline:Nn \g__extramarks_marks_seq
+      {
+        % Process any marks in the box
+        \__extramarks_get_boxmarks:n { ##1 }
+
+        % END:
+        \__extramarks_get_boxmarks_end:n { ##1 }
+      }
+  \group_end:
+}
+
+\cs_new_protected:Npn \extramarks@init@marks
+{
+  \seq_map_inline:Nn \g__extramarks_marks_seq
+  {
+    % INIT:
+    \__extramarks_get_boxmarks_init:n { ##1 }
+  }
+}
+
+\ExplSyntaxOff
+
+% Patch the \@outputdblcol macro for the first colum case
+% \@outputbox contains the first column, and has been \vsplit
+% so we can get its marks with \splitmarks
+
 \patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
-  {\__extramarks_setfirstcolmarks:\ifx\@firstcolfirstmark\@empty}
-  { }
-  { \msg_error:nnn {extramarks2} {cannot-patch} {\@outputdblcol~patch~1} }
+  {\extramarks@set@firstcolmarks \ifx\@firstcolfirstmark\@empty}
+  {}
+  { \msg@error@nnn {extramarks2} {cannot-patch} {\@outputdblcol patch 1} }
 
 % Patch the \@outputdblcol macro for the second column case
 % \@outputbox contains the second column, not yet \vsplitted.
 % Get the marks by \vsplit to the maximum height.
 
-\cs_new_protected:Nn \__extramarks_setsecondcolmarks:
-{
-  \group_begin:
-    \dim_set:Nn \tex_splitmaxdepth:D \c_max_dim
-    \int_set:Nn \tex_vbadness:D      \c_max_int
-    % Make a temp copy of \@outputbox
-    \vbox_set:Nn \l__extramarks__temp_box { \unvcopy\@outputbox\unskip }
-    % `Split' the box (but no split)
-    \vbox_set_split_to_ht:NNn \l__extramarks__temp_box \l__extramarks__temp_box \c_max_dim
-    \seq_map_inline:Nn \g__extramarks_marks_seq
-      {
-        % Process any marks in the box
-        \__extramarks_get_boxmarks:n { ##1 }
-
-        % END:
-        \__extramarks_get_boxmarks_end:n { ##1 }
-      }
-  \group_end:
-}
-
 \patchcmd{\@outputdblcol}{\global\@firstcolumntrue}
-  {\global\@firstcolumntrue\__extramarks_setsecondcolmarks:}
-  { }
-  { \msg_error:nnn {extramarks2} {cannot-patch} {\@outputdblcol~patch~2} }
+  {\global\@firstcolumntrue\extramarks@set@marks@outputbox}
+  {}
+  {\msg@error@nnn {extramarks2} {cannot-patch} {\@outputdblcol patch 2}}
+
+\patchcmd{\@outputdblcol}{\@outputpage}
+  {\@outputpage\extramarks@init@marks}
+  {}
+  {\msg@error@nnn {extramarks2} {cannot-patch} {\@outputdblcol patch 3}}
 
 % End of \@outputdblcol patching code
 
 % Patch the \@outputpage macro for the single column case
 
-\cs_new_protected:Nn \__extramarks_setmarks:
-{
-  \group_begin:
-    \dim_set:Nn \tex_splitmaxdepth:D \c_max_dim
-    \int_set:Nn \tex_vbadness:D      \c_max_int
-    % Make a temp copy of \@outputbox
-    \vbox_set:Nn \l__extramarks__temp_box { \unvcopy\@outputbox\unskip }
-    % `Split' the box (but no split)
-    \vbox_set_split_to_ht:NNn \l__extramarks__temp_box \l__extramarks__temp_box \c_max_dim
-    \seq_map_inline:Nn \g__extramarks_marks_seq
-      {
-        % INIT:
-        \__extramarks_get_boxmarks_init:n { ##1 }
-    
-        % Process any marks in the box
-        \__extramarks_get_boxmarks:n { ##1 }
+\patchcmd {\@opcol} {\@outputpage}
+  {\extramarks@set@marks@outputbox \@outputpage \extramarks@init@marks}
+  {}
+  {\msg@error@nnn {extramarks2} {cannot-patch} {in \@opcol: \@outputpage} {}}
 
-        % END:
-        \__extramarks_get_boxmarks_end:n { ##1 }
-      }
-  \group_end:
-}
-
-\patchcmd { \@opcol } { \@outputpage }
-  { \__extramarks_setmarks: \@outputpage }
-  { }
-  { \msg_error:nnn {extramarks2} {cannot-patch} {\@outputpage} {} }
-
+\ExplSyntaxOn
 
 % End of \@outputpage patching code
 
