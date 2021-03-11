@@ -52,7 +52,12 @@
       \tl_if_empty:cF {g__extramarks_#1mark_##1_tl}
         {
           \tex_marks:D \use:c{c__extramarks_##1_int} {\use:c{g__extramarks_#1mark_##1_tl}}
-          \message{\string\xmarks \use:c{c__extramarks_##1_int} {\use:c{g__extramarks_#1mark_##1_tl}}}
+          \mult@info\tw@
+          {
+            In~\string\return@nonemptymarks~{#1}\MessageBreak
+            \string\xmarks \use:c{c__extramarks_##1_int}
+              {\use:c{g__extramarks_#1mark_##1_tl}}\MessageBreak
+          }
         }
     }
 }
@@ -63,8 +68,15 @@
   \seq_map_inline:Nn \g__extramarks_marks_seq
     {
       % INIT:
-      \__extramarks_get_boxmarks_init:n { ##1 }
-      \message{\string\__extramarks_get_boxmarks_init:n { ##1 }}
+      \tl_gset_eq:cN { g__extramarks_firstmark_##1_tl } \c_empty_tl
+      \tl_gset_eq:cN { g__extramarks_botmark_##1_tl } \c_empty_tl
+%      \__extramarks_get_boxmarks_init:n { ##1 }
+      \mult@info\tw@
+        {
+          \string\__extramarks_get_boxmarks_init:n { ##1 }~in~\string\prep@keptmarks\MessageBreak
+          \extramarks_show_mark:n  { g__extramarks_topmark_##1_tl }
+          \extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
+       }
     }
 }
 
@@ -75,22 +87,48 @@
     {
       % Process any marks in the box
       \__extramarks_get_boxmarks:n { ##1 }
-      \message{\string\__extramarks_get_boxmarks:n { ##1 }}
+      \mult@info\tw@
+        {
+          \string\__extramarks_get_boxmarks:n { ##1 }~in~\string\set@keptmarks\MessageBreak
+          \extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
+          \extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
+       }
     }
 }
 
 % (4)
 %
-\cs_new_protected:Npn \extramarks@multi@column@out
+\cs_new_protected:Npn \extramarks@multi@column@outputpage
 {
   \seq_map_inline:Nn \g__extramarks_marks_seq
     {
       % END code:
       \__extramarks_get_boxmarks_end:n { ##1 }
-      \message{\string\__extramarks_get_boxmarks_end:n { ##1 }}
-    }
-}
 
+
+
+      \mult@info\tw@
+        {
+          \string\__extramarks_get_boxmarks:n { ##1 }~in~\string\multi@column@out\MessageBreak
+          \extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
+          \extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
+       }
+    }
+  \@makecol\@outputpage
+  \seq_map_inline:Nn \g__extramarks_marks_seq
+    {
+      % INIT code
+      \__extramarks_get_boxmarks_MC_init:n { ##1 }
+      \mult@info\tw@
+        {
+          \string\__extramarks_get_boxmarks_MC_init:n
+            { ##1 }~in~\string\multi@column@out\MessageBreak
+          \extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
+          \extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
+       }
+     }
+}
+%%%%%% Misschien hier (na outputpage) topmark zetten????
 
 \ExplSyntaxOff
 
@@ -103,7 +141,7 @@
     \extramarks@return@nonemptymarks {#1}
   }
   {\message{Patch \string\return@nonemptymark\space  OK}}
-  {\msg_error:nnn {extramarks2} {cannot-patch} {\return@nonemptymark}}
+  {\msg@error@nnn {extramarks2} {cannot-patch} {\return@nonemptymark}}
   %\show\return@nonemptymark
 
 % (2)
@@ -112,8 +150,8 @@
     \extramarks@prep@keptmarks
   }
   {\message{Patch \string\prep@keptmarks\space  OK}}
-  {\msg_error:nnn {extramarks2} {cannot-patch} {\prep@keptmarks}}
-  %\show\rprep@keptmarks
+  {\msg@error@nnn {extramarks2} {cannot-patch} {\prep@keptmarks}}
+  %\show\prep@keptmarks
 
 \tracingpatches
 % (3)
@@ -122,19 +160,17 @@
     \extramarks@set@keptmarks
   }
   {\message{Patch \string\set@keptmarks\space  OK}}
-  {\msg_error:nnn {extramarks2} {cannot-patch} {\set@keptmarks}}
+  {\msg@error@nnn {extramarks2} {cannot-patch} {\set@keptmarks}}
   %\show\rprep@keptmarks
 
 % (4)
-\patchcmd{\multi@column@out} {\@outputpage}
+\patchcmd{\multi@column@out} {\@makecol\@outputpage}
   {
-    \extramarks@multi@column@out
-    \@outputpage
+    \extramarks@multi@column@outputpage
   }
-  {\message{Patch \string\set@keptmarks\space  OK}}
-  {\msg_error:nnn {extramarks2} {cannot-patch} {\multi@column@out}}
+  {\message{Patch \string\multi@column@out\space  OK}}
+  {\msg@error@nnn {extramarks2} {cannot-patch} {\multi@column@out}}
   %\show\multi@column@out
-
 
 % \endinput
 %%
