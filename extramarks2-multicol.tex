@@ -124,7 +124,7 @@
 % (1)
 \pretocmd{\return@nonemptymark}
   {
-    \extramarks@return@nonemptymarks {#1}
+    \if@boxedmulticols\else\extramarks@return@nonemptymarks {#1}\fi
   }
   {\message{Patch \string\return@nonemptymark\space  OK}}
   {\msg@error@nnn {extramarks2} {cannot-patch} {\return@nonemptymark}}
@@ -143,7 +143,7 @@
 % (3)
 \pretocmd{\set@keptmarks}
   {
-    \extramarks@set@keptmarks
+    \if@boxedmulticols\else\extramarks@set@keptmarks\fi
   }
   {\message{Patch \string\set@keptmarks\space  OK}}
   {\msg@error@nnn {extramarks2} {cannot-patch} {\set@keptmarks}}
