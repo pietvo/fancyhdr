@@ -126,7 +126,7 @@
   {
     \if@boxedmulticols\else\extramarks@return@nonemptymarks {#1}\fi
   }
-  {\message{Patch \string\return@nonemptymark\space  OK}}
+  {}
   {\msg@error@nnn {extramarks2} {cannot-patch} {\return@nonemptymark}}
   %\show\return@nonemptymark
 
@@ -135,17 +135,16 @@
   {
     \extramarks@prep@keptmarks
   }
-  {\message{Patch \string\prep@keptmarks\space  OK}}
+  {}
   {\msg@error@nnn {extramarks2} {cannot-patch} {\prep@keptmarks}}
   %\show\prep@keptmarks
 
-\tracingpatches
 % (3)
 \pretocmd{\set@keptmarks}
   {
     \if@boxedmulticols\else\extramarks@set@keptmarks\fi
   }
-  {\message{Patch \string\set@keptmarks\space  OK}}
+  {}
   {\msg@error@nnn {extramarks2} {cannot-patch} {\set@keptmarks}}
   %\show\set@keptmarks
 
@@ -154,7 +153,7 @@
   {
     \extramarks@multi@column@outputpage
   }
-  {\message{Patch \string\multi@column@out\space  OK}}
+  {}
   {\msg@error@nnn {extramarks2} {cannot-patch} {\multi@column@out}}
   %\show\multi@column@out
 
