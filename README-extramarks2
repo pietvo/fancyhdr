@@ -1,0 +1,74 @@
+This is a preliminary release of the package extramarks2.
+Note: This is a BETA version. It is probable that the interface will not change,
+but that is not guaranteed. Especially if flaws are detected.
+The implementation might, however, still change.
+
+This package will be released as part of fancyhdr in a future release,
+with proper documentation. For now, this file serves as its documentation.
+
+To use it, copy the files extramarks2.sty and  extramarks2-multicol.tex
+to a place where TeX can find them.
+
+This package is an improved version of the package extramarks.
+It has a compatible interface with extramarks, you can just
+switch to extramarks2 by using \usepackage{extramarks2} instead of
+\usepackage{extramarks}. However, the semantics my be slightly different.
+
+The marks in the original extramarks package are tied to the normal marks
+and to each other; they are not independent. This may cause unwanted effects
+and therefore certain problems, like really independent marks for
+sections and subsections, are not possible with extramarks.
+On the other hand, the marks in extramarks2 are really independent, and can
+be set separately. Also they don't influence each other. See below for an example.
+Moreover, you can define your own marks for even more freedom.
+
+Apart from the commands that the extramarks package supports, these
+are the commands that extramarks2 supports:
+
+  \extramarksleft{Some text}
+  \extramarksright{Some text}
+
+These set the marks, independently. In fact the \extramarks command is redefined
+to call these, \extramarksleft with its first argument, and \extramarksright
+with the second one.
+
+Making new marks:
+
+\extramarksnewmark{name} - Create a new mark 'name'
+\extramarksput{name}{Some text} - Put some text in the mark 'name'
+
+Get the marks (for use in headers/footers)
+
+\extramarkstop{name}
+\extramarksfirst{name}
+\extramarkslast{name}
+
+The predefined marks are called 'left' and 'right', and the new commands
+\extramarksleft and \extramarksright are just shorthands for
+\extramarksput{left} and \extramarksput{right}.
+
+\firstleftxmark
+\firstrightxmark
+\topleftxmark
+\toprightxmark
+\lastleftxmark
+\lastrightxmark
+
+These are the same commands as in extramarks, but with the new implementation.
+
+Example: we want to have the first section title of a page in the left header,
+and the first subsection title in the right header:
+
+\usepackage{fancyhdr}
+\usepackage{extramarks2}
+
+\pagestyle{fancy}
+\fancyhead[L]{\firstleftxmark}  % section
+\fancyhead[R]{\firstrightxmark}  % subsection
+
+\renewcommand{\sectionmark}[1]{%
+  \extramarksleft{\thesection. #1}%
+}
+\renewcommand{\subsectionmark}[1]{%
+  \extramarksright{\thesubsection. #1}%
+}
