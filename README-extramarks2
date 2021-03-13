@@ -25,8 +25,8 @@ Moreover, you can define your own marks for even more freedom.
 Apart from the commands that the extramarks package supports, these
 are the commands that extramarks2 supports:
 
-  \extramarksleft{Some text}
-  \extramarksright{Some text}
+\extramarksleft{Some text}
+\extramarksright{Some text}
 
 These set the marks, independently. In fact the \extramarks command is redefined
 to call these, \extramarksleft with its first argument, and \extramarksright
@@ -53,8 +53,10 @@ The predefined marks are called 'left' and 'right', and the new commands
 \toprightxmark
 \lastleftxmark
 \lastrightxmark
+\firstleftmark
+\lastrightmark 
 
-These are the same commands as in extramarks, but with the new implementation.
+These are the same commands as in extramarks, but with a new implementation.
 
 Example: we want to have the first section title of a page in the left header,
 and the first subsection title in the right header:
