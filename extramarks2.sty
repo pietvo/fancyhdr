@@ -14,7 +14,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks2}
-           [2021/03/11 v0.1
+           [2021/03/13 v0.1
                   Extra marks for LaTeX]
 % Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -303,6 +303,8 @@
   \extramarksput{right}{#2}
 }
 
+% Extramarks compatibility commands
+
 \NewDocumentCommand\firstleftxmark  { } {\extramarksfirst {left}  }
 \NewDocumentCommand\firstrightxmark { } {\extramarksfirst {right} }
 \NewDocumentCommand\topleftxmark    { } {\extramarkstop   {left}  }
@@ -316,6 +318,11 @@
 
 \cs_new_eq:NN \firstrightmark \rightmark
 \cs_new_eq:NN \lastleftmark \leftmark
+
+\NewDocumentCommand\firstleftmark { }
+  {\expandafter\@leftmark\firstmark\@empty\@empty}
+\NewDocumentCommand\lastrightmark { }
+  {\expandafter\@rightmark\botmark\@empty\@empty}
 
 % We check the presence of the multicol package in the 'begindocument'
 % hook, because that's the only place where we can be sure, and is still
