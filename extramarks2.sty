@@ -14,7 +14,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks2}
-           [2021/03/13 v0.1
+           [2021/03/15 v0.1
                   Extra marks for LaTeX]
 % Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -334,9 +334,7 @@
 \AddToHook{begindocument}{
   \@ifpackageloaded{multicol}
   {
-    \makeatletter
     \input{extramarks2-multicol.tex}
-    \makeatother
   }
   { }
 }
