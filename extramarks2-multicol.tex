@@ -14,11 +14,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesFile{extramarks2-multicol.tex}
-           [2021/03/13 v0.1
+           [2021/03/15 v0.1
                   Extra marks for LaTeX (multicol extension)]
 % Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\makeatletter
 \ExplSyntaxOn
 
 % Debugging
@@ -157,6 +158,7 @@
   {\msg@error@nnn {extramarks2} {cannot-patch} {\multi@column@out}}
   %\show\multi@column@out
 
+\makeatother
 \endinput
 %%
 %% End of file `extramarks2-multicol.tex'.
