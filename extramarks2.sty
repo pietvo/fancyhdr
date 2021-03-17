@@ -14,7 +14,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks2}
-           [2021/03/15 v0.1
+           [2021/03/17 v0.1
                   Extra marks for LaTeX]
 % Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -149,6 +149,19 @@
     \tl_gset_eq:cc { g__extramarks_botmark_#1_tl } { g__extramarks_topmark_#1_tl }
   }
 }
+
+% Temporary \vsplit a box
+
+\cs_new_protected:Npn \__extramarks_vsplit_box #1
+{
+    \dim_set:Nn \tex_splitmaxdepth:D \c_max_dim
+    \int_set:Nn \tex_vbadness:D      \c_max_int
+    % Make a temp copy of the box
+    \vbox_set:Nn \l__extramarks__temp_box { \unvcopy #1 \unskip }
+    % `Split' the box (but no split)
+    \vbox_set_split_to_ht:NNn \l__extramarks__temp_box \l__extramarks__temp_box \c_max_dim
+}
+
 % Patching the output routine:
 %
 % The patching must be done with \ExplSyntaxOff, because otherwise it
@@ -165,15 +178,24 @@
     }
 }
 
+% Patch the processing of \twocolumn processing of optional argument
+
+\cs_new_protected:Npn \extramarks@set@marks@topnewpage
+{
+  \group_begin:
+    \__extramarks_vsplit_box \@currbox
+    \seq_map_inline:Nn \g__extramarks_marks_seq
+      {
+        % Process any marks in the box
+        \__extramarks_get_boxmarks:n { ##1 }
+      }
+  \group_end:
+}
+
 \cs_new_protected:Npn \extramarks@set@marks@outputbox
 {
   \group_begin:
-    \dim_set:Nn \tex_splitmaxdepth:D \c_max_dim
-    \int_set:Nn \tex_vbadness:D      \c_max_int
-    % Make a temp copy of \@outputbox
-    \vbox_set:Nn \l__extramarks__temp_box { \unvcopy\@outputbox\unskip }
-    % `Split' the box (but no split)
-    \vbox_set_split_to_ht:NNn \l__extramarks__temp_box \l__extramarks__temp_box \c_max_dim
+    \__extramarks_vsplit_box \@outputbox
     \seq_map_inline:Nn \g__extramarks_marks_seq
       {
         % Process any marks in the box
@@ -196,6 +218,13 @@
 
 \ExplSyntaxOff
 
+% Patch the processing of \twocolumn optional argument
+
+\patchcmd{\@topnewpage}{\color@endbox}
+  {\color@endbox\extramarks@set@marks@topnewpage}
+  {}
+  {\msg@error@nnn {extramarks2} {cannot-patch} {@topnewpage}}
+
 % Patch the \@outputdblcol macro for the first colum case
 % \@outputbox contains the first column, and has been \vsplit
 % so we can get its marks with \splitmarks
@@ -203,7 +232,7 @@
 \patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
   {\extramarks@set@firstcolmarks \ifx\@firstcolfirstmark\@empty}
   {}
-  { \msg@error@nnn {extramarks2} {cannot-patch} {\@outputdblcol patch 1} }
+  {\msg@error@nnn {extramarks2} {cannot-patch} {\@outputdblcol patch 1}}
 
 % Patch the \@outputdblcol macro for the second column case
 % \@outputbox contains the second column, not yet \vsplitted.
