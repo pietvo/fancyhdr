@@ -180,15 +180,27 @@
 
 % Patch the processing of \twocolumn processing of optional argument
 
-\cs_new_protected:Npn \extramarks@set@marks@topnewpage
+\cs_new_protected:Npn \extramarks@set@marks@topnewpage #1
 {
   \group_begin:
+    \global\setbox\@currbox\vbox{%
+        \hsize\textwidth
+        \@parboxrestore
+        \col@number \@ne
+        #1%
+        \vskip -\dbltextfloatsep
+             }%
     \__extramarks_vsplit_box \@currbox
     \seq_map_inline:Nn \g__extramarks_marks_seq
       {
         % Process any marks in the box
         \__extramarks_get_boxmarks:n { ##1 }
       }
+    \global \setbox\@currbox
+    \color@vbox
+      \normalcolor
+      \copy\@currbox
+    \color@endbox
   \group_end:
 }
 
@@ -220,8 +232,18 @@
 
 % Patch the processing of \twocolumn optional argument
 
-\patchcmd{\@topnewpage}{\color@endbox}
-  {\color@endbox\extramarks@set@marks@topnewpage}
+\patchcmd{\@topnewpage}{\global \setbox\@currbox
+    \color@vbox
+      \normalcolor
+      \vbox {%
+        \hsize\textwidth
+        \@parboxrestore
+        \col@number \@ne
+        #1%
+        \vskip -\dbltextfloatsep
+             }%
+    \color@endbox}
+  {\extramarks@set@marks@topnewpage{#1}}
   {}
   {\msg@error@nnn {extramarks2} {cannot-patch} {@topnewpage}}
 
