@@ -359,9 +359,7 @@
 % \OPTindex{compatV3}
 % \OPTindex{headings}
 % \OPTindex{myheadings}
-% \DescribeMacro{\fancyhead}
-% \DescribeMacro{\fancyfoot}
-% \DescribeMacro{\fancyhf}
+% \begin{function}{\fancyhead,\fancyfoot,\fancyhf}
 % \begin{verbatim}
 % \fancyhead[places]{field}
 % \fancyfoot[places]{field}
@@ -376,9 +374,9 @@
 % letters, like \texttt{EOH}. A missing coordinate means: all
 % possibilities, except for \cs{fancyhead} where \texttt{H} is implied
 % and \cs{fancyfoot} where \texttt{F} is implied.
-% \DescribeMacro{\fancyheadoffset}
-% \DescribeMacro{\fancyfootoffset}
-% \DescribeMacro{\fancyhfoffset}
+% \end{function}
+%
+% \begin{function}{\fancyheadoffset,\fancyfootoffset,\fancyhfoffset}
 % \begin{verbatim}
 % \fancyheadoffset[places]{field}
 % \fancyfootoffset[places]{field}
@@ -388,14 +386,10 @@
 % the inside if negative). Places cannot contain the \texttt{C}
 % specifier. See sections~\ref{sec:book-examples}  and
 % \ref{sec:headwidth} for more details.
+% \end{function}
 %
-% \DescribeMacro{\headrulewidth}
-% \DescribeMacro{\footrulewidth}
-% \DescribeMacro{\headruleskip}
-% \DescribeMacro{\footruleskip}
-% \DescribeMacro{\headrule}
-% \DescribeMacro{\footrule}
-% \DescribeMacro{\headwidth}
+% \begin{function}{\headrulewidth, \footrulewidth, \headruleskip,
+%                  \footruleskip, \headrule, \footrule, \headwidth}
 %
 % \cs{headrulewidth} and \cs{footrulewidth} are macros to define the
 % thickness of a line under the header and above the footer.
@@ -405,38 +399,36 @@
 % \cs{headrule} and \cs{footrule} are macros to completely redefine
 % these lines. And \cs{headwidth} is a length parameter that defines the
 % total width of the headers and footers. See section~\ref{sec:headwidth} for more details.
+% \end{function}
 %
-% \DescribeMacro{\fancyheadinit}
-% \DescribeMacro{\fancyfootinit}
-% \DescribeMacro{\fancyhfinit}
-%
+% \begin{function}{\fancyheadinit, \fancyfootinit, \fancyhfinit}
 % \cs{fancyheadinit} and \cs{fancyfootinit} can be used to define
 % initialisation code for the header and footer, respectively, and
 % \cs{fancyhfinit} defines both of these. These commands are only
 % available in fancyhdr version~4.0 and later. See section~\ref{sec:change}.
+% \end{function}
 %
-% \DescribeMacro{\fancycenter}
+% \begin{function}{\fancycenter}
 % (Only in version~4.0 and later.) The command \cs{fancycenter} packs 3
 % header fields into a full-width header. See section~\ref{sec:fancycenter}.
+% \end{function}
 %
-% \DescribeMacro{\iftopfloat}
-% \DescribeMacro{\ifbotfloat}
-% \DescribeMacro{\iffloatpage}
-% \DescribeMacro{\iffootnote}
-%
+% \begin{function}{\iftopfloat, \ifbotfloat, \iffloatpage, \iffootnote}
 % The macros \cs{iftopfloat}, \cs{ifbotfloat}, \cs{iffloatpage} and
 % \cs{iffootnote} are used to detect if there is a float on the top or
 % the bottom of the page, or the page is a float page, or if there is
 % a footnote at the bottom of the page. These can be used to choose
 % different headers and/or footers if these conditions are met. See
 % section~\ref{sec:float} for more details.
+% \end{function}
 %
-% \begin{quote}
-% \DescribeMacro{\fancypagestyle}
+% \begin{function}{\fancypagestyle}
+% \begin{syntax}
 % \verb|\fancypagestyle|\marg{style-name}\oarg{base-style}\marg{definitions}
-% \end{quote}
+% \end{syntax}
 % This command lets you (re)define page styles for use in special
 % situations. See section~\ref{sec:fancypagestyle} for more details.
+% \end{function}
 %
 % \section{Using \Package{extramarks}}
 % \label{sec:using-extramarks}
@@ -445,10 +437,7 @@
 % besides the normal \cs{leftmark} and \cs{rightmark}, that are defined
 % by the \cs{markboth} and \cs{markright} commands.
 %
-% \DescribeMacro{\firstleftmark}
-% \DescribeMacro{\lastrightmark}
-% \DescribeMacro{\firstrightmark}
-% \DescribeMacro{\lastleftmark}
+% \begin{function}{\firstleftmark, \lastrightmark, \firstrightmark, \lastleftmark}
 % \begin{verbatim}
 % \firstleftmark
 % \lastrightmark
@@ -463,6 +452,11 @@
 % \cs{rightmark} and \cs{lastleftmark} = \cs{leftmark}. As with the
 % standard marks, these are meant to be used in headers and footers. In
 % other places they will not work properly.
+% \end{function}
+%
+% \begin{function}{\extramarks, \firstleftxmark, \firstrightxmark, \topleftxmark,
+%                  \toprightxmark, \lastleftxmark, \lastrightxmark, \firstxmark,
+%                  \lastxmark, \topxmark}
 % \begin{code}
 % \extramarks{aa}{bb}
 % \firstleftxmark
@@ -475,11 +469,6 @@
 % \lastxmark
 % \topxmark
 % \end{code}
-% \DescribeMacro{\extramarks}
-% \DescribeMacro{\firstleftxmark}
-% \DescribeMacro{\firstrightxmark}
-% \DescribeMacro{\lastleftxmark}
-% \DescribeMacro{\lastrightxmark}
 % The command \Cmd{extramarks\{aa\}\{bb\}} defines two extra marks,
 % similar to the standard ones by \latex/, where \texttt{aa} is the left
 % one and \texttt{bb} is the right one. The other commands are used to
@@ -493,18 +482,17 @@
 % also true in the other direction. This sometimes caused unwanted effects.
 %
 % Since version 4.1 this is no longer the case.
+% \end{function}
+%
+% \begin{function}{\extramarksleft, \extramarksright}
 % Now the \texttt{extramarks} are independent of the traditional marks,
 % and they can also be used independently of each other by the commands
-% \DescribeMacro{\extramarksleft}
-% \DescribeMacro{\extramarksright}
 % \cs{extramarksleft} and \cs{extramarksright}.
+% \end{function}
 %
+% \begin{function}{\extramarksnewmark, \extramarksput, \extramarksfirst,
+%                  \extramarkslast, \extramarkstop}
 % It is also possible to define your own additional marks.
-% \DescribeMacro{\extramarksnewmark}
-% \DescribeMacro{\extramarksput}
-% \DescribeMacro{\extramarksfirst}
-% \DescribeMacro{\extramarkslast}
-% \DescribeMacro{\extramarkstop}
 % With \cs{extramarksnewmark}\marg{name} you define a new mark called
 % \meta{name}. You can then put a new mark with \cs{extramarksput}\marg{name}\marg{Some text}.
 % Inside the headers or footers of the page you can then extract these
@@ -528,6 +516,7 @@
 % \end{verbatim}
 % See sections~\ref{sec:scoop} and \ref{sec:xmarks} for more details
 % about the use of the package.
+% \end{function}
 %
 % \newpage
 % \part{Page Layout in \LaTeX}
@@ -790,7 +779,7 @@
 % the top line. The maximum width of every mark is equal to the
 % \cs{headwidth}. This can lead to overlapping of neighbouring marks.
 %
-% \DescribeMacro{\fancycenter}
+% \CmdIndex{fancycenter}
 % If you want to prepare marks in more traditional way in a line
 % not exceeding the \cs{headwidth}, you can use
 % the following command in any mark command:
@@ -1624,7 +1613,6 @@
 % the \cs{vspace}. If you want to change the distance between that
 % decorative line and the footer text you need to adjust the
 % \CmdIndex{footruleskip}
-% \DescribeMacro{\footruleskip}
 % parameter \cs{footruleskip}. It
 % defines the distance between the decorative line in the footer and the top
 % of the footer text line. By default it is set to 30\% of the normal line
@@ -1636,7 +1624,6 @@
 % the maximum depth of possible descenders in the text, which is 30\% of
 % the normal line distance. You can increase or decrease this distance
 % \CmdIndex{headruleskip}
-% \DescribeMacro{\headruleskip}
 % by defining the macro \cs{headruleskip}, similar to \cs{footruleskip}
 % \footnote{(But \cs{headruleskip} is only available since version~4.0.)}.
 % This defines the extra distance. The default value is 0pt, and
@@ -2269,15 +2256,15 @@
 % \end{code}
 % For cases like this \Package{fancyhdr} version~4.0 and later has some
 % new commands \cs{fancyheadinit}, \cs{fancyfootinit} and \cs{fancyhfinit}.
-% \DescribeMacro{\fancyheadinit}
+% \CmdIndex{fancyheadinit}
 % With \Cmd{fancyheadinit\{\meta{code}\}} you can define some code that will be executed
 % just before the construction of the header. As it is executed in the
 % header, it can test the correct page number, because the counter
 % \texttt{page} is guaranteed to have the correct value in the headers
 % and footers. Similarly, the code in \Cmd{fancyfootinit\{\meta{code}\}} is executed in
-% \DescribeMacro{\fancyfootinit}
+% \CmdIndex{fancyfootinit}
 % the footer. And \Cmd{fancyhfinit\{\meta{code}\}} sets its code for both the header
-% \DescribeMacro{\fancyhfinit}
+% \CmdIndex{fancyhfinit}
 % and the footer. Now we can set for example \cs{headruleskip} or
 % \cs{footrulewidth} depending on the page number. So instead of putting
 % the test inside the definition of \cs{headruleskip}, we can put it
@@ -3428,12 +3415,7 @@
 % the modern commands are given in table~\ref{tab:depr}.
 %
 % \begin{table}[h!t]
-% \CmdIndex{lhead}
-% \CmdIndex{chead}
-% \CmdIndex{rhead}
-% \CmdIndex{lfoot}
-% \CmdIndex{cfoot}
-% \CmdIndex{rfoot}
+% \begin{function}{\lhead, \chead, \rhead, \lfoot, \cfoot, \rfoot}
 %   \begin{tabular}{ll}
 %   \toprule
 %   \Cmd{lhead\{xx\}} & \Cmd{fancyhead[L]\{xx\}} \\
@@ -3452,6 +3434,7 @@
 %   \bottomrule
 % \end{tabular}
 % \caption{Deprecated commands and their translation\label{tab:depr}}
+% \end{function}
 % \end{table}
 %
 % As you see, if there is an optional parameter, this one applies to the
@@ -3460,7 +3443,7 @@
 % documentclass. If there is no optional parameter, the required
 % parameter applies to both even and odd pages.
 %
-% \CmdIndex{fancyplain}
+% \begin{function}{\fancyplain}
 % \PSindex{fancyplain}
 % There was also a special pagestyle \texttt{fancyplain} that could be
 % used to define both the pagestyle \texttt{fancy} and to redefine the
@@ -3477,6 +3460,7 @@
 % The \cs{fancyplain} command is only useful within the pagestyle \texttt{fancyplain}.
 % Nowadays you would just redefine pagestyle \texttt{plain} with the
 % \Cmd{fancypagestyle\{plain\}\{xxxx\}} command (see section~\ref{sec:pagestyle-plain}).
+% \end{function}
 %
 % \CmdIndex{plainheadrulewidth}
 % \CmdIndex{plainfootrulewidth}
