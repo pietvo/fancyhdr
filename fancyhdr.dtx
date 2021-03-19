@@ -430,6 +430,18 @@
 % situations. See section~\ref{sec:fancypagestyle} for more details.
 % \end{function}
 %
+% \begin{function}{\fancyhdrsettoheight}
+% \begin{syntax}
+% \cs{fancyhdrsettoheight}\marg{lengthvar}\marg{header/footer}
+% \end{syntax}
+% Sets \meta{lengthvar} to the height of the \meta{header/footer}, which must
+% be one of \texttt{oddhead}, \texttt{evenhead}, \texttt{oddfoot} or \texttt{evenfoot}.
+% Please note: You usually use this outside of a header or a footer (for
+% example in the \emph{preamble}, but then if you use marks with a non-standard height
+% in your headers or footers, the calculated height may be wrong, as marks don't work well
+% outside of a header or footer.
+% \end{function}
+%
 % \section{Using \Package{extramarks}}
 % \label{sec:using-extramarks}
 %
@@ -4667,7 +4679,7 @@
 % \begin{macro}{\fancyhdrsettoheight}
 % \changes{fancyhdr v4.1}{2021/02/20}{Macro \cs{fancyhdrsettoheight} added}
 % Macro to store the height of a header/footer in a length variable.\\
-% \cs{fancyhdrsettoheight}\texttt{\{}\meta{lengthvar}\texttt{\}\{}\meta{header/footer}\texttt{\}}.\\
+% \cs{fancyhdrsettoheight}\marg{lengthvar}\marg{header/footer}\\
 % The second parameter can be \texttt{oddhead}, \texttt{evenhead},
 % \texttt{oddfoot}, or \texttt{evenfoot}.
 %    \begin{macrocode}
