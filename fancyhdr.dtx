@@ -469,23 +469,24 @@
 % \begin{function}{\extramarks, \firstleftxmark, \firstrightxmark, \topleftxmark,
 %                  \toprightxmark, \lastleftxmark, \lastrightxmark, \firstxmark,
 %                  \lastxmark, \topxmark}
-% \begin{code}
-% \extramarks{aa}{bb}
-% \firstleftxmark
-% \firstrightxmark
-% \topleftxmark
-% \toprightxmark
-% \lastleftxmark
-% \lastrightxmark
-% \firstxmark
-% \lastxmark
-% \topxmark
-% \end{code}
-% The command \Cmd{extramarks\{aa\}\{bb\}} defines two extra marks,
-% similar to the standard ones by \latex/, where \texttt{aa} is the left
-% one and \texttt{bb} is the right one. The other commands are used to
+% \begin{syntax}
+% \cs{extramarks}\marg{aa}\marg{bb}
+% \cs{firstleftxmark}
+% \cs{firstrightxmark}
+% \cs{topleftxmark}
+% \cs{toprightxmark}
+% \cs{lastleftxmark}
+% \cs{lastrightxmark}
+% \cs{firstxmark}
+% \cs{lastxmark}
+% \cs{topxmark}
+% \end{syntax}
+% The command \cs{extramarks}\marg{aa}\marg{bb} defines two extra marks,
+% similar to the standard ones by \latex/, where \meta{aa} is the left
+% one and \meta{bb} is the right one. The other commands are used to
 % extract these in the headers and footers, similar to the ones without
 % the \texttt{x}.
+% \end{function}
 %
 % In versions before 4.1, the \texttt{extramarks} are connected to each
 % other and to the original \LaTeX{} marks; they are not independent.
@@ -493,13 +494,11 @@
 % introduces empty \texttt{extramarks} or duplicates existing ones. This is
 % also true in the other direction. This sometimes caused unwanted effects.
 %
-% Since version 4.1 this is no longer the case.
-% \end{function}
-%
 % \begin{function}{\extramarksleft, \extramarksright}
+% Since version 4.1 this is no longer the case.
 % Now the \texttt{extramarks} are independent of the traditional marks,
 % and they can also be used independently of each other by the commands
-% \cs{extramarksleft} and \cs{extramarksright}.
+% \cs{extramarksleft}\marg{aa} and \cs{extramarksright}\marg{bb}.
 % \end{function}
 %
 % \begin{function}{\extramarksnewmark, \extramarksput, \extramarksfirst,
