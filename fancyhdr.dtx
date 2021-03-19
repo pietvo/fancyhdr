@@ -4846,7 +4846,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\MakeUppercase}
+% \begin{macro}[internal]{\MakeUppercase}
 %   Define \MakeUppercase for old \LaTeX{}en. Note: we used \cs{def} rather
 %   than \cs{let}, so that \verb+\let\uppercase\relax+ (from the version 1
 %   documentation) will still work.
@@ -5344,7 +5344,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\markboth}
+% \begin{macro}[internal]{\markboth}
 % Our own definition of \cs{markboth}, mainly because \cs{@markboth}
 % gets more parameters.
 %    \begin{macrocode}
@@ -5358,7 +5358,7 @@
   \if@nobreak\ifvmode\nobreak\fi\fi}
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\markright}
+% \begin{macro}[internal]{\markright}
 %   We use the standard definition of \cs{markright}. No use to duplicate here.
 % \end{macro}
 %
@@ -5391,8 +5391,8 @@
 % \end{macro}
 % \end{macro}
 
-% \begin{macro}{\leftmark}
-% \begin{macro}{\rightmark}
+% \begin{macro}[internal]{\leftmark}
+% \begin{macro}[internal]{\rightmark}
 % \begin{macro}{\firstleftmark}
 % \begin{macro}{\lastrightmark}
 % \begin{macro}{\firstrightmark}
