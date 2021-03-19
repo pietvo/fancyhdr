@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2021/02/24 v4.1beta
+%<fancyhdr|fancyheadings|extramarks>           [2021/03/19 v4.1beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -423,7 +423,7 @@
 % \section{Using \Package{extramarks}}
 % \label{sec:using-extramarks}
 %
-% The \Package{extramarks} gives you some extra marks in \latex/,
+% The package \Package{extramarks} gives you some extra marks in \latex/,
 % besides the normal \cs{leftmark} and \cs{rightmark}, that are defined
 % by the \cs{markboth} and \cs{markright} commands.
 %
@@ -440,7 +440,7 @@
 %
 % Standard \latex/ has two marks: a left and a right one. The standard
 % command \cs{leftmark} gives you the last left mark on a page, and
-% \cs{rightmark} gives you the first right one. These macros give you
+% \cs{rightmark} gives you the first right one. The macros above give you
 % also the other combinations, where \cs{firstrightmark} =
 % \cs{rightmark} and \cs{lastleftmark} = \cs{leftmark}. As with the
 % standard marks, these are meant to be used in headers and footers. In
@@ -457,11 +457,59 @@
 % \lastxmark
 % \topxmark
 % \end{code}
+% \DescribeMacro{\extramarks}
+% \DescribeMacro{\firstleftxmark}
+% \DescribeMacro{\firstrightxmark}
+% \DescribeMacro{\lastleftxmark}
+% \DescribeMacro{\lastrightxmark}
 % The command \Cmd{extramarks\{aa\}\{bb\}} defines two extra marks,
 % similar to the standard ones by \latex/, where \texttt{aa} is the left
-% one and \texttt{bb} is the right one. The other commands are to
+% one and \texttt{bb} is the right one. The other commands are used to
 % extract these in the headers and footers, similar to the ones without
-% the \texttt{x}. See sections~\ref{sec:scoop} and \ref{sec:xmarks} for more details.
+% the \texttt{x}.
+%
+% In versions before 4.1, the \texttt{extramarks} are connected to each
+% other and to the original \LaTeX{} marks; they are not independent.
+% For example, if you use \cs{markboth} or \cs{markright} this
+% introduces empty \texttt{extramarks} or duplicates existing ones. This is
+% also true in the other direction. This sometimes caused unwanted effects.
+%
+% Since version 4.1 this is no longer the case.
+% Now the \texttt{extramarks} are independent of the traditional marks,
+% and they can also be used independently of each other by the commands
+% \DescribeMacro{\extramarksleft}
+% \DescribeMacro{\extramarksright}
+% \cs{extramarksleft} and \cs{extramarksright}.
+% 
+% It is also possible to define your own additional marks.
+% \DescribeMacro{\extramarksnewmark}
+% \DescribeMacro{\extramarksput}
+% \DescribeMacro{\extramarksfirst}
+% \DescribeMacro{\extramarkslast}
+% \DescribeMacro{\extramarkstop}
+% With \cs{extramarksnewmark}\marg{name} you define a new mark called
+% \meta{name}. You can then put a new mark with \cs{extramarksput}\marg{name}\marg{Some text}.
+% Inside the headers or footers of the page you can then extract these
+% marks with \cs{extramarksfirst}\marg{name}, \cs{extramarkslast}\marg{name}
+% and \cs{extramarkstop}\marg{name}. The first two are similar to
+% \Cmd{first\ldots mark} en \Cmd{last\ldots mark}, and
+% \cs{extramarkstop}\marg{name} is the last mark from the previous page.
+% If there are no marks on the current page, all three are the same.
+%
+% The `standard' extra marks are called `left' and `right', and the new commands
+% \cs{extramarksleft} and \cs{extramarksright} are just shorthands for
+% \Cmd{extramarksput\{left\}} and \Cmd{extramarksput\{right\}}.
+%
+% If you want to keep the old behaviour of \Package{extramarks}, you can use:
+% \begin{verbatim}
+% \usepackage{extramarks}[=v3]
+% \end{verbatim}
+% or if you have an old \LaTeX{} system where the above doesn't work
+% \begin{verbatim}
+% \usepackage{extramarks-v3}
+% \end{verbatim}
+% See sections~\ref{sec:scoop} and \ref{sec:xmarks} for more details
+% about the use of the package.
 %
 % \newpage
 % \part{Page Layout in \LaTeX}
