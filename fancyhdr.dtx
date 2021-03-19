@@ -5172,9 +5172,7 @@
 % \changes{fancyhdr v4.1}{2021/02/16}{Define \cs{newtoks}\cs{@temptokenb}}
 % \begin{macro}{\@temptokenb}
 % A token register to collect information for \cs{fancypagestyle*}. The
-% same token register is declared and used in the \Package{extramarks}
-% package, but their use is independent. Both definitions are
-% conditional on the non-existence of it.
+% definition is conditional on the non-existence of it.
 %    \begin{macrocode}
 \ifx\@temptokenb\undefined \csname newtoks\endcsname\@temptokenb\fi
 %    \end{macrocode}
