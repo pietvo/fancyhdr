@@ -25,65 +25,19 @@
                   Extra marks for LaTeX]
 % Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\ifx\@temptokenb\undefined \csname newtoks\endcsname\@temptokenb\fi
-\providecommand\unrestored@protected@xdef{%
-  \let\protect\@unexpandable@protect \xdef}
-\def\markboth#1#2{%
-  \begingroup
-  \let\label\relax \let\index\relax \let\glossary\relax
-  \expandafter\@markboth\@themark{#1}{#2}%
-  \@temptokena \expandafter{\@themark}%
-  \mark{\the\@temptokena}%
-  \endgroup
-  \if@nobreak\ifvmode\nobreak\fi\fi}
-\def\@markboth#1#2#3#4#5#6{\@temptokena{{#3}{#4}}%
-  \unrestored@protected@xdef\@themark{{#5}{#6}\the\@temptokena}}
-\def\@markright#1#2#3#4#5{\@temptokena{#1}\@temptokenb{{#3}{#4}}%
-  \unrestored@protected@xdef\@themark{{\the\@temptokena}{#5}\the\@temptokenb}}
+\RequirePackage{expl3,xparse}
+\RequirePackage{etoolbox}
+\ExplSyntaxOn
 
-\def\@leftmark#1#2#3#4{#1}
-\def\@rightmark#1#2#3#4{#2}
+\AddToHook{begindocument}{
+  \@ifpackageloaded{multicol}
+  {
+    \input{extramarks2-multicol.tex}
+  }
+  { }
+}
 
-\def\leftmark{\expandafter\@leftmark
-      \botmark\@empty\@empty\@empty\@empty}
-\def\rightmark{\expandafter\@rightmark
-      \firstmark\@empty\@empty\@empty\@empty}
-\def\firstleftmark{\expandafter\@leftmark
-      \firstmark\@empty\@empty\@empty\@empty}
-\def\lastrightmark{\expandafter\@rightmark
-      \botmark\@empty\@empty\@empty\@empty}
-\let\firstrightmark \rightmark
-\let\lastleftmark \leftmark
-
-\def\@themark{{}{}{}{}}
-
-\newcommand\extramarks[2]{%
-  \begingroup
-  \let\label\relax \let\index\relax \let\glossary\relax
-  \expandafter\@markextra\@themark{#1}{#2}%
-  \@temptokena \expandafter{\@themark}%
-  \mark{\the\@temptokena}%
-  \endgroup
-  \if@nobreak\ifvmode\nobreak\fi\fi}
-\def\@markextra#1#2#3#4#5#6{\@temptokena {{#1}{#2}}%
-  \unrestored@protected@xdef\@themark{\the\@temptokena{#5}{#6}}}
-\def\firstleftxmark{\expandafter\@leftxmark
-      \firstmark\@empty\@empty\@empty\@empty}
-\def\firstrightxmark{\expandafter\@rightxmark
-      \firstmark\@empty\@empty\@empty\@empty}
-\def\topleftxmark{\expandafter\@leftxmark
-      \topmark\@empty\@empty\@empty\@empty}
-\def\toprightxmark{\expandafter\@rightxmark
-      \topmark\@empty\@empty\@empty\@empty}
-\def\lastleftxmark{\expandafter\@leftxmark
-      \botmark\@empty\@empty\@empty\@empty}
-\def\lastrightxmark{\expandafter\@rightxmark
-      \botmark\@empty\@empty\@empty\@empty}
-\let\firstxmark\firstleftxmark
-\let\lastxmark\lastrightxmark
-\let\topxmark\topleftxmark
-\def\@leftxmark#1#2#3#4{#3}
-\def\@rightxmark#1#2#3#4{#4}
+\ExplSyntaxOff
 \endinput
 %%
 %% End of file `extramarks.sty'.

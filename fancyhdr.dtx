@@ -25,12 +25,18 @@
 \NeedsTeXFormat{LaTeX2e}
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
-%<extramarks>\ProvidesPackage{extramarks}
+%<extramarks|extramarks-v3>\ProvidesPackage{extramarks}
 %<fancyhdr|fancyheadings|extramarks>           [2021/03/19 v4.1beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
 %<fancyhdr|extramarks>% Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
+%<extramarks-v3>           [2021/01/01 v3
+%<extramarks-v3>                 Legacy version of extramarks for LaTeX]
+%<extramarks-v3>% Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
+%<extramarks-v3>%%
+%<extramarks-v3>%% This is a legacy version (v3) of extramarks.sty
+%<extramarks-v3>%%
 %<fancyheadings>% Public domain
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    \end{macrocode}
@@ -64,7 +70,8 @@
 \newcommand{\PSNFSS}{{\sf
     PSNFSS}}
 \newcommand{\bs}{\symbol{'134}}
-\newcommand{\env}[1]{\texttt{#1}}
+\providecommand\env{}
+\renewcommand{\env}[1]{\texttt{#1}}
 \newcommand{\Package}[1]{\textsf{#1}}
 \renewcommand{\partname}{Part}
 \DisableCrossrefs
@@ -480,7 +487,7 @@
 % \DescribeMacro{\extramarksleft}
 % \DescribeMacro{\extramarksright}
 % \cs{extramarksleft} and \cs{extramarksright}.
-% 
+%
 % It is also possible to define your own additional marks.
 % \DescribeMacro{\extramarksnewmark}
 % \DescribeMacro{\extramarksput}
@@ -5279,8 +5286,38 @@
 %</fancyhdr>
 %
 % \section{extramarks.sty}
-%
 %<*extramarks>
+%    \begin{macrocode}
+\RequirePackage{expl3,xparse}
+\RequirePackage{etoolbox}
+\ExplSyntaxOn
+%    \end{macrocode}
+% Skeleton for now
+% We check the presence of the multicol package in the 'begindocument'
+% hook, because that's the only place where we can be sure, and is still
+% early enough. However, we can't code patching code directly inside the
+% hook, because that won't work. So we input a file with the code. That
+% has the additional advantage that we don't load the code when it isn't needed.
+% ^^A But as we use `\input` we have to put it in \makeatletter/\makeatother.
+
+%    \begin{macrocode}
+\AddToHook{begindocument}{
+  \@ifpackageloaded{multicol}
+  {
+    \input{extramarks2-multicol.tex}
+  }
+  { }
+}
+
+\ExplSyntaxOff
+%    \end{macrocode}
+%
+%</extramarks>
+%
+% \section{extramarks-v3.sty}
+%
+%<*extramarks-v3>
+%
 % \changes{extramarks v1.99e}{2000/10/11}{Added a few \% marks to get rid
 % of unwanted spaces, and \cs{endinput}. \\
 % Added LPPL license clause.}
@@ -5461,7 +5498,7 @@
 % \end{macro}
 % \end{macro}
 %
-%</extramarks>
+%</extramarks-v3>
 %
 % \section{fancyheadings.sty}
 %
