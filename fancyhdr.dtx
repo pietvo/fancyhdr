@@ -3965,14 +3965,14 @@
 % \changes{fancyhdr v3.9}{2016/10/12}{Rename some macros to have 'f@nch@'
 % in their names, to get a more uniform naming scheme for internal macros.}
 %
-% \begin{macro}{\if@nch@mpty}
+% \begin{macro}[internal]{\if@nch@mpty}
 % This macro tests if its argument is empty.
 %    \begin{macrocode}
 \newcommand\if@nch@mpty[1]{\def\temp@a{#1}\ifx\temp@a\@empty}
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\iff@nch@check}
+% \begin{macro}[internal]{\iff@nch@check}
 % Boolean for the \texttt{nocheck} option.
 % \changes{fancyhdr v4.0}{2019/03/15}{Implement the \texttt{nocheck} option}
 % \OPTindex{nocheck}
@@ -3985,7 +3985,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@gbl}
+% \begin{macro}[internal]{\f@nch@gbl}
 % Initialise \cs{f@nch@gbl} to do nothing (except with the \texttt{compatV3}
 % option).
 % \changes{fancyhdr v4.0}{2019/03/19}{Remove the \cs{global} in definitions}
@@ -3996,7 +3996,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\iff@nch@compatViii}
+% \begin{macro}[internal]{\iff@nch@compatViii}
 % Define \cs{iff@nch@compatViii} to track the \texttt{compatV3} option.
 % \changes{fancyhdr v4.0}{2019/03/16}{Implement the \texttt{compatV3} option}
 %    \begin{macrocode}
@@ -4008,7 +4008,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@def}
+% \begin{macro}[internal]{\f@nch@def}
 % This macro defines another macro (usually a header or footer field).
 % Depending on the value of \cs{f@nch@gbl} the definition will be
 % global or local.
@@ -4025,7 +4025,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@ifundefined}
+% \begin{macro}[internal]{\f@nch@ifundefined}
 % This macro tests if a command is undefined. Older versions of
 % fancyhdr used \cs{@ifundefined}, but this had an undesired side effect
 % in the original \LaTeX{} (the command was made equal to \cs{relax} if
@@ -4054,7 +4054,7 @@
 % Standard styles are redefined optionally. These definitions are
 % borrowed from the \Package{nccfancyhdr} package by by Alexander I. Rozhenko.
 %
-% \begin{macro}{\ps@myheadings}
+% \begin{macro}[internal]{\ps@myheadings}
 % The redefinition of the \texttt{myheadings} style is conditional.
 % We test the existence of the \cs{chapter} command and redefine the
 % style accordingly.
@@ -4091,7 +4091,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ps@headings}
+% \begin{macro}[internal]{\ps@headings}
 % The redefinition of the \texttt{headings} style also differs for
 % book-like and article-like classes. It also differs for
 % one-side and two-side modes.
@@ -4174,7 +4174,7 @@
 \ProcessOptions*
 %    \end{macrocode}
 %
-% \begin{macro}{\f@nch@errmsg}
+% \begin{macro}[internal]{\f@nch@errmsg}
 %   This macro generates an error message.
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{f@nch@ifundefined} instead of \cs{ifx}.}
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
@@ -4183,7 +4183,7 @@
   \f@nch@ifundefined{PackageError}{\errmessage{#1}}{\PackageError{fancyhdr}{#1}{}}}
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@warning}
+% \begin{macro}[internal]{\f@nch@warning}
 % This macro generates a warning.
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{f@nch@ifundefined} instead of \cs{ifx}.}
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
@@ -4193,7 +4193,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@forc}
+% \begin{macro}[internal]{\f@nch@forc}
 %   Usage: \cs{f@nch@forc} \cs{var} \texttt{\{charstring\}\{body\}}.\\
 %   Execute the body for each character in \texttt{charstring} bound
 %   to \cs{var}.
@@ -4206,7 +4206,7 @@
 \def\f@nch@rc#1#2#3\f@nch@rc#4{\def#1{#2}#4\f@nchf@rc#1{#3}{#4}}
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@for}
+% \begin{macro}[internal]{\f@nch@for}
 %   Usage: \cs{f@nch@for}\cs{var}\texttt{\{list\}}\texttt{\{body\}} \\
 %   Execute the body for each element of the list, bound to \cs{var}.
 %   List elements are separated by commas. This is like \LaTeX's \cs{@for} but an empty
@@ -4217,7 +4217,7 @@
   \expandafter\@forloop#2,\@nil,\@nil\@@#1{#3}}
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@default}
+% \begin{macro}[internal]{\f@nch@default}
 %   Usage: \cs{f@nch@default} \cs{var}\texttt{\{defaults\}\{argument\}} \\
 %   Sets \cs{var} to the characters
 %   from \texttt{defaults} appearing in \texttt{argument}, or to \texttt{defaults} if it would be
@@ -4232,7 +4232,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@ifin}
+% \begin{macro}[internal]{\f@nch@ifin}
 %   Usage: \cs{f@nch@ifin} \meta{char} \meta{set} \meta{truecase} \meta{falsecase} \\
 % If \meta{char} is in \meta{set}, then \meta{truecase} else \meta{falsecase}.
 %    \begin{macrocode}
@@ -4282,7 +4282,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@fancyhf}
+% \begin{macro}[internal]{\f@nch@fancyhf}
 % This macro interprets the parameters for the headers and footers.\\
 % Parameters:\\
 % (1) The user command that was used (like \cs{fancyhead}). This is used
@@ -4316,7 +4316,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@fancyhfoffs}
+% \begin{macro}[internal]{\f@nch@fancyhfoffs}
 % This macro interprets the parameters for the header and footer
 % offsets.\\
 % Parameters:\\
@@ -4408,7 +4408,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@headwidth}
+% \begin{macro}[internal]{\f@nch@headwidth}
 % Length parameter to be used for \cs{headwidth}. We use this rather
 % than defining \cs{headwidth} as a length paramater directly to protect
 % ourself to someone saying: \verb+\let\headwidth\textwidth+.
@@ -4416,14 +4416,14 @@
 \newlength{\f@nch@headwidth} \let\headwidth\f@nch@headwidth
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@O@elh}
-% \begin{macro}{\f@nch@O@erh}
-% \begin{macro}{\f@nch@O@olh}
-% \begin{macro}{\f@nch@O@orh}
-% \begin{macro}{\f@nch@O@elf}
-% \begin{macro}{\f@nch@O@erf}
-% \begin{macro}{\f@nch@O@olf}
-% \begin{macro}{\f@nch@O@orf}
+% \begin{macro}[internal]{\f@nch@O@elh}
+% \begin{macro}[internal]{\f@nch@O@erh}
+% \begin{macro}[internal]{\f@nch@O@olh}
+% \begin{macro}[internal]{\f@nch@O@orh}
+% \begin{macro}[internal]{\f@nch@O@elf}
+% \begin{macro}[internal]{\f@nch@O@erf}
+% \begin{macro}[internal]{\f@nch@O@olf}
+% \begin{macro}[internal]{\f@nch@O@orf}
 % Length parameters for the offsets.
 %    \begin{macrocode}
 \newlength{\f@nch@O@elh}
@@ -4484,7 +4484,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\if@fancyplain}
+% \begin{macro}[internal]{\if@fancyplain}
 % Boolean for the implementation of \cs{fancyplain}
 %    \begin{macrocode}
 \newif\if@fancyplain \@fancyplainfalse
@@ -4505,10 +4505,10 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@raggedleft}
-% \begin{macro}{\f@nch@raggedright}
-% \begin{macro}{\f@nch@centering}
-% \begin{macro}{\f@nch@everypar}
+% \begin{macro}[internal]{\f@nch@raggedleft}
+% \begin{macro}[internal]{\f@nch@raggedright}
+% \begin{macro}[internal]{\f@nch@centering}
+% \begin{macro}[internal]{\f@nch@everypar}
 % Save the standard definitions of \cs{raggedleft}, \cs{raggedright},
 % \cs{centering} and \cs{everypar} so that we can reset them when we are
 % typesetting the headers and footers. Some packages change these to
@@ -4524,7 +4524,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@reset}
+% \begin{macro}[internal]{\f@nch@reset}
 %   Command to reset various things in the headers: a.o. single spacing
 %   (taken from setspace.sty) and the catcode of ^^M and
 %   \cs{endlinechar} (so that epsf files
@@ -4630,7 +4630,7 @@
 % before the construction of the header. It can for example set the
 % color or the font, or change \cs{headrulewidth} or \cs{headruleskip}.
 % It cannot make global changes, just changes for the header.
-% \begin{macro}{\f@nch@headinit}
+% \begin{macro}[internal]{\f@nch@headinit}
 %   Storage for the header initialisation code.
 %    \begin{macrocode}
 \newcommand{\f@nch@headinit}{}
@@ -4646,7 +4646,7 @@
 % before the construction of the footer. It can for example set the
 % color or the font, or change \cs{footrulewidth} or \cs{footruleskip}.
 % It cannot make global changes, just changes for the footer.
-% \begin{macro}{\f@nch@footinit}
+% \begin{macro}[internal]{\f@nch@footinit}
 %   Storage for the footer initialisation code.
 %    \begin{macrocode}
 \newcommand{\f@nch@footinit}{}
@@ -4668,7 +4668,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@height}
+% \begin{macro}[internal]{\f@nch@height}
 % \changes{fancyhdr v4.1}{2021/02/20}{Length variable \cs{f@nch@height} added}
 % Length variable to store heigth of header/footer for use in \cs{fancyhdrsettoheight}
 %    \begin{macrocode}
@@ -4700,7 +4700,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@vbox}
+% \begin{macro}[internal]{\f@nch@vbox}
 % Make a \cs{vbox} with the header or footer. Check whether there is
 % enough space and give a warning if not.
 %   Use box 0 as a temp box and dimen 0 as temp dimen. This can be done,
@@ -4776,7 +4776,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@head}
+% \begin{macro}[internal]{\f@nch@head}
 % \changes{fancyhdr v4.0}{2019/03/22}{Parameter \cs{headruleskip}.}
 % \changes{fancyhdr v4.0}{2019/03/25}{\cs{fancyheadinit} initialisation
 % code added and \cs{f@nch@reset} moved up.}
@@ -4820,7 +4820,7 @@
 }
 %    \end{macrocode}
 %
-% \begin{macro}{\f@nch@foot}
+% \begin{macro}[internal]{\f@nch@foot}
 % \changes{fancyhdr v3.10}{2019/01/26}{Put \cs{footrule} in a \cs{vbox}
 % to accommodate for flexible footrules.}
 % \changes{fancyhdr v3.10}{2019/01/28}{Use \cs{unvbox} on the footrule \cs{vbox}
@@ -4868,13 +4868,13 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@chapapp}
+% \begin{macro}[internal]{\@chapapp}
 % Define \cs{@chapapp} for classes that don't have it, e.g. amsbook
 %    \begin{macrocode}
 \f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}%
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@initialise}
+% \begin{macro}[internal]{\f@nch@initialise}
 % \changes{fancyhdr v4.0}{2019/03/21}{Put all the initialisation code in
 % \cs{f@nch@initialise}}
 % This macro initialises the headers and footers and \cs{chaptermark}
@@ -4953,7 +4953,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ps@f@nch@fancyproto}
+% \begin{macro}[internal]{\ps@f@nch@fancyproto}
 % \cs{ps@f@nch@fancyproto} is the
 % initial value for pagestyle \texttt{fancy}. The real page style
 % is \cs{ps@f@nch@fancycore} but \cs{ps@f@nch@fancyproto} for the first use
@@ -4993,7 +4993,7 @@
 \@namedef{f@nch@ps@f@nch@fancyproto-is-fancyhdr}{}
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{ps@fancy}
+% \begin{macro}[internal]{ps@fancy}
 % Define \cs{ps@fancy} just to call \cs{ps@f@nch@fancyproto}.
 %    \begin{macrocode}
 \def\ps@fancy{\ps@f@nch@fancyproto}
@@ -5001,7 +5001,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ps@fancyplain}
+% \begin{macro}[internal]{\ps@fancyplain}
 % The pagestyle \texttt{fancyplain} (deprecated).
 % After initializing by calling \cs{ps@f@nch@fancyproto} it sets page style
 % \texttt{plain} to our version \cs{ps@plain@fancy}, which just sets
@@ -5013,7 +5013,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@ps@empty}
+% \begin{macro}[internal]{\f@nch@ps@empty}
 % Save the definition of \cs{ps@empty} (pagestyle \texttt{empty}).
 % \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@empty} to \cs{f@nch@ps@empty}}
 %
@@ -5022,7 +5022,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ps@f@nch@fancycore}
+% \begin{macro}[internal]{\ps@f@nch@fancycore}
 % \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@fancy} to \cs{ps@f@nch@fancycore}}
 % The actual implementation of pagestyle \texttt{fancy}. For amsbook/amsart, which do
 % strange things with \cs{topskip}, we start with \cs{f@nch@ps@empty}. We
@@ -5039,7 +5039,7 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{ps@fancydefault}
+% \begin{macro}[internal]{ps@fancydefault}
 % \changes{fancyhdr v4.0}{2019/03/21}{Added \cs{ps@fancydefault}}
 % This is page style \texttt{fancydefault}. It is in fact page style
 % \texttt{fancy} with all the defaults embedded. In contrast with page
@@ -5055,14 +5055,14 @@
 %
 % \end{macro}
 %
-% \begin{macro}{\f@nch@Oolh}
-% \begin{macro}{\f@nch@Oorh}
-% \begin{macro}{\f@nch@Oelh}
-% \begin{macro}{\f@nch@Oerh}
-% \begin{macro}{\f@nch@Oolf}
-% \begin{macro}{\f@nch@Oorf}
-% \begin{macro}{\f@nch@Oelf}
-% \begin{macro}{\f@nch@Oerf}
+% \begin{macro}[internal]{\f@nch@Oolh}
+% \begin{macro}[internal]{\f@nch@Oorh}
+% \begin{macro}[internal]{\f@nch@Oelh}
+% \begin{macro}[internal]{\f@nch@Oerh}
+% \begin{macro}[internal]{\f@nch@Oolf}
+% \begin{macro}[internal]{\f@nch@Oorf}
+% \begin{macro}[internal]{\f@nch@Oelf}
+% \begin{macro}[internal]{\f@nch@Oerf}
 %   Default definitions for compatibility mode: These cause the
 %   header/footer to take the defined \cs{headwidth} as its width and if
 %   required to shift it in the direction of the marginpar area.
@@ -5086,8 +5086,8 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@offsolh}
-% \begin{macro}{\f@nch@offselh}
+% \begin{macro}[internal]{\f@nch@offsolh}
+% \begin{macro}[internal]{\f@nch@offselh}
 %   New definitions for the use of \cs{fancyhfoffset},
 %   \cs{fancyheadoffset}, \cs{fancyfootoffset}.  These calculate the
 %   \cs{headwidth} from \cs{textwidth} and the specified offsets.\\
@@ -5102,8 +5102,8 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@offsolf}
-% \begin{macro}{\f@nch@offself}
+% \begin{macro}[internal]{\f@nch@offsolf}
+% \begin{macro}[internal]{\f@nch@offself}
 % The same for the footer.
 %
 %    \begin{macrocode}
@@ -5115,7 +5115,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@setoffs}
+% \begin{macro}[internal]{\f@nch@setoffs}
 % Set the offset parts to be used in the construction of the headers and
 % footers. Depending on \cs{f@nch@gbl} it will be done globally (for
 % pagestyle \texttt{fancy}) or locally (for \cs{fancypagestyle}).
@@ -5133,8 +5133,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\iff@nch@footnote}
-% \begin{macro}{\@makecol}
+% \begin{macro}[internal]{\iff@nch@footnote}
+% \begin{macro}[internal]{\@makecol}
 %   Redefine \cs{@makecol} so that we can capture if there are
 %   top/bottom floats, footnotes or if we are on a float page. Because
 %   of a clash with the footmisc package we do this at
@@ -5170,7 +5170,7 @@
 % \end{macro}
 %
 % \changes{fancyhdr v4.1}{2021/02/16}{Define \cs{newtoks}\cs{@temptokenb}}
-% \begin{macro}{\@temptokenb}
+% \begin{macro}[internal]{\@temptokenb}
 % A token register to collect information for \cs{fancypagestyle*}. The
 % definition is conditional on the non-existence of it.
 %    \begin{macrocode}
@@ -5180,7 +5180,7 @@
 %
 % \changes{fancyhdr v4.1}{2021/02/17}{Define \cs{iff@nch@pagestyle@star}
 % to record if \cs{fancypagestyle*} is used.}
-% \begin{macro}{\iff@nch@pagestyle@star}
+% \begin{macro}[internal]{\iff@nch@pagestyle@star}
 % A conditional to record if \cs{fancypagestyle*} is used.
 %    \begin{macrocode}
 \newif\iff@nch@pagestyle@star
@@ -5198,7 +5198,7 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@pagestyle}
+% \begin{macro}[internal]{\f@nch@pagestyle}
 % Internal macro for \cs{fancypagestyle}. The optional second argument is the base page style.
 % It defaults to \cs{ps@f@nch@fancyproto}.
 % \changes{fancyhdr v4.0}{2019/03/21}{Added optional base style argument.}
@@ -5208,7 +5208,7 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@@pagestyle}
+% \begin{macro}[internal]{\f@nch@@pagestyle}
 % The actual code for \cs{fancypagestyle}. Build the page style body.
 % Declare it as a fancyhdr-based page style.
 % \changes{fancyhdr v4.0}{2019/09/05}{Make the definition of \cs{f@nch@pagestyle} \cs{long}.}
@@ -5239,7 +5239,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@pagestyle@setup}
+% \begin{macro}[internal]{\f@nch@pagestyle@setup}
 % Internal macro for \cs{fancypagestyle}. Setup \cs{@temptokenb}:\\
 % For \cs{fancypagestyle*} collect relevant macro definitions in \cs{@temptokenb}.\\
 % For \cs{fancypagestyle} make \cs{@temptokenb} empty.
@@ -5348,7 +5348,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\unrestored@protected@xdef}
+% \begin{macro}[internal]{\unrestored@protected@xdef}
 % Define this macro just in case it isn't defined (should be part of \LaTeX).
 %    \begin{macrocode}
 \providecommand\unrestored@protected@xdef{%
@@ -5374,7 +5374,7 @@
 %   We use the standard definition of \cs{markright}. No use to duplicate here.
 % \end{macro}
 %
-% \begin{macro}{\@markboth}
+% \begin{macro}[internal]{\@markboth}
 %   Note: put \texttt{\#3\#4} in toks register.
 %    \begin{macrocode}
 \def\@markboth#1#2#3#4#5#6{\@temptokena{{#3}{#4}}%
@@ -5382,7 +5382,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@markright}
+% \begin{macro}[internal]{\@markright}
 %   Note: put \texttt{\#1} and \texttt{\#3\#4} in toks registers.
 %   Maybe I can get rid of the extra \cs{@temptokenb} by doing the expansion
 %   of \texttt{\#5} to a temp separately. But then, nowadays registers
@@ -5393,8 +5393,8 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\@leftmark}
-% \begin{macro}{\@rightmark}
+% \begin{macro}[internal]{\@leftmark}
+% \begin{macro}[internal]{\@rightmark}
 % Internal macros to get the standard marks.
 %    \begin{macrocode}
 \def\@leftmark#1#2#3#4{#1}
@@ -5429,7 +5429,7 @@
 % \end{macro}
 % \end{macro}
 
-% \begin{macro}{\@themark}
+% \begin{macro}[internal]{\@themark}
 % This is where the marks information is stored.
 %    \begin{macrocode}
 \def\@themark{{}{}{}{}}
@@ -5450,7 +5450,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@markextra}
+% \begin{macro}[internal]{\@markextra}
 % Internal macro to store the extra marks in the marks storage.\\
 %   Note: Put \texttt{\#1\#2} in toks register.
 %    \begin{macrocode}
@@ -5496,8 +5496,8 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\@tleftxmark}
-% \begin{macro}{\@rightxmark}
+% \begin{macro}[internal]{\@tleftxmark}
+% \begin{macro}[internal]{\@rightxmark}
 % Internal macros to extract the extra marks out of the marks storage.
 %    \begin{macrocode}
 \def\@leftxmark#1#2#3#4{#3}
