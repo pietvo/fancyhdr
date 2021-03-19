@@ -5329,12 +5329,12 @@
 %
 % \changes{extramarks v3.9a}{2017/06/30}{Restore \cs{newtoks}\cs{@temptokenb}}
 % \changes{extramarks v4.1}{2021/02/16}{Make \cs{newtoks}\cs{@temptokenb} conditional}
-% \begin{macro}{\@temptokenb}
+% \begin{variable}[internal]{\@temptokenb}
 % A token register to store some marks information
 %    \begin{macrocode}
 \ifx\@temptokenb\undefined \csname newtoks\endcsname\@temptokenb\fi
 %    \end{macrocode}
-% \end{macro}
+% \end{variable}
 %
 % \begin{macro}[internal]{\unrestored@protected@xdef}
 % Define this macro just in case it isn't defined (should be part of \LaTeX).
