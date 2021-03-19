@@ -42,7 +42,10 @@
 %    \end{macrocode}
 %
 %<*driver>
-\documentclass[a4paper]{ltxdoc}
+% Specify options for the url and hyperref packages
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{colorlinks,linktocpage}{hyperref}
+\documentclass[a4paper]{l3doc}
 \usepackage{multicol}
 \usepackage{float}
 \usepackage{makeidx}
@@ -50,14 +53,21 @@
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{boxedminipage}
+% The package fourier-orns defines \danger, which conflicts
+% with the 'danger' environment of l3doc.
+% We save, clear and restore \danger arounf this \usepackage
+\let \liiidocxxxsavedanger\danger
+\let\danger\undefined
 \usepackage{fourier-orns}
+\let\danger\liiidocxxxsavedanger
+% End of conflict resolution
 \usepackage[T1]{fontenc}
-\usepackage[hyphens]{url}
+%\usepackage[hyphens]{url}
 \usepackage[fit]{truncate}
 \usepackage{fancyvrb}
 \usepackage{graphicx}
 \usepackage{subcaption}
-\usepackage[colorlinks,linktocpage]{hyperref}
+%\usepackage[colorlinks,linktocpage]{hyperref}
 \usepackage{ifthen}
 \usepackage{fancyhdr}
 \GetFileInfo{fancyhdr.sty}
@@ -77,7 +87,7 @@
 \DisableCrossrefs
 \CodelineIndex
 \RecordChanges
-\newcommand\bsbs{\cs{\char`\\}}
+\newcommand\bsbs{\char`\\\char`\\}
 \newcommand{\Cmd}[1]{\texttt{\def\{{\char`\{}\def\}{\char`\}}\bs#1}}
 \newcommand{\CmdIndex}[1]{\index{#1=\string\texttt{\bs#1}}}
 \newcommand{\TTindex}[1]{\index{#1=\string\texttt{#1}}}
@@ -1114,7 +1124,7 @@
 % page style it is in the header. The header fields look similar, however.
 %
 % Please note that these page styles redefine the \cs{chaptermark} and/or
-% \cs{[sub]sectionmark} commands (see section~\ref{sec:scoop}), as do the
+% \Cmd{[sub]sectionmark} commands (see section~\ref{sec:scoop}), as do the
 % standard \latex/ page styles. The consequence is, that if you select
 % e.g.\ \Cmd{pagestyle\{headings\}}, the definitions of
 % \Cmd{pagestyle\{fancy\}} are overridden.
@@ -2023,10 +2033,10 @@
 % Page style \texttt{fancy}, if not redefined, does not have the definitions of the
 % headers and footers built-in, but they are defined in the document,
 % globally, or locally in a group. This also applies to the definitions of the
-% \cs{chaptermark} and/or \cs{[sub]sectionmark} commands. So if you want
+% \cs{chaptermark} and/or \Cmd{[sub]sectionmark} commands. So if you want
 % to switch from another page style to the \texttt{fancy} page style
 % later in the document, and that other page style has changed for
-% example the \cs{chaptermark} and/or \cs{[sub]sectionmark} commands,
+% example the \cs{chaptermark} and/or \Cmd{[sub]sectionmark} commands,
 % you will have to redefine these yourself and maybe also
 % the definitions of the headers and footers, at that point.
 % For example
@@ -3498,8 +3508,8 @@
 %   \item References to older \LaTeX{} versions removed.
 %   \item Removed obsolete source code of \Package{extramarks.sty}
 %   \item Changed font commands to \cs{textbf} and \cs{textsl}.
-%   \item Added description of the \cs{fancy\ldots offset} commands.
-%   \item Added various \cs{\ldots xmark} commands from \Package{extramarks.sty}.
+%   \item Added description of the \Cmd{fancy\ldots offset} commands.
+%   \item Added various \Cmd{\ldots xmark} commands from \Package{extramarks.sty}.
 %   \item Various corrections applied.
 %   \item Updated contact information.
 %   \item Added Version information. :)
@@ -4868,7 +4878,7 @@
 % \changes{fancyhdr v4.0}{2019/03/21}{Put all the initialisation code in
 % \cs{f@nch@initialise}}
 % This macro initialises the headers and footers and \cs{chaptermark}
-% and/or \cs{[sub]sectionmark} for pagestyle \texttt{fancy}
+% and/or \Cmd{[sub]sectionmark} for pagestyle \texttt{fancy}
 %    \begin{macrocode}
 \def\f@nch@initialise{%
 %    \end{macrocode}
