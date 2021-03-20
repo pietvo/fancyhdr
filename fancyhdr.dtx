@@ -235,6 +235,12 @@
 \newlength{\normalparindent}
 \setlength{\normalparindent}{\parindent}
 
+% l3doc resets section counters at \part.
+% I don't want that.
+\makeatletter
+\@removefromreset{section}{part}
+\makeatother
+
 \begin{document}
   \DeleteShortVerb{\|}
   \DocInput{\jobname.dtx}
