@@ -30,7 +30,7 @@
 
 % Temporary box
 
-\box_new:N \l__extramarks__temp_box
+\box_new:N \l__extramarks_temp_box
 
 % Temporary token lists
 
@@ -157,9 +157,9 @@
     \dim_set:Nn \tex_splitmaxdepth:D \c_max_dim
     \int_set:Nn \tex_vbadness:D      \c_max_int
     % Make a temp copy of the box
-    \vbox_set:Nn \l__extramarks__temp_box { \unvcopy #1 \unskip }
+    \vbox_set:Nn \l__extramarks_temp_box { \unvcopy #1 \unskip }
     % `Split' the box (but no split)
-    \vbox_set_split_to_ht:NNn \l__extramarks__temp_box \l__extramarks__temp_box \c_max_dim
+    \vbox_set_split_to_ht:NNn \l__extramarks_temp_box \l__extramarks_temp_box \c_max_dim
 }
 
 % Patching the output routine:
@@ -183,13 +183,13 @@
 \cs_new_protected:Npn \extramarks@set@marks@topnewpage #1
 {
   \group_begin:
-    \global\setbox\@currbox\vbox{%
+    \global\setbox\@currbox\vbox{
         \hsize\textwidth
         \@parboxrestore
         \col@number \@ne
-        #1%
+        #1
         \vskip -\dbltextfloatsep
-             }%
+             }
     \__extramarks_vsplit_box \@currbox
     \seq_map_inline:Nn \g__extramarks_marks_seq
       {

@@ -21,18 +21,224 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks}
-           [2021/03/19 v4.1beta
+           [2021/03/21 v4.1beta
                   Extra marks for LaTeX]
 % Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{expl3,xparse}
 \RequirePackage{etoolbox}
 \ExplSyntaxOn
+\seq_new:N \g__extramarks_marks_seq
+\box_new:N \l__extramarks_temp_box
+\tl_new:N \l__extramarks_temp_tl
+\msg_new:nnn {extramarks} {not-defined} {\token_to_str:N #1:~mark~#2~not~defined}
+\msg_new:nnn {extramarks} {already-defined} {\token_to_str:N #1:~mark~#2~already~defined}
+\msg_new:nnn {extramarks} {cannot-patch} {Patch \token_to_str:N #1~failed}
+\cs_new_eq:NN \msg@error@nnn  \msg_error:nnn
+\cs_new_eq:NN \msg@error@nnnn \msg_error:nnnn
+\NewDocumentCommand \extramarksnewmark { m }
+{
+  \cs_if_exist:cTF {c__extramarks_#1_int}
+    { \msg_error:nnnn {extramarks} {already-defined}
+      {\extramarksnewmark} {#1} }
+    {
+      \exp_args:Nc \newmarks {c__extramarks_#1_int}
+      \seq_put_right:Nn \g__extramarks_marks_seq { #1 }
+      \tl_new:c {g__extramarks_topmark_#1_tl}      % topmark (braced)
+      \tl_new:c {g__extramarks_firstmark_#1_tl}    % firstmark (braced)
+      \tl_new:c {g__extramarks_botmark_#1_tl}      % botmark (braced)
+      \tl_gset:cn {g__extramarks_topmark_#1_tl} {{}} % initialize topmark to empty mark (braced)
+    }
+}
+\cs_new_protected:Npn \__extramarks_get_boxmarks_init:n #1
+{
+  \tl_gset_eq:cc { g__extramarks_topmark_#1_tl } { g__extramarks_botmark_#1_tl }
+  \tl_gset_eq:cN { g__extramarks_firstmark_#1_tl } \c_empty_tl
+  \tl_gset_eq:cN { g__extramarks_botmark_#1_tl } \c_empty_tl
+}
+\cs_new_protected:Npn \__extramarks_get_boxmarks:n #1
+{
+  \tl_gset:No \l__extramarks_temp_tl
+    { \splitfirstmarks \use:c{c__extramarks_#1_int} }
+  \tl_if_empty:NF \l__extramarks_temp_tl
+    {
+      \tl_if_empty:cT { g__extramarks_firstmark_#1_tl }
+        {
+          \tl_gset_eq:cN { g__extramarks_firstmark_#1_tl } \l__extramarks_temp_tl
+        }
+      \tl_gset:co { g__extramarks_botmark_#1_tl }
+        { \splitbotmarks \use:c{c__extramarks_#1_int} }
+    }
+}
+\cs_new_protected:Npn \__extramarks_get_boxmarks_end:n #1
+{
+  \tl_if_empty:cT { g__extramarks_firstmark_#1_tl }
+  {
+    \tl_gset_eq:cc { g__extramarks_firstmark_#1_tl } { g__extramarks_topmark_#1_tl }
+    \tl_gset_eq:cc { g__extramarks_botmark_#1_tl } { g__extramarks_topmark_#1_tl }
+  }
+}
+\cs_new_protected:Npn \__extramarks_vsplit_box #1
+{
+    \dim_set:Nn \tex_splitmaxdepth:D \c_max_dim
+    \int_set:Nn \tex_vbadness:D      \c_max_int
+    \vbox_set:Nn \l__extramarks_temp_box { \unvcopy #1 \unskip }
+    \vbox_set_split_to_ht:NNn \l__extramarks_temp_box \l__extramarks_temp_box \c_max_dim
+}
+\cs_new_protected:Npn \extramarks@set@firstcolmarks
+{
+  \seq_map_inline:Nn \g__extramarks_marks_seq
+    {
+      % Process any marks in the box
+      \__extramarks_get_boxmarks:n { ##1 }
+    }
+}
+\cs_new_protected:Npn \extramarks@set@marks@topnewpage #1
+{
+  \group_begin:
+    \global\setbox\@currbox\vbox{
+        \hsize\textwidth
+        \@parboxrestore
+        \col@number \@ne
+        #1
+        \vskip -\dbltextfloatsep
+             }
+    \__extramarks_vsplit_box \@currbox
+    \seq_map_inline:Nn \g__extramarks_marks_seq
+      {
+        \__extramarks_get_boxmarks:n { ##1 }
+      }
+    \global \setbox\@currbox
+    \color@vbox
+      \normalcolor
+      \copy\@currbox
+    \color@endbox
+  \group_end:
+}
+\cs_new_protected:Npn \extramarks@set@marks@outputbox
+{
+  \group_begin:
+    \__extramarks_vsplit_box \@outputbox
+    \seq_map_inline:Nn \g__extramarks_marks_seq
+      {
+        \__extramarks_get_boxmarks:n { ##1 }
+        \__extramarks_get_boxmarks_end:n { ##1 }
+      }
+  \group_end:
+}
+\cs_new_protected:Npn \extramarks@init@marks
+{
+  \seq_map_inline:Nn \g__extramarks_marks_seq
+  {
+    \__extramarks_get_boxmarks_init:n { ##1 }
+  }
+}
+\ExplSyntaxOff
+\patchcmd{\@topnewpage}{\global \setbox\@currbox
+    \color@vbox
+      \normalcolor
+      \vbox {%
+        \hsize\textwidth
+        \@parboxrestore
+        \col@number \@ne
+        #1%
+        \vskip -\dbltextfloatsep
+             }%
+    \color@endbox}
+  {\extramarks@set@marks@topnewpage{#1}}
+  {}
+  {\msg@error@nnn {extramarks} {cannot-patch} {@topnewpage}}
+\patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
+  {\extramarks@set@firstcolmarks \ifx\@firstcolfirstmark\@empty}
+  {}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 1}}
+\patchcmd{\@outputdblcol}{\global\@firstcolumntrue}
+  {\global\@firstcolumntrue\extramarks@set@marks@outputbox}
+  {}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 2}}
+\patchcmd{\@outputdblcol}{\@outputpage}
+  {\@outputpage\extramarks@init@marks}
+  {}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 3}}
+\patchcmd {\@opcol} {\@outputpage}
+  {\extramarks@set@marks@outputbox \@outputpage \extramarks@init@marks}
+  {}
+  {\msg@error@nnn {extramarks} {cannot-patch} {in \@opcol: \@outputpage} {}}
+\extramarksnewmark{left}
+\extramarksnewmark{right}
+\ExplSyntaxOn
+\NewDocumentCommand \extramarksput { m m }
+{
+  \cs_if_exist:cTF {c__extramarks_#1_int}
+  {
+    \group_begin:
+      \cs_set_eq:NN \label    \scan_stop:
+      \cs_set_eq:NN \index    \scan_stop:
+      \cs_set_eq:NN \glossary \scan_stop:
+      \unrestored@protected@xdef \l__extramarks_temp_tl { #2 }
+      \tex_marks:D \use:c{c__extramarks_#1_int} {{ \l__extramarks_temp_tl }}
+      \endgroup
+  }
+  { \msg_error:nnnn {extramarks} {not-defined} {\extramarksput} {#1} }
+}
+\NewDocumentCommand \extramarkstop { m }
+{
+  \cs_if_exist:cTF {c__extramarks_#1_int}
+  {
+     \tl_head:v { g__extramarks_topmark_#1_tl }
+  }
+  { \msg_error:nnnn {extramarks} {not-defined} {\extramarkstop} {#1} }
+}
+\NewDocumentCommand \extramarksfirst { m }
+{
+  \cs_if_exist:cTF {c__extramarks_#1_int}
+  {
+     \tl_head:v { g__extramarks_firstmark_#1_tl }
+  }
+  { \msg_error:nnnn {extramarks} {not-defined} {\extramarksfirst} {#1} }
+}
+\NewDocumentCommand \extramarkslast { m }
+{
+  \cs_if_exist:cTF {c__extramarks_#1_int}
+  {
+     \tl_head:v { g__extramarks_botmark_#1_tl }
+  }
+  { \msg_error:nnnn {extramarks} {not-defined} {\extramarkslast} {#1} }
+}
+\NewDocumentCommand \extramarksleft { m }
+{
+  \extramarksput{left}{#1}
+}
+\NewDocumentCommand \extramarksright { m }
+{
+  \extramarksput{right}{#1}
+}
+\NewDocumentCommand \extramarks { m m }
+{
+  \extramarksput{left}{#1}
+  \extramarksput{right}{#2}
+}
+\NewDocumentCommand\firstleftxmark  { } {\extramarksfirst {left}  }
+\NewDocumentCommand\firstrightxmark { } {\extramarksfirst {right} }
+\NewDocumentCommand\topleftxmark    { } {\extramarkstop   {left}  }
+\NewDocumentCommand\toprightxmark   { } {\extramarkstop   {right} }
+\NewDocumentCommand\lastleftxmark   { } {\extramarkslast  {left}  }
+\NewDocumentCommand\lastrightxmark  { } {\extramarkslast  {right} }
 
-\AddToHook{begindocument}{
+\cs_new_eq:NN \firstxmark \firstleftxmark
+\cs_new_eq:NN \lastxmark \lastrightxmark
+\cs_new_eq:NN \topxmark \topleftxmark
+\cs_new_eq:NN \firstrightmark \rightmark
+\cs_new_eq:NN \lastleftmark \leftmark
+
+\NewDocumentCommand\firstleftmark { }
+  {\expandafter\@leftmark\firstmark\@empty\@empty}
+\NewDocumentCommand\lastrightmark { }
+  {\expandafter\@rightmark\botmark\@empty\@empty}
+\AtBeginDocument{
   \@ifpackageloaded{multicol}
   {
-    \input{extramarks2-multicol.tex}
+    \input{extramarks-multicol.tex}
   }
   { }
 }
