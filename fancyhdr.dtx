@@ -26,10 +26,14 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v3>\ProvidesPackage{extramarks}
+%<extramarks-multicol>\ProvidesFile{extramarks-multicol.tex}
+%<fancyhdr|fancyheadings|extramarks|extramarks-multicol>           [2021/03/21 v4.1beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
+%<extramarks-multicol>                  Extra marks for LaTeX (multicol extension)]
 %<fancyhdr|extramarks>% Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
+%<extramarks-multicol>% Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %<extramarks-v3>           [2021/01/01 v3
 %<extramarks-v3>                 Legacy version of extramarks for LaTeX]
 %<extramarks-v3>% Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
@@ -5893,6 +5897,204 @@
 %    \end{macrocode}
 %
 %</extramarks>
+%
+% \section{extramarks-multicol.tex}
+%
+%<*extramarks-multicol>
+%<@@=extramarks>
+%
+%    \begin{macrocode}
+\makeatletter
+\ExplSyntaxOn
+%
+%    \end{macrocode}
+%
+% Debugging
+%
+% \begin{macro}[internal]{\@@_show_mark:n}
+% \begin{syntax}
+% \cs{@@_show_mark:n}\marg{mark variable name}
+% \end{syntax}
+%    \begin{macrocode}
+\cs_new:Nn \@@_show_mark:n
+{
+  \token_to_str:c { #1 } -> \use:c { #1 }\MessageBreak
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% The algorithm used for multicol is the one explained in
+% \texttt{extramarks.sty}. In particular, when a \env{multicols}
+% environment is encountered, after creating the columns, the BOX code
+% is run on the part of the page \texttt{before} the \env{multicols}
+% (which is in the box \cs{partial@page}), and on each of the columns.
+% Conveniently this can be done in the macro \cs{set@keptmarks}, where
+% \Package{multicol} also processes the \LaTeX{} marks.
+%
+% When the \env{multicols} environment was interrupted by a page
+% break, this is finished with the END processing in \cs{multi@column@out},
+% and then the page is output.
+%
+% When the \env{multicols} environment ends before a page break, this
+% isn't sufficient, because more text can follow on the page. So the
+% page might eventually be processed by the regular onecolumn output processing,
+% or another \env{multicols} may follow on the same page, meaning
+% that the current one ends up in the next  \cs{partial@page}.
+% In both cases we must preserve any marks that might have been found in the
+% \env{multicols} environment. We do this by putting the first and last marks found (if any) in
+% the vertical list, by patching \cs{return@nonemptymark}. Now if there
+% is any mark in \cs{partial@page}, this would be superfluously put in the
+% vertical list, but that doesn't do any harm, and it would be more
+% costly to check for that.
+%
+% And, as always, the INIT processing is done after the page has been output.
+%
+% Here comes the \texttt{multicol} patching code.
+% \\[2ex]
+% \begin{tabular}{c l c l}
+% (1) & patch \cs{return@nonemptymark}        & $\Rightarrow$ & insert marks in stream\\
+% (2) & patch \cs{set@keptmarks}              & $\Rightarrow$ & For each BOX code\\
+% (3) & patch where \cs{@outputpage} is called& $\Rightarrow$ & END code before, INIT code after\\
+%   \end{tabular}
+% \\[2ex]
+% We also use the \Package{multicol} debugging calls.
+% \\[2ex]
+% (1) Patch for \cs{return@nonemptymarks}
+% \begin{macro}[internal]{\extramarks@return@nonemptymarks}
+% \begin{syntax}
+% \cs{extramarks@return@nonemptymarks}\marg{which}, where \meta{which} =
+% \texttt{first} or \texttt{bot}
+% \end{syntax}
+% For each mark, if the \meta{which}mark is not empty, put the mark in
+% the vertical list.
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@return@nonemptymarks #1
+{
+  \seq_map_inline:Nn \g_@@_marks_seq
+    {
+      \tl_if_empty:cF {g_@@_#1mark_##1_tl}
+        {
+          \tex_marks:D \use:c{c_@@_##1_int} {\use:c{g_@@_#1mark_##1_tl}}
+          \mult@info\tw@
+          {
+            In~\string\return@nonemptymarks~{#1}\MessageBreak
+            \string\xmarks \use:c{c_@@_##1_int}
+              {\use:c{g_@@_#1mark_##1_tl}}\MessageBreak
+          }
+        }
+    }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% (2) Patch for \cs{set@keptmarks}
+% \begin{macro}[internal]{\extramarks@set@keptmarks}
+% \begin{syntax}
+% \cs{extramarks@set@keptmarks}
+% \end{syntax}
+% Process any marks in the last \cs{vsplit}ted box.
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@set@keptmarks
+{
+  \seq_map_inline:Nn \g_@@_marks_seq
+    {
+      \@@_get_boxmarks:n { ##1 }
+      \mult@info\tw@
+        {
+          \string\@@_get_boxmarks:n { ##1 }~in~\string\set@keptmarks\MessageBreak
+          \@@_show_mark:n  { g_@@_firstmark_##1_tl }
+          \@@_show_mark:n  { g_@@_botmark_##1_tl }
+       }
+    }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% (3) Patch for \cs{multi@column@out}
+% \begin{macro}[internal]{\extramarks@multi@column@outputpage}
+% \begin{syntax}
+% \cs{extramarks@multi@column@outputpage}
+% \end{syntax}
+% Output page processing for a page break inside a \texttt{multicols} environment.
+% First do the END code (final calculation of firstmark and botmark),
+% then do the output processing, and then do the INIT code for the next page.
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@multi@column@outputpage
+{
+  \seq_map_inline:Nn \g_@@_marks_seq
+    {
+%    \end{macrocode}
+% END code:
+%    \begin{macrocode}
+      \@@_get_boxmarks_end:n { ##1 }
+      \mult@info\tw@
+        {
+          \string\@@_get_boxmarks_end:n { ##1 }~in~\string\multi@column@out\MessageBreak
+          \@@_show_mark:n  { g_@@_firstmark_##1_tl }
+          \@@_show_mark:n  { g_@@_botmark_##1_tl }
+       }
+    }
+  \@makecol\@outputpage
+  \seq_map_inline:Nn \g_@@_marks_seq
+    {
+%    \end{macrocode}
+% INIT code:
+%    \begin{macrocode}
+      \@@_get_boxmarks_init:n { ##1 }
+      \mult@info\tw@
+        {
+          \string\@@_get_boxmarks_init:n
+            { ##1 }~in~\string\multi@column@out\MessageBreak
+          \@@_show_mark:n  { g_@@_firstmark_##1_tl }
+          \@@_show_mark:n  { g_@@_botmark_##1_tl }
+       }
+     }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\ExplSyntaxOff
+%    \end{macrocode}
+%
+% The functions to be patched are in LaTeX2e syntax, so we can't use
+% expl3 here. Therefore no \verb|_| and : in their names.
+% \\[2ex]
+% (1) Patch \cs{return@nonemptymark}
+%    \begin{macrocode}
+\pretocmd{\return@nonemptymark}
+  {
+    \if@boxedmulticols\else\extramarks@return@nonemptymarks {#1}\fi
+  }
+  {}
+  {\msg@error@nnn {extramarks2} {cannot-patch} {\return@nonemptymark}}
+%    \end{macrocode}
+%
+% (2) Patch \cs{set@keptmarks}
+%    \begin{macrocode}
+\pretocmd{\set@keptmarks}
+  {
+    \if@boxedmulticols\else\extramarks@set@keptmarks\fi
+  }
+  {}
+  {\msg@error@nnn {extramarks2} {cannot-patch} {\set@keptmarks}}
+%    \end{macrocode}
+%
+% (3) Patch \cs{multi@column@out}
+%    \begin{macrocode}
+\patchcmd{\multi@column@out} {\@makecol\@outputpage}
+  {
+    \extramarks@multi@column@outputpage
+  }
+  {}
+  {\msg@error@nnn {extramarks2} {cannot-patch} {\multi@column@out}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\makeatother
+%    \end{macrocode}
+%
+%</extramarks-multicol>
 %
 % \section{extramarks-v3.sty}
 %
