@@ -1,0 +1,79 @@
+%%
+%% This is file `extramarks-multicol.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% fancyhdr.dtx  (with options: `extramarks-multicol')
+%% 
+%% This is a generated file.
+%% 
+%% This file may be distributed and/or modified under the conditions of
+%% the LaTeX Project Public License, either version 1.3 of this license
+%% or (at your option) any later version.  The latest version of this
+%% license is in:
+%% 
+%%    http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3 or later is part of all distributions of LaTeX version
+%% 2005/12/01 or later.
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{extramarks-multicol.tex}
+           [2021/03/22 v4.1beta
+                  Extra marks for LaTeX (multicol extension)]
+% Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\ExplSyntaxOn
+\cs_new:Nn \__extramarks_show_mark:n
+{
+  \token_to_str:c { #1 } -> \use:c { #1 }\MessageBreak
+}
+\cs_new_protected:Npn \extramarks@return@nonemptymarks #1
+{
+  \seq_map_inline:Nn \g__extramarks_marks_seq
+    {
+      \tl_if_empty:cF {g__extramarks_#1mark_##1_tl}
+        {
+          \tex_marks:D \use:c{c__extramarks_##1_int} {\use:c{g__extramarks_#1mark_##1_tl}}
+          \mult@info\tw@
+          {
+            In~\string\return@nonemptymarks~{#1}\MessageBreak
+            \string\xmarks \use:c{c__extramarks_##1_int}
+              {\use:c{g__extramarks_#1mark_##1_tl}}\MessageBreak
+          }
+        }
+    }
+}
+\cs_new_protected:Npn \extramarks@set@keptmarks
+{
+  \seq_map_inline:Nn \g__extramarks_marks_seq
+    {
+      \__extramarks_get_boxmarks:n { ##1 }
+      \mult@info\tw@
+        {
+          \string\__extramarks_get_boxmarks:n { ##1 }~in~\string\set@keptmarks\MessageBreak
+          \__extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
+          \__extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
+       }
+    }
+}
+\ExplSyntaxOff
+\pretocmd{\return@nonemptymark}
+  {
+    \if@boxedmulticols\else\extramarks@return@nonemptymarks {#1}\fi
+  }
+  {}
+  {\msg@error@nnn {extramarks2} {cannot-patch} {\return@nonemptymark}}
+\pretocmd{\set@keptmarks}
+  {
+    \if@boxedmulticols\else\extramarks@set@keptmarks\fi
+  }
+  {}
+  {\msg@error@nnn {extramarks2} {cannot-patch} {\set@keptmarks}}
+\makeatother
+\endinput
+%%
+%% End of file `extramarks-multicol.tex'.
