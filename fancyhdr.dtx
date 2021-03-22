@@ -27,7 +27,7 @@
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v3>\ProvidesPackage{extramarks}
 %<extramarks-multicol>\ProvidesFile{extramarks-multicol.tex}
-%<fancyhdr|fancyheadings|extramarks|extramarks-multicol>           [2021/03/21 v4.1beta
+%<fancyhdr|fancyheadings|extramarks|extramarks-multicol>           [2021/03/22 v4.1beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -5308,7 +5308,14 @@
 % \setlength\parindent{0pt}
 %<*extramarks>
 %<@@=extramarks>
+%
+% Provide a rollback to earlier version
 %    \begin{macrocode}
+\providecommand\DeclareRelease[3]{}
+\providecommand\DeclareCurrentRelease[2]{}
+\DeclareRelease{v3}{2021-01-01}{extramarks-v3.sty}
+\DeclareCurrentRelease{}{2021-03-22}
+
 \RequirePackage{expl3,xparse}
 \RequirePackage{etoolbox}
 \ExplSyntaxOn
