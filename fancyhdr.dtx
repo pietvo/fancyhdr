@@ -5416,7 +5416,7 @@
 %
 % \textbf{Algorithm for extracting the marks from a sequence of boxes on a page:}\\
 % for example in \cs{twocolumn}, or \texttt{multicol}, on each column.
-% In the 'normal' case, on the main vertical box (\cs{@outputbox}) \\
+% In the 'normal' one column case, on the main vertical box (\cs{@outputbox}). \\
 %
 % For each mark:\\
 % INIT:\\
@@ -5434,16 +5434,20 @@
 % \mbox{\quad}    firstmark := botmark := topmark\\
 %
 % INIT code will be run (trivially) at the creation of a mark,
-% and after a page has been output (at the beginning of each page
-% following a page where we processed the marks)
+% and after a page has been output, so that it will be initialised for
+% the next page. This can be done naturally at the end of the page
+% building function \cs{@outputpage}.
 %
-% END code will be run just before a page is output.
+% END code will be run just before a page is output to fill in the marks
+% if none has been found on the page (i.e. set them equal to topmark).
+% So this can be done naturally at the beginning of the page
+% building function \cs{@outputpage}. In this way, the marks are also
+% properly propagated in float pages and the like.
 % \\[2ex]
-% For example, in normal onecolumn output, we run BOX + END code on the
+% In normal one column output, we run BOX code on the
 % page, just before it is output.\\
 % In twocolumn mode, we run BOX code on (1) the optional argument of
-% \cs{twocolumn}, (2) the left column, (3) the right column. The latter
-% one also runs END code.
+% \cs{twocolumn}, (2) the left column, (3) the right column.
 % \begin{macro}[internal]{\@@_get_boxmarks_init:n}
 % \begin{syntax}
 % \cs{@@_get_boxmarks_init:n}\marg{mark name}
@@ -5542,12 +5546,15 @@
 % \verb|_| and :
 %
 % \begin{macro}[internal]{\extramarks@set@firstcolmarks}
+% Patch code for the first column of \cs{twocolumn}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \extramarks@set@firstcolmarks
 {
   \seq_map_inline:Nn \g_@@_marks_seq
     {
-      % Process any marks in the box
+%    \end{macrocode}
+% Process any marks in the BOX
+%    \begin{macrocode}
       \@@_get_boxmarks:n { ##1 }
     }
 }
@@ -5595,16 +5602,16 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[internal]{\extramarks@set@marks@outputbox}
+% \begin{macro}[internal]{\extramarks@setmarks@outputbox}
 % \begin{syntax}
-% \cs{extramarks@set@marks@outputbox}
+% \cs{extramarks@setmarks@outputbox}
 % \end{syntax}
 % Patch code for the last box on a page. This is used for a `normal'
 % one-column page, and for the second column on \cs{twocolumn}.
 % The box is in \cs{\@outputbox}.
-% Do a temporary vsplit, process the marks of the box and do END processing.
+% Do a temporary vsplit and process the marks of the box.
 %    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@set@marks@outputbox
+\cs_new_protected:Npn \extramarks@setmarks@outputbox
 {
   \group_begin:
     \@@_vsplit_box \@outputbox
@@ -5614,12 +5621,27 @@
 % Process any marks in the BOX
 %    \begin{macrocode}
         \@@_get_boxmarks:n { ##1 }
+      }
+  \group_end:
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\extramarks@setmarks@end}
+% \begin{syntax}
+% \cs{extramarks@setmarks@end}
+% \end{syntax}
+% Patch code for END processing. Done at the beginning of \cs{@outputpage}.
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@setmarks@end
+{
+  \seq_map_inline:Nn \g_@@_marks_seq
+    {
 %    \end{macrocode}
 % END code:
 %    \begin{macrocode}
-        \@@_get_boxmarks_end:n { ##1 }
-      }
-  \group_end:
+      \@@_get_boxmarks_end:n { ##1 }
+    }
 }
 %    \end{macrocode}
 % \end{macro}
@@ -5677,35 +5699,45 @@
 %    \end{macrocode}
 %
 % Patch the \cs{@outputdblcol} macro for the second column case.
-% These are two patches.\\
 % 1) \cs{@outputbox} still contains the second column, not yet \cs{vsplit}ted.
 % Get the marks by \cs{vsplit} to the maximum height.\\
 %
 %    \begin{macrocode}
 \patchcmd{\@outputdblcol}{\global\@firstcolumntrue}
-  {\global\@firstcolumntrue\extramarks@set@marks@outputbox}
+  {\global\@firstcolumntrue\extramarks@setmarks@outputbox}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 2}}
 %    \end{macrocode}
 %
-% 2) Just after the page has been output, INIT the marks.
-%
-%    \begin{macrocode}
-\patchcmd{\@outputdblcol}{\@outputpage}
-  {\@outputpage\extramarks@init@marks}
-  {}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 3}}
-%    \end{macrocode}
-%
 % End of \cs{@outputdblcol} patching code
 % \\[2ex]
-% Patch the \cs{@outputpage} macro for the single column case
+% Patch the \cs{@opcol} macro for the single column case
 %
 %    \begin{macrocode}
 \patchcmd {\@opcol} {\@outputpage}
-  {\extramarks@set@marks@outputbox \@outputpage \extramarks@init@marks}
+  {\extramarks@setmarks@outputbox \@outputpage}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {in \@opcol: \@outputpage} {}}
+%
+%    \end{macrocode}
+%
+% End of \cs{@} patching code
+% \\[2ex]
+% Patch the \cs{@outputpage} macro.
+% These are two patches:
+% one for the END code at the beginning and one for the INIT code at the end.
+%
+%    \begin{macrocode}
+\pretocmd {\@outputpage}
+  {\extramarks@setmarks@end}
+  {}
+  {\msg@error@nnn {extramarks} {cannot-patch} {beginning of \@outputpage} {}}
+%
+%    \begin{macrocode}
+\apptocmd {\@outputpage}
+  {\extramarks@init@marks}
+  {}
+  {\msg@error@nnn {extramarks} {cannot-patch} {end of \@outputpage} {}}
 %
 %    \end{macrocode}
 %
@@ -5939,12 +5971,12 @@
 % \Package{multicol} also processes the \LaTeX{} marks.
 %
 % When the \env{multicols} environment was interrupted by a page
-% break, this is finished with the END processing in \cs{multi@column@out},
-% and then the page is output.
+% break, this is all that is needed, as the END processing will be done
+% in \cs{@outputpage} and then the page is output.
 %
 % When the \env{multicols} environment ends before a page break, this
 % isn't sufficient, because more text can follow on the page. So the
-% page might eventually be processed by the regular onecolumn output processing,
+% page might eventually be processed by the regular one column output processing,
 % or another \env{multicols} may follow on the same page, meaning
 % that the current one ends up in the next  \cs{partial@page}.
 % In both cases we must preserve any marks that might have been found in the
@@ -5954,19 +5986,21 @@
 % vertical list, but that doesn't do any harm, and it would be more
 % costly to check for that.
 %
-% And, as always, the INIT processing is done after the page has been output.
+% We skip any processing for \emph{boxed} \env{multicols} (i.e. \env{multicols} in a box
+% or nested in another \env{multicols}).
+%
+% INIT and END processing have already been properly placed in \texttt{extramarks.sty}.
 %
 % Here comes the \texttt{multicol} patching code.
 % \\[2ex]
 % \begin{tabular}{c l c l}
 % (1) & patch \cs{return@nonemptymark}        & $\Rightarrow$ & insert marks in stream\\
 % (2) & patch \cs{set@keptmarks}              & $\Rightarrow$ & For each BOX code\\
-% (3) & patch where \cs{@outputpage} is called& $\Rightarrow$ & END code before, INIT code after\\
 %   \end{tabular}
 % \\[2ex]
 % We also use the \Package{multicol} debugging calls.
 % \\[2ex]
-% (1) Patch for \cs{return@nonemptymarks}
+% (1) Patch function for \cs{return@nonemptymarks}
 % \begin{macro}[internal]{\extramarks@return@nonemptymarks}
 % \begin{syntax}
 % \cs{extramarks@return@nonemptymarks}\marg{which}, where \meta{which} =
@@ -5994,7 +6028,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% (2) Patch for \cs{set@keptmarks}
+% (2) Patch function for \cs{set@keptmarks}
 % \begin{macro}[internal]{\extramarks@set@keptmarks}
 % \begin{syntax}
 % \cs{extramarks@set@keptmarks}
@@ -6013,49 +6047,6 @@
           \@@_show_mark:n  { g_@@_botmark_##1_tl }
        }
     }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% (3) Patch for \cs{multi@column@out}
-% \begin{macro}[internal]{\extramarks@multi@column@outputpage}
-% \begin{syntax}
-% \cs{extramarks@multi@column@outputpage}
-% \end{syntax}
-% Output page processing for a page break inside a \texttt{multicols} environment.
-% First do the END code (final calculation of firstmark and botmark),
-% then do the output processing, and then do the INIT code for the next page.
-%    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@multi@column@outputpage
-{
-  \seq_map_inline:Nn \g_@@_marks_seq
-    {
-%    \end{macrocode}
-% END code:
-%    \begin{macrocode}
-      \@@_get_boxmarks_end:n { ##1 }
-      \mult@info\tw@
-        {
-          \string\@@_get_boxmarks_end:n { ##1 }~in~\string\multi@column@out\MessageBreak
-          \@@_show_mark:n  { g_@@_firstmark_##1_tl }
-          \@@_show_mark:n  { g_@@_botmark_##1_tl }
-       }
-    }
-  \@makecol\@outputpage
-  \seq_map_inline:Nn \g_@@_marks_seq
-    {
-%    \end{macrocode}
-% INIT code:
-%    \begin{macrocode}
-      \@@_get_boxmarks_init:n { ##1 }
-      \mult@info\tw@
-        {
-          \string\@@_get_boxmarks_init:n
-            { ##1 }~in~\string\multi@column@out\MessageBreak
-          \@@_show_mark:n  { g_@@_firstmark_##1_tl }
-          \@@_show_mark:n  { g_@@_botmark_##1_tl }
-       }
-     }
 }
 %    \end{macrocode}
 % \end{macro}
@@ -6085,16 +6076,6 @@
   }
   {}
   {\msg@error@nnn {extramarks2} {cannot-patch} {\set@keptmarks}}
-%    \end{macrocode}
-%
-% (3) Patch \cs{multi@column@out}
-%    \begin{macrocode}
-\patchcmd{\multi@column@out} {\@makecol\@outputpage}
-  {
-    \extramarks@multi@column@outputpage
-  }
-  {}
-  {\msg@error@nnn {extramarks2} {cannot-patch} {\multi@column@out}}
 %    \end{macrocode}
 %
 %    \begin{macrocode}

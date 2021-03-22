@@ -94,7 +94,6 @@
 {
   \seq_map_inline:Nn \g__extramarks_marks_seq
     {
-      % Process any marks in the box
       \__extramarks_get_boxmarks:n { ##1 }
     }
 }
@@ -120,16 +119,22 @@
     \color@endbox
   \group_end:
 }
-\cs_new_protected:Npn \extramarks@set@marks@outputbox
+\cs_new_protected:Npn \extramarks@setmarks@outputbox
 {
   \group_begin:
     \__extramarks_vsplit_box \@outputbox
     \seq_map_inline:Nn \g__extramarks_marks_seq
       {
         \__extramarks_get_boxmarks:n { ##1 }
-        \__extramarks_get_boxmarks_end:n { ##1 }
       }
   \group_end:
+}
+\cs_new_protected:Npn \extramarks@setmarks@end
+{
+  \seq_map_inline:Nn \g__extramarks_marks_seq
+    {
+      \__extramarks_get_boxmarks_end:n { ##1 }
+    }
 }
 \cs_new_protected:Npn \extramarks@init@marks
 {
@@ -158,17 +163,21 @@
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 1}}
 \patchcmd{\@outputdblcol}{\global\@firstcolumntrue}
-  {\global\@firstcolumntrue\extramarks@set@marks@outputbox}
+  {\global\@firstcolumntrue\extramarks@setmarks@outputbox}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 2}}
-\patchcmd{\@outputdblcol}{\@outputpage}
-  {\@outputpage\extramarks@init@marks}
-  {}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 3}}
 \patchcmd {\@opcol} {\@outputpage}
-  {\extramarks@set@marks@outputbox \@outputpage \extramarks@init@marks}
+  {\extramarks@setmarks@outputbox \@outputpage}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {in \@opcol: \@outputpage} {}}
+\pretocmd {\@outputpage}
+  {\extramarks@setmarks@end}
+  {}
+  {\msg@error@nnn {extramarks} {cannot-patch} {beginning of \@outputpage} {}}
+\apptocmd {\@outputpage}
+  {\extramarks@init@marks}
+  {}
+  {\msg@error@nnn {extramarks} {cannot-patch} {end of \@outputpage} {}}
 \extramarksnewmark{left}
 \extramarksnewmark{right}
 \ExplSyntaxOn
