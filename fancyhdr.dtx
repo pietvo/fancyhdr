@@ -3597,7 +3597,7 @@
 %   \item Some documentation corrections, especially in sections
 %     \ref{sec:xmarks} and \ref{sec:movie}.
 %   \end{itemize}
-% \item Version 4.1, Feb 11-20, 2021
+% \item Version 4.1, Feb 11-March 22, 2021
 %   \begin{itemize}
 %   \item Shorten Warning message about \cs{headheight}/\cs{footskip} too large.
 %   \item If the option \texttt{[nocheck]} is given, just keep quiet and
@@ -3605,6 +3605,8 @@
 %     \texttt{[compatV3]} option is given.
 %   \item Added \cs{fancypagestyle*} variant.
 %   \item Added command \cs{fancyhdrsettoheight}.
+%   \item New implementation of package \Package{extramarks} with
+%   fallback to \Package{extramarks-v3}.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -5309,6 +5311,8 @@
 %<*extramarks>
 %<@@=extramarks>
 %
+% \changes{extramarks v4.1}{2021/03/22}{New implementation with
+% independent marks, and fallback option to earlier version 3.}
 % Provide a rollback to earlier version
 %    \begin{macrocode}
 \providecommand\DeclareRelease[3]{}
