@@ -3651,7 +3651,7 @@
 %    \hfill
 %    \llap{\parbox[b]{\textwidth}{\raggedleft 1.2. This is a very long
 %                   section title that will not fit in the header}}^^A
-%  }
+%  }\strut
 %  \hrule height\headrulewidth width\textwidth}
 % \bigskip
 % \noindent which isn't very nice.
@@ -3660,20 +3660,24 @@
 % \subsection{Using optional arguments}
 %
 % As we have seen in section~\ref{sec:scoop}, the header info comes from
-% the marks. So if we want the text in the header to be smaller we have
-% to supply smaller marks. This can be done by giving these as optional
+% the marks. So if we want the text in the header to be shorter we have
+% to supply shorter marks. This can be done by giving these as optional
 % arguments in the \cs{chapter} and \cs{section} commands.\footnote{At
 % least in the \texttt{book} and \texttt{report} documentclasses. In the
 % \texttt{article} class this would be the \cs{section} and
 % \cs{subsection} commands.}
-% \begin{code}
-% \chapter[Short chapter title]{This is a very long chapter title}
-%  . . .
+% \Example{34a}
+% \begin{example}
+% \chapter[This is a not so long chapter title]
+%         {This is a very long chapter title to see if we can give
+%          fancyhdr a shorter one that fits in the header}
+% . . .
 % \section[Short section title]
-%         {This is a very long section title that will not fit in the header}
-% \end{code}
+%         {This is a very long section title that will not fit in
+%          the header}
+% \end{example}
 % The short titles will now appear in the header. However, these will
-% also appear in the table of contents. If that is what you want than
+% also appear in the table of contents. If that is what you want then
 % you are ready. But if you want to use the long titles in the table of
 % contents, you have to use some trickery. In particular you have to
 % supply the marks yourself.
@@ -3688,10 +3692,11 @@
 % value that is supplied by the \cs{chapter} command, by supplying an
 % additional \cs{chaptermark} command after the \cs{chapter} command,
 % like this:
-% \begin{code}
-% \chapter{This is a very long chapter title that does not fit in the header}
+% \Example{34b}
+% \begin{example}
+% \chapter{This is a long chapter title that does not fit in the header}
 % \chaptermark{This is a not so long chapter title}
-% \end{code}
+% \end{example}
 % For the section titles the situation is more complicated. Here we use
 % the \cs{rightmark}, which uses the first mark of its kind on the page.
 % So you might think putting a \cs{sectionmark}\CmdIndex{sectionmark} before the \cs{section}
@@ -3725,24 +3730,30 @@
 % \sectionmark{Short title}
 % \end{code}
 % To avoid all the repetitions, it is better to make a macro:
-% \begin{code}
+% \Example{34b\\(continued)}
+% \begin{example}
 % \newcommand{\Section}[2]{%
 %             \section[#1]{#1\sectionmark{#2}}\sectionmark{#2}}
 %  . . .
-% \Section{Text title}{Header title}
-% \end{code}
+% \Section{This is a long section title that will not fit in
+%          the header}{Shortened section title}
+% \end{example}
 % And if you want to use yet a different text in the table of contents,
 % you can make a macro with three parameters. The third parameter is the
 % text to be put in the table of contents. We use this parameter as the
 % optional argument for the \cs{section} command.
-% \begin{code}
-% \newcommand{\Sectioniii}[3]{%
+% \Example{34b\\(continued)}
+% \begin{example}
+% \newcommand{\Sectionx}[3]{%
 %             \section[#3]{#1\sectionmark{#2}}\sectionmark{#2}}
 %  . . .
-% \Sectioniii{Text title}{Header title}{TOC title}
-% \end{code}
+% \Sectionx{This is another long section title that will not
+%             fit in the header}{Short section title 3}
+%            {This is the section title in the table of contents}
+% \end{example}
 % Please note that if you use the \texttt{article} class, instead of
-% \cs{chaptermark} and \cs{sectionmark}, you would probably use \cs{sectionmark}\cs{subsectionmark}.
+% \cs{chaptermark} and \cs{sectionmark}, you would probably use
+% \cs{sectionmark} and \cs{subsectionmark}.
 %
 % \subsection{Using automatic truncation}
 %
@@ -3751,11 +3762,14 @@
 % truncates a text to a maximum size, when it exceeds that size. We put
 % both headers in \cs{truncate} to limit it to half the \cs{headwidth}.
 % Of course it is also possible to make asymmetric arrangements.
-% \begin{code}
+% \Example{34c}
+% \begin{example}
 % \usepackage[fit]{truncate}
-% \fancyhead[LE,RO]{\nouppercase{\truncate{0.5\headwidth}{\rightmark}}}
-% \fancyhead[LO,RE]{\nouppercase{\truncate{0.5\headwidth}{\leftmark}}}
-% \end{code}
+% \fancyhead[LE,RO]{\nouppercase{%
+%          \truncate{0.5\headwidth}{\rightmark}}} % Section title
+% \fancyhead[LO,RE]{\nouppercase{%
+%          \truncate{0.5\headwidth}{\leftmark}}} % Chapter title
+% \end{example}
 % We don't have to make any changes to the chaper and section titles
 % because \cs{truncate} will take care of this.
 % This arrangement gives the following header when both titles are too
@@ -3766,7 +3780,7 @@
 %    \truncate{0.5\textwidth}{Chapter 1. This is a very long chapter title that does not fit in the header}^^A
 %    \hfill
 %    \truncate{0.5\textwidth}{1.2. This is a very long section title that will not fit in the header}^^A
-%  }
+%  }\strut
 %  \hrule height\headrulewidth width\textwidth}
 % \bigskip
 %
@@ -3777,7 +3791,9 @@
 % they could theoretically touch each other. This can be prevented by
 % making the widths slightly smaller. And when there is only one title
 % in the header, you can make the width equal to or slightly smaller
-% than \cs{headwidth}.
+% than \cs{headwidth}. A more sophisticated solution would be to check
+% if one of the header parts is small enough and then truncate the other
+% one for the remaining space.
 %
 % \section{I lost my chapter/section titles}
 %
