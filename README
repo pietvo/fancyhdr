@@ -13,6 +13,8 @@ After processing (by tex) of fancyhdr.ins, the following package files will be g
 
 fancyhdr.sty		 the LaTeX package
 extramarks.sty 		 a package for additional marks
+extramarks-multicol.tex	 an auxiliary file for extramarks.sty
+extramarks-v3.sty 	 a legacy version of extramarks.sty
 fancyheadings.sty	 this loads fancyhdr with a warning message
 
 Fancyhdr is a replacement for the old LaTeX2 package fancyheadings. That
@@ -38,9 +40,9 @@ Extramarks.sty has not been changed, except for the version and
 copyright information.
 
 The older versions fancyhdr.sty version 3 and extramarks.sty version 2
-are the packages as described in the second edition of The LaTeX
-Companion. That documentation can still be used for the newer
-versions, but some of the newer features will be missing.
+and 3 are the packages as described in the second edition of The LaTeX
+Companion. That documentation can still be used for the newer versions,
+but some of the newer features will be missing.
 
 LICENCE: All files in this package may be distributed under the terms of
 the LaTeX Project Public License, as described in lppl.txt in the base
