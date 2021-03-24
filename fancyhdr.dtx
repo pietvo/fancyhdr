@@ -4645,15 +4645,16 @@
 }
 \def\f@nch@center#1[#2]#3#4#5{%
 %    \end{macrocode}
-% At first, we execute the case when the \meta{center-mark} is empty:
+% At first, we execute the case when the \meta{center-mark} is empty\footnote{%
+% This code is reused from the \Package{nccfancyhdr} by Alexander I. Rozhenko}:
 %    \begin{macrocode}
   \def\@tempa{#4}\ifx\@tempa\@empty
     \hbox to\linewidth{\color@begingroup{#3}\hfil {#5}\color@endgroup}%
   \else
 %    \end{macrocode}
 % All we need to do is to calculate skips inserted before and after
-% \meta{center-mark}. We will calculate them in the |\@tempskipa|
-% and |\@tempskipb|. At first:
+% \meta{center-mark}. We will calculate them in the \verb|\@tempskipa|
+% and \verb|\@tempskipb| registers. At first:
 % \begin{quote}
 % \verb|\@tempdima:=|\meta{dist};\\
 % \verb|\@tempdimb:=|\meta{dist}\verb|*|\meta{stretch};\\
