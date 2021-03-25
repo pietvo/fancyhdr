@@ -431,7 +431,8 @@
 %
 % \begin{function}{\fancypagestyle}
 % \begin{syntax}
-% \verb|\fancypagestyle|\marg{style-name}\oarg{base-style}\marg{definitions}
+% \cs{fancypagestyle}\marg{style-name}\oarg{base-style}\marg{definitions}\\
+% \cs{fancypagestyle}*\marg{style-name}\oarg{base-style}\marg{definitions}
 % \end{syntax}
 % This command lets you (re)define page styles for use in special
 % situations. See section~\ref{sec:fancypagestyle} for more details.
@@ -1160,11 +1161,30 @@
 % command. The general form of this command is:
 % \begin{quote}
 % \CmdIndex{fancypagestyle}
-% \verb|\fancypagestyle|\marg{style-name}\oarg{base-style}\marg{definitions}
+% \cs{fancypagestyle}\marg{style-name}\oarg{base-style}\marg{definitions}\\
+% \cs{fancypagestyle*}\marg{style-name}\oarg{base-style}\marg{definitions}
 % \end{quote}
-% As you see, there is an optional argument between the two mandatory arguments.
+%  With \texttt{*} it defines a ``\emph{closed}'' page style, otherwise an
+% ``\emph{open}'' one. (This version is only available in
+% \Package{fancyhdr} version 4.1 and later.) The difference is that the \emph{open} page style
+% does not necessarily have all the information in itself that is
+% necessary to construct the headers and footers. So it will need to pick up the
+% remaining elements from the environment of the text.
+% The \emph{closed} page style, however, will pick up all necessary
+% elements from the environment at the moment it is \textbf{defined},
+% rather than when it is used, and carries that with it.
+% The information that is picked up consists of:
+% \begin{itemize}
+% \item The header and footer fields in all variants (EO,LRC,HF) (12 items).
+% \item The header and footer offsets (EO,LR,HF) (8 items), see
+% section~\ref{sec:book-examples} and~\ref{sec:headwidth}.
+% \item The header and footer init values (2 items), see section~\ref{sec:curpagestyle}.
+% \item \cs{headrule}, \cs{headrulewidth}, \cs{footrule}, \cs{footrulewidth}.
+% \end{itemize}
+% The \emph{closed} versions can come handy when you are switching back
+% and forth between different page styles, as explained in section~\ref{sec:change}.
 %
-% For example:
+% Here is an example of a simple (\emph{open}) definition:
 % \begin{code}
 % \fancypagestyle{toc}{%
 %   \fancyhf{}%
@@ -1179,23 +1199,25 @@
 % change the header and footer rules, and redefine commands like
 % \cs{chaptermark} (see section~\ref{sec:options} for an example). The
 % headers and footers and marks that are not redefined inside the
-% \cs{fancypagestyle} definition, are taken from the global page style
-% \texttt{fancy} values.
+% \cs{fancypagestyle} definition, are taken from the global fancy page style
+% values.
 %
 % You can also give an optional base page style to the
 % \cs{fancypagestyle} command. Then the new page style will be based on
 % the base style. This base style must be a \texttt{fancyhdr}-defined
-% style. Also you should take care not to
+% style. You should take care not to
 % create circular dependencies. In this case the order of picking up the
 % definitions (headers, footers, marks) is:
 % \begin{enumerate}
 % \item The definitions from the base style are taken.
 % \item The definitions given in the \cs{fancypagestyle} command
 % override and/or augment these.
-% \item Any definitions that are not given by the two above, are taken
-% from the environment at the time the new page style is used.
+% \item Any definitions that are not given by the two rules above, are taken
+% from the environment, for an \emph{open} page style at the time the
+% new page style is used, for a \emph{closed} page style at the time it
+% is defined.
 % \end{enumerate}
-% Only the first two parts are embedded in the page style.
+% In an \emph{open} page style, only the first two parts are embedded.
 % When no base style is given, part 1 is null.
 %
 % The optional base style argument is only available since version~4.0. In
@@ -1217,7 +1239,9 @@
 % the environment. So if the environment changes, because you redefine
 % headers, footers, mark commands, etc, the functioning of page style
 % \texttt{fancy} changes with it. The page style \texttt{fancydefault}
-% does not change, however. However, \texttt{fancydefault} is only available
+% does not change, however. It can be considered the \emph{closed}
+% version of page style \texttt{fancy} before any redefinitions are
+% done. However, \texttt{fancydefault} is only available
 % since fancyhdr version~4.0.
 %
 % \section{The scoop on \latex/'s marks}
