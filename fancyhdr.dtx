@@ -352,6 +352,7 @@
 % To get the documentation, run `\verb+pdflatex fancyhdr.dtx+'.
 %
 % \section{Using \Package{fancyhdr}}
+% \label{sec:using-fancyhdr}
 %
 % The package \Package{fancyhdr} gives you several commands to define
 % headers and footers of the pages in a \latex/ document.
@@ -359,27 +360,9 @@
 % \begin{quote}
 % \verb|\usepackage|\oarg{options}\verb|{fancyhdr}|
 % \end{quote}
-% (Options are available since version~4.0)
-% The following options are supported:
-% \begin{center}
-% \begin{tabular}{ l l }
-% \toprule
-% Option & Meaning \\
-% \midrule
-% \texttt{nocheck} & do not check the heights of the header and footer \\
-%                  & (see section~\ref{sec:warning} on page~\pageref{page:warning})\\
-% \texttt{compatV3} & keep some behaviour (now considered undesirable) as in version~3 \\
-%          & (see section~\ref{sec:options} and section~\ref{sec:warning} on
-%                                              page~\pageref{page:warning}) \\
-% \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
-% \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
-% \bottomrule
-% \end{tabular}
-% \end{center}
-% \OPTindex{nocheck}
-% \OPTindex{compatV3}
-% \OPTindex{headings}
-% \OPTindex{myheadings}
+% (Options are available since version~4.0.
+% See \smartref{sec:using-fancyhdr}{sec:options} for the details.)
+%
 % \begin{function}{\fancyhead,\fancyfoot,\fancyhf}
 % \begin{verbatim}
 % \fancyhead[places]{field}
@@ -465,6 +448,84 @@
 % in your headers or footers, the calculated height may be wrong, as marks don't work well
 % outside of a header or footer.
 % \end{function}
+%
+% \section{Package \Package{fancyhdr} options}
+% \label{sec:options}
+%
+% \textbf{NOTE:} This section applies to fancyhdr version~4.0 and later.
+%
+% You can supply options to the \cs{usepackage} command:
+% \begin{quote}
+% \verb|\usepackage|\oarg{options}\verb|{fancyhdr}|
+% \end{quote}
+% The following options are supported:
+% \begin{center}
+% \OPTindex{nocheck}\OPTindex{compatV3}\OPTindex{headings}\OPTindex{myheadings}%
+% \begin{tabular}{ l l }
+% \toprule
+% Option & Meaning \\
+% \midrule
+% \texttt{nocheck} & do not check the heights of the header and footer \\
+% \texttt{compatV3} & keep some behaviour (now considered undesirable) as in version~3 \\
+% \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
+% \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
+% \bottomrule
+% \end{tabular}
+% \end{center}
+%
+% \begin{itemize}
+% \item Options \texttt{nocheck} and \texttt{compatV3} are described in
+% section~\ref{sec:warning} on page~\pageref{page:warning}.
+%
+% \item \OPTindex{compatV3}Option \texttt{compatV3} keeps two fancyhdr
+%   version~3.x (or earlier) features that are now considered undesirable.
+%   \begin{enumerate}
+%   \item The automatic adjustment of \cs{headheight} or \cs{footskip}
+%     when these are too small. This causes the page layout to become
+%     inconsistent.
+%   \item In these previous versions the changes to the
+%     \Package{fancyhdr} headers and footers (including those by
+%     \cs{fancyhead}, \cs{fancyheadoffset} and similar commands) are
+%     made globally, except within a page style defined by
+%     \cs{fancypagestyle}. That is, when these commands are given inside
+%     a \LaTeX{} group, they affect the whole document, not only the
+%     group. If your document depends on this behaviour, you can give
+%     the \texttt{compatV3} package option. However, this is only
+%     considered a short-time solution. You should change your document
+%     as soon as possible to work around this problem. In version~4.0 and
+%     later, without this option, the changes are always local.
+%   \end{enumerate}
+%   This option is scheduled to disappear in version~5 of
+%   \Package{fancyhdr}.
+%
+% \item \PSindex{headings}\PSindex{myheadings}\OPTindex{headings}\OPTindex{myheadings}
+%   The options \texttt{headings} and \texttt{myheadings} redefine the
+%   corresponding page style with fancyhdr commands (including a
+%   decorative line under the header), so that you can later select this
+%   page style as the page style for (part of) the
+%   document\footnote{These options were copied from the
+%   \texttt{nccfancyhdr} package, but contrary to that package, they are
+%   not automatically selected.}.
+% \end{itemize}
+%
+% \PSindex{headings}
+% The page style \texttt{headings} is in some aspects similar to the default page
+% style \texttt{fancy} settings. In the \texttt{fancy} page style, the
+% page number is in the footer, but in the \texttt{headings}
+% page style it is in the header. The header fields look similar, however.
+%
+% Please note that these page styles redefine the \cs{chaptermark} and/or
+% \Cmd{[sub]sectionmark} commands (see section~\ref{sec:scoop}), as do the
+% standard \latex/ page styles. The consequence is, that if you select
+% e.g.\ \Cmd{pagestyle\{headings\}}, the definitions of
+% \Cmd{pagestyle\{fancy\}} are overridden.
+% Also when you change the headers and/or footers
+% while such a page style is in effect, and you then switch back to this
+% page style, for
+% example with \verb|\pagestyle{headings}|, they revert to the built-in
+% settings. Therefore it is not advisable to change the headers or
+% footers in this way, but instead define your
+% own page style, as explained in section~\ref{sec:fancypagestyle}.
 %
 % \section{Using \Package{extramarks}}
 % \label{sec:using-extramarks}
@@ -1081,85 +1142,6 @@
 % \texttt{fancy} changes with it. The page style \texttt{fancydefault}
 % does not change, however. However, \texttt{fancydefault} is only available
 % since fancyhdr version~4.0.
-%
-% \section{Package options}
-% \label{sec:options}
-%
-% \textbf{NOTE:} This section applies to fancyhdr version~4.0 and later.
-%
-% You can supply options to the \cs{usepackage} command:
-% \begin{quote}
-% \verb|\usepackage|\oarg{options}\verb|{fancyhdr}|
-% \end{quote}
-% % The following options are supported:
-% \begin{center}
-% \OPTindex{nocheck}\OPTindex{compatV3}\OPTindex{headings}\OPTindex{myheadings}
-% \begin{tabular}{ l l }
-% \toprule
-% Option & Meaning \\
-% \midrule
-% \texttt{nocheck} & do not check the heights of the header and footer \\
-% \texttt{compatV3} & keep some behaviour (now considered undesirable) as in version~3 \\
-% \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
-% \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
-% \bottomrule
-% \end{tabular}
-% \end{center}
-%
-% \begin{itemize}
-% \item \OPTindex{nocheck}Option \texttt{nocheck} is described in section~\ref{sec:warning} on
-%   page~\pageref{page:warning}.
-%
-% \item \OPTindex{compatV3}Option \texttt{compatV3} keeps two fancyhdr
-%   version~3.x (or earlier) features that are now considered undesirable.
-%   \begin{enumerate}
-%   \item The automatic adjustment of \cs{headheight} or \cs{footskip}
-%     when these are too small. This causes the page layout to become
-%     inconsistent. See section~\ref{sec:warning} on
-%     page~\pageref{page:warning}.
-%   \item In these previous versions the changes to the
-%     \Package{fancyhdr} headers and footers (including those by
-%     \cs{fancyhead}, \cs{fancyheadoffset} and similar commands) are
-%     made globally, except within a page style defined by
-%     \cs{fancypagestyle}. That is, when these commands are given inside
-%     a \LaTeX{} group, they affect the whole document, not only the
-%     group. If your document depends on this behaviour, you can give
-%     the \texttt{compatV3} package option. However, this is only
-%     considered a short-time solution. You should change your document
-%     as soon as possible to work around this problem. In version~4.0 and
-%     later, without this option, the changes are always local.
-%   \end{enumerate}
-%   The option is scheduled to disappear in version~5 of
-%   \Package{fancyhdr}.
-%
-% \item \PSindex{headings}\PSindex{myheadings}\OPTindex{headings}\OPTindex{myheadings}
-%   The options \texttt{headings} and \texttt{myheadings} redefine the
-%   corresponding page style with fancyhdr commands (including a
-%   decorative line under the header), so that you can later select this
-%   page style as the page style for (part of) the
-%   document\footnote{These options were copied from the
-%   \texttt{nccfancyhdr} package, but contrary to that package, they are
-%   not automatically selected.}.
-% \end{itemize}
-%
-% \PSindex{headings}
-% The page style \texttt{headings} is in some aspects similar to the default page
-% style \texttt{fancy} settings. In the \texttt{fancy} page style, the
-% page number is in the footer, but in the \texttt{headings}
-% page style it is in the header. The header fields look similar, however.
-%
-% Please note that these page styles redefine the \cs{chaptermark} and/or
-% \Cmd{[sub]sectionmark} commands (see section~\ref{sec:scoop}), as do the
-% standard \latex/ page styles. The consequence is, that if you select
-% e.g.\ \Cmd{pagestyle\{headings\}}, the definitions of
-% \Cmd{pagestyle\{fancy\}} are overridden.
-% Also when you change the headers and/or footers
-% while such a page style is in effect, and you then switch back to this
-% page style, for
-% example with \verb|\pagestyle{headings}|, they revert to the built-in
-% settings. Therefore it is not advisable to change the headers or
-% footers in this way, but instead define your
-% own page style, as explained in section~\ref{sec:fancypagestyle}.
 %
 % \section{The default layout}
 % \label{sec:default}
