@@ -863,6 +863,82 @@
 % \cs{maketitle} you must issue a \Cmd{thispagestyle\{fancy\}} after the
 % \cs{maketitle}.
 %
+% \section{The default layout}
+% \label{sec:default}
+% Let us use the \verb|book.cls| documentclass and the default settings for
+% \Package{fancyhdr}; so we don't use any of the page style options in
+% the \Cmd{usepackage\{fancyhdr\}} command, and we don't redefine any
+% headers or footers. So just:
+% \begin{code}
+% \usepackage{fancyhdr}
+% \pagestyle{fancy}
+% \end{code}
+% and let \Package{fancyhdr} take care of everything.  As mentioned
+% before, we get a layout that is similar to the page style
+% \texttt{headings}, but it is not exactly the same. If you want to have
+% the same layout as the page style \texttt{headings}, but with a line
+% under the header, use (you need \Package{fancyhdr} version 4 or later
+% for this):
+% \PSindex{headings}
+% \begin{code}
+% \usepackage[headings]{fancyhdr}
+% \pagestyle{headings}
+% \end{code}
+%
+% On the pages where new chapters start, we get a centered page number
+% in the footer; there is no header, and there are no decorative lines.
+%
+% On an even page, we get the layout:
+%
+% \begin{fblock}
+% \noindent\makebox[\textwidth]{\textsl{1.2  EVALUATION}\hfill
+%  \textsl{CHAPTER 1. INTRODUCTION}}\showrule
+% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[2\baselineskip]
+% \noindent\makebox[\textwidth]{\hfill2\hfill}
+% \end{fblock}
+%
+% On an odd page, we get the layout:
+%
+% \begin{fblock}
+% \noindent\makebox[\textwidth]{\textsl{CHAPTER 1. INTRODUCTION}\hfill
+%  \textsl{1.2  EVALUATION}}\showrule
+% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[2\baselineskip]
+% \noindent\makebox[\textwidth]{\hfill
+% 3\hfill }
+% \end{fblock}
+%
+% \noindent where the header text is slanted uppercase.
+%
+% In the \texttt{article} documentclass, we get section and subsection
+% instead of chapter and section.
+%
+% And in a one-sided document, all pages get the same layout as the even pages
+% above. It would probably have been more logical to choose the odd page
+% layout, but changing that now would break some existing documents.
+% Anyway, you can change the layout easily yourself.
+%
+% This default layout is produced by the following commands:
+% \Example{5}
+% \CmdIndex{rightmark}
+% \CmdIndex{leftmark}
+% \begin{example}
+% \fancyhead[LE,RO]{\textsl{\rightmark}}
+% \fancyhead[LO,RE]{\textsl{\leftmark}}
+% \fancyfoot[C]{\thepage}
+% \end{example}
+%
+% The following settings are used for the decorative lines:
+%
+% \begin{tabbing}
+% \CmdIndex{headrulewidth}
+% \noindent \cs{headrulewidth}\qquad \qquad \qquad \=0.4\=pt\\
+% \CmdIndex{footrulewidth}
+% \Cmd{footrulewidth}\>0\>pt
+% \end{tabbing}
+%
+% The header text is turned into all uppercase by the standard \LaTeX{}
+% code in \verb|book.cls|.
+%
 % \section{Fancy Centering}
 % \label{sec:fancycenter}
 %
@@ -1143,82 +1219,6 @@
 % \texttt{fancy} changes with it. The page style \texttt{fancydefault}
 % does not change, however. However, \texttt{fancydefault} is only available
 % since fancyhdr version~4.0.
-%
-% \section{The default layout}
-% \label{sec:default}
-% Let us use the \verb|book.cls| documentclass and the default settings for
-% \Package{fancyhdr}; so we don't use any of the page style options in
-% the \Cmd{usepackage\{fancyhdr\}} command, and we don't redefine any
-% headers or footers. So just:
-% \begin{code}
-% \usepackage{fancyhdr}
-% \pagestyle{fancy}
-% \end{code}
-% and let \Package{fancyhdr} take care of everything.  As mentioned
-% before, we get a layout that is similar to the page style
-% \texttt{headings}, but it is not exactly the same. If you want to have
-% the same layout as the page style \texttt{headings}, but with a line
-% under the header, use (you need \Package{fancyhdr} version 4 or later
-% for this):
-% \PSindex{headings}
-% \begin{code}
-% \usepackage[headings]{fancyhdr}
-% \pagestyle{headings}
-% \end{code}
-%
-% On the pages where new chapters start, we get a centered page number
-% in the footer; there is no header, and there are no decorative lines.
-%
-% On an even page, we get the layout:
-%
-% \begin{fblock}
-% \noindent\makebox[\textwidth]{\textsl{1.2  EVALUATION}\hfill
-%  \textsl{CHAPTER 1. INTRODUCTION}}\showrule
-% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[2\baselineskip]
-% \noindent\makebox[\textwidth]{\hfill2\hfill}
-% \end{fblock}
-%
-% On an odd page, we get the layout:
-%
-% \begin{fblock}
-% \noindent\makebox[\textwidth]{\textsl{CHAPTER 1. INTRODUCTION}\hfill
-%  \textsl{1.2  EVALUATION}}\showrule
-% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[2\baselineskip]
-% \noindent\makebox[\textwidth]{\hfill
-% 3\hfill }
-% \end{fblock}
-%
-% \noindent where the header text is slanted uppercase.
-%
-% In the \texttt{article} documentclass, we get section and subsection
-% instead of chapter and section.
-%
-% And in a one-sided document, all pages get the same layout as the even pages
-% above. It would probably have been more logical to choose the odd page
-% layout, but changing that now would break some existing documents.
-% Anyway, you can change the layout easily yourself.
-%
-% This default layout is produced by the following commands:
-% \Example{5}
-% \CmdIndex{rightmark}
-% \CmdIndex{leftmark}
-% \begin{example}
-% \fancyhead[LE,RO]{\textsl{\rightmark}}
-% \fancyhead[LO,RE]{\textsl{\leftmark}}
-% \fancyfoot[C]{\thepage}
-% \end{example}
-%
-% The following settings are used for the decorative lines:
-%
-% \begin{tabbing}
-% \CmdIndex{headrulewidth}
-% \noindent \cs{headrulewidth}\qquad \qquad \qquad \=0.4\=pt\\
-% \CmdIndex{footrulewidth}
-% \Cmd{footrulewidth}\>0\>pt
-% \end{tabbing}
-%
-% The header text is turned into all uppercase by the standard \LaTeX{}
-% code in \verb|book.cls|.
 %
 % \section{The scoop on \latex/'s marks}
 % \label{sec:scoop}
