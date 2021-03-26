@@ -2073,11 +2073,9 @@
 % For example
 % \begin{code}
 % \pagestyle{fancy}
-% \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
-% \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
+% \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. #1}{}}
+% \renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
 % \end{code}
-% Please note that you have to double the \verb|#| signs, because the
-% definitions are inside a macro.
 %
 % If the previous page style was one of the standard \LaTeX{} page
 % styles, or some page style that is not based on \Package{fancyhdr},
@@ -2098,6 +2096,8 @@
 % ...
 % \pagestyle{myfancy}
 % \end{code}
+% Please note that you now have to double the \verb|#| signs, because the
+% definitions are inside a macro.
 %
 % In general, when you use only one page style \texttt{fancy} in your
 % document, with the occasional \cs{thispagestyle} excursion to page
