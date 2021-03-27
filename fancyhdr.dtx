@@ -4410,6 +4410,8 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\f@nch@fancyhfoffs}
+% \changes{fancyhdr v4.1}{2021/03/27}{Change the offset length variables
+% \cs{f@nch@O@xyz} to \cs{f@nch@offset@xyz}}
 % This macro interprets the parameters for the header and footer
 % offsets.\\
 % Parameters:\\
@@ -4420,7 +4422,7 @@
 % (3) The optional parameter that was given to these commands (default \texttt{[]}).\\
 % (4) The required parameter that was given to these commands.\\
 %   The header and footer offsets are stored in command sequences with
-%   names of the form: \cs{f@nch@O@}\meta{x}\meta{y}\meta{z} with \meta{x} from
+%   names of the form: \cs{f@nch@offset@}\meta{x}\meta{y}\meta{z} with \meta{x} from
 %   \texttt{[eo]}, \meta{y} from \texttt{[lr]} and \meta{z} from \texttt{[hf]}.
 %
 %    \begin{macrocode}
@@ -4440,7 +4442,7 @@
         {\f@nch@forc\f@nch@lcr\f@nch@@lcr
           {\f@nch@forc\f@nch@hf\f@nch@@hf
             {\expandafter\setlength\csname
-              f@nch@O@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#4}}}}}%
+              f@nch@offset@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#4}}}}}%
   \f@nch@setoffs}
 %    \end{macrocode}
 % \end{macro}
@@ -4502,6 +4504,8 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\f@nch@headwidth}
+% \changes{fancyhdr v4.1}{2021/03/27}{Change the offset length variables
+% \cs{f@nch@O@xyz} to \cs{f@nch@offset@xyz}}
 % Length parameter to be used for \cs{headwidth}. We use this rather
 % than defining \cs{headwidth} as a length paramater directly to protect
 % ourself to someone saying: \verb+\let\headwidth\textwidth+.
@@ -4509,24 +4513,24 @@
 \newlength{\f@nch@headwidth} \let\headwidth\f@nch@headwidth
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}[internal]{\f@nch@O@elh}
-% \begin{macro}[internal]{\f@nch@O@erh}
-% \begin{macro}[internal]{\f@nch@O@olh}
-% \begin{macro}[internal]{\f@nch@O@orh}
-% \begin{macro}[internal]{\f@nch@O@elf}
-% \begin{macro}[internal]{\f@nch@O@erf}
-% \begin{macro}[internal]{\f@nch@O@olf}
-% \begin{macro}[internal]{\f@nch@O@orf}
+% \begin{macro}[internal]{\f@nch@offset@elh}
+% \begin{macro}[internal]{\f@nch@offset@erh}
+% \begin{macro}[internal]{\f@nch@offset@olh}
+% \begin{macro}[internal]{\f@nch@offset@orh}
+% \begin{macro}[internal]{\f@nch@offset@elf}
+% \begin{macro}[internal]{\f@nch@offset@erf}
+% \begin{macro}[internal]{\f@nch@offset@olf}
+% \begin{macro}[internal]{\f@nch@offset@orf}
 % Length parameters for the offsets.
 %    \begin{macrocode}
-\newlength{\f@nch@O@elh}
-\newlength{\f@nch@O@erh}
-\newlength{\f@nch@O@olh}
-\newlength{\f@nch@O@orh}
-\newlength{\f@nch@O@elf}
-\newlength{\f@nch@O@erf}
-\newlength{\f@nch@O@olf}
-\newlength{\f@nch@O@orf}
+\newlength{\f@nch@offset@elh}
+\newlength{\f@nch@offset@erh}
+\newlength{\f@nch@offset@olh}
+\newlength{\f@nch@offset@orh}
+\newlength{\f@nch@offset@elf}
+\newlength{\f@nch@offset@erf}
+\newlength{\f@nch@offset@olf}
+\newlength{\f@nch@offset@orf}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -5182,16 +5186,18 @@
 %
 % \begin{macro}[internal]{\f@nch@offsolh}
 % \begin{macro}[internal]{\f@nch@offselh}
+% \changes{fancyhdr v4.1}{2021/03/27}{Change the offset length variables
+% \cs{f@nch@O@xyz} to \cs{f@nch@offset@xyz}}
 %   New definitions for the use of \cs{fancyhfoffset},
 %   \cs{fancyheadoffset}, \cs{fancyfootoffset}.  These calculate the
 %   \cs{headwidth} from \cs{textwidth} and the specified offsets.\\
 %   First for the header.
 %
 %    \begin{macrocode}
-\def\f@nch@offsolh{\headwidth=\textwidth\advance\headwidth\f@nch@O@olh
-                   \advance\headwidth\f@nch@O@orh\hskip-\f@nch@O@olh}
-\def\f@nch@offselh{\headwidth=\textwidth\advance\headwidth\f@nch@O@elh
-                   \advance\headwidth\f@nch@O@erh\hskip-\f@nch@O@elh}
+\def\f@nch@offsolh{\headwidth=\textwidth\advance\headwidth\f@nch@offset@olh
+                   \advance\headwidth\f@nch@offset@orh\hskip-\f@nch@offset@olh}
+\def\f@nch@offselh{\headwidth=\textwidth\advance\headwidth\f@nch@offset@elh
+                   \advance\headwidth\f@nch@offset@erh\hskip-\f@nch@offset@elh}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -5201,10 +5207,10 @@
 % The same for the footer.
 %
 %    \begin{macrocode}
-\def\f@nch@offsolf{\headwidth=\textwidth\advance\headwidth\f@nch@O@olf
-                   \advance\headwidth\f@nch@O@orf\hskip-\f@nch@O@olf}
-\def\f@nch@offself{\headwidth=\textwidth\advance\headwidth\f@nch@O@elf
-                   \advance\headwidth\f@nch@O@erf\hskip-\f@nch@O@elf}
+\def\f@nch@offsolf{\headwidth=\textwidth\advance\headwidth\f@nch@offset@olf
+                   \advance\headwidth\f@nch@offset@orf\hskip-\f@nch@offset@olf}
+\def\f@nch@offself{\headwidth=\textwidth\advance\headwidth\f@nch@offset@elf
+                   \advance\headwidth\f@nch@offset@erf\hskip-\f@nch@offset@elf}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -5395,8 +5401,8 @@
 % \cs{setlength} rather than \cs{def}.
 %    \begin{macrocode}
     \@tfor\myname:=
-      \f@nch@O@olh\f@nch@O@orh\f@nch@O@elh\f@nch@O@erh
-      \f@nch@O@olf\f@nch@O@orf\f@nch@O@elf\f@nch@O@erf
+      \f@nch@offset@olh\f@nch@offset@orh\f@nch@offset@elh\f@nch@offset@erh
+      \f@nch@offset@olf\f@nch@offset@orf\f@nch@offset@elf\f@nch@offset@erf
     \do {%
       \toks@=\expandafter\expandafter\expandafter{\expandafter\the\myname}%
       \toks@=\expandafter\expandafter\expandafter{%
