@@ -434,11 +434,14 @@
                    \advance\headwidth\f@nch@O@erf\hskip-\f@nch@O@elf}
 \def\f@nch@setoffs{%
   \f@nch@gbl\let\headwidth\f@nch@headwidth
-  \f@nch@gbl\let\f@nch@Oolh\f@nch@offsolh
-  \f@nch@gbl\let\f@nch@Oelh\f@nch@offselh \f@nch@gbl\let\f@nch@Oorh\hss
-  \f@nch@gbl\let\f@nch@Oerh\hss \f@nch@gbl\let\f@nch@Oolf\f@nch@offsolf
-  \f@nch@gbl\let\f@nch@Oelf\f@nch@offself \f@nch@gbl\let\f@nch@Oorf\hss
-  \f@nch@gbl\let\f@nch@Oerf\hss
+  \f@nch@gbl\def\f@nch@Oolh{\f@nch@offsolh}%
+  \f@nch@gbl\def\f@nch@Oelh{\f@nch@offselh}%
+  \f@nch@gbl\def\f@nch@Oorh{\hss}%
+  \f@nch@gbl\def\f@nch@Oerh{\hss}%
+  \f@nch@gbl\def\f@nch@Oolf{\f@nch@offsolf}%
+  \f@nch@gbl\def\f@nch@Oelf{\f@nch@offself}%
+  \f@nch@gbl\def\f@nch@Oorf{\hss}%
+  \f@nch@gbl\def\f@nch@Oerf{\hss}%
 }
 \newif\iff@nch@footnote
 \AtBeginDocument{%
@@ -485,10 +488,21 @@
       \f@nch@Oolf\f@nch@Oorf\f@nch@Oelf\f@nch@Oerf
       \f@nch@headinit\f@nch@footinit
       \headrule\headrulewidth\footrule\footrulewidth
-    \do {
+    \do {%
       \toks@=\expandafter\expandafter\expandafter{\myname}%
       \toks@=\expandafter\expandafter\expandafter{%
         \expandafter\expandafter\expandafter\def
+        \expandafter\expandafter\myname\expandafter{\the\toks@}}%
+      \edef\temp@b{\@temptokenb={\the\@temptokenb\the\toks@}}%
+      \temp@b
+    }%
+    \@tfor\myname:=
+      \f@nch@O@olh\f@nch@O@orh\f@nch@O@elh\f@nch@O@erh
+      \f@nch@O@olf\f@nch@O@orf\f@nch@O@elf\f@nch@O@erf
+    \do {%
+      \toks@=\expandafter\expandafter\expandafter{\expandafter\the\myname}%
+      \toks@=\expandafter\expandafter\expandafter{%
+        \expandafter\expandafter\expandafter\setlength
         \expandafter\expandafter\myname\expandafter{\the\toks@}}%
       \edef\temp@b{\@temptokenb={\the\@temptokenb\the\toks@}}%
       \temp@b

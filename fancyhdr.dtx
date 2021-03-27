@@ -5210,19 +5210,29 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\f@nch@setoffs}
+% \changes{fancyhdr v4.1}{2021/03/27}{Use \cs{def} instead of \cs{let}
+% to make it easier to pick up these macros for \cs{fancypagestyle*}}
 % Set the offset parts to be used in the construction of the headers and
 % footers. Depending on \cs{f@nch@gbl} it will be done globally (for
-% pagestyle \texttt{fancy}) or locally (for \cs{fancypagestyle}).
+% pagestyle \texttt{fancy}) in \texttt{compatV3} mode)
+% or locally (for \cs{fancypagestyle}).
+% The macros \Cmd{f@nch@Oxyz} tell what should be done at the various
+% ends of the headers/footers. They are done with \cs{def} rather than
+% \cs{let} so they are easier to pick up for \cs{fancypagestyle*}.
+%
 % Just in case \verb+\let\headwidth\textwidth+ was used, we reset
 % \cs{headwidth} to the length parameter that it should be.
 %    \begin{macrocode}
 \def\f@nch@setoffs{%
   \f@nch@gbl\let\headwidth\f@nch@headwidth
-  \f@nch@gbl\let\f@nch@Oolh\f@nch@offsolh
-  \f@nch@gbl\let\f@nch@Oelh\f@nch@offselh \f@nch@gbl\let\f@nch@Oorh\hss
-  \f@nch@gbl\let\f@nch@Oerh\hss \f@nch@gbl\let\f@nch@Oolf\f@nch@offsolf
-  \f@nch@gbl\let\f@nch@Oelf\f@nch@offself \f@nch@gbl\let\f@nch@Oorf\hss
-  \f@nch@gbl\let\f@nch@Oerf\hss
+  \f@nch@gbl\def\f@nch@Oolh{\f@nch@offsolh}%
+  \f@nch@gbl\def\f@nch@Oelh{\f@nch@offselh}%
+  \f@nch@gbl\def\f@nch@Oorh{\hss}%
+  \f@nch@gbl\def\f@nch@Oerh{\hss}%
+  \f@nch@gbl\def\f@nch@Oolf{\f@nch@offsolf}%
+  \f@nch@gbl\def\f@nch@Oelf{\f@nch@offself}%
+  \f@nch@gbl\def\f@nch@Oorf{\hss}%
+  \f@nch@gbl\def\f@nch@Oerf{\hss}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -5342,6 +5352,8 @@
 % For \cs{fancypagestyle} make \cs{@temptokenb} empty.
 % \changes{fancyhdr v4.1}{2021/02/17}{Add \cs{f@nch@pagestyle@setup}
 % macro for \cs{fancypagestyle*}}
+% \changes{fancyhdr v4.1}{2021/03/27}{Also save the offset length variables
+% \cs{f@nch@offset@xyz} with \cs{setlength}}
 %    \begin{macrocode}
 \newcommand\f@nch@pagestyle@setup{%
   \iff@nch@pagestyle@star
@@ -5363,7 +5375,7 @@
       \f@nch@Oolf\f@nch@Oorf\f@nch@Oelf\f@nch@Oerf
       \f@nch@headinit\f@nch@footinit
       \headrule\headrulewidth\footrule\footrulewidth
-    \do {
+    \do {%
 %    \end{macrocode}
 % First get the body of the macro.
 % Next put it in a \cs{def}\meta{\cs{macro}}\texttt{\{}\meta{body of \cs{macro}}\texttt{\}}.
@@ -5371,6 +5383,24 @@
       \toks@=\expandafter\expandafter\expandafter{\myname}%
       \toks@=\expandafter\expandafter\expandafter{%
         \expandafter\expandafter\expandafter\def
+        \expandafter\expandafter\myname\expandafter{\the\toks@}}%
+%    \end{macrocode}
+% Set up a macro to append \cs{toks@} to \cs{@temptokenb} and then execute it.
+%    \begin{macrocode}
+      \edef\temp@b{\@temptokenb={\the\@temptokenb\the\toks@}}%
+      \temp@b
+    }%
+%    \end{macrocode}
+% Now pick up the offset length variables in a similar way, but with
+% \cs{setlength} rather than \cs{def}.
+%    \begin{macrocode}
+    \@tfor\myname:=
+      \f@nch@O@olh\f@nch@O@orh\f@nch@O@elh\f@nch@O@erh
+      \f@nch@O@olf\f@nch@O@orf\f@nch@O@elf\f@nch@O@erf
+    \do {%
+      \toks@=\expandafter\expandafter\expandafter{\expandafter\the\myname}%
+      \toks@=\expandafter\expandafter\expandafter{%
+        \expandafter\expandafter\expandafter\setlength
         \expandafter\expandafter\myname\expandafter{\the\toks@}}%
 %    \end{macrocode}
 % Set up a macro to append \cs{toks@} to \cs{@temptokenb} and then execute it.
