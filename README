@@ -33,6 +33,7 @@ the following packages installed:
 - fancyvrb (CTAN:/macros/latex/contrib/fancyvrb)
 - hyperref (CTAN:/macros/latex/contrib/hyperref)
 - subcaption (CTAN:/macros/latex/contrib/caption)
+- robustindex.sty (CTAN:/macros/latex/contrib/robustindex)
 
 This is version 4.0.1 of fancyhdr.sty and extramarks.sty. They are
 described in the forthcoming third edition of The LaTeX Companion.
