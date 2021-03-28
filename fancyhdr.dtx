@@ -5447,6 +5447,56 @@
 \ExplSyntaxOn
 %    \end{macrocode}
 %
+% This package gives you extra marks, that you can define, set and use
+% in your page headers and footers. It is based on the \eTeX{}
+% \cs{marks} mechanism. However we cannot just use this mechanism
+% directly to extract the relevant marks from a page for two reasons:
+% \begin{enumerate}
+% \item \LaTeX's output routine may clobber the marks when floats are
+% processed on the page
+% \item Sometimes the marks are hidden inside boxes that constitute the
+% page, for example with \cs{twocolumn} mode and with
+% \Package{multicol}. In these cases we must extract the marks from all
+% the boxes that make up the page and combine them. So this package sets
+% the relevant marks during the construction of the page and puts them
+% in variables, from where they can be used in the headers and footers.
+% \end{enumerate}
+%
+% \textbf{Algorithm for extracting the marks from a sequence of boxes on a page:}\\
+% for example in \cs{twocolumn}, or \Package{multicol}, on each column.
+% In the `normal' one-column case, on the main vertical box (\cs{@outputbox}). \\
+%
+% For each mark:\\
+% INIT:\\
+% \mbox{~}    topmark := previous botmark (initial value: \verb|{{}}|)\\
+% \mbox{~}    botmark := firstmark := empty\\
+% For each BOX:\\
+% \mbox{~}    (If the box was the result of a \cs{vsplit} skip next line:)\\
+% \mbox{~}    \cs{vsplit} box to maxdimen\\
+% \mbox{~}    if splitfirstmark not empty: (i.e. there are marks in the box)\\
+% \mbox{\quad}     if firstmark = empty:\\
+% \mbox{\quad}\mbox{\quad}       firstmark := splitfirstmark\\
+% \mbox{\quad}     botmark := splitbotmark\\
+% END:\\
+% \mbox{~}   if firstmark = empty:\\
+% \mbox{\quad}    firstmark := botmark := topmark\\
+%
+% INIT code will be run (trivially) at the creation of a mark,
+% and after a page has been output, so that it will be initialised for
+% the next page. This can be done naturally at the end of the page
+% building function \cs{@outputpage}.
+%
+% END code will be run just before a page is output to fill in the marks
+% if none has been found on the page (i.e. set them equal to \texttt{topmark}).
+% So this can be done naturally at the beginning of the page
+% building function \cs{@outputpage}. In this way, the marks are also
+% properly propagated in float pages and the like.
+% \\[2ex]
+% In normal one-column output, we run BOX code on the
+% page, just before it is output.\\
+% In two-column mode, we run BOX code on (1) the optional argument of
+% \cs{twocolumn}, (2) the left column, (3) the right column.
+%
 % \begin{variable}[internal]{\g_@@_marks_seq}
 %   Sequence of defined extra marks
 %    \begin{macrocode}
@@ -5529,51 +5579,18 @@
 %    \begin{macrocode}
       \seq_put_right:Nn \g_@@_marks_seq { #1 }
 %    \end{macrocode}
-% Create the mark's variables
+% Create the mark's variables, initialize topmark to empty mark (braced).
+% Others are really empty.
 %    \begin{macrocode}
-      \tl_new:c {g_@@_topmark_#1_tl}      % topmark (braced)
-      \tl_new:c {g_@@_firstmark_#1_tl}    % firstmark (braced)
-      \tl_new:c {g_@@_botmark_#1_tl}      % botmark (braced)
-      \tl_gset:cn {g_@@_topmark_#1_tl} {{}} % initialize topmark to empty mark (braced)
+      \tl_new:c {g_@@_topmark_#1_tl}
+      \tl_new:c {g_@@_firstmark_#1_tl}
+      \tl_new:c {g_@@_botmark_#1_tl}
+      \tl_gset:cn {g_@@_topmark_#1_tl} {{}}
     }
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \textbf{Algorithm for extracting the marks from a sequence of boxes on a page:}\\
-% for example in \cs{twocolumn}, or \texttt{multicol}, on each column.
-% In the 'normal' one column case, on the main vertical box (\cs{@outputbox}). \\
-%
-% For each mark:\\
-% INIT:\\
-% \mbox{~}    topmark := previous botmark (initial value: \verb|{{}}|)\\
-% \mbox{~}    botmark := firstmark := empty\\
-% For each BOX:\\
-% \mbox{~}    (If the box was the result of a \cs{vsplit} skip next line:)\\
-% \mbox{~}    \cs{vsplit} box to maxdimen\\
-% \mbox{~}    if splitfirstmark not empty: (i.e. there are marks in the box)\\
-% \mbox{\quad}     if firstmark = empty:\\
-% \mbox{\quad}\mbox{\quad}       firstmark := splitfirstmark\\
-% \mbox{\quad}     botmark := splitbotmark\\
-% END:\\
-% \mbox{~}   if firstmark = empty:\\
-% \mbox{\quad}    firstmark := botmark := topmark\\
-%
-% INIT code will be run (trivially) at the creation of a mark,
-% and after a page has been output, so that it will be initialised for
-% the next page. This can be done naturally at the end of the page
-% building function \cs{@outputpage}.
-%
-% END code will be run just before a page is output to fill in the marks
-% if none has been found on the page (i.e. set them equal to topmark).
-% So this can be done naturally at the beginning of the page
-% building function \cs{@outputpage}. In this way, the marks are also
-% properly propagated in float pages and the like.
-% \\[2ex]
-% In normal one column output, we run BOX code on the
-% page, just before it is output.\\
-% In twocolumn mode, we run BOX code on (1) the optional argument of
-% \cs{twocolumn}, (2) the left column, (3) the right column.
 % \begin{macro}[internal]{\@@_get_boxmarks_init:n}
 % \begin{syntax}
 % \cs{@@_get_boxmarks_init:n}\marg{mark name}
@@ -5825,7 +5842,7 @@
 %    \end{macrocode}
 %
 % Patch the \cs{@outputdblcol} macro for the second column case.
-% 1) \cs{@outputbox} still contains the second column, not yet \cs{vsplit}ted.
+% \cs{@outputbox} still contains the second column, not yet \cs{vsplit}ted.
 % Get the marks by \cs{vsplit} to the maximum height.\\
 %
 %    \begin{macrocode}
@@ -5844,10 +5861,9 @@
   {\extramarks@setmarks@outputbox \@outputpage}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {in \@opcol: \@outputpage} {}}
-%
 %    \end{macrocode}
 %
-% End of \cs{@} patching code
+% End of \cs{@opcol} patching code
 % \\[2ex]
 % Patch the \cs{@outputpage} macro.
 % These are two patches:
@@ -5858,13 +5874,13 @@
   {\extramarks@setmarks@end}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {beginning of \@outputpage} {}}
+%    \end{macrocode}
 %
 %    \begin{macrocode}
 \apptocmd {\@outputpage}
   {\extramarks@init@marks}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {end of \@outputpage} {}}
-%
 %    \end{macrocode}
 %
 % End of \cs{@outputpage} patching code

@@ -49,10 +49,10 @@
     {
       \exp_args:Nc \newmarks {c__extramarks_#1_int}
       \seq_put_right:Nn \g__extramarks_marks_seq { #1 }
-      \tl_new:c {g__extramarks_topmark_#1_tl}      % topmark (braced)
-      \tl_new:c {g__extramarks_firstmark_#1_tl}    % firstmark (braced)
-      \tl_new:c {g__extramarks_botmark_#1_tl}      % botmark (braced)
-      \tl_gset:cn {g__extramarks_topmark_#1_tl} {{}} % initialize topmark to empty mark (braced)
+      \tl_new:c {g__extramarks_topmark_#1_tl}
+      \tl_new:c {g__extramarks_firstmark_#1_tl}
+      \tl_new:c {g__extramarks_botmark_#1_tl}
+      \tl_gset:cn {g__extramarks_topmark_#1_tl} {{}}
     }
 }
 \cs_new_protected:Npn \__extramarks_get_boxmarks_init:n #1
