@@ -96,6 +96,14 @@
 \newcommand\bsbs{\char`\\\char`\\}
 \newcommand{\Cmd}[1]{\texttt{\def\{{\char`\{}\def\}{\char`\}}\bs#1}}
 \newcommand{\CmdIndex}[1]{\index{#1=\string\texttt{\bs#1}}}
+%\ExplSyntaxOn
+%\newcommand{\CmdIndex}[1]{\expandafter\SpecialCmdIndex\csname#1\endcsname{#1}}
+%\ExplSyntaxOff
+% \makeatletter
+% \newcommand{\SpecialCmdIndex}[2]{%
+%   \index{#2={\string\verbatim@font\space!\string\verb*&!\string#1&}%
+%     |hdclindex{\the\c@HD@hypercount}{usage}}}
+% \makeatother
 \newcommand{\TTindex}[1]{\index{#1=\string\texttt{#1}}}
 \newcommand{\PSindex}[1]{\index{page style>#1=\string\texttt{#1}}}
 \newcommand{\OPTindex}[1]{\index{option>#1=\string\texttt{#1}}}
