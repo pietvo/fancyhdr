@@ -119,10 +119,10 @@
     \color@endbox
   \group_end:
 }
-\cs_new_protected:Npn \extramarks@setmarks@outputbox
+\cs_new_protected:Npn \extramarks@setmarks #1
 {
   \group_begin:
-    \__extramarks_vsplit_box \@outputbox
+    \__extramarks_vsplit_box #1
     \seq_map_inline:Nn \g__extramarks_marks_seq
       {
         \__extramarks_get_boxmarks:n { ##1 }
@@ -163,11 +163,11 @@
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 1}}
 \patchcmd{\@outputdblcol}{\global\@firstcolumntrue}
-  {\global\@firstcolumntrue\extramarks@setmarks@outputbox}
+  {\global\@firstcolumntrue\extramarks@setmarks \@outputbox}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 2}}
 \patchcmd {\@opcol} {\@outputpage}
-  {\extramarks@setmarks@outputbox \@outputpage}
+  {\extramarks@setmarks \@outputbox \@outputpage}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {in \@opcol: \@outputpage} {}}
 \pretocmd {\@outputpage}
