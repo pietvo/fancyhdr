@@ -5526,6 +5526,25 @@
 %    \end{macrocode}
 % \end{variable}
 %
+% \begin{macro}[internal]{\extramarks@info}
+% \begin{syntax}
+% \cs{extramarks@info}\marg{message}
+% \end{syntax}
+% Option `debugshow': Print debugging message
+%    \begin{macrocode}
+\cs_new_eq:NN \extramarks@info \use_none:n
+\DeclareOption{debugshow}{%
+\cs_gset_protected:Npn \extramarks@info #1
+  {
+   \GenericWarning
+       {(extramarks)\@spaces\@spaces}
+       {Package~extramarks:~#1}
+  }
+}
+\ProcessOptions*
+%    \end{macrocode}
+% \end{macro}
+%
 % Messages
 %
 %    \begin{macrocode}
@@ -6167,7 +6186,7 @@
       \tl_if_empty:cF {g_@@_#1mark_##1_tl}
         {
           \tex_marks:D \use:c{c_@@_##1_int} {\use:c{g_@@_#1mark_##1_tl}}
-          \mult@info\tw@
+          \extramarks@info
           {
             In~\string\return@nonemptymarks~{#1}\MessageBreak
             \string\xmarks \use:c{c_@@_##1_int}
@@ -6191,7 +6210,7 @@
   \seq_map_inline:Nn \g_@@_marks_seq
     {
       \@@_get_boxmarks:n { ##1 }
-      \mult@info\tw@
+      \extramarks@info
         {
           \string\@@_get_boxmarks:n { ##1 }~in~\string\set@keptmarks\MessageBreak
           \@@_show_mark:n  { g_@@_firstmark_##1_tl }

@@ -36,6 +36,16 @@
 \seq_new:N \g__extramarks_marks_seq
 \box_new:N \l__extramarks_temp_box
 \tl_new:N \l__extramarks_temp_tl
+\cs_new_eq:NN \extramarks@info \use_none:n
+\DeclareOption{debugshow}{%
+\cs_gset_protected:Npn \extramarks@info #1
+  {
+   \GenericWarning
+       {(extramarks)\@spaces\@spaces}
+       {Package~extramarks:~#1}
+  }
+}
+\ProcessOptions*
 \msg_new:nnn {extramarks} {not-defined} {\token_to_str:N #1:~mark~#2~not~defined}
 \msg_new:nnn {extramarks} {already-defined} {\token_to_str:N #1:~mark~#2~already~defined}
 \msg_new:nnn {extramarks} {cannot-patch} {Patch \token_to_str:N #1~failed}

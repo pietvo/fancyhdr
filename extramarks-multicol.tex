@@ -38,7 +38,7 @@
       \tl_if_empty:cF {g__extramarks_#1mark_##1_tl}
         {
           \tex_marks:D \use:c{c__extramarks_##1_int} {\use:c{g__extramarks_#1mark_##1_tl}}
-          \mult@info\tw@
+          \extramarks@info
           {
             In~\string\return@nonemptymarks~{#1}\MessageBreak
             \string\xmarks \use:c{c__extramarks_##1_int}
@@ -52,7 +52,7 @@
   \seq_map_inline:Nn \g__extramarks_marks_seq
     {
       \__extramarks_get_boxmarks:n { ##1 }
-      \mult@info\tw@
+      \extramarks@info
         {
           \string\__extramarks_get_boxmarks:n { ##1 }~in~\string\set@keptmarks\MessageBreak
           \__extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
