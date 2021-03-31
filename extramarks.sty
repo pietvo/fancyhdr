@@ -119,7 +119,7 @@
     \color@endbox
   \group_end:
 }
-\cs_new_protected:Npn \extramarks@setmarks #1
+\cs_new_protected:Npn \extramarks@getmarks #1
 {
   \group_begin:
     \__extramarks_vsplit_box #1
@@ -129,7 +129,7 @@
       }
   \group_end:
 }
-\cs_new_protected:Npn \extramarks@setmarks@end
+\cs_new_protected:Npn \extramarks@getmarks@end
 {
   \seq_map_inline:Nn \g__extramarks_marks_seq
     {
@@ -163,15 +163,15 @@
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 1}}
 \patchcmd{\@outputdblcol}{\global\@firstcolumntrue}
-  {\global\@firstcolumntrue\extramarks@setmarks \@outputbox}
+  {\global\@firstcolumntrue\extramarks@getmarks \@outputbox}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 2}}
 \patchcmd {\@opcol} {\@outputpage}
-  {\extramarks@setmarks \@outputbox \@outputpage}
+  {\extramarks@getmarks \@outputbox \@outputpage}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {in \@opcol: \@outputpage} {}}
 \pretocmd {\@outputpage}
-  {\extramarks@setmarks@end}
+  {\extramarks@getmarks@end}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {beginning of \@outputpage} {}}
 \apptocmd {\@outputpage}

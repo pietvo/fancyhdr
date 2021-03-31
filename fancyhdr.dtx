@@ -5753,9 +5753,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[internal]{\extramarks@setmarks}
+% \begin{macro}[internal]{\extramarks@getmarks}
 % \begin{syntax}
-% \cs{extramarks@setmarks}\marg{box}
+% \cs{extramarks@getmarks}\marg{box}
 % \end{syntax}
 % Patch code for some box on a page. In the standard case this is used
 % for a `normal' one-column page, and for the second column on
@@ -5763,7 +5763,7 @@
 % The box used is \meta{box}.
 % Do a temporary vsplit and process the marks of the box.
 %    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@setmarks #1
+\cs_new_protected:Npn \extramarks@getmarks #1
 {
   \group_begin:
     \@@_vsplit_box #1
@@ -5779,13 +5779,13 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[internal]{\extramarks@setmarks@end}
+% \begin{macro}[internal]{\extramarks@getmarks@end}
 % \begin{syntax}
-% \cs{extramarks@setmarks@end}
+% \cs{extramarks@getmarks@end}
 % \end{syntax}
 % Patch code for END processing. Done at the beginning of \cs{@outputpage}.
 %    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@setmarks@end
+\cs_new_protected:Npn \extramarks@getmarks@end
 {
   \seq_map_inline:Nn \g_@@_marks_seq
     {
@@ -5856,7 +5856,7 @@
 %
 %    \begin{macrocode}
 \patchcmd{\@outputdblcol}{\global\@firstcolumntrue}
-  {\global\@firstcolumntrue\extramarks@setmarks \@outputbox}
+  {\global\@firstcolumntrue\extramarks@getmarks \@outputbox}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 2}}
 %    \end{macrocode}
@@ -5867,7 +5867,7 @@
 %
 %    \begin{macrocode}
 \patchcmd {\@opcol} {\@outputpage}
-  {\extramarks@setmarks \@outputbox \@outputpage}
+  {\extramarks@getmarks \@outputbox \@outputpage}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {in \@opcol: \@outputpage} {}}
 %    \end{macrocode}
@@ -5880,7 +5880,7 @@
 %
 %    \begin{macrocode}
 \pretocmd {\@outputpage}
-  {\extramarks@setmarks@end}
+  {\extramarks@getmarks@end}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {beginning of \@outputpage} {}}
 %    \end{macrocode}
