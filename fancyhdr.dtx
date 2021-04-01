@@ -5715,10 +5715,14 @@
 % spaces. Therefore also the names of these macros are with @ instead of
 % \verb|_| and :
 %
-% \begin{macro}[internal]{\extramarks@set@firstcolmarks}
-% Patch code for the first column of \cs{twocolumn}.
+% \begin{macro}[internal]{\extramarks@get@splitmarks}
+% \begin{syntax}
+% \cs{extramarks@get@splitmarks}\marg{context}
+% \end{syntax}
+% Process any marks in the last \cs{vsplit}ted box. \meta{context} is
+% the place in the code (for debugging).
 %    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@set@firstcolmarks
+\cs_new_protected:Npn \extramarks@get@splitmarks #1
 {
   \seq_map_inline:Nn \g_@@_marks_seq
     {
@@ -5726,6 +5730,12 @@
 % Process any marks in the BOX
 %    \begin{macrocode}
       \@@_get_boxmarks:n { ##1 }
+      \extramarks@info
+        {
+          \string\@@_get_boxmarks:n { ##1 }~in~\string #1\MessageBreak
+          \@@_show_mark:n  { g_@@_firstmark_##1_tl }
+          \@@_show_mark:n  { g_@@_botmark_##1_tl }
+       }
     }
 }
 %    \end{macrocode}
@@ -5755,13 +5765,7 @@
         \vskip -\dbltextfloatsep
              }
     \@@_vsplit_box \@currbox
-%    \end{macrocode}
-% Process any marks in the box
-%    \begin{macrocode}
-    \seq_map_inline:Nn \g_@@_marks_seq
-      {
-        \@@_get_boxmarks:n { ##1 }
-      }
+    \extramarks@get@splitmarks{\@topnewpage}
     \global \setbox\@currbox
     \color@vbox
       \normalcolor
@@ -5774,25 +5778,20 @@
 %
 % \begin{macro}[internal]{\extramarks@getmarks}
 % \begin{syntax}
-% \cs{extramarks@getmarks}\marg{box}
+% \cs{extramarks@getmarks}\marg{box}\marg{context}
 % \end{syntax}
 % Patch code for some box on a page. In the standard case this is used
 % for a `normal' one-column page, and for the second column on
 % \cs{twocolumn}, but it can be used for any box.
-% The box used is \meta{box}.
+% The box used is \meta{box}. \meta{context} is the place where called,
+% for debugging.
 % Do a temporary vsplit and process the marks of the box.
 %    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@getmarks #1
+\cs_new_protected:Npn \extramarks@getmarks #1 #2
 {
   \group_begin:
     \@@_vsplit_box #1
-    \seq_map_inline:Nn \g_@@_marks_seq
-      {
-%    \end{macrocode}
-% Process any marks in the BOX
-%    \begin{macrocode}
-        \@@_get_boxmarks:n { ##1 }
-      }
+    \extramarks@get@splitmarks { #2 }
   \group_end:
 }
 %    \end{macrocode}
@@ -5864,7 +5863,7 @@
 %
 %    \begin{macrocode}
 \patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
-  {\extramarks@set@firstcolmarks \ifx\@firstcolfirstmark\@empty}
+  {\extramarks@get@splitmarks{\outputdblcol 1} \ifx\@firstcolfirstmark\@empty}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 1}}
 %    \end{macrocode}
@@ -5875,7 +5874,7 @@
 %
 %    \begin{macrocode}
 \patchcmd{\@outputdblcol}{\global\@firstcolumntrue}
-  {\global\@firstcolumntrue\extramarks@getmarks \@outputbox}
+  {\global\@firstcolumntrue\extramarks@getmarks\@outputbox{\@outputdblcol 2}}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 2}}
 %    \end{macrocode}
@@ -5886,7 +5885,7 @@
 %
 %    \begin{macrocode}
 \patchcmd {\@opcol} {\@outputpage}
-  {\extramarks@getmarks \@outputbox \@outputpage}
+  {\extramarks@getmarks\@outputbox{\@opcol} \@outputpage}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {in \@opcol: \@outputpage} {}}
 %    \end{macrocode}
@@ -6198,28 +6197,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% (2) Patch function for \cs{set@keptmarks}
-% \begin{macro}[internal]{\extramarks@set@keptmarks}
-% \begin{syntax}
-% \cs{extramarks@set@keptmarks}
-% \end{syntax}
-% Process any marks in the last \cs{vsplit}ted box.
-%    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@set@keptmarks
-{
-  \seq_map_inline:Nn \g_@@_marks_seq
-    {
-      \@@_get_boxmarks:n { ##1 }
-      \extramarks@info
-        {
-          \string\@@_get_boxmarks:n { ##1 }~in~\string\set@keptmarks\MessageBreak
-          \@@_show_mark:n  { g_@@_firstmark_##1_tl }
-          \@@_show_mark:n  { g_@@_botmark_##1_tl }
-       }
-    }
-}
-%    \end{macrocode}
-% \end{macro}
+% (2) Patch function for \cs{set@keptmarks} = \cs{extramarks@get@splitmarks}
 %
 %    \begin{macrocode}
 \ExplSyntaxOff
@@ -6242,7 +6220,7 @@
 %    \begin{macrocode}
 \pretocmd{\set@keptmarks}
   {
-    \if@boxedmulticols\else\extramarks@set@keptmarks\fi
+    \if@boxedmulticols\else\extramarks@get@splitmarks{\set@keptmarks}\fi
   }
   {}
   {\msg@error@nnn {extramarks2} {cannot-patch} {\set@keptmarks}}

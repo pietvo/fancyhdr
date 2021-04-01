@@ -100,11 +100,17 @@
     \vbox_set:Nn \l__extramarks_temp_box { \unvcopy #1 \unskip }
     \vbox_set_split_to_ht:NNn \l__extramarks_temp_box \l__extramarks_temp_box \c_max_dim
 }
-\cs_new_protected:Npn \extramarks@set@firstcolmarks
+\cs_new_protected:Npn \extramarks@get@splitmarks #1
 {
   \seq_map_inline:Nn \g__extramarks_marks_seq
     {
       \__extramarks_get_boxmarks:n { ##1 }
+      \extramarks@info
+        {
+          \string\__extramarks_get_boxmarks:n { ##1 }~in~\string #1\MessageBreak
+          \__extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
+          \__extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
+       }
     }
 }
 \cs_new_protected:Npn \extramarks@set@marks@topnewpage #1
@@ -118,10 +124,7 @@
         \vskip -\dbltextfloatsep
              }
     \__extramarks_vsplit_box \@currbox
-    \seq_map_inline:Nn \g__extramarks_marks_seq
-      {
-        \__extramarks_get_boxmarks:n { ##1 }
-      }
+    \extramarks@get@splitmarks{\@topnewpage}
     \global \setbox\@currbox
     \color@vbox
       \normalcolor
@@ -129,14 +132,11 @@
     \color@endbox
   \group_end:
 }
-\cs_new_protected:Npn \extramarks@getmarks #1
+\cs_new_protected:Npn \extramarks@getmarks #1 #2
 {
   \group_begin:
     \__extramarks_vsplit_box #1
-    \seq_map_inline:Nn \g__extramarks_marks_seq
-      {
-        \__extramarks_get_boxmarks:n { ##1 }
-      }
+    \extramarks@get@splitmarks { #2 }
   \group_end:
 }
 \cs_new_protected:Npn \extramarks@getmarks@end
@@ -169,15 +169,15 @@
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {@topnewpage}}
 \patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
-  {\extramarks@set@firstcolmarks \ifx\@firstcolfirstmark\@empty}
+  {\extramarks@get@splitmarks{\outputdblcol 1} \ifx\@firstcolfirstmark\@empty}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 1}}
 \patchcmd{\@outputdblcol}{\global\@firstcolumntrue}
-  {\global\@firstcolumntrue\extramarks@getmarks \@outputbox}
+  {\global\@firstcolumntrue\extramarks@getmarks\@outputbox{\@outputdblcol 2}}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 2}}
 \patchcmd {\@opcol} {\@outputpage}
-  {\extramarks@getmarks \@outputbox \@outputpage}
+  {\extramarks@getmarks\@outputbox{\@opcol} \@outputpage}
   {}
   {\msg@error@nnn {extramarks} {cannot-patch} {in \@opcol: \@outputpage} {}}
 \pretocmd {\@outputpage}

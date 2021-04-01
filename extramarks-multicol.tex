@@ -47,19 +47,6 @@
         }
     }
 }
-\cs_new_protected:Npn \extramarks@set@keptmarks
-{
-  \seq_map_inline:Nn \g__extramarks_marks_seq
-    {
-      \__extramarks_get_boxmarks:n { ##1 }
-      \extramarks@info
-        {
-          \string\__extramarks_get_boxmarks:n { ##1 }~in~\string\set@keptmarks\MessageBreak
-          \__extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
-          \__extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
-       }
-    }
-}
 \ExplSyntaxOff
 \pretocmd{\return@nonemptymark}
   {
@@ -69,7 +56,7 @@
   {\msg@error@nnn {extramarks2} {cannot-patch} {\return@nonemptymark}}
 \pretocmd{\set@keptmarks}
   {
-    \if@boxedmulticols\else\extramarks@set@keptmarks\fi
+    \if@boxedmulticols\else\extramarks@get@splitmarks{\set@keptmarks}\fi
   }
   {}
   {\msg@error@nnn {extramarks2} {cannot-patch} {\set@keptmarks}}
