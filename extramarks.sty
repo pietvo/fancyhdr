@@ -113,6 +113,22 @@
        }
     }
 }
+\cs_new_protected:Npn \extramarks@insert@nonemptymarks #1 #2
+{
+  \seq_map_inline:Nn \g__extramarks_marks_seq
+    {
+      \tl_if_empty:cF {g__extramarks_#1mark_##1_tl}
+        {
+          \tex_marks:D \use:c{c__extramarks_##1_int} {\use:c{g__extramarks_#1mark_##1_tl}}
+          \extramarks@info
+          {
+            In~\string\insert@nonemptymarks~{#1}~from~\string #2\MessageBreak
+            \string\xmarks \use:c{c__extramarks_##1_int}
+              {\use:c{g__extramarks_#1mark_##1_tl}}\MessageBreak
+          }
+        }
+    }
+}
 \cs_new_protected:Npn \extramarks@set@marks@topnewpage #1
 {
   \group_begin:

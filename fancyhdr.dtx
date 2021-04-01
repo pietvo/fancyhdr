@@ -5741,6 +5741,34 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% % \begin{macro}[internal]{\extramarks@insert@nonemptymarks}
+% \begin{syntax}
+% \cs{extramarks@insert@nonemptymarks}\marg{which}\marg{context},
+% where \meta{which} = \texttt{first} or \texttt{bot},
+% and \meta{context} = location where used (for debugging).
+% \end{syntax}
+% For each mark, if the \meta{which}mark is not empty, put the mark in
+% the vertical list.
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@insert@nonemptymarks #1 #2
+{
+  \seq_map_inline:Nn \g_@@_marks_seq
+    {
+      \tl_if_empty:cF {g_@@_#1mark_##1_tl}
+        {
+          \tex_marks:D \use:c{c_@@_##1_int} {\use:c{g_@@_#1mark_##1_tl}}
+          \extramarks@info
+          {
+            In~\string\insert@nonemptymarks~{#1}~from~\string #2\MessageBreak
+            \string\xmarks \use:c{c_@@_##1_int}
+              {\use:c{g_@@_#1mark_##1_tl}}\MessageBreak
+          }
+        }
+    }
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % Patch function for the processing of \cs{twocolumn} optional argument.
 % This is a bit more complicated, because there isn't a nice hook point.
 % That part does double-\cs{vbox}ing of the text in case of color.
@@ -6169,34 +6197,8 @@
 % \\[2ex]
 % We also use the \Package{multicol} debugging calls.
 % \\[2ex]
-% (1) Patch function for \cs{return@nonemptymarks}
-% \begin{macro}[internal]{\extramarks@return@nonemptymarks}
-% \begin{syntax}
-% \cs{extramarks@return@nonemptymarks}\marg{which}, where \meta{which} =
-% \texttt{first} or \texttt{bot}
-% \end{syntax}
-% For each mark, if the \meta{which}mark is not empty, put the mark in
-% the vertical list.
-%    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@return@nonemptymarks #1
-{
-  \seq_map_inline:Nn \g_@@_marks_seq
-    {
-      \tl_if_empty:cF {g_@@_#1mark_##1_tl}
-        {
-          \tex_marks:D \use:c{c_@@_##1_int} {\use:c{g_@@_#1mark_##1_tl}}
-          \extramarks@info
-          {
-            In~\string\return@nonemptymarks~{#1}\MessageBreak
-            \string\xmarks \use:c{c_@@_##1_int}
-              {\use:c{g_@@_#1mark_##1_tl}}\MessageBreak
-          }
-        }
-    }
-}
-%    \end{macrocode}
-% \end{macro}
-%
+% (1) Patch function for \cs{return@nonemptymark} = \cs{insert@nonemptymarks}
+% \\
 % (2) Patch function for \cs{set@keptmarks} = \cs{extramarks@get@splitmarks}
 %
 %    \begin{macrocode}
@@ -6210,7 +6212,8 @@
 %    \begin{macrocode}
 \pretocmd{\return@nonemptymark}
   {
-    \if@boxedmulticols\else\extramarks@return@nonemptymarks {#1}\fi
+    \if@boxedmulticols\else
+      \extramarks@insert@nonemptymarks {#1} {\return@nonemptymark}\fi
   }
   {}
   {\msg@error@nnn {extramarks2} {cannot-patch} {\return@nonemptymark}}

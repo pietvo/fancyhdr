@@ -31,26 +31,11 @@
 {
   \token_to_str:c { #1 } -> \use:c { #1 }\MessageBreak
 }
-\cs_new_protected:Npn \extramarks@return@nonemptymarks #1
-{
-  \seq_map_inline:Nn \g__extramarks_marks_seq
-    {
-      \tl_if_empty:cF {g__extramarks_#1mark_##1_tl}
-        {
-          \tex_marks:D \use:c{c__extramarks_##1_int} {\use:c{g__extramarks_#1mark_##1_tl}}
-          \extramarks@info
-          {
-            In~\string\return@nonemptymarks~{#1}\MessageBreak
-            \string\xmarks \use:c{c__extramarks_##1_int}
-              {\use:c{g__extramarks_#1mark_##1_tl}}\MessageBreak
-          }
-        }
-    }
-}
 \ExplSyntaxOff
 \pretocmd{\return@nonemptymark}
   {
-    \if@boxedmulticols\else\extramarks@return@nonemptymarks {#1}\fi
+    \if@boxedmulticols\else
+      \extramarks@insert@nonemptymarks {#1} {\return@nonemptymark}\fi
   }
   {}
   {\msg@error@nnn {extramarks2} {cannot-patch} {\return@nonemptymark}}
