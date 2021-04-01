@@ -5715,6 +5715,12 @@
 % spaces. Therefore also the names of these macros are with @ instead of
 % \verb|_| and :
 %
+% First we save the \cs{@outputpage} macro, just in case we patched the
+% wrong version in a package that has its own one.
+%    \begin{macrocode}
+\cs_new_eq:NN \extramarks@saved@outputpage \@outputpage
+%    \end{macrocode}
+%
 % \begin{macro}[internal]{\extramarks@get@splitmarks}
 % \begin{syntax}
 % \cs{extramarks@get@splitmarks}\marg{context}

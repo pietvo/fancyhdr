@@ -100,6 +100,7 @@
     \vbox_set:Nn \l__extramarks_temp_box { \unvcopy #1 \unskip }
     \vbox_set_split_to_ht:NNn \l__extramarks_temp_box \l__extramarks_temp_box \c_max_dim
 }
+\cs_new_eq:NN \extramarks@saved@outputpage \@outputpage
 \cs_new_protected:Npn \extramarks@get@splitmarks #1
 {
   \seq_map_inline:Nn \g__extramarks_marks_seq
