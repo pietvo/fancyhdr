@@ -38,13 +38,13 @@
       \extramarks@insert@nonemptymarks {#1} {\return@nonemptymark}\fi
   }
   {\extramarks@info{Patched \string\return@nonemptymark}}
-  {\msg@error@nnn {extramarks2} {cannot-patch} {\return@nonemptymark}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\return@nonemptymark}}
 \pretocmd{\set@keptmarks}
   {
     \if@boxedmulticols\else\extramarks@get@splitmarks{\set@keptmarks}\fi
   }
   {\extramarks@info{Patched \string\set@keptmarks}}
-  {\msg@error@nnn {extramarks2} {cannot-patch} {\set@keptmarks}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\set@keptmarks}}
 \makeatother
 \endinput
 %%
