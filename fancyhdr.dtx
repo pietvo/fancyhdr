@@ -5526,6 +5526,20 @@
 %    \end{macrocode}
 % \end{variable}
 %
+% Debugging
+%
+% \begin{macro}[internal]{\@@_show_mark:n}
+% \begin{syntax}
+% \cs{@@_show_mark:n}\marg{mark variable name}
+% \end{syntax}
+%    \begin{macrocode}
+\cs_new:Nn \@@_show_mark:n
+{
+  \token_to_str:c { #1 } -> \use:c { #1 }\MessageBreak
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}[internal]{\extramarks@info}
 % \begin{syntax}
 % \cs{extramarks@info}\marg{message}
@@ -6162,20 +6176,6 @@
 \ExplSyntaxOn
 %
 %    \end{macrocode}
-%
-% Debugging
-%
-% \begin{macro}[internal]{\@@_show_mark:n}
-% \begin{syntax}
-% \cs{@@_show_mark:n}\marg{mark variable name}
-% \end{syntax}
-%    \begin{macrocode}
-\cs_new:Nn \@@_show_mark:n
-{
-  \token_to_str:c { #1 } -> \use:c { #1 }\MessageBreak
-}
-%    \end{macrocode}
-% \end{macro}
 %
 % The algorithm used for multicol is the one explained in
 % \texttt{extramarks.sty}. In particular, when a \env{multicols}
