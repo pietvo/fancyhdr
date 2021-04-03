@@ -26,14 +26,11 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v3>\ProvidesPackage{extramarks}
-%<extramarks-multicol>\ProvidesFile{extramarks-multicol.tex}
-%<fancyhdr|fancyheadings|extramarks|extramarks-multicol>           [2021/03/22 v4.1beta
+%<fancyhdr|fancyheadings|extramarks>           [2021/03/22 v4.1beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
-%<extramarks-multicol>                  Extra marks for LaTeX (multicol extension)]
 %<fancyhdr|extramarks>% Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
-%<extramarks-multicol>% Copyright (C) 2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %<extramarks-v3>           [2021/01/01 v3
 %<extramarks-v3>                 Legacy version of extramarks for LaTeX]
 %<extramarks-v3>% Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
@@ -356,8 +353,8 @@
 % The preferred way to install this package is with a package installer.
 % If you want to install it by hand, then first run the command
 % `\verb+tex fancyhdr.ins+' and then move the files \texttt{fancyhdr.sty},
-% \texttt{extramarks.sty}, \texttt{extramarks-v3.sty},
-% \texttt{extramarks-multicol.tex} and \texttt{fancyheadings.sty} to a place
+% \texttt{extramarks.sty}, \texttt{extramarks-v3.sty}
+% and \texttt{fancyheadings.sty} to a place
 % where \latex/ can find it, preferably in a directory similar to
 % \texttt{.../texmf/tex/latex/fancyhdr/} in your \tex/ directory tree.
 % To get the documentation, run `\verb+pdflatex fancyhdr.dtx+'.
@@ -6146,44 +6143,57 @@
   {\expandafter\@rightmark\botmark\@empty\@empty}
 %    \end{macrocode}
 %
-% We check the presence of the multicol package at \Cmd{begin\{document\}},
-% because that's the only place where we can be sure, and is still
-% early enough. However, we can't put patching code directly inside the
-% hook, because that won't work. So we input a file with the code. That
-% has the additional advantage that we don't load the code when it isn't needed.
-%
+% \subsubsection*{Support for other packages}
+% \begin{macro}[internal]{\extramarks@patch,
+%                         \extramarks@patch@start,
+%                         \extramarks@patch@end}
+% \begin{syntax}
+%   \cs{extramarks@package}\marg{package name}
+%   \meta{patch code}
+%   \cs{extramarks@package@end}
+% \end{syntax}
+% We run the patch code for other packages in \cs{AtBeginDocument},
+% because that is the point where we know for sure if a package is
+% loaded, and is still early enough. This is a bit tricky code, because
+% when we patch code of that package, and the code has a \texttt{\#}-sign in it,
+% the code cannot be run directly in \cs{AtBeginDocument}, because the
+% \texttt{\#}-signs will be doubled, and this is not accepted by the patching
+% code. So we have some tricky code where we set the \cs{catcode} of \texttt{\#}
+% to 12 (other) before reading the code, but put it back to 6 before
+% using the code.
+% Because we patch traditional \LaTeX{} code, the patch code has to be
+% read and executed with \cs{ExplSyntaxOff}. If we want to patch
+% \Package{expl3} code we must write a new function for this.
 %    \begin{macrocode}
-\AtBeginDocument{
-  \@ifpackageloaded{multicol}
-  {
-    \input{extramarks-multicol.tex}
-  }
-  { }
+\cs_new_protected:Npn \extramarks@patch #1
+{
+  \catcode`\#=12\relax
+  \ExplSyntaxOff
+  \extramarks@patch@start{#1}
 }
-
-\ExplSyntaxOff
+\cs_new_protected:Npn \extramarks@patch@start #1 #2 \extramarks@patch@end
+{
+  \catcode`\#=6\relax
+  \AtBeginDocument{
+    \@ifpackageloaded{#1}
+    {#2}
+    { }
+  }
+  \ExplSyntaxOn
+}
 %    \end{macrocode}
+% \end{macro}
 %
-%</extramarks>
 %
-% \section{extramarks-multicol.tex}
+% \subsubsection*{Support for the \Package{multicol} package}
 %
-%<*extramarks-multicol>
-%<@@=extramarks>
-%
-%    \begin{macrocode}
-\makeatletter
-\ExplSyntaxOn
-%
-%    \end{macrocode}
-%
-% The algorithm used for multicol is the one explained in
-% \texttt{extramarks.sty}. In particular, when a \env{multicols}
-% environment is encountered, after creating the columns, the BOX code
-% is run on the part of the page \texttt{before} the \env{multicols}
-% (which is in the box \cs{partial@page}), and on each of the columns.
-% Conveniently this can be done in the macro \cs{set@keptmarks}, where
-% \Package{multicol} also processes the \LaTeX{} marks.
+% The algorithm used for multicol is the one explained above.
+% In particular, when a \env{multicols} environment is encountered,
+% after creating the columns, the BOX code is run on the part of the
+% page \texttt{before} the \env{multicols} (which is in the box
+% \cs{partial@page}), and on each of the columns. Conveniently this can
+% be done in the macro \cs{set@keptmarks}, where \Package{multicol} also
+% processes the \LaTeX{} marks.
 %
 % When the \env{multicols} environment was interrupted by a page
 % break, this is all that is needed, as the END processing will be done
@@ -6204,7 +6214,7 @@
 % We skip any processing for \emph{boxed} \env{multicols} (i.e. \env{multicols} in a box
 % or nested in another \env{multicols}).
 %
-% INIT and END processing have already been properly placed in \texttt{extramarks.sty}.
+% INIT and END processing have already been properly placed in \cs{@outputpage}.
 %
 % Here comes the \texttt{multicol} patching code.
 % \\[2ex]
@@ -6213,14 +6223,12 @@
 % (2) & patch \cs{set@keptmarks}              & $\Rightarrow$ & For each BOX code\\
 %   \end{tabular}
 % \\[2ex]
-% We also use the \Package{multicol} debugging calls.
-% \\[2ex]
 % (1) Patch function for \cs{return@nonemptymark} = \cs{insert@nonemptymarks}
 % \\
 % (2) Patch function for \cs{set@keptmarks} = \cs{extramarks@get@splitmarks}
 %
 %    \begin{macrocode}
-\ExplSyntaxOff
+\extramarks@patch{multicol}
 %    \end{macrocode}
 %
 % The functions to be patched are in LaTeX2e syntax, so we can't use
@@ -6245,13 +6253,14 @@
   }
   {\extramarks@info{Patched \string\set@keptmarks}}
   {\msg@error@nnn {extramarks} {cannot-patch} {\set@keptmarks}}
+\extramarks@patch@end
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\makeatother
+\ExplSyntaxOff
 %    \end{macrocode}
 %
-%</extramarks-multicol>
+%</extramarks>
 %
 % \section{extramarks-v3.sty}
 %

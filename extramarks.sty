@@ -292,14 +292,37 @@
   {\expandafter\@leftmark\firstmark\@empty\@empty}
 \NewDocumentCommand\lastrightmark { }
   {\expandafter\@rightmark\botmark\@empty\@empty}
-\AtBeginDocument{
-  \@ifpackageloaded{multicol}
-  {
-    \input{extramarks-multicol.tex}
-  }
-  { }
+\cs_new_protected:Npn \extramarks@patch #1
+{
+  \catcode`\#=12\relax
+  \ExplSyntaxOff
+  \extramarks@patch@start{#1}
 }
-
+\cs_new_protected:Npn \extramarks@patch@start #1 #2 \extramarks@patch@end
+{
+  \catcode`\#=6\relax
+  \AtBeginDocument{
+    \@ifpackageloaded{#1}
+    {#2}
+    { }
+  }
+  \ExplSyntaxOn
+}
+\extramarks@patch{multicol}
+\pretocmd{\return@nonemptymark}
+  {
+    \if@boxedmulticols\else
+      \extramarks@insert@nonemptymarks {#1} {\return@nonemptymark}\fi
+  }
+  {\extramarks@info{Patched \string\return@nonemptymark}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\return@nonemptymark}}
+\pretocmd{\set@keptmarks}
+  {
+    \if@boxedmulticols\else\extramarks@get@splitmarks{\set@keptmarks}\fi
+  }
+  {\extramarks@info{Patched \string\set@keptmarks}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\set@keptmarks}}
+\extramarks@patch@end
 \ExplSyntaxOff
 \endinput
 %%

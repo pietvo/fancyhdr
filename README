@@ -13,7 +13,6 @@ After processing (by tex) of fancyhdr.ins, the following package files will be g
 
 fancyhdr.sty		 the LaTeX package
 extramarks.sty 		 a package for additional marks
-extramarks-multicol.tex	 an auxiliary file for extramarks.sty
 extramarks-v3.sty 	 a legacy version of extramarks.sty
 fancyheadings.sty	 this loads fancyhdr with a warning message
 
