@@ -5532,7 +5532,7 @@
 %    \begin{macrocode}
 \cs_new:Nn \@@_show_mark:n
 {
-  \token_to_str:c { #1 } -> \use:c { #1 }\MessageBreak
+  \token_to_str:c { #1 } -> \tl_to_str:c { #1 }\MessageBreak
 }
 %    \end{macrocode}
 % \end{macro}

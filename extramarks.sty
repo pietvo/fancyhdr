@@ -38,7 +38,7 @@
 \tl_new:N \l__extramarks_temp_tl
 \cs_new:Nn \__extramarks_show_mark:n
 {
-  \token_to_str:c { #1 } -> \use:c { #1 }\MessageBreak
+  \token_to_str:c { #1 } -> \tl_to_str:c { #1 }\MessageBreak
 }
 \cs_new_eq:NN \extramarks@info \use_none:n
 \DeclareOption{debugshow}{%
