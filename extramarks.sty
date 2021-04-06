@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks}
-           [2021/03/22 v4.1beta
+           [2021/04/06 v4.1beta
                   Extra marks for LaTeX]
 % Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -124,12 +124,12 @@
     {
       \tl_if_empty:cF {g__extramarks_#1mark_##1_tl}
         {
-          \tex_marks:D \use:c{c__extramarks_##1_int} {\use:c{g__extramarks_#1mark_##1_tl}}
+          \tex_marks:D \use:c{c__extramarks_##1_int} {\exp_not:v {g__extramarks_#1mark_##1_tl}}
           \extramarks@info
             {
-              In~\string\insert@nonemptymarks~{#1}~from~\string #2\MessageBreak
-              \string\xmarks \use:c{c__extramarks_##1_int}
-                {\use:c{g__extramarks_#1mark_##1_tl}}\MessageBreak
+              In~\string \insert@nonemptymarks \space {#1}~from~\string #2\MessageBreak
+              \string \xmarks \use:c{c__extramarks_##1_int}
+                {\tl_to_str:c {g__extramarks_#1mark_##1_tl}}\MessageBreak
             }
         }
     }
