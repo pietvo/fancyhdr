@@ -5660,7 +5660,7 @@
 % Get our \cs{splitfirstmark}
 %    \begin{macrocode}
   \tl_gset:No \l_@@_temp_tl
-    { \splitfirstmarks \use:c{c_@@_#1_int} }
+    { \splitfirstmarks \use:c { c_@@_#1_int } }
   \tl_if_empty:NF \l_@@_temp_tl
 %    \end{macrocode}
 % If not empty
@@ -5671,7 +5671,7 @@
           \tl_gset_eq:cN { g_@@_firstmark_#1_tl } \l_@@_temp_tl
         }
       \tl_gset:co { g_@@_botmark_#1_tl }
-        { \splitbotmarks \use:c{c_@@_#1_int} }
+        { \splitbotmarks \use:c { c_@@_#1_int } }
     }
 }
 %    \end{macrocode}
@@ -5749,7 +5749,7 @@
       \@@_get_boxmarks:n { ##1 }
       \extramarks@info
         {
-          \string\@@_get_boxmarks:n { ##1 }~in~\string #1\MessageBreak
+          \string \@@_get_boxmarks:n \space { ##1 }~in~\string #1\MessageBreak
           \@@_show_mark:n  { g_@@_firstmark_##1_tl }
           \@@_show_mark:n  { g_@@_botmark_##1_tl }
         }
@@ -5858,7 +5858,7 @@
       \@@_get_boxmarks_end:n { ##1 }
       \extramarks@info
         {
-          \string\@@_get_boxmarks_end:n { ##1 }\MessageBreak
+          \string \@@_get_boxmarks_end:n \space { ##1 }\MessageBreak
           \@@_show_mark:n  { g_@@_firstmark_##1_tl }
           \@@_show_mark:n  { g_@@_botmark_##1_tl }
         }
@@ -5880,7 +5880,7 @@
     \@@_get_boxmarks_init:n { ##1 }
     \extramarks@info
       {
-        \string\@@_get_boxmarks_init:n { ##1 }\MessageBreak
+        \string \@@_get_boxmarks_init:n \space { ##1 }\MessageBreak
         \@@_show_mark:n  { g_@@_firstmark_##1_tl }
         \@@_show_mark:n  { g_@@_botmark_##1_tl }
       }
@@ -5910,8 +5910,8 @@
              }%
     \color@endbox}
   {\extramarks@set@marks@topnewpage{#1}}
-  {\extramarks@info{Patched \string\@topnewpage}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {@topnewpage}}
+  {\extramarks@info{Patched \string \@topnewpage}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\@topnewpage}}
 %    \end{macrocode}
 %
 % Patch the \cs{@outputdblcol} macro for the first colum case.
@@ -5920,9 +5920,9 @@
 %
 %    \begin{macrocode}
 \patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
-  {\extramarks@get@splitmarks{\outputdblcol 1} \ifx\@firstcolfirstmark\@empty}
-  {\extramarks@info{Patched \string\@outputdblcol 1}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 1}}
+  {\extramarks@get@splitmarks{\outputdblcol \space 1} \ifx\@firstcolfirstmark\@empty}
+  {\extramarks@info{Patched \string \@outputdblcol \space 1}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol \space patch 1}}
 %    \end{macrocode}
 %
 % Patch the \cs{@outputdblcol} macro for the second column case.
@@ -5931,9 +5931,9 @@
 %
 %    \begin{macrocode}
 \patchcmd{\@outputdblcol}{\global\@firstcolumntrue}
-  {\global\@firstcolumntrue\extramarks@getmarks\@outputbox{\@outputdblcol 2}}
-  {\extramarks@info{Patched \string\@outputdblcol 2}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 2}}
+  {\global\@firstcolumntrue\extramarks@getmarks\@outputbox{\@outputdblcol \space 2}}
+  {\extramarks@info{Patched \string \@outputdblcol \space 2}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol \space patch 2}}
 %    \end{macrocode}
 %
 % End of \cs{@outputdblcol} patching code
@@ -5943,7 +5943,7 @@
 %    \begin{macrocode}
 \patchcmd {\@opcol} {\@outputpage}
   {\extramarks@getmarks\@outputbox{\@opcol} \@outputpage}
-  {\extramarks@info{Patched \string\@opcol}}
+  {\extramarks@info{Patched \string \@opcol}}
   {\msg@error@nnn {extramarks} {cannot-patch} {in \@opcol: \@outputpage} {}}
 %    \end{macrocode}
 %
@@ -5956,14 +5956,14 @@
 %    \begin{macrocode}
 \pretocmd {\@outputpage}
   {\extramarks@getmarks@end}
-  {\extramarks@info{Patched beginning of \string\@outputpage}}
+  {\extramarks@info{Patched beginning of \string \@outputpage}}
   {\msg@error@nnn {extramarks} {cannot-patch} {beginning of \@outputpage} {}}
 %    \end{macrocode}
 %
 %    \begin{macrocode}
 \apptocmd {\@outputpage}
   {\extramarks@init@marks}
-  {\extramarks@info{Patched end of \string\@outputpage}}
+  {\extramarks@info{Patched end of \string \@outputpage}}
   {\msg@error@nnn {extramarks} {cannot-patch} {end of \@outputpage} {}}
 %    \end{macrocode}
 %
@@ -6001,7 +6001,7 @@
 %    \end{macrocode}
 % Put braced value in the mark
 %    \begin{macrocode}
-      \tex_marks:D \use:c{c_@@_#1_int} {{ \l_@@_temp_tl }}
+      \tex_marks:D \use:c { c_@@_#1_int } {{ \l_@@_temp_tl }}
       \endgroup
   }
   { \msg_error:nnnn {extramarks} {not-defined} {\extramarksput} {#1} }
@@ -6241,7 +6241,7 @@
     \if@boxedmulticols\else
       \extramarks@insert@nonemptymarks {#1} {\return@nonemptymark}\fi
   }
-  {\extramarks@info{Patched \string\return@nonemptymark}}
+  {\extramarks@info{Patched \string \return@nonemptymark}}
   {\msg@error@nnn {extramarks} {cannot-patch} {\return@nonemptymark}}
 %    \end{macrocode}
 %
@@ -6251,7 +6251,7 @@
   {
     \if@boxedmulticols\else\extramarks@get@splitmarks{\set@keptmarks}\fi
   }
-  {\extramarks@info{Patched \string\set@keptmarks}}
+  {\extramarks@info{Patched \string \set@keptmarks}}
   {\msg@error@nnn {extramarks} {cannot-patch} {\set@keptmarks}}
 \extramarks@patch@end
 %    \end{macrocode}

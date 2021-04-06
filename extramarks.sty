@@ -78,7 +78,7 @@
 \cs_new_protected:Npn \__extramarks_get_boxmarks:n #1
 {
   \tl_gset:No \l__extramarks_temp_tl
-    { \splitfirstmarks \use:c{c__extramarks_#1_int} }
+    { \splitfirstmarks \use:c { c__extramarks_#1_int } }
   \tl_if_empty:NF \l__extramarks_temp_tl
     {
       \tl_if_empty:cT { g__extramarks_firstmark_#1_tl }
@@ -86,7 +86,7 @@
           \tl_gset_eq:cN { g__extramarks_firstmark_#1_tl } \l__extramarks_temp_tl
         }
       \tl_gset:co { g__extramarks_botmark_#1_tl }
-        { \splitbotmarks \use:c{c__extramarks_#1_int} }
+        { \splitbotmarks \use:c { c__extramarks_#1_int } }
     }
 }
 \cs_new_protected:Npn \__extramarks_get_boxmarks_end:n #1
@@ -112,7 +112,7 @@
       \__extramarks_get_boxmarks:n { ##1 }
       \extramarks@info
         {
-          \string\__extramarks_get_boxmarks:n { ##1 }~in~\string #1\MessageBreak
+          \string \__extramarks_get_boxmarks:n \space { ##1 }~in~\string #1\MessageBreak
           \__extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
           \__extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
         }
@@ -167,7 +167,7 @@
       \__extramarks_get_boxmarks_end:n { ##1 }
       \extramarks@info
         {
-          \string\__extramarks_get_boxmarks_end:n { ##1 }\MessageBreak
+          \string \__extramarks_get_boxmarks_end:n \space { ##1 }\MessageBreak
           \__extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
           \__extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
         }
@@ -180,7 +180,7 @@
     \__extramarks_get_boxmarks_init:n { ##1 }
     \extramarks@info
       {
-        \string\__extramarks_get_boxmarks_init:n { ##1 }\MessageBreak
+        \string \__extramarks_get_boxmarks_init:n \space { ##1 }\MessageBreak
         \__extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
         \__extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
       }
@@ -199,27 +199,27 @@
              }%
     \color@endbox}
   {\extramarks@set@marks@topnewpage{#1}}
-  {\extramarks@info{Patched \string\@topnewpage}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {@topnewpage}}
+  {\extramarks@info{Patched \string \@topnewpage}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\@topnewpage}}
 \patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
-  {\extramarks@get@splitmarks{\outputdblcol 1} \ifx\@firstcolfirstmark\@empty}
-  {\extramarks@info{Patched \string\@outputdblcol 1}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 1}}
+  {\extramarks@get@splitmarks{\outputdblcol \space 1} \ifx\@firstcolfirstmark\@empty}
+  {\extramarks@info{Patched \string \@outputdblcol \space 1}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol \space patch 1}}
 \patchcmd{\@outputdblcol}{\global\@firstcolumntrue}
-  {\global\@firstcolumntrue\extramarks@getmarks\@outputbox{\@outputdblcol 2}}
-  {\extramarks@info{Patched \string\@outputdblcol 2}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 2}}
+  {\global\@firstcolumntrue\extramarks@getmarks\@outputbox{\@outputdblcol \space 2}}
+  {\extramarks@info{Patched \string \@outputdblcol \space 2}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol \space patch 2}}
 \patchcmd {\@opcol} {\@outputpage}
   {\extramarks@getmarks\@outputbox{\@opcol} \@outputpage}
-  {\extramarks@info{Patched \string\@opcol}}
+  {\extramarks@info{Patched \string \@opcol}}
   {\msg@error@nnn {extramarks} {cannot-patch} {in \@opcol: \@outputpage} {}}
 \pretocmd {\@outputpage}
   {\extramarks@getmarks@end}
-  {\extramarks@info{Patched beginning of \string\@outputpage}}
+  {\extramarks@info{Patched beginning of \string \@outputpage}}
   {\msg@error@nnn {extramarks} {cannot-patch} {beginning of \@outputpage} {}}
 \apptocmd {\@outputpage}
   {\extramarks@init@marks}
-  {\extramarks@info{Patched end of \string\@outputpage}}
+  {\extramarks@info{Patched end of \string \@outputpage}}
   {\msg@error@nnn {extramarks} {cannot-patch} {end of \@outputpage} {}}
 \extramarksnewmark{left}
 \extramarksnewmark{right}
@@ -233,7 +233,7 @@
       \cs_set_eq:NN \index    \scan_stop:
       \cs_set_eq:NN \glossary \scan_stop:
       \unrestored@protected@xdef \l__extramarks_temp_tl { #2 }
-      \tex_marks:D \use:c{c__extramarks_#1_int} {{ \l__extramarks_temp_tl }}
+      \tex_marks:D \use:c { c__extramarks_#1_int } {{ \l__extramarks_temp_tl }}
       \endgroup
   }
   { \msg_error:nnnn {extramarks} {not-defined} {\extramarksput} {#1} }
@@ -314,13 +314,13 @@
     \if@boxedmulticols\else
       \extramarks@insert@nonemptymarks {#1} {\return@nonemptymark}\fi
   }
-  {\extramarks@info{Patched \string\return@nonemptymark}}
+  {\extramarks@info{Patched \string \return@nonemptymark}}
   {\msg@error@nnn {extramarks} {cannot-patch} {\return@nonemptymark}}
 \pretocmd{\set@keptmarks}
   {
     \if@boxedmulticols\else\extramarks@get@splitmarks{\set@keptmarks}\fi
   }
-  {\extramarks@info{Patched \string\set@keptmarks}}
+  {\extramarks@info{Patched \string \set@keptmarks}}
   {\msg@error@nnn {extramarks} {cannot-patch} {\set@keptmarks}}
 \extramarks@patch@end
 \ExplSyntaxOff
