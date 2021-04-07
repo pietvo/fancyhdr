@@ -52,7 +52,7 @@
 \ProcessOptions*
 \msg_new:nnn {extramarks} {not-defined} {\token_to_str:N #1:~mark~#2~not~defined}
 \msg_new:nnn {extramarks} {already-defined} {\token_to_str:N #1:~mark~#2~already~defined}
-\msg_new:nnn {extramarks} {cannot-patch} {Patch \token_to_str:N #1~failed}
+\msg_new:nnn {extramarks} {cannot-patch} {Patch ~ \token_to_str:N #1~failed}
 \cs_new_eq:NN \msg@error@nnn  \msg_error:nnn
 \cs_new_eq:NN \msg@error@nnnn \msg_error:nnnn
 \NewDocumentCommand \extramarksnewmark { m }
