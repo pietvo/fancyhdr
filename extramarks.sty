@@ -391,6 +391,105 @@
   {\extramarks@info{Patched \string \set@keptmarks}}
   {\msg@error@nnn {extramarks} {cannot-patch} {\set@keptmarks}}
 \extramarks@patch@end
+\@ifpackageloaded{paracol}
+  {
+    \cs_gset_eq:NN \@outputpage \extramarks@saved@outputpage
+    \pretocmd {\pcol@@outputpage}
+      {\extramarks@getmarks@end}
+      {\extramarks@info{Patched beginning of \string \pcol@@outputpage}}
+      {\msg@error@nnn {extramarks} {cannot-patch} {beginning of \pcol@@outputpage}}
+    \apptocmd {\pcol@@outputpage}
+      {\extramarks@initmarks}
+      {\extramarks@info{Patched end of \string \pcol@@outputpage}}
+      {\msg@error@nnn {extramarks} {cannot-patch} {end of \pcol@@outputpage}}
+  }
+  { }
+\extramarks@patch{paracol}
+\patchcmd{\pcol@ioutputelt}
+  {\unvbox\pcol@spanning}
+  {\extramarks@getmarks\pcol@spanning{\pcol@ioutputelt}\unvbox\pcol@spanning}
+  {\extramarks@info{Patched \string \pcol@ioutputelt \space (\string\pcol@spanning)}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@ioutputelt \space
+      (\pcol@spanning)}%
+  }
+\patchcmd{\pcol@ioutputelt}
+  {\ifvoid\@currbox\else}
+  {\ifvoid\@currbox\else\extramarks@getmarks\@currbox{\pcol@ioutputelt}}
+  {\extramarks@info{Patched \string \pcol@ioutputelt \space
+      (\string\@currbox)}%
+  }
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@ioutputelt \space
+      (\string\@currbox)}%
+  }
+\patchcmd{\pcol@makeflushedpage}
+  {\advance\@tempdima\dp\pcol@spanning}
+  {\advance\@tempdima\dp\pcol@spanning
+    \extramarks@getmarks\pcol@spanning{\pcol@makeflushedpage
+      (\string\pcol@spanning)}%
+  }
+  {\extramarks@info{Patched \string \pcol@makeflushedpage \space
+      (\string\pcol@spanning)}%
+  }
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@makeflushedpage
+      \space (\pcol@spanning)}%
+  }
+\patchcmd{\pcol@imakeflushedpage}
+  {\pcol@getcurrcol}
+  {\pcol@getcurrcol\extramarks@getmarks\@currbox{\pcol@imakeflushedpage}}
+  {\extramarks@info{Patched \string \pcol@imakeflushedpage \space
+      (\string\@currbox)}%
+  }
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@imakeflushedpage \space
+      (\string\@currbox)}%
+  }
+\patchcmd{\pcol@outputpage@l}
+  {\global\c@page#1\relax}
+  {\global\c@page#1\relax\extramarks@getmarks\@outputbox{\pcol@outputpage@l}}
+  {\extramarks@info{Patched \string \pcol@outputpage@l}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@outputpage@l}}
+\patchcmd{\pcol@outputpage@r}
+  {\global\c@page#1\relax}
+  {\global\c@page#1\relax\extramarks@getmarks\pcol@rightpage{\pcol@outputpage@r}}
+  {\extramarks@info{Patched \string \pcol@outputpage@r}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@outputpage@r}}
+\patchcmd{\pcol@makecol}
+  {\@minus.0001fil}
+  {\@minus\maxdimen}
+  {\extramarks@info{Patched \string \pcol@makecol}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@makecol}}
+\patchcmd{\pcol@combinefloats}
+  {\@minus.0001fil}
+  {\@minus\maxdimen}
+  {\extramarks@info{Patched \string \pcol@combinefloats \space 1}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@combinefloats \space 1}}
+\patchcmd{\pcol@combinefloats}
+  {\@minus-.0001fil}
+  {\@minus-\maxdimen}
+  {\extramarks@info{Patched \string \pcol@combinefloats \space 1}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@combinefloats \space 2}}
+\patchcmd{\pcol@synccolumn}
+  {\@minus.0001fil}
+  {\@minus\maxdimen}
+  {\extramarks@info{Patched \string \pcol@synccolumn \space 1}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@synccolumn \space 1}}
+\patchcmd{\pcol@synccolumn}
+  {\global\pcol@prevdepth\@tempdimc}
+  {\global\pcol@prevdepth\@tempdimc
+    \extramarks@savemarks {\pcol@synccolumn}%
+    \extramarks@getlocalmarks \@currbox {\pcol@synccolumn}%
+  }
+  {\extramarks@info{Patched \string \pcol@synccolumn \space 2}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@synccolumn \space 2}}
+\patchcmd{\pcol@synccolumn}
+  {\vbox to\@tempdimb{\unvbox\@currbox \vskip\z@\@plus.0001fil}\fi}
+  {\vbox to\@tempdimb{\unvbox\@currbox \vskip\z@\@plus.0001fil}\fi
+    \extramarks@insert@nonemptymarks{first}{\pcol@synccolumn}%
+    \extramarks@insert@nonemptymarks{bot}{\pcol@synccolumn}%
+    \extramarks@restoremarks{\pcol@synccolumn}%
+  }
+  {\extramarks@info{Patched \string \pcol@synccolumn \space 3}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@synccolumn \space 3}}
+\extramarks@patch@end
 \ExplSyntaxOff
 \endinput
 %%

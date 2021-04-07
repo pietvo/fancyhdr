@@ -6382,6 +6382,205 @@
 \extramarks@patch@end
 %    \end{macrocode}
 %
+% \subsubsection*{Support for the \Package{paracol} package}
+%<@@=>
+%
+% Support for the \Package{paracol} package is similar to
+% \Package{multicol} but slightly more complicated.
+%
+% First, the package changes the output routine \cs{@outputpage}, so if
+% it was loaded before \Package{extramarks} we have patched the wrong
+% version, namely \Package{paracol}s own version instead of \LaTeX's
+% one. So in that case we set it back, and then patch
+% \Package{paracol}s copy, which is in \cs{pcol@@ouputpage}. The rest of
+% the patching will be done in \cs{AtBeginDocument}.
+% \\[2ex]
+% The functions to be patched are in LaTeX2e syntax, so we can't use
+% expl3 here. Therefore no \verb|_| and : in their names.
+%
+%    \begin{macrocode}
+\@ifpackageloaded{paracol}
+  {
+    \cs_gset_eq:NN \@outputpage \extramarks@saved@outputpage
+%    \end{macrocode}
+% Patch the \cs{pcol@@outputpage} macro, which is the original \LaTeX{}
+% \cs{@outputpage}, just renamed. So the patch is equal to the
+% \cs{@outputpage} patch above.
+%
+%    \begin{macrocode}
+    \pretocmd {\pcol@@outputpage}
+      {\extramarks@getmarks@end}
+      {\extramarks@info{Patched beginning of \string \pcol@@outputpage}}
+      {\msg@error@nnn {extramarks} {cannot-patch} {beginning of \pcol@@outputpage}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+    \apptocmd {\pcol@@outputpage}
+      {\extramarks@initmarks}
+      {\extramarks@info{Patched end of \string \pcol@@outputpage}}
+      {\msg@error@nnn {extramarks} {cannot-patch} {end of \pcol@@outputpage}}
+  }
+  { }
+%    \end{macrocode}
+%
+% End of \cs{pcol@@outputpage} patching code.
+% \\[2ex]
+% The rest of the patching code goes to \cs{AtBeginDocument}.
+%    \begin{macrocode}
+\extramarks@patch{paracol}
+%    \end{macrocode}
+%
+% Output boxes are generated in \cs{pcol@ioutputelt},
+% \cs{pcol@makeflushedpage} and \cs{pcol@imakeflushedpage}
+% \\[2ex]
+% In \cs{pcol@ioutputelt}, box \cs{pcol@spanning} (text before
+% \env{paracol} environment).
+%    \begin{macrocode}
+\patchcmd{\pcol@ioutputelt}
+  {\unvbox\pcol@spanning}
+  {\extramarks@getmarks\pcol@spanning{\pcol@ioutputelt}\unvbox\pcol@spanning}
+  {\extramarks@info{Patched \string \pcol@ioutputelt \space (\string\pcol@spanning)}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@ioutputelt \space
+      (\pcol@spanning)}%
+  }
+%    \end{macrocode}
+%
+% In \cs{pcol@ioutputelt}, each column in box \cs{@currbox}.
+%    \begin{macrocode}
+\patchcmd{\pcol@ioutputelt}
+  {\ifvoid\@currbox\else}
+  {\ifvoid\@currbox\else\extramarks@getmarks\@currbox{\pcol@ioutputelt}}
+  {\extramarks@info{Patched \string \pcol@ioutputelt \space
+      (\string\@currbox)}%
+  }
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@ioutputelt \space
+      (\string\@currbox)}%
+  }
+%    \end{macrocode}
+%
+% In \cs{pcol@makeflushedpage}, box \cs{pcol@spanning} (text before
+% \env{paracol} environment).
+%    \begin{macrocode}
+\patchcmd{\pcol@makeflushedpage}
+  {\advance\@tempdima\dp\pcol@spanning}
+  {\advance\@tempdima\dp\pcol@spanning
+    \extramarks@getmarks\pcol@spanning{\pcol@makeflushedpage
+      (\string\pcol@spanning)}%
+  }
+  {\extramarks@info{Patched \string \pcol@makeflushedpage \space
+      (\string\pcol@spanning)}%
+  }
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@makeflushedpage
+      \space (\pcol@spanning)}%
+  }
+%    \end{macrocode}
+%
+% In \cs{pcol@imakeflushedpage}, each column in box \cs{@currbox}.
+%    \begin{macrocode}
+\patchcmd{\pcol@imakeflushedpage}
+  {\pcol@getcurrcol}
+  {\pcol@getcurrcol\extramarks@getmarks\@currbox{\pcol@imakeflushedpage}}
+  {\extramarks@info{Patched \string \pcol@imakeflushedpage \space
+      (\string\@currbox)}%
+  }
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@imakeflushedpage \space
+      (\string\@currbox)}%
+  }
+%    \end{macrocode}
+%
+% In \cs{pcol@outputpage@l}, box \cs{@outputbox}
+% (normal text outside \env{paracol}).
+%    \begin{macrocode}
+\patchcmd{\pcol@outputpage@l}
+  {\global\c@page#1\relax}
+  {\global\c@page#1\relax\extramarks@getmarks\@outputbox{\pcol@outputpage@l}}
+  {\extramarks@info{Patched \string \pcol@outputpage@l}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@outputpage@l}}
+%    \end{macrocode}
+%
+% In \cs{pcol@outputpage@r}, box \cs{pcol@rightpage}
+% (normal text outside \env{paracol}).
+%    \begin{macrocode}
+\patchcmd{\pcol@outputpage@r}
+  {\global\c@page#1\relax}
+  {\global\c@page#1\relax\extramarks@getmarks\pcol@rightpage{\pcol@outputpage@r}}
+  {\extramarks@info{Patched \string \pcol@outputpage@r}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@outputpage@r}}
+%    \end{macrocode}
+%
+% Sometimes \Package{paracol} puts a glue with a small but infinite shrink in
+% an output box. This gives an error message on our \cs{vsplit}
+% operation, which is annoying. Moreover, if there are more than 100
+% such messages, \TeX{} will stop processing, which is just intolerable.
+% So we replace these small but infinite shrinks with a large, finite
+% shrink. This can change the result a tiny bit, but generally it should be
+% invisible to the eye, according to my experiments\footnote{For
+% example, in the 69 page \Package{paracol} manual, where this is heavily used,
+% there was only one place where it made a difference of about 0.06 mm; I had to zoom
+% $10\times$ to see the difference.}.
+%
+%    \begin{macrocode}
+\patchcmd{\pcol@makecol}
+  {\@minus.0001fil}
+  {\@minus\maxdimen}
+  {\extramarks@info{Patched \string \pcol@makecol}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@makecol}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\patchcmd{\pcol@combinefloats}
+  {\@minus.0001fil}
+  {\@minus\maxdimen}
+  {\extramarks@info{Patched \string \pcol@combinefloats \space 1}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@combinefloats \space 1}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\patchcmd{\pcol@combinefloats}
+  {\@minus-.0001fil}
+  {\@minus-\maxdimen}
+  {\extramarks@info{Patched \string \pcol@combinefloats \space 1}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@combinefloats \space 2}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\patchcmd{\pcol@synccolumn}
+  {\@minus.0001fil}
+  {\@minus\maxdimen}
+  {\extramarks@info{Patched \string \pcol@synccolumn \space 1}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@synccolumn \space 1}}
+%    \end{macrocode}
+% In \cs{pcol@synccolumn}, box \cs{@currbox} is doubly \cs{vboxed}. So
+% we have to get the marks out of the box, and inject them outside of the box.
+% Save the global marks and get the local marks from \cs{@currbox}.
+%    \begin{macrocode}
+\patchcmd{\pcol@synccolumn}
+  {\global\pcol@prevdepth\@tempdimc}
+  {\global\pcol@prevdepth\@tempdimc
+    \extramarks@savemarks {\pcol@synccolumn}%
+    \extramarks@getlocalmarks \@currbox {\pcol@synccolumn}%
+  }
+  {\extramarks@info{Patched \string \pcol@synccolumn \space 2}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@synccolumn \space 2}}
+%    \end{macrocode}
+% Insert the local marks from \cs{@currbox} in the main vertical list
+% and restore the global marks.
+%    \begin{macrocode}
+\patchcmd{\pcol@synccolumn}
+  {\vbox to\@tempdimb{\unvbox\@currbox \vskip\z@\@plus.0001fil}\fi}
+  {\vbox to\@tempdimb{\unvbox\@currbox \vskip\z@\@plus.0001fil}\fi
+    \extramarks@insert@nonemptymarks{first}{\pcol@synccolumn}%
+    \extramarks@insert@nonemptymarks{bot}{\pcol@synccolumn}%
+    \extramarks@restoremarks{\pcol@synccolumn}%
+  }
+  {\extramarks@info{Patched \string \pcol@synccolumn \space 3}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@synccolumn \space 3}}
+\extramarks@patch@end
+%    \end{macrocode}
+%<@@=extramarks>
+%
+% End of \Package{paracol} patching code.
+%
 %    \begin{macrocode}
 \ExplSyntaxOff
 %    \end{macrocode}
