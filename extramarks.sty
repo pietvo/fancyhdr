@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks}
-           [2021/04/06 v4.1beta
+           [2021/04/07 v4.1beta
                   Extra marks for LaTeX]
 % Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -97,12 +97,16 @@
     \tl_gset_eq:cc { g__extramarks_botmark_#1_tl } { g__extramarks_topmark_#1_tl }
   }
 }
+\int_new:N \l__extramarks_errorcontextlines
 \cs_new_protected:Npn \__extramarks_vsplit_box #1
 {
     \dim_set:Nn \tex_splitmaxdepth:D \c_max_dim
     \int_set:Nn \tex_vbadness:D      \c_max_int
     \vbox_set:Nn \l__extramarks_temp_box { \unvcopy #1 \unskip }
+    \int_set_eq:NN \l__extramarks_errorcontextlines \errorcontextlines
+    \int_set:Nn \errorcontextlines {-1}
     \vbox_set_split_to_ht:NNn \l__extramarks_temp_box \l__extramarks_temp_box \c_max_dim
+    \int_set_eq:NN \errorcontextlines \l__extramarks_errorcontextlines
 }
 \cs_new_eq:NN \extramarks@saved@outputpage \@outputpage
 \cs_new_protected:Npn \extramarks@get@splitmarks #1

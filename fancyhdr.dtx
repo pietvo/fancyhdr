@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v3>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2021/04/06 v4.1beta
+%<fancyhdr|fancyheadings|extramarks>           [2021/04/07 v4.1beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -5697,11 +5697,21 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% Temporary \cs{vsplit} a box. This should be called inside a \TeX{} group.
 % \begin{macro}[internal]{\@@_vsplit_box}
 % \begin{syntax}
 % \cs{@@_vsplit_box}\meta{box}
 % \end{syntax}
+% Temporary \cs{vsplit} a box. This should be called inside a \TeX{} group.
+% This could generate a \TeX{} errormessage if the box to be split
+% contains infinite glue shrinkage. This is harmless for our purpose,
+% but unfortunately we cannot disable the error message. We temporarily
+% set \cs{errorcontextlines} to $-1$, however, to make the output as
+% little as possible. We need a variable to store the original value.
+% \begin{variable}[internal]{\l_@@_errorcontextlines}
+%    \begin{macrocode}
+\int_new:N \l_@@_errorcontextlines
+%    \end{macrocode}
+% \end{variable}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_vsplit_box #1
 {
@@ -5712,9 +5722,12 @@
 %    \begin{macrocode}
     \vbox_set:Nn \l_@@_temp_box { \unvcopy #1 \unskip }
 %    \end{macrocode}
-% Split the temporary box
+% Split the temporary box, with \cs{errorcontextlines} = $-1$.
 %    \begin{macrocode}
+    \int_set_eq:NN \l_@@_errorcontextlines \errorcontextlines
+    \int_set:Nn \errorcontextlines {-1}
     \vbox_set_split_to_ht:NNn \l_@@_temp_box \l_@@_temp_box \c_max_dim
+    \int_set_eq:NN \errorcontextlines \l_@@_errorcontextlines
 }
 %    \end{macrocode}
 % \end{macro}
