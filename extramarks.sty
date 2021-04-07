@@ -89,6 +89,17 @@
         { \splitbotmarks \use:c { c__extramarks_#1_int } }
     }
 }
+\cs_new_protected:Npn \__extramarks_boxmarks:n #1
+{
+  \tl_gset:No \l__extramarks_temp_tl
+    { \splitfirstmarks \use:c{c__extramarks_#1_int} }
+  \tl_if_empty:NF \l__extramarks_temp_tl
+    {
+      \tl_gset_eq:cN { g__extramarks_firstmark_#1_tl } \l__extramarks_temp_tl
+      \tl_gset:co { g__extramarks_botmark_#1_tl }
+        { \splitbotmarks \use:c{c__extramarks_#1_int} }
+    }
+}
 \cs_new_protected:Npn \__extramarks_get_boxmarks_end:n #1
 {
   \tl_if_empty:cT { g__extramarks_firstmark_#1_tl }
@@ -168,6 +179,22 @@
     \extramarks@get@splitmarks { #2 }
   \group_end:
 }
+\cs_new_protected:Npn \extramarks@getlocalmarks #1 #2
+{
+  \group_begin:
+    \__extramarks_vsplit_box #1
+    \seq_map_inline:Nn \g__extramarks_marks_seq
+      {
+        \__extramarks_boxmarks:n { ##1 }
+        \extramarks@info
+          {
+            \string \__extramarks_boxmarks:n \space { ##1 }~in~\string #2\MessageBreak
+            \__extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
+            \__extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
+          }
+      }
+  \group_end:
+}
 \cs_new_protected:Npn \extramarks@getmarks@end
 {
   \seq_map_inline:Nn \g__extramarks_marks_seq
@@ -194,6 +221,38 @@
         \__extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
       }
   }
+}
+\cs_new_protected:Npn \extramarks@savemarks #1
+{
+  \seq_map_inline:Nn \g__extramarks_marks_seq
+    {
+      \tl_set_eq:cc {l__extramarks_save_topmark_##1_tl} {g__extramarks_topmark_##1_tl}
+      \tl_set_eq:cc {l__extramarks_save_firstmark_##1_tl} {g__extramarks_firstmark_##1_tl}
+      \tl_set_eq:cc {l__extramarks_save_botmark_##1_tl} {g__extramarks_botmark_##1_tl}
+      \extramarks@info
+        {
+          \string \extramarks@savemarks \space in~\string #1\MessageBreak
+          \__extramarks_show_mark:n { g__extramarks_topmark_##1_tl }
+          \__extramarks_show_mark:n { g__extramarks_firstmark_##1_tl }
+          \__extramarks_show_mark:n { g__extramarks_botmark_##1_tl }
+        }
+    }
+}
+\cs_new_protected:Npn \extramarks@restoremarks #1
+{
+  \seq_map_inline:Nn \g__extramarks_marks_seq
+    {
+      \tl_gset_eq:cc {g__extramarks_topmark_##1_tl} {l__extramarks_save_topmark_##1_tl}
+      \tl_gset_eq:cc {g__extramarks_firstmark_##1_tl} {l__extramarks_save_firstmark_##1_tl}
+      \tl_gset_eq:cc {g__extramarks_botmark_##1_tl} {l__extramarks_save_botmark_##1_tl}
+      \extramarks@info
+        {
+          \string \extramarks@restoremarks \space in~\string #1\MessageBreak
+          \__extramarks_show_mark:n { g__extramarks_topmark_##1_tl }
+          \__extramarks_show_mark:n { g__extramarks_firstmark_##1_tl }
+          \__extramarks_show_mark:n { g__extramarks_botmark_##1_tl }
+        }
+    }
 }
 \ExplSyntaxOff
 \patchcmd{\@topnewpage}{\global \setbox\@currbox

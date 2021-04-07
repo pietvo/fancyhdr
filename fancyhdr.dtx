@@ -5580,6 +5580,9 @@
 % \Cmd{g_@@_topmark_\meta{name}_tl} : topmark (braced)
 % \Cmd{g_@@_firstmark_\meta{name}_tl} : firstmark (braced)
 % \Cmd{g_@@_botmark_\meta{name}_tl} : botmark (braced)
+% \Cmd{l_@@_save_topmark_\meta{name}_tl} : locally saved topmark (braced)
+% \Cmd{l_@@_save_firstmark_\meta{name}_tl} : locally saved firstmark (braced)
+% \Cmd{l_@@_save_botmark_\meta{name}_tl} : locally saved botmark (braced)
 % \end{syntax}
 % \end{variable}
 %
@@ -5672,6 +5675,31 @@
         }
       \tl_gset:co { g_@@_botmark_#1_tl }
         { \splitbotmarks \use:c { c_@@_#1_int } }
+    }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}[internal]{\@@_boxmarks:n}
+% \begin{syntax}
+% \cs{@@_boxmarks:n}\marg{mark name}
+% \end{syntax}
+% Extract the local marks of the last vsplitted box.
+% This doesn't take into account any existing marks from outside the
+% box, in contrast to \cs{__extramarks_get_boxmarks:n}. So these will be
+% lost, which means that in general they should be saved first.
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_boxmarks:n #1
+{
+  \tl_gset:No \l_@@_temp_tl
+    { \splitfirstmarks \use:c{c_@@_#1_int} }
+  \tl_if_empty:NF \l_@@_temp_tl
+    {
+      \tl_gset_eq:cN { g_@@_firstmark_#1_tl } \l_@@_temp_tl
+      \tl_gset:co { g_@@_botmark_#1_tl }
+        { \splitbotmarks \use:c{c_@@_#1_int} }
     }
 }
 %    \end{macrocode}
@@ -5859,6 +5887,36 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}[internal]{\extramarks@getlocalmarks}
+% \begin{syntax}
+% \cs{extramarks@getlocalmarks}\marg{box}\marg{context}
+% \end{syntax}
+% Get local marks fo some box on a page. This doesn't take into account
+% already aquired marks from outside. In general these should have been
+% saved before calling this function.
+% The box used is \meta{box}. \meta{context} is the place where called,
+% for debugging.
+% Do a temporary \cs{vsplit} and process the marks of the box.
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@getlocalmarks #1 #2
+{
+  \group_begin:
+    \@@_vsplit_box #1
+    \seq_map_inline:Nn \g_@@_marks_seq
+      {
+        \@@_boxmarks:n { ##1 }
+        \extramarks@info
+          {
+            \string \@@_boxmarks:n \space { ##1 }~in~\string #2\MessageBreak
+            \@@_show_mark:n  { g_@@_firstmark_##1_tl }
+            \@@_show_mark:n  { g_@@_botmark_##1_tl }
+          }
+      }
+  \group_end:
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}[internal]{\extramarks@getmarks@end}
 % \begin{syntax}
 % \cs{extramarks@getmarks@end}
@@ -5903,6 +5961,56 @@
         \@@_show_mark:n  { g_@@_botmark_##1_tl }
       }
   }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\extramarks@savemarks}
+% \begin{syntax}
+% \cs{extramarks@savemarks}
+% \end{syntax}
+% Save all marks to local variables
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@savemarks #1
+{
+  \seq_map_inline:Nn \g_@@_marks_seq
+    {
+      \tl_set_eq:cc {l_@@_save_topmark_##1_tl} {g_@@_topmark_##1_tl}
+      \tl_set_eq:cc {l_@@_save_firstmark_##1_tl} {g_@@_firstmark_##1_tl}
+      \tl_set_eq:cc {l_@@_save_botmark_##1_tl} {g_@@_botmark_##1_tl}
+      \extramarks@info
+        {
+          \string \extramarks@savemarks \space in~\string #1\MessageBreak
+          \@@_show_mark:n { g_@@_topmark_##1_tl }
+          \@@_show_mark:n { g_@@_firstmark_##1_tl }
+          \@@_show_mark:n { g_@@_botmark_##1_tl }
+        }
+    }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\extramarks@restoremarks}
+% \begin{syntax}
+% \cs{extramarks@restoremarks}
+% \end{syntax}
+% Restore all marks from local variables
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@restoremarks #1
+{
+  \seq_map_inline:Nn \g_@@_marks_seq
+    {
+      \tl_gset_eq:cc {g_@@_topmark_##1_tl} {l_@@_save_topmark_##1_tl}
+      \tl_gset_eq:cc {g_@@_firstmark_##1_tl} {l_@@_save_firstmark_##1_tl}
+      \tl_gset_eq:cc {g_@@_botmark_##1_tl} {l_@@_save_botmark_##1_tl}
+      \extramarks@info
+        {
+          \string \extramarks@restoremarks \space in~\string #1\MessageBreak
+          \@@_show_mark:n { g_@@_topmark_##1_tl }
+          \@@_show_mark:n { g_@@_firstmark_##1_tl }
+          \@@_show_mark:n { g_@@_botmark_##1_tl }
+        }
+    }
 }
 %    \end{macrocode}
 % \end{macro}
