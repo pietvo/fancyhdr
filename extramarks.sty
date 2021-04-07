@@ -159,6 +159,10 @@
 }
 \cs_new_protected:Npn \extramarks@getmarks #1 #2
 {
+  \extramarks@info
+  {
+    \string \extramarks@getmarks \space (\string #1)~in~\string #2\MessageBreak
+  }
   \group_begin:
     \__extramarks_vsplit_box #1
     \extramarks@get@splitmarks { #2 }
@@ -185,6 +189,7 @@
     \extramarks@info
       {
         \string \__extramarks_get_boxmarks_init:n \space { ##1 }\MessageBreak
+        \__extramarks_show_mark:n  { g__extramarks_topmark_##1_tl }
         \__extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
         \__extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
       }

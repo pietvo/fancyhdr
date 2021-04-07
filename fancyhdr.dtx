@@ -5847,6 +5847,10 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \extramarks@getmarks #1 #2
 {
+  \extramarks@info
+  {
+    \string \extramarks@getmarks \space (\string #1)~in~\string #2\MessageBreak
+  }
   \group_begin:
     \@@_vsplit_box #1
     \extramarks@get@splitmarks { #2 }
@@ -5894,6 +5898,7 @@
     \extramarks@info
       {
         \string \@@_get_boxmarks_init:n \space { ##1 }\MessageBreak
+        \@@_show_mark:n  { g_@@_topmark_##1_tl }
         \@@_show_mark:n  { g_@@_firstmark_##1_tl }
         \@@_show_mark:n  { g_@@_botmark_##1_tl }
       }
