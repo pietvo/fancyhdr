@@ -5884,13 +5884,13 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[internal]{\extramarks@init@marks}
+% \begin{macro}[internal]{\extramarks@initmarks}
 % \begin{syntax}
-% \cs{extramarks@init@marks}
+% \cs{extramarks@initmarks}
 % \end{syntax}
 % INIT all marks
 %    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@init@marks
+\cs_new_protected:Npn \extramarks@initmarks
 {
   \seq_map_inline:Nn \g_@@_marks_seq
   {
@@ -5980,7 +5980,7 @@
 %
 %    \begin{macrocode}
 \apptocmd {\@outputpage}
-  {\extramarks@init@marks}
+  {\extramarks@initmarks}
   {\extramarks@info{Patched end of \string \@outputpage}}
   {\msg@error@nnn {extramarks} {cannot-patch} {end of \@outputpage} {}}
 %    \end{macrocode}
