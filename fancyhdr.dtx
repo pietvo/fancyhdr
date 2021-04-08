@@ -596,7 +596,7 @@
 % \end{function}
 %
 % \begin{function}{\extramarksnewmark, \extramarksput, \extramarksfirst,
-%                  \extramarkslast, \extramarkstop}
+%                  \extramarkslast, \extramarkstop, \ifextramarksmissing}
 % It is also possible to define your own additional marks.
 % With \cs{extramarksnewmark}\marg{name} you define a new mark called
 % \meta{name}. You can then put a new mark with \cs{extramarksput}\marg{name}\marg{Some text}.
@@ -606,7 +606,9 @@
 % \Cmd{first...mark} en \Cmd{last...mark}, and
 % \cs{extramarkstop}\marg{name} is the last mark from the previous page
 % (the so called \emph{topmark}).
-% If there are no marks on the current page, all three are the same.
+% If there are no marks on the current page, all three are the same. You
+% can test this with \cs{ifextramarksmissing}\marg{name}\marg{true
+% code}\marg{false code}.
 %
 % The `standard' extra marks are called `left' and `right', and the new commands
 % \cs{extramarksleft} and \cs{extramarksright} are just shorthands for
@@ -6167,6 +6169,31 @@
         }
     }
     { \msg_error:nnnn {extramarks} {not-defined} {\extramarkslast} {#1} }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ifextramarksmissing}
+% \begin{syntax}
+% \cs{ifextramarksmissing}\marg{name}\marg{true code}\marg{false code}
+% \end{syntax}
+% Test if there is no mark of \meta{name} on this page. If there aren't any,
+% the \meta{true code} is executed. In this case both the
+% \texttt{firstmark} and \texttt{lastmark} (\cs{extramarksfirst} and
+% \cs{extramarkslast}) will be equal to \texttt{topmark} (\cs{extramarkstop}).
+% If there is at least one mark of \meta{name} on the page, the
+% \meta{false code} is executed.
+%
+%    \begin{macrocode}
+\NewDocumentCommand \ifextramarksmissing { m m m }
+{
+  \cs_if_exist:cTF {c_@@_#1_int}
+    {
+      \tl_if_empty:cTF { g_@@_firstmark_#1_tl }
+        { #2 }
+        { #3 }
+    }
+    { \msg_error:nnnn {extramarks} {not-defined} {\ifextramarksmissing} {#1} }
 }
 %    \end{macrocode}
 % \end{macro}
