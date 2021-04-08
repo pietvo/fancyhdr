@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks}
-           [2021/04/07 v4.1beta
+           [2021/04/08 v4.1beta
                   Extra marks for LaTeX]
 % Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,7 +71,10 @@
 }
 \cs_new_protected:Npn \__extramarks_get_boxmarks_init:n #1
 {
-  \tl_gset_eq:cc { g__extramarks_topmark_#1_tl } { g__extramarks_botmark_#1_tl }
+  \tl_if_empty:cF { g__extramarks_botmark_#1_tl }
+    {
+      \tl_gset_eq:cc { g__extramarks_topmark_#1_tl } { g__extramarks_botmark_#1_tl }
+    }
   \tl_gset_eq:cN { g__extramarks_firstmark_#1_tl } \c_empty_tl
   \tl_gset_eq:cN { g__extramarks_botmark_#1_tl } \c_empty_tl
 }
@@ -99,14 +102,6 @@
       \tl_gset:co { g__extramarks_botmark_#1_tl }
         { \splitbotmarks \use:c{c__extramarks_#1_int} }
     }
-}
-\cs_new_protected:Npn \__extramarks_get_boxmarks_end:n #1
-{
-  \tl_if_empty:cT { g__extramarks_firstmark_#1_tl }
-  {
-    \tl_gset_eq:cc { g__extramarks_firstmark_#1_tl } { g__extramarks_topmark_#1_tl }
-    \tl_gset_eq:cc { g__extramarks_botmark_#1_tl } { g__extramarks_topmark_#1_tl }
-  }
 }
 \int_new:N \l__extramarks_errorcontextlines
 \cs_new_protected:Npn \__extramarks_vsplit_box #1
@@ -195,19 +190,6 @@
       }
   \group_end:
 }
-\cs_new_protected:Npn \extramarks@getmarks@end
-{
-  \seq_map_inline:Nn \g__extramarks_marks_seq
-    {
-      \__extramarks_get_boxmarks_end:n { ##1 }
-      \extramarks@info
-        {
-          \string \__extramarks_get_boxmarks_end:n \space { ##1 }\MessageBreak
-          \__extramarks_show_mark:n  { g__extramarks_firstmark_##1_tl }
-          \__extramarks_show_mark:n  { g__extramarks_botmark_##1_tl }
-        }
-    }
-}
 \cs_new_protected:Npn \extramarks@initmarks
 {
   \seq_map_inline:Nn \g__extramarks_marks_seq
@@ -281,10 +263,6 @@
   {\extramarks@getmarks\@outputbox{\@opcol} \@outputpage}
   {\extramarks@info{Patched \string \@opcol}}
   {\msg@error@nnn {extramarks} {cannot-patch} {in \@opcol: \@outputpage} {}}
-\pretocmd {\@outputpage}
-  {\extramarks@getmarks@end}
-  {\extramarks@info{Patched beginning of \string \@outputpage}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {beginning of \@outputpage} {}}
 \apptocmd {\@outputpage}
   {\extramarks@initmarks}
   {\extramarks@info{Patched end of \string \@outputpage}}
@@ -317,18 +295,30 @@
 \NewDocumentCommand \extramarksfirst { m }
 {
   \cs_if_exist:cTF {c__extramarks_#1_int}
-  {
-     \tl_head:v { g__extramarks_firstmark_#1_tl }
-  }
-  { \msg_error:nnnn {extramarks} {not-defined} {\extramarksfirst} {#1} }
+    {
+      \tl_if_empty:cTF { g__extramarks_firstmark_#1_tl }
+        {
+          \tl_head:v { g__extramarks_topmark_#1_tl }
+        }
+        {
+          \tl_head:v { g__extramarks_firstmark_#1_tl }
+        }
+    }
+    { \msg_error:nnnn {extramarks} {not-defined} {\extramarksfirst} {#1} }
 }
 \NewDocumentCommand \extramarkslast { m }
 {
   \cs_if_exist:cTF {c__extramarks_#1_int}
-  {
-     \tl_head:v { g__extramarks_botmark_#1_tl }
-  }
-  { \msg_error:nnnn {extramarks} {not-defined} {\extramarkslast} {#1} }
+    {
+      \tl_if_empty:cTF { g__extramarks_botmark_#1_tl }
+        {
+          \tl_head:v { g__extramarks_topmark_#1_tl }
+        }
+        {
+          \tl_head:v { g__extramarks_botmark_#1_tl }
+        }
+    }
+    { \msg_error:nnnn {extramarks} {not-defined} {\extramarkslast} {#1} }
 }
 \NewDocumentCommand \extramarksleft { m }
 {
@@ -394,10 +384,6 @@
 \@ifpackageloaded{paracol}
   {
     \cs_gset_eq:NN \@outputpage \extramarks@saved@outputpage
-    \pretocmd {\pcol@@outputpage}
-      {\extramarks@getmarks@end}
-      {\extramarks@info{Patched beginning of \string \pcol@@outputpage}}
-      {\msg@error@nnn {extramarks} {cannot-patch} {beginning of \pcol@@outputpage}}
     \apptocmd {\pcol@@outputpage}
       {\extramarks@initmarks}
       {\extramarks@info{Patched end of \string \pcol@@outputpage}}
