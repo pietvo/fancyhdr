@@ -539,9 +539,15 @@
 % \section{Using \Package{extramarks}}
 % \label{sec:using-extramarks}
 %
-% The package \Package{extramarks} gives you some extra marks in \latex/,
-% besides the normal \cs{leftmark} and \cs{rightmark}, that are defined
-% by the \cs{markboth} and \cs{markright} commands.
+% Standard \latex/ has two marks: a left one and a right one. The standard
+% command \cs{leftmark} gives you the last left mark on a page, and
+% \cs{rightmark} gives you the first right one. These are to be used in
+% the headers and footers of a page. These are derived from information
+% that is given by the \cs{markboth} and \cs{markright} commands in the
+% text body.
+%
+% \subsubsection*{New commands for the standard \LaTeX{} marks
+%                        to be used in the headers or footers}
 %
 % \begin{function}{\firstleftmark, \lastrightmark, \firstrightmark, \lastleftmark}
 % \begin{verbatim}
@@ -551,20 +557,52 @@
 % \lastleftmark
 % \end{verbatim}
 %
-% Standard \latex/ has two marks: a left and a right one. The standard
-% command \cs{leftmark} gives you the last left mark on a page, and
-% \cs{rightmark} gives you the first right one. The macros above give you
-% also the other combinations, where \cs{firstrightmark} =
-% \cs{rightmark} and \cs{lastleftmark} = \cs{leftmark}. As with the
-% standard marks, these are meant to be used in headers and footers. In
-% other places they will not work properly.
+% The macros above give you the other combinations, where
+% \cs{firstrightmark} = \cs{rightmark} and \cs{lastleftmark} = \cs{leftmark}.
+%
 % \end{function}
 %
-% \begin{function}{\extramarks, \firstleftxmark, \firstrightxmark, \topleftxmark,
+% \subsubsection*{\Package{Extramarks} commands to be used in the text body}
+%
+% \begin{function}{\extramarks, \extramarksleft, \extramarksright}
+% \begin{syntax}
+% \cs{extramarks}\marg{aa}\marg{bb}\\
+% \cs{extramarksleft}\marg{aa}\\
+% \cs{extramarksright}\marg{bb}
+% \end{syntax}
+%
+% The command \cs{extramarks}\marg{aa}\marg{bb} defines two extra marks,
+% similar to the standard ones by \latex/, where \meta{aa} is the left
+% one and \meta{bb} is the right one.
+%
+% In versions before 4.1, the \texttt{extramarks} are connected to each
+% other and to the original \LaTeX{} marks; they are not independent.
+% For example, if you use \cs{markboth} or \cs{markright}, this
+% introduces empty \texttt{extramarks} or duplicates existing ones. This is
+% also true in the other direction. This sometimes caused unwanted effects.
+%
+% Since version 4.1 this is no longer the case.
+% Now the \texttt{extramarks} are independent of the traditional marks,
+% and they can also be used independently of each other by the commands
+% \cs{extramarksleft}\marg{aa} and \cs{extramarksright}\marg{bb}.
+% \end{function}
+%
+% \begin{function}{\extramarksnewmark, \extramarksput}
+% It is also possible to define your own additional marks.
+% With \cs{extramarksnewmark}\marg{name} you define a new mark called
+% \meta{name}. You can then put a new mark with \cs{extramarksput}\marg{name}\marg{Some text}.
+%
+% The `standard' extra marks are called `left' and `right', and the new commands
+% \cs{extramarksleft} and \cs{extramarksright} are just shorthands for
+% \Cmd{extramarksput\{left\}} and \Cmd{extramarksput\{right\}}.
+% \end{function}
+%
+% \subsubsection*{Extramarks commands to be used in the headers or footers}
+%
+% \begin{function}{\firstleftxmark, \firstrightxmark, \topleftxmark,
 %                  \toprightxmark, \lastleftxmark, \lastrightxmark, \firstxmark,
 %                  \lastxmark, \topxmark}
 % \begin{syntax}
-% \cs{extramarks}\marg{aa}\marg{bb}
 % \cs{firstleftxmark}
 % \cs{firstrightxmark}
 % \cs{topleftxmark}
@@ -575,44 +613,37 @@
 % \cs{lastxmark}
 % \cs{topxmark}
 % \end{syntax}
-% The command \cs{extramarks}\marg{aa}\marg{bb} defines two extra marks,
-% similar to the standard ones by \latex/, where \meta{aa} is the left
-% one and \meta{bb} is the right one. The other commands are used to
-% extract these in the headers and footers, similar to the ones without
-% the \texttt{x}.
+% The commands above are used to extract the marks defined by
+% \cs{extramarks}\marg{aa}\marg{bb}, \cs{extramarksleft}\marg{aa}\ and
+% \cs{extramarksright}\marg{bb} described above. They are used in the
+% headers or footers, similar to the ones without the \texttt{x}.
 % \end{function}
 %
-% In versions before 4.1, the \texttt{extramarks} are connected to each
-% other and to the original \LaTeX{} marks; they are not independent.
-% For example, if you use \cs{markboth} or \cs{markright} this
-% introduces empty \texttt{extramarks} or duplicates existing ones. This is
-% also true in the other direction. This sometimes caused unwanted effects.
+% \begin{function}{\extramarksfirst, \extramarkslast, \extramarkstop,
+%                  \ifextramarksmissing, \extramarksreset}
 %
-% \begin{function}{\extramarksleft, \extramarksright}
-% Since version 4.1 this is no longer the case.
-% Now the \texttt{extramarks} are independent of the traditional marks,
-% and they can also be used independently of each other by the commands
-% \cs{extramarksleft}\marg{aa} and \cs{extramarksright}\marg{bb}.
-% \end{function}
-%
-% \begin{function}{\extramarksnewmark, \extramarksput, \extramarksfirst,
-%                  \extramarkslast, \extramarkstop, \ifextramarksmissing}
-% It is also possible to define your own additional marks.
-% With \cs{extramarksnewmark}\marg{name} you define a new mark called
-% \meta{name}. You can then put a new mark with \cs{extramarksput}\marg{name}\marg{Some text}.
-% Inside the headers or footers of the page you can then extract these
+% Inside the headers or footers of the page you can extract your own defined
 % marks with \cs{extramarksfirst}\marg{name}, \cs{extramarkslast}\marg{name}
 % and \cs{extramarkstop}\marg{name}. The first two are similar to
 % \Cmd{first...mark} en \Cmd{last...mark}, and
 % \cs{extramarkstop}\marg{name} is the last mark from the previous page
 % (the so called \emph{topmark}).
-% If there are no marks on the current page, all three are the same. You
-% can test this with \cs{ifextramarksmissing}\marg{name}\marg{true
-% code}\marg{false code}.
 %
-% The `standard' extra marks are called `left' and `right', and the new commands
-% \cs{extramarksleft} and \cs{extramarksright} are just shorthands for
-% \Cmd{extramarksput\{left\}} and \Cmd{extramarksput\{right\}}.
+% If there are no marks on the current page, all three are the same. The
+% \emph{firstmark} and \emph{lastmark} will take the value of
+% \emph{topmark} in this case. You can test for this situation with
+% \cs{ifextramarksmissing}\marg{name}\marg{true code}\marg{false code}.
+% If there aren't any \meta{name} marks on the page the \meta{true code}
+% is executed. If there is at least one \meta{name} mark on the page,
+% the \meta{false code} is executed.
+%
+% The command \cs{extramarksreset}\marg{name} can be used (in the headers
+% or footers) to reset the mark \meta{name}. This essentially means that
+% its \emph{topmark} will be cleared and therefore this is no longer
+% propagated to the next page. See section~\ref{sec:firstsubsection} for
+% an example.
+%
+% \end{function}
 %
 % If you want to keep the old behaviour of \Package{extramarks}, you can use:
 % \begin{verbatim}
@@ -624,7 +655,6 @@
 % \end{verbatim}
 % See sections~\ref{sec:scoop} and \ref{sec:xmarks} for more details
 % about the use of the package.
-% \end{function}
 %
 % \newpage
 % \part{Page Layout in \LaTeX}
