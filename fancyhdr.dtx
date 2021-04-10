@@ -25,26 +25,45 @@
 \NeedsTeXFormat{LaTeX2e}
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
-%<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2021/02/24 v4.1beta
+%<extramarks|extramarks-v3>\ProvidesPackage{extramarks}
+%<fancyhdr|fancyheadings|extramarks>           [2021/04/10 v4.1beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
 %<fancyhdr|extramarks>% Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
+%<extramarks-v3>           [2021/01/01 v3
+%<extramarks-v3>                 Legacy version of extramarks for LaTeX]
+%<extramarks-v3>% Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
+%<extramarks-v3>%%
+%<extramarks-v3>%% This is a legacy version (v3) of extramarks.sty
+%<extramarks-v3>%%
 %<fancyheadings>% Public domain
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    \end{macrocode}
 %
 %<*driver>
-\documentclass[a4paper]{ltxdoc}
+% Specify options for the url and hyperref packages
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{colorlinks,linktocpage}{hyperref}
+\documentclass[a4paper]{l3doc}
+\addtolength\textheight{2cm}
 \usepackage{multicol}
 \usepackage{float}
 \usepackage{makeidx}
+\usepackage{robustindex}
+\makeindex
 \usepackage{layout}
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{boxedminipage}
+% The package fourier-orns defines \danger, which conflicts
+% with the 'danger' environment of l3doc.
+% We save, clear and restore \danger arounf this \usepackage
+\let \liiidocxxxsavedanger\danger
+\let\danger\undefined
 \usepackage{fourier-orns}
+\let\danger\liiidocxxxsavedanger
+% End of conflict resolution
 \usepackage[T1]{fontenc}
 \usepackage[hyphens]{url}
 \usepackage[fit]{truncate}
@@ -64,15 +83,24 @@
 \newcommand{\PSNFSS}{{\sf
     PSNFSS}}
 \newcommand{\bs}{\symbol{'134}}
-\newcommand{\env}[1]{\texttt{#1}}
+\providecommand\env{}
+\renewcommand{\env}[1]{\texttt{#1}}
 \newcommand{\Package}[1]{\textsf{#1}}
 \renewcommand{\partname}{Part}
 \DisableCrossrefs
 \CodelineIndex
 \RecordChanges
-\newcommand\bsbs{\cs{\char`\\}}
+\newcommand\bsbs{\char`\\\char`\\}
 \newcommand{\Cmd}[1]{\texttt{\def\{{\char`\{}\def\}{\char`\}}\bs#1}}
 \newcommand{\CmdIndex}[1]{\index{#1=\string\texttt{\bs#1}}}
+%\ExplSyntaxOn
+%\newcommand{\CmdIndex}[1]{\expandafter\SpecialCmdIndex\csname#1\endcsname{#1}}
+%\ExplSyntaxOff
+% \makeatletter
+% \newcommand{\SpecialCmdIndex}[2]{%
+%   \index{#2={\string\verbatim@font\space!\string\verb*&!\string#1&}%
+%     |hdclindex{\the\c@HD@hypercount}{usage}}}
+% \makeatother
 \newcommand{\TTindex}[1]{\index{#1=\string\texttt{#1}}}
 \newcommand{\PSindex}[1]{\index{page style>#1=\string\texttt{#1}}}
 \newcommand{\OPTindex}[1]{\index{option>#1=\string\texttt{#1}}}
@@ -218,6 +246,12 @@
 \newlength{\normalparindent}
 \setlength{\normalparindent}{\parindent}
 
+% l3doc resets section counters at \part.
+% I don't want that.
+\makeatletter
+\@removefromreset{section}{part}
+\makeatother
+
 \begin{document}
   \DeleteShortVerb{\|}
   \DocInput{\jobname.dtx}
@@ -250,7 +284,7 @@
 %
 % \title{The \Package{fancyhdr} and \Package{extramarks}
 % packages\\{\normalsize version \fileversion.}}
-% \author{Pieter van Oostrum\thanks{A considerable part of this documentation was
+% \author{Pieter van Oostrum\thanks{Part of this documentation was
 %     written by  George
 %     Gr\"atzer (University of Manitoba) in \emph{Notices Amer. Math. Soc.}
 %     Thanks, George!}\\
@@ -266,7 +300,7 @@
 %   proper placement of figures and tables (collectively called floats) on
 %   the page.
 %
-%   This documentation describes version 4.0 or later of the
+% This documentation describes version 4.0 or later of the
 % \Package{fancyhdr} and \Package{extramarks} packages. The user
 % documentation is valid for the versions 3.8 or later of the
 % \Package{fancyhdr} package (except for the changes mentioned in
@@ -278,7 +312,8 @@
 % \tableofcontents
 % \markright{Contents}
 %
-%\part{Introduction}
+% \begin{documentation}
+% \part{Introduction}
 %
 % This document contains four parts:
 %
@@ -299,20 +334,33 @@
 % There are some significant differences between these versions. These
 % are summarized in section~\ref{sec:version-4} on page~\pageref{sec:version-4}.
 % Throughout this documentation it is mentioned when a specific feature
-% is only available in version 4, or when there are differences between
+% is only available in version 4 or a later version, or when there are differences between
 % version 3 and 4.
+%
+% This documentation contains several examples. Most of the examples are
+% available for download from Github, see section~\ref{sec:contact}.
+% These examples are indicated with their name in the margin. If the
+% margin says ``Example \meta{n}'', where \meta{n} is numeric, maybe
+% followed by a letter, then the file name will be
+% \texttt{example\meta{n}.tex}. When it is followed by a letter in
+% parentheses like (A), it means an item in the file. Other names
+% without the word ``Example'' are just the file name without extension,
+% for example ``with-beamer'' indicates the file name \texttt{with-beamer.tex}.
 %
 % \section{Installation}
 % \label{sec:installation}
 %
 % The preferred way to install this package is with a package installer.
 % If you want to install it by hand, then first run the command
-% \verb+tex fancyhdr.ins+ and then move the files \texttt{fancyhdr.sty},
-% \texttt{extramarks.sty} and \texttt{fancyheadings.sty} to a place
+% `\verb+tex fancyhdr.ins+' and then move the files \texttt{fancyhdr.sty},
+% \texttt{extramarks.sty}, \texttt{extramarks-v3.sty}
+% and \texttt{fancyheadings.sty} to a place
 % where \latex/ can find it, preferably in a directory similar to
 % \texttt{.../texmf/tex/latex/fancyhdr/} in your \tex/ directory tree.
+% To get the documentation, run `\verb+pdflatex fancyhdr.dtx+'.
 %
 % \section{Using \Package{fancyhdr}}
+% \label{sec:using-fancyhdr}
 %
 % The package \Package{fancyhdr} gives you several commands to define
 % headers and footers of the pages in a \latex/ document.
@@ -320,30 +368,10 @@
 % \begin{quote}
 % \verb|\usepackage|\oarg{options}\verb|{fancyhdr}|
 % \end{quote}
-% (Options are available since version~4.0)
-% The following options are supported:
-% \begin{center}
-% \begin{tabular}{ l l }
-% \toprule
-% Option & Meaning \\
-% \midrule
-% \texttt{nocheck} & do not check the heights of the header and footer \\
-%                  & (see section~\ref{sec:warning} on page~\pageref{page:warning})\\
-% \texttt{compatV3} & keep some behaviour (now considered undesirable) as in version~3 \\
-%          & (see section~\ref{sec:options} and section~\ref{sec:warning} on
-%                                              page~\pageref{page:warning}) \\
-% \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
-% \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
-% \bottomrule
-% \end{tabular}
-% \end{center}
-% \OPTindex{nocheck}
-% \OPTindex{compatV3}
-% \OPTindex{headings}
-% \OPTindex{myheadings}
-% \DescribeMacro{\fancyhead}
-% \DescribeMacro{\fancyfoot}
-% \DescribeMacro{\fancyhf}
+% (Options are available since version~4.0.
+% See \smartref{sec:using-fancyhdr}{sec:options} for the details.)
+%
+% \begin{function}{\fancyhead,\fancyfoot,\fancyhf}
 % \begin{verbatim}
 % \fancyhead[places]{field}
 % \fancyfoot[places]{field}
@@ -358,9 +386,9 @@
 % letters, like \texttt{EOH}. A missing coordinate means: all
 % possibilities, except for \cs{fancyhead} where \texttt{H} is implied
 % and \cs{fancyfoot} where \texttt{F} is implied.
-% \DescribeMacro{\fancyheadoffset}
-% \DescribeMacro{\fancyfootoffset}
-% \DescribeMacro{\fancyhfoffset}
+% \end{function}
+%
+% \begin{function}{\fancyheadoffset,\fancyfootoffset,\fancyhfoffset}
 % \begin{verbatim}
 % \fancyheadoffset[places]{field}
 % \fancyfootoffset[places]{field}
@@ -370,67 +398,158 @@
 % the inside if negative). Places cannot contain the \texttt{C}
 % specifier. See sections~\ref{sec:book-examples}  and
 % \ref{sec:headwidth} for more details.
+% \end{function}
 %
-% \DescribeMacro{\headrulewidth}
-% \DescribeMacro{\footrulewidth}
-% \DescribeMacro{\headruleskip}
-% \DescribeMacro{\footruleskip}
-% \DescribeMacro{\headrule}
-% \DescribeMacro{\footrule}
-% \DescribeMacro{\headwidth}
-%
+% \begin{variable}{\headrulewidth, \footrulewidth, \headruleskip,
+%                  \footruleskip, \headwidth}
 % \cs{headrulewidth} and \cs{footrulewidth} are macros to define the
 % thickness of a line under the header and above the footer.
 % \cs{headruleskip} and \cs{footruleskip} are macros that define the
 % distance between the lines and the header and footer text,
 % respectively. (But \cs{headruleskip} is only available since version~4.0.)
-% \cs{headrule} and \cs{footrule} are macros to completely redefine
-% these lines. And \cs{headwidth} is a length parameter that defines the
+% And \cs{headwidth} is a length parameter that defines the
 % total width of the headers and footers. See section~\ref{sec:headwidth} for more details.
+% \end{variable}
 %
-% \DescribeMacro{\fancyheadinit}
-% \DescribeMacro{\fancyfootinit}
-% \DescribeMacro{\fancyhfinit}
+% \begin{function}{\headrule, \footrule}
+% \cs{headrule} and \cs{footrule} are macros to completely redefine
+% these lines.
+% \end{function}
 %
+% \begin{function}{\fancyheadinit, \fancyfootinit, \fancyhfinit}
 % \cs{fancyheadinit} and \cs{fancyfootinit} can be used to define
 % initialisation code for the header and footer, respectively, and
 % \cs{fancyhfinit} defines both of these. These commands are only
-% available in fancyhdr version~4.0 and later. See section~\ref{sec:change}.
+% available in fancyhdr version~4.0 and later. See section~\ref{sec:curpagestyle}.
+% \end{function}
 %
-% \DescribeMacro{\fancycenter}
+% \begin{function}{\fancycenter}
 % (Only in version~4.0 and later.) The command \cs{fancycenter} packs 3
 % header fields into a full-width header. See section~\ref{sec:fancycenter}.
+% \end{function}
 %
-% \DescribeMacro{\iftopfloat}
-% \DescribeMacro{\ifbotfloat}
-% \DescribeMacro{\iffloatpage}
-% \DescribeMacro{\iffootnote}
-%
+% \begin{function}{\iftopfloat, \ifbotfloat, \iffloatpage, \iffootnote}
 % The macros \cs{iftopfloat}, \cs{ifbotfloat}, \cs{iffloatpage} and
 % \cs{iffootnote} are used to detect if there is a float on the top or
 % the bottom of the page, or the page is a float page, or if there is
 % a footnote at the bottom of the page. These can be used to choose
 % different headers and/or footers if these conditions are met. See
 % section~\ref{sec:float} for more details.
+% \end{function}
 %
-% \begin{quote}
-% \DescribeMacro{\fancypagestyle}
-% \verb|\fancypagestyle|\marg{style-name}\oarg{base-style}\marg{definitions}
-% \end{quote}
+% \begin{function}{\fancypagestyle}
+% \begin{syntax}
+% \cs{fancypagestyle}\marg{style-name}\oarg{base-style}\marg{definitions}\\
+% \cs{fancypagestyle}*\marg{style-name}\oarg{base-style}\marg{definitions}
+% \end{syntax}
 % This command lets you (re)define page styles for use in special
 % situations. See section~\ref{sec:fancypagestyle} for more details.
+% \end{function}
+%
+% \begin{function}{\fancyhdrsettoheight}
+% \begin{syntax}
+% \cs{fancyhdrsettoheight}\marg{lengthvar}\marg{header/footer}
+% \end{syntax}
+% Sets \meta{lengthvar} to the height of the \meta{header/footer}, which must
+% be one of \texttt{oddhead}, \texttt{evenhead}, \texttt{oddfoot} or \texttt{evenfoot}.
+% Please note: You usually use this outside of a header or a footer (for
+% example in the \emph{preamble}, but then if you use marks with a non-standard height
+% in your headers or footers, the calculated height may be wrong, as marks don't work well
+% outside of a header or footer.
+% \end{function}
+%
+% \section{Package \Package{fancyhdr} options}
+% \label{sec:options}
+%
+% \textbf{NOTE:} This section applies to fancyhdr version~4.0 and later.
+%
+% You can supply options to the \cs{usepackage} command:
+% \begin{quote}
+% \verb|\usepackage|\oarg{options}\verb|{fancyhdr}|
+% \end{quote}
+% The following options are supported:
+% \begin{center}
+% \OPTindex{nocheck}\OPTindex{compatV3}\OPTindex{headings}\OPTindex{myheadings}%
+% \begin{tabular}{ l l }
+% \toprule
+% Option & Meaning \\
+% \midrule
+% \texttt{nocheck} & do not check the heights of the header and footer \\
+% \texttt{compatV3} & keep some behaviour (now considered undesirable) as in version~3 \\
+% \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
+% \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
+% \bottomrule
+% \end{tabular}
+% \end{center}
+%
+% \begin{itemize}
+% \item Options \texttt{nocheck} and \texttt{compatV3} are described in
+% section~\ref{sec:warning} on page~\pageref{page:warning}.
+%
+% \item \OPTindex{compatV3}Option \texttt{compatV3} keeps two fancyhdr
+%   version~3.x (or earlier) features that are now considered undesirable.
+%   \begin{enumerate}
+%   \item The automatic adjustment of \cs{headheight} or \cs{footskip}
+%     when these are too small. This causes the page layout to become
+%     inconsistent.
+%   \item In these previous versions the changes to the
+%     \Package{fancyhdr} headers and footers (including those by
+%     \cs{fancyhead}, \cs{fancyheadoffset} and similar commands) are
+%     made globally, except within a page style defined by
+%     \cs{fancypagestyle}. That is, when these commands are given inside
+%     a \LaTeX{} group, they affect the whole document, not only the
+%     group. If your document depends on this behaviour, you can give
+%     the \texttt{compatV3} package option. However, this is only
+%     considered a short-time solution. You should change your document
+%     as soon as possible to work around this problem. In version~4.0 and
+%     later, without this option, the changes are always local.
+%   \end{enumerate}
+%   This option is scheduled to disappear in version~5 of
+%   \Package{fancyhdr}.
+%
+% \item \PSindex{headings}\PSindex{myheadings}\OPTindex{headings}\OPTindex{myheadings}
+%   The options \texttt{headings} and \texttt{myheadings} redefine the
+%   corresponding page style with fancyhdr commands (including a
+%   decorative line under the header), so that you can later select this
+%   page style as the page style for (part of) the
+%   document\footnote{These options were copied from the
+%   \texttt{nccfancyhdr} package, but contrary to that package, they are
+%   not automatically selected.}.
+% \end{itemize}
+%
+% \PSindex{headings}
+% The page style \texttt{headings} is in some aspects similar to the default page
+% style \texttt{fancy} settings. In the \texttt{fancy} page style, the
+% page number is in the footer, but in the \texttt{headings}
+% page style it is in the header. The header fields look similar, however.
+%
+% Please note that these page styles redefine the \cs{chaptermark} and/or
+% \Cmd{[sub]sectionmark} commands (see section~\ref{sec:scoop}), as do the
+% standard \latex/ page styles. The consequence is, that if you select
+% e.g.\ \Cmd{pagestyle\{headings\}}, the definitions of
+% \Cmd{pagestyle\{fancy\}} are overridden.
+% Also when you change the headers and/or footers
+% while such a page style is in effect, and you then switch back to this
+% page style, for
+% example with \verb|\pagestyle{headings}|, they revert to the built-in
+% settings. Therefore it is not advisable to change the headers or
+% footers in this way, but instead define your
+% own page style, as explained in section~\ref{sec:fancypagestyle}.
 %
 % \section{Using \Package{extramarks}}
 % \label{sec:using-extramarks}
 %
-% The \Package{extramarks} gives you some extra marks in \latex/,
-% besides the normal \cs{leftmark} and \cs{rightmark}, that are defined
-% by the \cs{markboth} and \cs{markright} commands.
+% Standard \latex/ has two marks: a left one and a right one. The standard
+% command \cs{leftmark} gives you the last left mark on a page, and
+% \cs{rightmark} gives you the first right one. These are to be used in
+% the headers and footers of a page. These are derived from information
+% that is given by the \cs{markboth} and \cs{markright} commands in the
+% text body.
 %
-% \DescribeMacro{\firstleftmark}
-% \DescribeMacro{\lastrightmark}
-% \DescribeMacro{\firstrightmark}
-% \DescribeMacro{\lastleftmark}
+% \subsubsection*{New commands for the standard \LaTeX{} marks
+%                        to be used in the headers or footers}
+%
+% \begin{function}{\firstleftmark, \lastrightmark, \firstrightmark, \lastleftmark}
 % \begin{verbatim}
 % \firstleftmark
 % \lastrightmark
@@ -438,30 +557,104 @@
 % \lastleftmark
 % \end{verbatim}
 %
-% Standard \latex/ has two marks: a left and a right one. The standard
-% command \cs{leftmark} gives you the last left mark on a page, and
-% \cs{rightmark} gives you the first right one. These macros give you
-% also the other combinations, where \cs{firstrightmark} =
-% \cs{rightmark} and \cs{lastleftmark} = \cs{leftmark}. As with the
-% standard marks, these are meant to be used in headers and footers. In
-% other places they will not work properly.
-% \begin{code}
-% \extramarks{aa}{bb}
-% \firstleftxmark
-% \firstrightxmark
-% \topleftxmark
-% \toprightxmark
-% \lastleftxmark
-% \lastrightxmark
-% \firstxmark
-% \lastxmark
-% \topxmark
-% \end{code}
-% The command \Cmd{extramarks\{aa\}\{bb\}} defines two extra marks,
-% similar to the standard ones by \latex/, where \texttt{aa} is the left
-% one and \texttt{bb} is the right one. The other commands are to
-% extract these in the headers and footers, similar to the ones without
-% the \texttt{x}. See sections~\ref{sec:scoop} and \ref{sec:xmarks} for more details.
+% The macros above give you the other combinations, where
+% \cs{firstrightmark} = \cs{rightmark} and \cs{lastleftmark} = \cs{leftmark}.
+%
+% \end{function}
+%
+% \subsubsection*{\Package{Extramarks} commands to be used in the text body}
+%
+% \begin{function}{\extramarks, \extramarksleft, \extramarksright}
+% \begin{syntax}
+% \cs{extramarks}\marg{aa}\marg{bb}\\
+% \cs{extramarksleft}\marg{aa}\\
+% \cs{extramarksright}\marg{bb}
+% \end{syntax}
+%
+% The command \cs{extramarks}\marg{aa}\marg{bb} defines two extra marks,
+% similar to the standard ones by \latex/, where \meta{aa} is the left
+% one and \meta{bb} is the right one.
+%
+% In versions before 4.1, the \texttt{extramarks} are connected to each
+% other and to the original \LaTeX{} marks; they are not independent.
+% For example, if you use \cs{markboth} or \cs{markright}, this
+% introduces empty \texttt{extramarks} or duplicates existing ones. This is
+% also true in the other direction. This sometimes caused unwanted effects.
+%
+% Since version 4.1 this is no longer the case.
+% Now the \texttt{extramarks} are independent of the traditional marks,
+% and they can also be used independently of each other by the commands
+% \cs{extramarksleft}\marg{aa} and \cs{extramarksright}\marg{bb}.
+% \end{function}
+%
+% \begin{function}{\extramarksnewmark, \extramarksput}
+% It is also possible to define your own additional marks.
+% With \cs{extramarksnewmark}\marg{name} you define a new mark called
+% \meta{name}. You can then put a new mark with \cs{extramarksput}\marg{name}\marg{Some text}.
+%
+% The `standard' extra marks are called `left' and `right', and the new commands
+% \cs{extramarksleft} and \cs{extramarksright} are just shorthands for
+% \Cmd{extramarksput\{left\}} and \Cmd{extramarksput\{right\}}.
+% \end{function}
+%
+% \subsubsection*{Extramarks commands to be used in the headers or footers}
+%
+% \begin{function}{\firstleftxmark, \firstrightxmark, \topleftxmark,
+%                  \toprightxmark, \lastleftxmark, \lastrightxmark, \firstxmark,
+%                  \lastxmark, \topxmark}
+% \begin{syntax}
+% \cs{firstleftxmark}
+% \cs{firstrightxmark}
+% \cs{topleftxmark}
+% \cs{toprightxmark}
+% \cs{lastleftxmark}
+% \cs{lastrightxmark}
+% \cs{firstxmark}
+% \cs{lastxmark}
+% \cs{topxmark}
+% \end{syntax}
+% The commands above are used to extract the marks defined by
+% \cs{extramarks}\marg{aa}\marg{bb}, \cs{extramarksleft}\marg{aa}\ and
+% \cs{extramarksright}\marg{bb} described above. They are used in the
+% headers or footers, similar to the ones without the \texttt{x}.
+% \end{function}
+%
+% \begin{function}{\extramarksfirst, \extramarkslast, \extramarkstop,
+%                  \ifextramarksmissing, \extramarksreset}
+%
+% Inside the headers or footers of the page you can extract your own defined
+% marks with \cs{extramarksfirst}\marg{name}, \cs{extramarkslast}\marg{name}
+% and \cs{extramarkstop}\marg{name}. The first two are similar to
+% \Cmd{first...mark} en \Cmd{last...mark}, and
+% \cs{extramarkstop}\marg{name} is the last mark from the previous page
+% (the so called \emph{topmark}).
+%
+% If there are no marks on the current page, all three are the same. The
+% \emph{firstmark} and \emph{lastmark} will take the value of
+% \emph{topmark} in this case. You can test for this situation with
+% \cs{ifextramarksmissing}\marg{name}\marg{true code}\marg{false code}.
+% If there aren't any \meta{name} marks on the page the \meta{true code}
+% is executed. If there is at least one \meta{name} mark on the page,
+% the \meta{false code} is executed.
+%
+% The command \cs{extramarksreset}\marg{name} can be used (in the headers
+% or footers) to reset the mark \meta{name}. This essentially means that
+% its \emph{topmark} will be cleared and therefore this is no longer
+% propagated to the next page. See section~\ref{sec:firstsubsection} for
+% an example.
+%
+% \end{function}
+%
+% If you want to keep the old behaviour of \Package{extramarks}, you can use:
+% \begin{verbatim}
+% \usepackage{extramarks}[=v3]
+% \end{verbatim}
+% or if you have an old \LaTeX{} system where the above doesn't work
+% \begin{verbatim}
+% \usepackage{extramarks-v3}
+% \end{verbatim}
+% See sections~\ref{sec:scoop} and \ref{sec:xmarks} for more details
+% about the use of the package.
 %
 % \newpage
 % \part{Page Layout in \LaTeX}
@@ -711,6 +904,82 @@
 % \cs{maketitle} you must issue a \Cmd{thispagestyle\{fancy\}} after the
 % \cs{maketitle}.
 %
+% \section{The default layout}
+% \label{sec:default}
+% Let us use the \verb|book.cls| documentclass and the default settings for
+% \Package{fancyhdr}; so we don't use any of the page style options in
+% the \Cmd{usepackage\{fancyhdr\}} command, and we don't redefine any
+% headers or footers. So just:
+% \begin{code}
+% \usepackage{fancyhdr}
+% \pagestyle{fancy}
+% \end{code}
+% and let \Package{fancyhdr} take care of everything.  As mentioned
+% before, we get a layout that is similar to the page style
+% \texttt{headings}, but it is not exactly the same. If you want to have
+% the same layout as the page style \texttt{headings}, but with a line
+% under the header, use (you need \Package{fancyhdr} version 4 or later
+% for this):
+% \PSindex{headings}
+% \begin{code}
+% \usepackage[headings]{fancyhdr}
+% \pagestyle{headings}
+% \end{code}
+%
+% On the pages where new chapters start, we get a centered page number
+% in the footer; there is no header, and there are no decorative lines.
+%
+% On an even page, we get the layout:
+%
+% \begin{fblock}
+% \noindent\makebox[\textwidth]{\textsl{1.2  EVALUATION}\hfill
+%  \textsl{CHAPTER 1. INTRODUCTION}}\showrule
+% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[2\baselineskip]
+% \noindent\makebox[\textwidth]{\hfill2\hfill}
+% \end{fblock}
+%
+% On an odd page, we get the layout:
+%
+% \begin{fblock}
+% \noindent\makebox[\textwidth]{\textsl{CHAPTER 1. INTRODUCTION}\hfill
+%  \textsl{1.2  EVALUATION}}\showrule
+% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[2\baselineskip]
+% \noindent\makebox[\textwidth]{\hfill
+% 3\hfill }
+% \end{fblock}
+%
+% \noindent where the header text is slanted uppercase.
+%
+% In the \texttt{article} documentclass, we get section and subsection
+% instead of chapter and section.
+%
+% And in a one-sided document, all pages get the same layout as the even pages
+% above. It would probably have been more logical to choose the odd page
+% layout, but changing that now would break some existing documents.
+% Anyway, you can change the layout easily yourself.
+%
+% This default layout is produced by the following commands:
+% \Example{5}
+% \CmdIndex{rightmark}
+% \CmdIndex{leftmark}
+% \begin{example}
+% \fancyhead[LE,RO]{\textsl{\rightmark}}
+% \fancyhead[LO,RE]{\textsl{\leftmark}}
+% \fancyfoot[C]{\thepage}
+% \end{example}
+%
+% The following settings are used for the decorative lines:
+%
+% \begin{tabbing}
+% \CmdIndex{headrulewidth}
+% \noindent \cs{headrulewidth}\qquad \qquad \qquad \=0.4\=pt\\
+% \CmdIndex{footrulewidth}
+% \Cmd{footrulewidth}\>0\>pt
+% \end{tabbing}
+%
+% The header text is turned into all uppercase by the standard \LaTeX{}
+% code in \verb|book.cls|.
+%
 % \section{Fancy Centering}
 % \label{sec:fancycenter}
 %
@@ -724,7 +993,7 @@
 % the top line. The maximum width of every mark is equal to the
 % \cs{headwidth}. This can lead to overlapping of neighbouring marks.
 %
-% \DescribeMacro{\fancycenter}
+% \CmdIndex{fancycenter}
 % If you want to prepare marks in more traditional way in a line
 % not exceeding the \cs{headwidth}, you can use
 % the following command in any mark command:
@@ -932,11 +1201,30 @@
 % command. The general form of this command is:
 % \begin{quote}
 % \CmdIndex{fancypagestyle}
-% \verb|\fancypagestyle|\marg{style-name}\oarg{base-style}\marg{definitions}
+% \cs{fancypagestyle}\marg{style-name}\oarg{base-style}\marg{definitions}\\
+% \cs{fancypagestyle*}\marg{style-name}\oarg{base-style}\marg{definitions}
 % \end{quote}
-% As you see, there is an optional argument between the two mandatory arguments.
+%  With \texttt{*} it defines a ``\emph{closed}'' page style, otherwise an
+% ``\emph{open}'' one. (This version is only available in
+% \Package{fancyhdr} version 4.1 and later.) The difference is that the \emph{open} page style
+% does not necessarily have all the information in itself that is
+% necessary to construct the headers and footers. So it will need to pick up the
+% remaining elements from the environment of the text.
+% The \emph{closed} page style, however, will pick up all necessary
+% elements from the environment at the moment it is \textbf{defined},
+% rather than when it is used, and carries that with it.
+% The information that is picked up consists of:
+% \begin{itemize}
+% \item The header and footer fields in all variants (EO,LRC,HF) (12 items).
+% \item The header and footer offsets (EO,LR,HF) (8 items), see
+% section~\ref{sec:book-examples} and~\ref{sec:headwidth}.
+% \item The header and footer init values (2 items), see section~\ref{sec:curpagestyle}.
+% \item \cs{headrule}, \cs{headrulewidth}, \cs{footrule}, \cs{footrulewidth}.
+% \end{itemize}
+% The \emph{closed} versions can come handy when you are switching back
+% and forth between different page styles, as explained in section~\ref{sec:change}.
 %
-% For example:
+% Here is an example of a simple (\emph{open}) definition:
 % \begin{code}
 % \fancypagestyle{toc}{%
 %   \fancyhf{}%
@@ -951,23 +1239,25 @@
 % change the header and footer rules, and redefine commands like
 % \cs{chaptermark} (see section~\ref{sec:options} for an example). The
 % headers and footers and marks that are not redefined inside the
-% \cs{fancypagestyle} definition, are taken from the global page style
-% \texttt{fancy} values.
+% \cs{fancypagestyle} definition, are taken from the global fancy page style
+% values.
 %
 % You can also give an optional base page style to the
 % \cs{fancypagestyle} command. Then the new page style will be based on
 % the base style. This base style must be a \texttt{fancyhdr}-defined
-% style. Also you should take care not to
+% style. You should take care not to
 % create circular dependencies. In this case the order of picking up the
 % definitions (headers, footers, marks) is:
 % \begin{enumerate}
 % \item The definitions from the base style are taken.
 % \item The definitions given in the \cs{fancypagestyle} command
 % override and/or augment these.
-% \item Any definitions that are not given by the two above, are taken
-% from the environment at the time the new page style is used.
+% \item Any definitions that are not given by the two rules above, are taken
+% from the environment, for an \emph{open} page style at the time the
+% new page style is used, for a \emph{closed} page style at the time it
+% is defined.
 % \end{enumerate}
-% Only the first two parts are embedded in the page style.
+% In an \emph{open} page style, only the first two parts are embedded.
 % When no base style is given, part 1 is null.
 %
 % The optional base style argument is only available since version~4.0. In
@@ -989,163 +1279,10 @@
 % the environment. So if the environment changes, because you redefine
 % headers, footers, mark commands, etc, the functioning of page style
 % \texttt{fancy} changes with it. The page style \texttt{fancydefault}
-% does not change, however. However, \texttt{fancydefault} is only available
+% does not change, however. It can be considered the \emph{closed}
+% version of page style \texttt{fancy} before any redefinitions are
+% done. However, \texttt{fancydefault} is only available
 % since fancyhdr version~4.0.
-%
-% \section{Package options}
-% \label{sec:options}
-%
-% \textbf{NOTE:} This section applies to fancyhdr version~4.0 and later.
-%
-% You can supply options to the \cs{usepackage} command:
-% \begin{quote}
-% \verb|\usepackage|\oarg{options}\verb|{fancyhdr}|
-% \end{quote}
-% % The following options are supported:
-% \begin{center}
-% \OPTindex{nocheck}\OPTindex{compatV3}\OPTindex{headings}\OPTindex{myheadings}
-% \begin{tabular}{ l l }
-% \toprule
-% Option & Meaning \\
-% \midrule
-% \texttt{nocheck} & do not check the heights of the header and footer \\
-% \texttt{compatV3} & keep some behaviour (now considered undesirable) as in version~3 \\
-% \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
-% \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
-% \bottomrule
-% \end{tabular}
-% \end{center}
-%
-% \begin{itemize}
-% \item \OPTindex{nocheck}Option \texttt{nocheck} is described in section~\ref{sec:warning} on
-%   page~\pageref{page:warning}.
-%
-% \item \OPTindex{compatV3}Option \texttt{compatV3} keeps two fancyhdr
-%   version~3.x (or earlier) features that are now considered undesirable.
-%   \begin{enumerate}
-%   \item The automatic adjustment of \cs{headheight} or \cs{footskip}
-%     when these are too small. This causes the page layout to become
-%     inconsistent. See section~\ref{sec:warning} on
-%     page~\pageref{page:warning}.
-%   \item In these previous versions the changes to the
-%     \Package{fancyhdr} headers and footers (including those by
-%     \cs{fancyhead}, \cs{fancyheadoffset} and similar commands) are
-%     made globally, except within a page style defined by
-%     \cs{fancypagestyle}. That is, when these commands are given inside
-%     a \LaTeX{} group, they affect the whole document, not only the
-%     group. If your document depends on this behaviour, you can give
-%     the \texttt{compatV3} package option. However, this is only
-%     considered a short-time solution. You should change your document
-%     as soon as possible to work around this problem. In version~4.0 and
-%     later, without this option, the changes are always local.
-%   \end{enumerate}
-%   The option is scheduled to disappear in version~5 of
-%   \Package{fancyhdr}.
-%
-% \item \PSindex{headings}\PSindex{myheadings}\OPTindex{headings}\OPTindex{myheadings}
-%   The options \texttt{headings} and \texttt{myheadings} redefine the
-%   corresponding page style with fancyhdr commands (including a
-%   decorative line under the header), so that you can later select this
-%   page style as the page style for (part of) the
-%   document\footnote{These options were copied from the
-%   \texttt{nccfancyhdr} package, but contrary to that package, they are
-%   not automatically selected.}.
-% \end{itemize}
-%
-% \PSindex{headings}
-% The page style \texttt{headings} is in some aspects similar to the default page
-% style \texttt{fancy} settings. In the \texttt{fancy} page style, the
-% page number is in the footer, but in the \texttt{headings}
-% page style it is in the header. The header fields look similar, however.
-%
-% Please note that these page styles redefine the \cs{chaptermark} and/or
-% \cs{[sub]sectionmark} commands (see section~\ref{sec:scoop}), as do the
-% standard \latex/ page styles. The consequence is, that if you select
-% e.g.\ \Cmd{pagestyle\{headings\}}, the definitions of
-% \Cmd{pagestyle\{fancy\}} are overridden.
-% Also when you change the headers and/or footers
-% while such a page style is in effect, and you then switch back to this
-% page style, for
-% example with \verb|\pagestyle{headings}|, they revert to the built-in
-% settings. Therefore it is not advisable to change the headers or
-% footers in this way, but instead define your
-% own page style, as explained in section~\ref{sec:fancypagestyle}.
-%
-% \section{The default layout}
-% \label{sec:default}
-% Let us use the \verb|book.cls| documentclass and the default settings for
-% \Package{fancyhdr}; so we don't use any of the page style options in
-% the \Cmd{usepackage\{fancyhdr\}} command, and we don't redefine any
-% headers or footers. So just:
-% \begin{code}
-% \usepackage{fancyhdr}
-% \pagestyle{fancy}
-% \end{code}
-% and let \Package{fancyhdr} take care of everything.  As mentioned
-% before, we get a layout that is similar to the page style
-% \texttt{headings}, but it is not exactly the same. If you want to have
-% the same layout as the page style \texttt{headings}, but with a line
-% under the header, use (you need \Package{fancyhdr} version 4 or later
-% for this):
-% \PSindex{headings}
-% \begin{code}
-% \usepackage[headings]{fancyhdr}
-% \pagestyle{headings}
-% \end{code}
-%
-% On the pages where new chapters start, we get a centered page number
-% in the footer; there is no header, and there are no decorative lines.
-%
-% On an even page, we get the layout:
-%
-% \begin{fblock}
-% \noindent\makebox[\textwidth]{\textsl{1.2  EVALUATION}\hfill
-%  \textsl{CHAPTER 1. INTRODUCTION}}\showrule
-% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[2\baselineskip]
-% \noindent\makebox[\textwidth]{\hfill2\hfill}
-% \end{fblock}
-%
-% On an odd page, we get the layout:
-%
-% \begin{fblock}
-% \noindent\makebox[\textwidth]{\textsl{CHAPTER 1. INTRODUCTION}\hfill
-%  \textsl{1.2  EVALUATION}}\showrule
-% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[2\baselineskip]
-% \noindent\makebox[\textwidth]{\hfill
-% 3\hfill }
-% \end{fblock}
-%
-% \noindent where the header text is slanted uppercase.
-%
-% In the \texttt{article} documentclass, we get section and subsection
-% instead of chapter and section.
-%
-% And in a one-sided document, all pages get the same layout as the even pages
-% above. It would probably have been more logical to choose the odd page
-% layout, but changing that now would break some existing documents.
-% Anyway, you can change the layout easily yourself.
-%
-% This default layout is produced by the following commands:
-% \Example{5}
-% \CmdIndex{rightmark}
-% \CmdIndex{leftmark}
-% \begin{example}
-% \fancyhead[LE,RO]{\textsl{\rightmark}}
-% \fancyhead[LO,RE]{\textsl{\leftmark}}
-% \fancyfoot[C]{\thepage}
-% \end{example}
-%
-% The following settings are used for the decorative lines:
-%
-% \begin{tabbing}
-% \CmdIndex{headrulewidth}
-% \noindent \cs{headrulewidth}\qquad \qquad \qquad \=0.4\=pt\\
-% \CmdIndex{footrulewidth}
-% \Cmd{footrulewidth}\>0\>pt
-% \end{tabbing}
-%
-% The header text is turned into all uppercase by the standard \LaTeX{}
-% code in \verb|book.cls|.
 %
 % \section{The scoop on \latex/'s marks}
 % \label{sec:scoop}
@@ -1169,7 +1306,7 @@
 % section~\ref{sec:default}.
 %
 % These marks are set by the commands
-% \Cmd{markboth\{leftmark\}\{rightmark\}} and \Cmd{markright\{rightmark\}}.
+% \cs{markboth}\marg{leftmark}\marg{rightmark} and \cs{markright}\marg{rightmark}.
 % These commands are usually used inside commands like \cs{chaptermark}
 % and \cs{sectionmark} but they can be also be given directly in your
 % document, although this not very usual.
@@ -1482,7 +1619,7 @@
 % Package fancyhdr Warning: \headheight is too small (12.0pt):
 % (fancyhdr)                Make it at least 14.0pt, for example:
 % (fancyhdr)                \setlength{\headheight}{14.0pt}.
-% (fancyhdr)                You might also make \topmargin:
+% (fancyhdr)                You might also make \topmargin smaller:
 % (fancyhdr)                \addtolength{\topmargin}{-2.0pt}.
 % \end{code}
 % \label{page:warning}\index{Warning}
@@ -1558,7 +1695,6 @@
 % the \cs{vspace}. If you want to change the distance between that
 % decorative line and the footer text you need to adjust the
 % \CmdIndex{footruleskip}
-% \DescribeMacro{\footruleskip}
 % parameter \cs{footruleskip}. It
 % defines the distance between the decorative line in the footer and the top
 % of the footer text line. By default it is set to 30\% of the normal line
@@ -1570,7 +1706,6 @@
 % the maximum depth of possible descenders in the text, which is 30\% of
 % the normal line distance. You can increase or decrease this distance
 % \CmdIndex{headruleskip}
-% \DescribeMacro{\headruleskip}
 % by defining the macro \cs{headruleskip}, similar to \cs{footruleskip}
 % \footnote{(But \cs{headruleskip} is only available since version~4.0.)}.
 % This defines the extra distance. The default value is 0pt, and
@@ -1968,20 +2103,18 @@
 % Page style \texttt{fancy}, if not redefined, does not have the definitions of the
 % headers and footers built-in, but they are defined in the document,
 % globally, or locally in a group. This also applies to the definitions of the
-% \cs{chaptermark} and/or \cs{[sub]sectionmark} commands. So if you want
+% \cs{chaptermark} and/or \Cmd{[sub]sectionmark} commands. So if you want
 % to switch from another page style to the \texttt{fancy} page style
 % later in the document, and that other page style has changed for
-% example the \cs{chaptermark} and/or \cs{[sub]sectionmark} commands,
+% example the \cs{chaptermark} and/or \Cmd{[sub]sectionmark} commands,
 % you will have to redefine these yourself and maybe also
 % the definitions of the headers and footers, at that point.
 % For example
 % \begin{code}
 % \pagestyle{fancy}
-% \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
-% \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
+% \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. #1}{}}
+% \renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
 % \end{code}
-% Please note that you have to double the \verb|#| signs, because the
-% definitions are inside a macro.
 %
 % If the previous page style was one of the standard \LaTeX{} page
 % styles, or some page style that is not based on \Package{fancyhdr},
@@ -2002,6 +2135,8 @@
 % ...
 % \pagestyle{myfancy}
 % \end{code}
+% Please note that you now have to double the \verb|#| signs, because the
+% definitions are inside a macro.
 %
 % In general, when you use only one page style \texttt{fancy} in your
 % document, with the occasional \cs{thispagestyle} excursion to page
@@ -2203,15 +2338,15 @@
 % \end{code}
 % For cases like this \Package{fancyhdr} version~4.0 and later has some
 % new commands \cs{fancyheadinit}, \cs{fancyfootinit} and \cs{fancyhfinit}.
-% \DescribeMacro{\fancyheadinit}
+% \CmdIndex{fancyheadinit}
 % With \Cmd{fancyheadinit\{\meta{code}\}} you can define some code that will be executed
 % just before the construction of the header. As it is executed in the
 % header, it can test the correct page number, because the counter
 % \texttt{page} is guaranteed to have the correct value in the headers
 % and footers. Similarly, the code in \Cmd{fancyfootinit\{\meta{code}\}} is executed in
-% \DescribeMacro{\fancyfootinit}
+% \CmdIndex{fancyfootinit}
 % the footer. And \Cmd{fancyhfinit\{\meta{code}\}} sets its code for both the header
-% \DescribeMacro{\fancyhfinit}
+% \CmdIndex{fancyhfinit}
 % and the footer. Now we can set for example \cs{headruleskip} or
 % \cs{footrulewidth} depending on the page number. So instead of putting
 % the test inside the definition of \cs{headruleskip}, we can put it
@@ -3362,12 +3497,7 @@
 % the modern commands are given in table~\ref{tab:depr}.
 %
 % \begin{table}[h!t]
-% \CmdIndex{lhead}
-% \CmdIndex{chead}
-% \CmdIndex{rhead}
-% \CmdIndex{lfoot}
-% \CmdIndex{cfoot}
-% \CmdIndex{rfoot}
+% \begin{function}{\lhead, \chead, \rhead, \lfoot, \cfoot, \rfoot}
 %   \begin{tabular}{ll}
 %   \toprule
 %   \Cmd{lhead\{xx\}} & \Cmd{fancyhead[L]\{xx\}} \\
@@ -3386,6 +3516,7 @@
 %   \bottomrule
 % \end{tabular}
 % \caption{Deprecated commands and their translation\label{tab:depr}}
+% \end{function}
 % \end{table}
 %
 % As you see, if there is an optional parameter, this one applies to the
@@ -3394,7 +3525,7 @@
 % documentclass. If there is no optional parameter, the required
 % parameter applies to both even and odd pages.
 %
-% \CmdIndex{fancyplain}
+% \begin{function}{\fancyplain}
 % \PSindex{fancyplain}
 % There was also a special pagestyle \texttt{fancyplain} that could be
 % used to define both the pagestyle \texttt{fancy} and to redefine the
@@ -3411,16 +3542,20 @@
 % The \cs{fancyplain} command is only useful within the pagestyle \texttt{fancyplain}.
 % Nowadays you would just redefine pagestyle \texttt{plain} with the
 % \Cmd{fancypagestyle\{plain\}\{xxxx\}} command (see section~\ref{sec:pagestyle-plain}).
+% \end{function}
 %
-% \CmdIndex{plainheadrulewidth}
-% \CmdIndex{plainfootrulewidth}
+% \begin{variable}{\plainheadrulewidth, \plainfootrulewidth}
 % There are also \cs{plainheadrulewidth} and \cs{plainfootrulewidth}
 % commands to define the values of \cs{headrulewidth} and
 % \cs{footrulewidth} to be used on `\texttt{plain}' pages. This also
 % only works with the pagestyle \texttt{fancyplain}, not when you
 % redefine pagestyle \texttt{plain} with the \cs{fancypagestyle} command.
+% \end{variable}
+%
+% \end{documentation}
 %
 % \section{Contact information}
+% \label{sec:contact}
 %
 % Pieter van Oostrum\\
 % E-mail: pieter@vanoostrum.org \\
@@ -3443,8 +3578,8 @@
 %   \item References to older \LaTeX{} versions removed.
 %   \item Removed obsolete source code of \Package{extramarks.sty}
 %   \item Changed font commands to \cs{textbf} and \cs{textsl}.
-%   \item Added description of the \cs{fancy\ldots offset} commands.
-%   \item Added various \cs{\ldots xmark} commands from \Package{extramarks.sty}.
+%   \item Added description of the \Cmd{fancy\ldots offset} commands.
+%   \item Added various \Cmd{\ldots xmark} commands from \Package{extramarks.sty}.
 %   \item Various corrections applied.
 %   \item Updated contact information.
 %   \item Added Version information. :)
@@ -3522,7 +3657,7 @@
 %   \item Some documentation corrections, especially in sections
 %     \ref{sec:xmarks} and \ref{sec:movie}.
 %   \end{itemize}
-% \item Version 4.1, Feb 11-20, 2021
+% \item Version 4.1, Feb 11-March 22, 2021
 %   \begin{itemize}
 %   \item Shorten Warning message about \cs{headheight}/\cs{footskip} too large.
 %   \item If the option \texttt{[nocheck]} is given, just keep quiet and
@@ -3530,6 +3665,8 @@
 %     \texttt{[compatV3]} option is given.
 %   \item Added \cs{fancypagestyle*} variant.
 %   \item Added command \cs{fancyhdrsettoheight}.
+%   \item New implementation of package \Package{extramarks} with
+%   fallback to \Package{extramarks-v3}.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -3574,7 +3711,7 @@
 %    \hfill
 %    \llap{\parbox[b]{\textwidth}{\raggedleft 1.2. This is a very long
 %                   section title that will not fit in the header}}^^A
-%  }
+%  }\strut
 %  \hrule height\headrulewidth width\textwidth}
 % \bigskip
 % \noindent which isn't very nice.
@@ -3583,20 +3720,24 @@
 % \subsection{Using optional arguments}
 %
 % As we have seen in section~\ref{sec:scoop}, the header info comes from
-% the marks. So if we want the text in the header to be smaller we have
-% to supply smaller marks. This can be done by giving these as optional
+% the marks. So if we want the text in the header to be shorter we have
+% to supply shorter marks. This can be done by giving these as optional
 % arguments in the \cs{chapter} and \cs{section} commands.\footnote{At
 % least in the \texttt{book} and \texttt{report} documentclasses. In the
 % \texttt{article} class this would be the \cs{section} and
 % \cs{subsection} commands.}
-% \begin{code}
-% \chapter[Short chapter title]{This is a very long chapter title}
-%  . . .
+% \Example{34a}
+% \begin{example}
+% \chapter[This is a not so long chapter title]
+%         {This is a very long chapter title to see if we can give
+%          fancyhdr a shorter one that fits in the header}
+% . . .
 % \section[Short section title]
-%         {This is a very long section title that will not fit in the header}
-% \end{code}
+%         {This is a very long section title that will not fit in
+%          the header}
+% \end{example}
 % The short titles will now appear in the header. However, these will
-% also appear in the table of contents. If that is what you want than
+% also appear in the table of contents. If that is what you want then
 % you are ready. But if you want to use the long titles in the table of
 % contents, you have to use some trickery. In particular you have to
 % supply the marks yourself.
@@ -3611,10 +3752,11 @@
 % value that is supplied by the \cs{chapter} command, by supplying an
 % additional \cs{chaptermark} command after the \cs{chapter} command,
 % like this:
-% \begin{code}
-% \chapter{This is a very long chapter title that does not fit in the header}
+% \Example{34b}
+% \begin{example}
+% \chapter{This is a long chapter title that does not fit in the header}
 % \chaptermark{This is a not so long chapter title}
-% \end{code}
+% \end{example}
 % For the section titles the situation is more complicated. Here we use
 % the \cs{rightmark}, which uses the first mark of its kind on the page.
 % So you might think putting a \cs{sectionmark}\CmdIndex{sectionmark} before the \cs{section}
@@ -3648,24 +3790,30 @@
 % \sectionmark{Short title}
 % \end{code}
 % To avoid all the repetitions, it is better to make a macro:
-% \begin{code}
+% \Example{34b\\(continued)}
+% \begin{example}
 % \newcommand{\Section}[2]{%
 %             \section[#1]{#1\sectionmark{#2}}\sectionmark{#2}}
 %  . . .
-% \Section{Text title}{Header title}
-% \end{code}
+% \Section{This is a long section title that will not fit in
+%          the header}{Shortened section title}
+% \end{example}
 % And if you want to use yet a different text in the table of contents,
 % you can make a macro with three parameters. The third parameter is the
 % text to be put in the table of contents. We use this parameter as the
 % optional argument for the \cs{section} command.
-% \begin{code}
-% \newcommand{\Sectioniii}[3]{%
+% \Example{34b\\(continued)}
+% \begin{example}
+% \newcommand{\Sectionx}[3]{%
 %             \section[#3]{#1\sectionmark{#2}}\sectionmark{#2}}
 %  . . .
-% \Sectioniii{Text title}{Header title}{TOC title}
-% \end{code}
+% \Sectionx{This is another long section title that will not
+%             fit in the header}{Short section title 3}
+%            {This is the section title in the table of contents}
+% \end{example}
 % Please note that if you use the \texttt{article} class, instead of
-% \cs{chaptermark} and \cs{sectionmark}, you would probably use \cs{sectionmark}\cs{subsectionmark}.
+% \cs{chaptermark} and \cs{sectionmark}, you would probably use
+% \cs{sectionmark} and \cs{subsectionmark}.
 %
 % \subsection{Using automatic truncation}
 %
@@ -3674,11 +3822,14 @@
 % truncates a text to a maximum size, when it exceeds that size. We put
 % both headers in \cs{truncate} to limit it to half the \cs{headwidth}.
 % Of course it is also possible to make asymmetric arrangements.
-% \begin{code}
+% \Example{34c}
+% \begin{example}
 % \usepackage[fit]{truncate}
-% \fancyhead[LE,RO]{\nouppercase{\truncate{0.5\headwidth}{\rightmark}}}
-% \fancyhead[LO,RE]{\nouppercase{\truncate{0.5\headwidth}{\leftmark}}}
-% \end{code}
+% \fancyhead[LE,RO]{\nouppercase{%
+%          \truncate{0.5\headwidth}{\rightmark}}} % Section title
+% \fancyhead[LO,RE]{\nouppercase{%
+%          \truncate{0.5\headwidth}{\leftmark}}} % Chapter title
+% \end{example}
 % We don't have to make any changes to the chaper and section titles
 % because \cs{truncate} will take care of this.
 % This arrangement gives the following header when both titles are too
@@ -3689,7 +3840,7 @@
 %    \truncate{0.5\textwidth}{Chapter 1. This is a very long chapter title that does not fit in the header}^^A
 %    \hfill
 %    \truncate{0.5\textwidth}{1.2. This is a very long section title that will not fit in the header}^^A
-%  }
+%  }\strut
 %  \hrule height\headrulewidth width\textwidth}
 % \bigskip
 %
@@ -3700,7 +3851,9 @@
 % they could theoretically touch each other. This can be prevented by
 % making the widths slightly smaller. And when there is only one title
 % in the header, you can make the width equal to or slightly smaller
-% than \cs{headwidth}.
+% than \cs{headwidth}. A more sophisticated solution would be to check
+% if one of the header parts is small enough and then truncate the other
+% one for the remaining space.
 %
 % \section{I lost my chapter/section titles}
 %
@@ -3737,9 +3890,159 @@
 % \end{code}
 %
 %
+% \section{Can I use \Package{fancyhdr} with the \Package{beamer} class?}
+% \label{sec:beamer}
+%
+% \TTindex{beamer}%
+% The \Package{beamer} class has its own provisions for headers and
+% footers with the \texttt{headline} and \texttt{footline} templates.
+% The advantage of these is that they blend well with the
+% \Package{beamer} theme in use.
+%
+% Still people sometimes ask if \Package{fancyhdr} can be used for
+% header and footers because they are more familiar with this. Sometimes
+% you see answers that discourage the use of \Package{fancyhdr} with
+% \Package{beamer}, but actually it isn't difficult to use it if you
+% take provisions that the header (and maybe also the footer) doesn't
+% interfere with the \Package{beamer} layout. This can be done with
+% \begin{code}
+% \setbeamertemplate{headline}{\vspace{\headheight}}
+% \end{code}
+% \CmdIndex{headheight}%
+% after \cs{headheight} has got its proper value. Here is a complete
+% example:
+% \NoExample{with-beamer}
+% \begin{example}
+% \documentclass{beamer}
+% \usepackage{fancyhdr}
+% \usepackage{graphicx}
+% \fancyhead[L]{\includegraphics[width=0.1\textwidth]{example-image}}
+% \fancyhead[R]{Course Name}
+% \fancyhead[C]{\textbf{Subject}\\Author}
+% \pagestyle{fancy}
+% \setlength{\headheight}{30pt}
+% \setlength{\footskip}{14pt}
+%
+% \setbeamertemplate{headline}{\vspace{\headheight}}
+%
+% \begin{document}
+%
+% \begin{frame}{Subject Title}
+% Text of the slide
+% \end{frame}
+%
+% \end{document}
+% \end{example}
+%
+% \section{I want the first section and the first subsection in my headers}
+% \label{sec:firstsubsection}
+%
+% A question that is regularly asked (e.g. on
+% \texttt{tex.stackexchange.com}\footnote{See for example \url{https://tex.stackexchange.com/q/586066/113546}}) is how to get both the first section
+% title and the first subsection title in the headers. The standard \LaTeX{} page style
+% \emph{headings} in a class without chapters (like \texttt{article})
+% gives you the last section title and the first subsection title of the
+% page. However, \LaTeX's standard marks mechanism has some drawbacks. There are two problems:
+% \begin{itemize}
+% \item Standard \LaTeX{} uses left marks for the section title and
+% right marks for the subsection title. But it only has commands to
+% extract the last left mark (\cs{leftmark}) and the first right mark
+% (\cs{rightmark}). This means that if there are two or more sections on
+% the page you get the last one, which can be counter-intuitive.
+% The \Package{extramarks} can come to the rescue
+% here, because it also defines a command to extract the first left
+% mark (\cs{firstleftmark}).
+% \item However, this doesn't solve all the problems
+%  because the \cs{leftmark} and \cs{rightmark} are not independent.
+% If on a page you first have a \cs{section} command and then a
+% \cs{subsection} command, the \cs{section} command generates a
+% \cs{markboth}\marg{section title}\verb|{}| and the second empty
+% argument generates an empty right mark. This means that the
+% \cs{rightmark} will be empty rather than the subsection title.
+% \end{itemize}
+% To solve this you can use independent marks for the section and the
+% subsection title. In principle we could still use the original
+% \LaTeX{} mark for the section title, but for the second half of this
+% example this will not work.  So we will use the new independent
+% marks from the package \Package{extramarks} (version 4.1 or later),
+% the \emph{left} mark for the section title and the \emph{right} mark
+% for the subsection title.
+% We set the marks with \cs{extramarksleft} and \cs{extramarksright},
+% respectively, and retrieve them with
+% \cs{extramarksleft} and \cs{extramarksright} (notice the \texttt{x} in the names).
+%
+% If there is no \cs{section} command on the page, it ``inherits'' the
+% last section title of a previous page. Similarly for subsections.
+%
+% \Example{35}
+% \begin{example}
+% \usepackage{fancyhdr}
+% \usepackage{extramarks}
+% \pagestyle{fancy}
+% \fancyhf{}
+% \fancyhead[L]{\firstleftxmark}
+% \fancyhead[R]{\firstrightxmark}
+% \fancyfoot[C]{\thepage}
+% \renewcommand*{\sectionmark}[1]{\extramarksleft{\thesection\ #1}}
+% \renewcommand*{\subsectionmark}[1]{\extramarksright{\thesubsection\ #1}}
+%
+% \begin{document}
+% \section{Section One}
+% \subsection{Subsection One}
+%  . . .
+% \end{example}
+% This effectively solves the problem. However, some refinement is
+% possible.
+%
+% When you have a \cs{section} command on a page, but it doesn't have a
+% subsection for an extended length, then, as described above, the
+% previous subsection title is ``inherited''. This may be sub-optimal,
+% because it combines the title of section $n$ with a subsection title
+% that belongs to section $n-1$, which looks unnatural. It could
+% even be a subsection title from several sections before. You may want to
+% suppress the subsection title in the header in this case. Version  4.1
+% and later of \Package{extramarks} has commands that make this possible.
+%
+% The algorithm we use is this:
+% \begin{quote}
+%   if there is a section mark on this page\\
+%   and there is no subsection mark on the page\\
+%   \mbox{\quad} then stop the ``inheritance''.
+% \end{quote}
+% The two tests are done with the command \cs{ifextramarksmissing}, and
+% stopping the inheritance with \cs{extramarksreset} (which clears the
+% \emph{topmark}, which is used for the inheritance).
+%
+% We put this code in \cs{fancyheadinit}, so that it will be executed
+% before the header fields are constructed. An alternative would be to
+% use it in the right header field after \cs{firstrightxmark}. This
+% would cause the inheritance to still be used on the page where the section
+% starts, but not on the following pages. This could be better if the
+% section starts further down the page, but it would be ugly if the
+% section starts at the top of the page. Unfortunately there is no way
+% to test for this. The choice is yours.
+%
+% The command \cs{ifextramarksmissing}\marg{name}\marg{true code}\marg{false code}
+% executes the \meta{true code} if there is no \meta{name} mark on the
+% page, and \meta{false code} if there is at least one.
+%
+% \Example{35\\(continued)}
+% \begin{example}
+% \fancyheadinit{%
+%   \ifextramarksmissing{left}
+%     {}
+%     {%
+%       \ifextramarksmissing {right}
+%         {\extramarksreset{right}}
+%         {}%
+%     }%
+% }
+% \end{example}
+%
 % \newpage
 % \part{Implementation}
 %
+% \begin{implementation}
 % \section{fancyhdr.sty}
 %
 %<*fancyhdr>
@@ -3900,14 +4203,14 @@
 % \changes{fancyhdr v3.9}{2016/10/12}{Rename some macros to have 'f@nch@'
 % in their names, to get a more uniform naming scheme for internal macros.}
 %
-% \begin{macro}{\if@nch@mpty}
+% \begin{macro}[internal]{\if@nch@mpty}
 % This macro tests if its argument is empty.
 %    \begin{macrocode}
 \newcommand\if@nch@mpty[1]{\def\temp@a{#1}\ifx\temp@a\@empty}
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\iff@nch@check}
+% \begin{macro}[internal]{\iff@nch@check}
 % Boolean for the \texttt{nocheck} option.
 % \changes{fancyhdr v4.0}{2019/03/15}{Implement the \texttt{nocheck} option}
 % \OPTindex{nocheck}
@@ -3920,7 +4223,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@gbl}
+% \begin{macro}[internal]{\f@nch@gbl}
 % Initialise \cs{f@nch@gbl} to do nothing (except with the \texttt{compatV3}
 % option).
 % \changes{fancyhdr v4.0}{2019/03/19}{Remove the \cs{global} in definitions}
@@ -3931,7 +4234,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\iff@nch@compatViii}
+% \begin{macro}[internal]{\iff@nch@compatViii}
 % Define \cs{iff@nch@compatViii} to track the \texttt{compatV3} option.
 % \changes{fancyhdr v4.0}{2019/03/16}{Implement the \texttt{compatV3} option}
 %    \begin{macrocode}
@@ -3943,7 +4246,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@def}
+% \begin{macro}[internal]{\f@nch@def}
 % This macro defines another macro (usually a header or footer field).
 % Depending on the value of \cs{f@nch@gbl} the definition will be
 % global or local.
@@ -3960,7 +4263,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@ifundefined}
+% \begin{macro}[internal]{\f@nch@ifundefined}
 % This macro tests if a command is undefined. Older versions of
 % fancyhdr used \cs{@ifundefined}, but this had an undesired side effect
 % in the original \LaTeX{} (the command was made equal to \cs{relax} if
@@ -3989,7 +4292,7 @@
 % Standard styles are redefined optionally. These definitions are
 % borrowed from the \Package{nccfancyhdr} package by by Alexander I. Rozhenko.
 %
-% \begin{macro}{\ps@myheadings}
+% \begin{macro}[internal]{\ps@myheadings}
 % The redefinition of the \texttt{myheadings} style is conditional.
 % We test the existence of the \cs{chapter} command and redefine the
 % style accordingly.
@@ -4026,7 +4329,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ps@headings}
+% \begin{macro}[internal]{\ps@headings}
 % The redefinition of the \texttt{headings} style also differs for
 % book-like and article-like classes. It also differs for
 % one-side and two-side modes.
@@ -4109,7 +4412,7 @@
 \ProcessOptions*
 %    \end{macrocode}
 %
-% \begin{macro}{\f@nch@errmsg}
+% \begin{macro}[internal]{\f@nch@errmsg}
 %   This macro generates an error message.
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{f@nch@ifundefined} instead of \cs{ifx}.}
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
@@ -4118,7 +4421,7 @@
   \f@nch@ifundefined{PackageError}{\errmessage{#1}}{\PackageError{fancyhdr}{#1}{}}}
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@warning}
+% \begin{macro}[internal]{\f@nch@warning}
 % This macro generates a warning.
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{f@nch@ifundefined} instead of \cs{ifx}.}
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
@@ -4128,7 +4431,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@forc}
+% \begin{macro}[internal]{\f@nch@forc}
 %   Usage: \cs{f@nch@forc} \cs{var} \texttt{\{charstring\}\{body\}}.\\
 %   Execute the body for each character in \texttt{charstring} bound
 %   to \cs{var}.
@@ -4141,7 +4444,7 @@
 \def\f@nch@rc#1#2#3\f@nch@rc#4{\def#1{#2}#4\f@nchf@rc#1{#3}{#4}}
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@for}
+% \begin{macro}[internal]{\f@nch@for}
 %   Usage: \cs{f@nch@for}\cs{var}\texttt{\{list\}}\texttt{\{body\}} \\
 %   Execute the body for each element of the list, bound to \cs{var}.
 %   List elements are separated by commas. This is like \LaTeX's \cs{@for} but an empty
@@ -4152,7 +4455,7 @@
   \expandafter\@forloop#2,\@nil,\@nil\@@#1{#3}}
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@default}
+% \begin{macro}[internal]{\f@nch@default}
 %   Usage: \cs{f@nch@default} \cs{var}\texttt{\{defaults\}\{argument\}} \\
 %   Sets \cs{var} to the characters
 %   from \texttt{defaults} appearing in \texttt{argument}, or to \texttt{defaults} if it would be
@@ -4167,7 +4470,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@ifin}
+% \begin{macro}[internal]{\f@nch@ifin}
 %   Usage: \cs{f@nch@ifin} \meta{char} \meta{set} \meta{truecase} \meta{falsecase} \\
 % If \meta{char} is in \meta{set}, then \meta{truecase} else \meta{falsecase}.
 %    \begin{macrocode}
@@ -4217,7 +4520,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@fancyhf}
+% \begin{macro}[internal]{\f@nch@fancyhf}
 % This macro interprets the parameters for the headers and footers.\\
 % Parameters:\\
 % (1) The user command that was used (like \cs{fancyhead}). This is used
@@ -4251,7 +4554,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@fancyhfoffs}
+% \begin{macro}[internal]{\f@nch@fancyhfoffs}
+% \changes{fancyhdr v4.1}{2021/03/27}{Change the offset length variables
+% \cs{f@nch@O@xyz} to \cs{f@nch@offset@xyz}}
 % This macro interprets the parameters for the header and footer
 % offsets.\\
 % Parameters:\\
@@ -4262,7 +4567,7 @@
 % (3) The optional parameter that was given to these commands (default \texttt{[]}).\\
 % (4) The required parameter that was given to these commands.\\
 %   The header and footer offsets are stored in command sequences with
-%   names of the form: \cs{f@nch@O@}\meta{x}\meta{y}\meta{z} with \meta{x} from
+%   names of the form: \cs{f@nch@offset@}\meta{x}\meta{y}\meta{z} with \meta{x} from
 %   \texttt{[eo]}, \meta{y} from \texttt{[lr]} and \meta{z} from \texttt{[hf]}.
 %
 %    \begin{macrocode}
@@ -4282,7 +4587,7 @@
         {\f@nch@forc\f@nch@lcr\f@nch@@lcr
           {\f@nch@forc\f@nch@hf\f@nch@@hf
             {\expandafter\setlength\csname
-              f@nch@O@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#4}}}}}%
+              f@nch@offset@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#4}}}}}%
   \f@nch@setoffs}
 %    \end{macrocode}
 % \end{macro}
@@ -4343,7 +4648,9 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@headwidth}
+% \begin{macro}[internal]{\f@nch@headwidth}
+% \changes{fancyhdr v4.1}{2021/03/27}{Change the offset length variables
+% \cs{f@nch@O@xyz} to \cs{f@nch@offset@xyz}}
 % Length parameter to be used for \cs{headwidth}. We use this rather
 % than defining \cs{headwidth} as a length paramater directly to protect
 % ourself to someone saying: \verb+\let\headwidth\textwidth+.
@@ -4351,24 +4658,24 @@
 \newlength{\f@nch@headwidth} \let\headwidth\f@nch@headwidth
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@O@elh}
-% \begin{macro}{\f@nch@O@erh}
-% \begin{macro}{\f@nch@O@olh}
-% \begin{macro}{\f@nch@O@orh}
-% \begin{macro}{\f@nch@O@elf}
-% \begin{macro}{\f@nch@O@erf}
-% \begin{macro}{\f@nch@O@olf}
-% \begin{macro}{\f@nch@O@orf}
+% \begin{macro}[internal]{\f@nch@offset@elh}
+% \begin{macro}[internal]{\f@nch@offset@erh}
+% \begin{macro}[internal]{\f@nch@offset@olh}
+% \begin{macro}[internal]{\f@nch@offset@orh}
+% \begin{macro}[internal]{\f@nch@offset@elf}
+% \begin{macro}[internal]{\f@nch@offset@erf}
+% \begin{macro}[internal]{\f@nch@offset@olf}
+% \begin{macro}[internal]{\f@nch@offset@orf}
 % Length parameters for the offsets.
 %    \begin{macrocode}
-\newlength{\f@nch@O@elh}
-\newlength{\f@nch@O@erh}
-\newlength{\f@nch@O@olh}
-\newlength{\f@nch@O@orh}
-\newlength{\f@nch@O@elf}
-\newlength{\f@nch@O@erf}
-\newlength{\f@nch@O@olf}
-\newlength{\f@nch@O@orf}
+\newlength{\f@nch@offset@elh}
+\newlength{\f@nch@offset@erh}
+\newlength{\f@nch@offset@olh}
+\newlength{\f@nch@offset@orh}
+\newlength{\f@nch@offset@elf}
+\newlength{\f@nch@offset@erf}
+\newlength{\f@nch@offset@olf}
+\newlength{\f@nch@offset@orf}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -4419,7 +4726,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\if@fancyplain}
+% \begin{macro}[internal]{\if@fancyplain}
 % Boolean for the implementation of \cs{fancyplain}
 %    \begin{macrocode}
 \newif\if@fancyplain \@fancyplainfalse
@@ -4440,10 +4747,10 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@raggedleft}
-% \begin{macro}{\f@nch@raggedright}
-% \begin{macro}{\f@nch@centering}
-% \begin{macro}{\f@nch@everypar}
+% \begin{macro}[internal]{\f@nch@raggedleft}
+% \begin{macro}[internal]{\f@nch@raggedright}
+% \begin{macro}[internal]{\f@nch@centering}
+% \begin{macro}[internal]{\f@nch@everypar}
 % Save the standard definitions of \cs{raggedleft}, \cs{raggedright},
 % \cs{centering} and \cs{everypar} so that we can reset them when we are
 % typesetting the headers and footers. Some packages change these to
@@ -4459,7 +4766,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@reset}
+% \begin{macro}[internal]{\f@nch@reset}
 %   Command to reset various things in the headers: a.o. single spacing
 %   (taken from setspace.sty) and the catcode of ^^M and
 %   \cs{endlinechar} (so that epsf files
@@ -4495,15 +4802,16 @@
 }
 \def\f@nch@center#1[#2]#3#4#5{%
 %    \end{macrocode}
-% At first, we execute the case when the \meta{center-mark} is empty:
+% At first, we execute the case when the \meta{center-mark} is empty\footnote{%
+% This code is reused from the \Package{nccfancyhdr} by Alexander I. Rozhenko}:
 %    \begin{macrocode}
   \def\@tempa{#4}\ifx\@tempa\@empty
     \hbox to\linewidth{\color@begingroup{#3}\hfil {#5}\color@endgroup}%
   \else
 %    \end{macrocode}
 % All we need to do is to calculate skips inserted before and after
-% \meta{center-mark}. We will calculate them in the |\@tempskipa|
-% and |\@tempskipb|. At first:
+% \meta{center-mark}. We will calculate them in the \verb|\@tempskipa|
+% and \verb|\@tempskipb| registers. At first:
 % \begin{quote}
 % \verb|\@tempdima:=|\meta{dist};\\
 % \verb|\@tempdimb:=|\meta{dist}\verb|*|\meta{stretch};\\
@@ -4565,7 +4873,7 @@
 % before the construction of the header. It can for example set the
 % color or the font, or change \cs{headrulewidth} or \cs{headruleskip}.
 % It cannot make global changes, just changes for the header.
-% \begin{macro}{\f@nch@headinit}
+% \begin{macro}[internal]{\f@nch@headinit}
 %   Storage for the header initialisation code.
 %    \begin{macrocode}
 \newcommand{\f@nch@headinit}{}
@@ -4581,7 +4889,7 @@
 % before the construction of the footer. It can for example set the
 % color or the font, or change \cs{footrulewidth} or \cs{footruleskip}.
 % It cannot make global changes, just changes for the footer.
-% \begin{macro}{\f@nch@footinit}
+% \begin{macro}[internal]{\f@nch@footinit}
 %   Storage for the footer initialisation code.
 %    \begin{macrocode}
 \newcommand{\f@nch@footinit}{}
@@ -4603,7 +4911,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@height}
+% \begin{macro}[internal]{\f@nch@height}
 % \changes{fancyhdr v4.1}{2021/02/20}{Length variable \cs{f@nch@height} added}
 % Length variable to store heigth of header/footer for use in \cs{fancyhdrsettoheight}
 %    \begin{macrocode}
@@ -4614,7 +4922,7 @@
 % \begin{macro}{\fancyhdrsettoheight}
 % \changes{fancyhdr v4.1}{2021/02/20}{Macro \cs{fancyhdrsettoheight} added}
 % Macro to store the height of a header/footer in a length variable.\\
-% \cs{fancyhdrsettoheight}\texttt{\{}\meta{lengthvar}\texttt{\}\{}\meta{header/footer}\texttt{\}}.\\
+% \cs{fancyhdrsettoheight}\marg{lengthvar}\marg{header/footer}\\
 % The second parameter can be \texttt{oddhead}, \texttt{evenhead},
 % \texttt{oddfoot}, or \texttt{evenfoot}.
 %    \begin{macrocode}
@@ -4635,7 +4943,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@vbox}
+% \begin{macro}[internal]{\f@nch@vbox}
 % Make a \cs{vbox} with the header or footer. Check whether there is
 % enough space and give a warning if not.
 %   Use box 0 as a temp box and dimen 0 as temp dimen. This can be done,
@@ -4711,7 +5019,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@head}
+% \begin{macro}[internal]{\f@nch@head}
 % \changes{fancyhdr v4.0}{2019/03/22}{Parameter \cs{headruleskip}.}
 % \changes{fancyhdr v4.0}{2019/03/25}{\cs{fancyheadinit} initialisation
 % code added and \cs{f@nch@reset} moved up.}
@@ -4755,7 +5063,7 @@
 }
 %    \end{macrocode}
 %
-% \begin{macro}{\f@nch@foot}
+% \begin{macro}[internal]{\f@nch@foot}
 % \changes{fancyhdr v3.10}{2019/01/26}{Put \cs{footrule} in a \cs{vbox}
 % to accommodate for flexible footrules.}
 % \changes{fancyhdr v3.10}{2019/01/28}{Use \cs{unvbox} on the footrule \cs{vbox}
@@ -4793,7 +5101,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\MakeUppercase}
+% \begin{macro}[internal]{\MakeUppercase}
 %   Define \MakeUppercase for old \LaTeX{}en. Note: we used \cs{def} rather
 %   than \cs{let}, so that \verb+\let\uppercase\relax+ (from the version 1
 %   documentation) will still work.
@@ -4803,17 +5111,17 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@chapapp}
+% \begin{macro}[internal]{\@chapapp}
 % Define \cs{@chapapp} for classes that don't have it, e.g. amsbook
 %    \begin{macrocode}
 \f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}%
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@initialise}
+% \begin{macro}[internal]{\f@nch@initialise}
 % \changes{fancyhdr v4.0}{2019/03/21}{Put all the initialisation code in
 % \cs{f@nch@initialise}}
 % This macro initialises the headers and footers and \cs{chaptermark}
-% and/or \cs{[sub]sectionmark} for pagestyle \texttt{fancy}
+% and/or \Cmd{[sub]sectionmark} for pagestyle \texttt{fancy}
 %    \begin{macrocode}
 \def\f@nch@initialise{%
 %    \end{macrocode}
@@ -4888,7 +5196,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ps@f@nch@fancyproto}
+% \begin{macro}[internal]{\ps@f@nch@fancyproto}
 % \cs{ps@f@nch@fancyproto} is the
 % initial value for pagestyle \texttt{fancy}. The real page style
 % is \cs{ps@f@nch@fancycore} but \cs{ps@f@nch@fancyproto} for the first use
@@ -4928,7 +5236,7 @@
 \@namedef{f@nch@ps@f@nch@fancyproto-is-fancyhdr}{}
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{ps@fancy}
+% \begin{macro}[internal]{ps@fancy}
 % Define \cs{ps@fancy} just to call \cs{ps@f@nch@fancyproto}.
 %    \begin{macrocode}
 \def\ps@fancy{\ps@f@nch@fancyproto}
@@ -4936,7 +5244,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ps@fancyplain}
+% \begin{macro}[internal]{\ps@fancyplain}
 % The pagestyle \texttt{fancyplain} (deprecated).
 % After initializing by calling \cs{ps@f@nch@fancyproto} it sets page style
 % \texttt{plain} to our version \cs{ps@plain@fancy}, which just sets
@@ -4948,7 +5256,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@ps@empty}
+% \begin{macro}[internal]{\f@nch@ps@empty}
 % Save the definition of \cs{ps@empty} (pagestyle \texttt{empty}).
 % \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@empty} to \cs{f@nch@ps@empty}}
 %
@@ -4957,7 +5265,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ps@f@nch@fancycore}
+% \begin{macro}[internal]{\ps@f@nch@fancycore}
 % \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@fancy} to \cs{ps@f@nch@fancycore}}
 % The actual implementation of pagestyle \texttt{fancy}. For amsbook/amsart, which do
 % strange things with \cs{topskip}, we start with \cs{f@nch@ps@empty}. We
@@ -4974,7 +5282,7 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{ps@fancydefault}
+% \begin{macro}[internal]{ps@fancydefault}
 % \changes{fancyhdr v4.0}{2019/03/21}{Added \cs{ps@fancydefault}}
 % This is page style \texttt{fancydefault}. It is in fact page style
 % \texttt{fancy} with all the defaults embedded. In contrast with page
@@ -4990,14 +5298,14 @@
 %
 % \end{macro}
 %
-% \begin{macro}{\f@nch@Oolh}
-% \begin{macro}{\f@nch@Oorh}
-% \begin{macro}{\f@nch@Oelh}
-% \begin{macro}{\f@nch@Oerh}
-% \begin{macro}{\f@nch@Oolf}
-% \begin{macro}{\f@nch@Oorf}
-% \begin{macro}{\f@nch@Oelf}
-% \begin{macro}{\f@nch@Oerf}
+% \begin{macro}[internal]{\f@nch@Oolh}
+% \begin{macro}[internal]{\f@nch@Oorh}
+% \begin{macro}[internal]{\f@nch@Oelh}
+% \begin{macro}[internal]{\f@nch@Oerh}
+% \begin{macro}[internal]{\f@nch@Oolf}
+% \begin{macro}[internal]{\f@nch@Oorf}
+% \begin{macro}[internal]{\f@nch@Oelf}
+% \begin{macro}[internal]{\f@nch@Oerf}
 %   Default definitions for compatibility mode: These cause the
 %   header/footer to take the defined \cs{headwidth} as its width and if
 %   required to shift it in the direction of the marginpar area.
@@ -5021,55 +5329,70 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@offsolh}
-% \begin{macro}{\f@nch@offselh}
+% \begin{macro}[internal]{\f@nch@offsolh}
+% \begin{macro}[internal]{\f@nch@offselh}
+% \changes{fancyhdr v4.1}{2021/03/27}{Change the offset length variables
+% \cs{f@nch@O@xyz} to \cs{f@nch@offset@xyz}}
 %   New definitions for the use of \cs{fancyhfoffset},
 %   \cs{fancyheadoffset}, \cs{fancyfootoffset}.  These calculate the
 %   \cs{headwidth} from \cs{textwidth} and the specified offsets.\\
 %   First for the header.
 %
 %    \begin{macrocode}
-\def\f@nch@offsolh{\headwidth=\textwidth\advance\headwidth\f@nch@O@olh
-                   \advance\headwidth\f@nch@O@orh\hskip-\f@nch@O@olh}
-\def\f@nch@offselh{\headwidth=\textwidth\advance\headwidth\f@nch@O@elh
-                   \advance\headwidth\f@nch@O@erh\hskip-\f@nch@O@elh}
+\def\f@nch@offsolh{\headwidth=\textwidth\advance\headwidth\f@nch@offset@olh
+                   \advance\headwidth\f@nch@offset@orh\hskip-\f@nch@offset@olh}
+\def\f@nch@offselh{\headwidth=\textwidth\advance\headwidth\f@nch@offset@elh
+                   \advance\headwidth\f@nch@offset@erh\hskip-\f@nch@offset@elh}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@offsolf}
-% \begin{macro}{\f@nch@offself}
+% \begin{macro}[internal]{\f@nch@offsolf}
+% \begin{macro}[internal]{\f@nch@offself}
 % The same for the footer.
 %
 %    \begin{macrocode}
-\def\f@nch@offsolf{\headwidth=\textwidth\advance\headwidth\f@nch@O@olf
-                   \advance\headwidth\f@nch@O@orf\hskip-\f@nch@O@olf}
-\def\f@nch@offself{\headwidth=\textwidth\advance\headwidth\f@nch@O@elf
-                   \advance\headwidth\f@nch@O@erf\hskip-\f@nch@O@elf}
+\def\f@nch@offsolf{\headwidth=\textwidth\advance\headwidth\f@nch@offset@olf
+                   \advance\headwidth\f@nch@offset@orf\hskip-\f@nch@offset@olf}
+\def\f@nch@offself{\headwidth=\textwidth\advance\headwidth\f@nch@offset@elf
+                   \advance\headwidth\f@nch@offset@erf\hskip-\f@nch@offset@elf}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@setoffs}
+% \begin{macro}[internal]{\f@nch@setoffs}
+% \changes{fancyhdr v4.1}{2021/03/27}{Use \cs{def} instead of \cs{let}
+% to make it easier to pick up these macros for \cs{fancypagestyle*}}
 % Set the offset parts to be used in the construction of the headers and
 % footers. Depending on \cs{f@nch@gbl} it will be done globally (for
-% pagestyle \texttt{fancy}) or locally (for \cs{fancypagestyle}).
+% pagestyle \texttt{fancy}) in \texttt{compatV3} mode)
+% or locally (for \cs{fancypagestyle}).
+% The macros \Cmd{f@nch@Oxyz} tell what should be done at the various
+% ends of the headers/footers. They are done with \cs{def} rather than
+% \cs{let} so they are easier to pick up for \cs{fancypagestyle*}.
+%
 % Just in case \verb+\let\headwidth\textwidth+ was used, we reset
 % \cs{headwidth} to the length parameter that it should be.
 %    \begin{macrocode}
 \def\f@nch@setoffs{%
   \f@nch@gbl\let\headwidth\f@nch@headwidth
-  \f@nch@gbl\let\f@nch@Oolh\f@nch@offsolh
-  \f@nch@gbl\let\f@nch@Oelh\f@nch@offselh \f@nch@gbl\let\f@nch@Oorh\hss
-  \f@nch@gbl\let\f@nch@Oerh\hss \f@nch@gbl\let\f@nch@Oolf\f@nch@offsolf
-  \f@nch@gbl\let\f@nch@Oelf\f@nch@offself \f@nch@gbl\let\f@nch@Oorf\hss
-  \f@nch@gbl\let\f@nch@Oerf\hss
+  \f@nch@gbl\def\f@nch@Oolh{\f@nch@offsolh}%
+  \f@nch@gbl\def\f@nch@Oelh{\f@nch@offselh}%
+  \f@nch@gbl\def\f@nch@Oorh{\hss}%
+  \f@nch@gbl\def\f@nch@Oerh{\hss}%
+  \f@nch@gbl\def\f@nch@Oolf{\f@nch@offsolf}%
+  \f@nch@gbl\def\f@nch@Oelf{\f@nch@offself}%
+  \f@nch@gbl\def\f@nch@Oorf{\hss}%
+  \f@nch@gbl\def\f@nch@Oerf{\hss}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\iff@nch@footnote}
-% \begin{macro}{\@makecol}
+% \begin{macro}[internal]{\iff@nch@footnote}
+% \begin{macro}[internal]{\@makecol}
+% \changes{fancyhdr v4.1}{2021/03/27}{Change the internal variables
+% \cs{topfloat} and \cs{botfloat} to localised ones \cs{f@nch@topfloat}
+% and \cs{f@nch@botfloat}.}
 %   Redefine \cs{@makecol} so that we can capture if there are
 %   top/bottom floats, footnotes or if we are on a float page. Because
 %   of a clash with the footmisc package we do this at
@@ -5081,7 +5404,7 @@
 \AtBeginDocument{%
   \let\latex@makecol\@makecol
   \def\@makecol{\ifvoid\footins\f@nch@footnotefalse\else\f@nch@footnotetrue\fi
-    \let\topfloat\@toplist\let\botfloat\@botlist\latex@makecol}%
+    \let\f@nch@topfloat\@toplist\let\f@nch@botfloat\@botlist\latex@makecol}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -5094,8 +5417,8 @@
 % These can be used in a header/footer field to make them conditional on
 % the presence of floats and/or footnotes.
 %    \begin{macrocode}
-\newcommand\iftopfloat[2]{\ifx\topfloat\empty #2\else #1\fi}%
-\newcommand\ifbotfloat[2]{\ifx\botfloat\empty #2\else #1\fi}%
+\newcommand\iftopfloat[2]{\ifx\f@nch@topfloat\empty #2\else #1\fi}%
+\newcommand\ifbotfloat[2]{\ifx\f@nch@botfloat\empty #2\else #1\fi}%
 \newcommand\iffloatpage[2]{\if@fcolmade #1\else #2\fi}%
 \newcommand\iffootnote[2]{\iff@nch@footnote #1\else #2\fi}%
 %    \end{macrocode}
@@ -5105,11 +5428,9 @@
 % \end{macro}
 %
 % \changes{fancyhdr v4.1}{2021/02/16}{Define \cs{newtoks}\cs{@temptokenb}}
-% \begin{macro}{\@temptokenb}
+% \begin{macro}[internal]{\@temptokenb}
 % A token register to collect information for \cs{fancypagestyle*}. The
-% same token register is declared and used in the \Package{extramarks}
-% package, but their use is independent. Both definitions are
-% conditional on the non-existence of it.
+% definition is conditional on the non-existence of it.
 %    \begin{macrocode}
 \ifx\@temptokenb\undefined \csname newtoks\endcsname\@temptokenb\fi
 %    \end{macrocode}
@@ -5117,7 +5438,7 @@
 %
 % \changes{fancyhdr v4.1}{2021/02/17}{Define \cs{iff@nch@pagestyle@star}
 % to record if \cs{fancypagestyle*} is used.}
-% \begin{macro}{\iff@nch@pagestyle@star}
+% \begin{macro}[internal]{\iff@nch@pagestyle@star}
 % A conditional to record if \cs{fancypagestyle*} is used.
 %    \begin{macrocode}
 \newif\iff@nch@pagestyle@star
@@ -5135,7 +5456,7 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@pagestyle}
+% \begin{macro}[internal]{\f@nch@pagestyle}
 % Internal macro for \cs{fancypagestyle}. The optional second argument is the base page style.
 % It defaults to \cs{ps@f@nch@fancyproto}.
 % \changes{fancyhdr v4.0}{2019/03/21}{Added optional base style argument.}
@@ -5145,7 +5466,7 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\f@nch@@pagestyle}
+% \begin{macro}[internal]{\f@nch@@pagestyle}
 % The actual code for \cs{fancypagestyle}. Build the page style body.
 % Declare it as a fancyhdr-based page style.
 % \changes{fancyhdr v4.0}{2019/09/05}{Make the definition of \cs{f@nch@pagestyle} \cs{long}.}
@@ -5176,12 +5497,14 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\f@nch@pagestyle@setup}
+% \begin{macro}[internal]{\f@nch@pagestyle@setup}
 % Internal macro for \cs{fancypagestyle}. Setup \cs{@temptokenb}:\\
 % For \cs{fancypagestyle*} collect relevant macro definitions in \cs{@temptokenb}.\\
 % For \cs{fancypagestyle} make \cs{@temptokenb} empty.
 % \changes{fancyhdr v4.1}{2021/02/17}{Add \cs{f@nch@pagestyle@setup}
 % macro for \cs{fancypagestyle*}}
+% \changes{fancyhdr v4.1}{2021/03/27}{Also save the offset length variables
+% \cs{f@nch@offset@xyz} with \cs{setlength}}
 %    \begin{macrocode}
 \newcommand\f@nch@pagestyle@setup{%
   \iff@nch@pagestyle@star
@@ -5203,7 +5526,7 @@
       \f@nch@Oolf\f@nch@Oorf\f@nch@Oelf\f@nch@Oerf
       \f@nch@headinit\f@nch@footinit
       \headrule\headrulewidth\footrule\footrulewidth
-    \do {
+    \do {%
 %    \end{macrocode}
 % First get the body of the macro.
 % Next put it in a \cs{def}\meta{\cs{macro}}\texttt{\{}\meta{body of \cs{macro}}\texttt{\}}.
@@ -5211,6 +5534,24 @@
       \toks@=\expandafter\expandafter\expandafter{\myname}%
       \toks@=\expandafter\expandafter\expandafter{%
         \expandafter\expandafter\expandafter\def
+        \expandafter\expandafter\myname\expandafter{\the\toks@}}%
+%    \end{macrocode}
+% Set up a macro to append \cs{toks@} to \cs{@temptokenb} and then execute it.
+%    \begin{macrocode}
+      \edef\temp@b{\@temptokenb={\the\@temptokenb\the\toks@}}%
+      \temp@b
+    }%
+%    \end{macrocode}
+% Now pick up the offset length variables in a similar way, but with
+% \cs{setlength} rather than \cs{def}.
+%    \begin{macrocode}
+    \@tfor\myname:=
+      \f@nch@offset@olh\f@nch@offset@orh\f@nch@offset@elh\f@nch@offset@erh
+      \f@nch@offset@olf\f@nch@offset@orf\f@nch@offset@elf\f@nch@offset@erf
+    \do {%
+      \toks@=\expandafter\expandafter\expandafter{\expandafter\the\myname}%
+      \toks@=\expandafter\expandafter\expandafter{%
+        \expandafter\expandafter\expandafter\setlength
         \expandafter\expandafter\myname\expandafter{\the\toks@}}%
 %    \end{macrocode}
 % Set up a macro to append \cs{toks@} to \cs{@temptokenb} and then execute it.
@@ -5231,8 +5572,1174 @@
 %</fancyhdr>
 %
 % \section{extramarks.sty}
-%
+% \setlength\parindent{0pt}
 %<*extramarks>
+%<@@=extramarks>
+%
+% \changes{extramarks v4.1}{2021/03/22}{New implementation with
+% independent marks, and fallback option to earlier version 3.}
+% Provide a rollback to earlier version
+%    \begin{macrocode}
+\providecommand\DeclareRelease[3]{}
+\providecommand\DeclareCurrentRelease[2]{}
+\DeclareRelease{v3}{2021-01-01}{extramarks-v3.sty}
+\DeclareCurrentRelease{}{2021-03-22}
+
+\RequirePackage{expl3,xparse}
+\RequirePackage{etoolbox}
+\ExplSyntaxOn
+%    \end{macrocode}
+%
+% This package gives you extra marks, that you can define, set and use
+% in your page headers and footers. It is based on the \eTeX{}
+% \cs{marks} mechanism. However we cannot just use this mechanism
+% directly to extract the relevant marks from a page for two reasons:
+% \begin{enumerate}
+% \item \LaTeX's output routine may clobber the marks when floats are
+% processed on the page
+% \item Sometimes the marks are hidden inside boxes that constitute the
+% page, for example with \cs{twocolumn} mode and with
+% \Package{multicol}. In these cases we must extract the marks from all
+% the boxes that make up the page and combine them. So this package sets
+% the relevant marks during the construction of the page and puts them
+% in variables, from where they can be used in the headers and footers.
+% \end{enumerate}
+%
+% \textbf{Algorithm for extracting the marks from a sequence of boxes on a page:}\\
+% for example in \cs{twocolumn}, or \Package{multicol}, on each column.
+% In the `normal' one-column case, on the main vertical box (\cs{@outputbox}). \\
+% The values in the variables reflect the marks on the current page;
+% they could be empty. On delivering the marks to the user, empty marks
+% are replaced by the value of \texttt{topmark}. (\textbf{NOTE}: What is called
+% \texttt{lastmark} on the user level, is called \texttt{botmark}
+% internally, because that is the name \TeX{} uses.)
+% \\[2ex]
+% For each mark:\\
+% INIT:\\
+% \mbox{~}    if botmark != empty:\\
+% \mbox{\quad}        topmark := botmark (= previous value: initial value \verb|{{}}|)\\
+% \mbox{~}    botmark := firstmark := empty\\
+% For each BOX:\\
+% \mbox{~}    (If the box was the result of a \cs{vsplit} skip next line:)\\
+% \mbox{~}    \cs{vsplit} box to maxdimen\\
+% \mbox{~}    if splitfirstmark not empty: (i.e. there are marks in the box)\\
+% \mbox{\quad}     if firstmark = empty:\\
+% \mbox{\quad}\mbox{\quad}       firstmark := splitfirstmark\\
+% \mbox{\quad}     botmark := splitbotmark\\[2ex]
+% DELIVER \meta{which}mark, where \meta{which} = \texttt{first} or
+% \texttt{last} (internally \texttt{bot}) :\\
+% \mbox{~}   if \meta{which}mark = empty:\\
+% \mbox{\quad}    return \texttt{topmark}\\
+% \mbox{~}   else:\\
+% \mbox{\quad}    return \texttt{\meta{which}mark}\\
+%
+% INIT code will be run (trivially) at the creation of a mark,
+% and after a page has been output, so that it will be initialised for
+% the next page. This can be done naturally at the end of the page
+% building function \cs{@outputpage}.
+% \\[2ex]
+% In normal one-column output, we run BOX code on the
+% page, just before it is output.\\
+% In two-column mode, we run BOX code on (1) the optional argument of
+% \cs{twocolumn}, (2) the left column, (3) the right column.
+% In other packages, such as \Package{multicol} it may be more complicated.
+%
+% \begin{variable}[internal]{\g_@@_marks_seq}
+%   Sequence of defined extra marks
+%    \begin{macrocode}
+\seq_new:N \g_@@_marks_seq
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}[internal]{\l_@@_temp_box}
+%   Temporary box
+%    \begin{macrocode}
+\box_new:N \l_@@_temp_box
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}[internal]{\l_@@_temp_tl}
+%   Temporary token list
+%    \begin{macrocode}
+\tl_new:N \l_@@_temp_tl
+%    \end{macrocode}
+% \end{variable}
+%
+% Debugging
+%
+% \begin{macro}[internal]{\@@_show_mark:n}
+% \begin{syntax}
+% \cs{@@_show_mark:n}\marg{mark variable name}
+% \end{syntax}
+%    \begin{macrocode}
+\cs_new:Nn \@@_show_mark:n
+{
+  \token_to_str:c { #1 } -> \tl_to_str:c { #1 }\MessageBreak
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\extramarks@info}
+% \begin{syntax}
+% \cs{extramarks@info}\marg{message}
+% \end{syntax}
+% Option `debugshow': Print debugging message
+%    \begin{macrocode}
+\cs_new_eq:NN \extramarks@info \use_none:n
+\DeclareOption{debugshow}{%
+\cs_gset_protected:Npn \extramarks@info #1
+  {
+   \GenericWarning
+       {(extramarks)\@spaces\@spaces}
+       {Package~extramarks:~#1}
+  }
+}
+\ProcessOptions*
+%    \end{macrocode}
+% \end{macro}
+%
+% Messages
+%
+%    \begin{macrocode}
+\msg_new:nnn {extramarks} {not-defined} {\token_to_str:N #1:~mark~#2~not~defined}
+\msg_new:nnn {extramarks} {already-defined} {\token_to_str:N #1:~mark~#2~already~defined}
+\msg_new:nnn {extramarks} {cannot-patch} {Patch ~ \token_to_str:N #1~failed}
+%    \end{macrocode}
+% \begin{macro}[internal]{\msg@error@nnn, \msg@error@nnnn}
+% Use these names in the patching code (LaTeX2e syntax)
+%
+%    \begin{macrocode}
+\cs_new_eq:NN \msg@error@nnn  \msg_error:nnn
+\cs_new_eq:NN \msg@error@nnnn \msg_error:nnnn
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{variable}[internal]{\c_@@_<name>_int, \g_@@_topmark_<name>_tl,
+%      \g_@@_firstmark_<name>_tl, \g_@@_botmark_<name>_tl}
+% Variables for a new mark \meta{name} :
+% \begin{syntax}
+% \Cmd{c_@@_\meta{name}_int} : the mark (number as a char)
+% \Cmd{g_@@_topmark_\meta{name}_tl} : topmark (braced)
+% \Cmd{g_@@_firstmark_\meta{name}_tl} : firstmark (braced)
+% \Cmd{g_@@_botmark_\meta{name}_tl} : botmark (braced)
+% \Cmd{l_@@_save_topmark_\meta{name}_tl} : locally saved topmark (braced)
+% \Cmd{l_@@_save_firstmark_\meta{name}_tl} : locally saved firstmark (braced)
+% \Cmd{l_@@_save_botmark_\meta{name}_tl} : locally saved botmark (braced)
+% \end{syntax}
+% \end{variable}
+%
+% \begin{macro}{\extramarksput, \extramarkstop, \extramarksfirst, \extramarkslast}
+% Commands for a new mark \meta{name} :
+% \begin{syntax}
+% \cs{extramarksput}\marg{name}\marg{value} : command to set the mark
+% \cs{extramarkstop}\marg{name} : topmark (user level)
+% \cs{extramarksfirst}\marg{name} : firstmark (user level)
+% \cs{extramarkslast}\marg{name} : botmark (user level)
+% \end{syntax}
+% \end{macro}
+%
+% \begin{macro}{\extramarksnewmark}
+% \begin{syntax}
+% \cs{extramarksnewmark}\marg{name}
+% \end{syntax}
+% Create a new mark; parameter is a name, preferably alphabetical
+%    \begin{macrocode}
+\NewDocumentCommand \extramarksnewmark { m }
+{
+%    \end{macrocode}
+% Test if mark not yet defined
+%    \begin{macrocode}
+  \cs_if_exist:cTF {c_@@_#1_int}
+    { \msg_error:nnnn {extramarks} {already-defined}
+      {\extramarksnewmark} {#1} }
+    {
+%    \end{macrocode}
+% Create the mark
+%    \begin{macrocode}
+      \exp_args:Nc \newmarks {c_@@_#1_int}
+%    \end{macrocode}
+% Put it in the list of marks
+%    \begin{macrocode}
+      \seq_put_right:Nn \g_@@_marks_seq { #1 }
+%    \end{macrocode}
+% Create the mark's variables, initialize topmark to empty mark (braced).
+% Others are really empty.
+%    \begin{macrocode}
+      \tl_new:c {g_@@_topmark_#1_tl}
+      \tl_new:c {g_@@_firstmark_#1_tl}
+      \tl_new:c {g_@@_botmark_#1_tl}
+      \tl_gset:cn {g_@@_topmark_#1_tl} {{}}
+    }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\@@_get_boxmarks_init:n}
+% \begin{syntax}
+% \cs{@@_get_boxmarks_init:n}\marg{mark name}
+% \end{syntax}
+% INIT code\\
+% \mbox{~}    if botmark != empty:\\
+% \mbox{\quad}        topmark := botmark (= previous value: initial value \verb|{{}}|)\\
+% \mbox{~}    botmark := firstmark := empty\\
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_get_boxmarks_init:n #1
+{
+  \tl_if_empty:cF { g_@@_botmark_#1_tl }
+    {
+      \tl_gset_eq:cc { g_@@_topmark_#1_tl } { g_@@_botmark_#1_tl }
+    }
+  \tl_gset_eq:cN { g_@@_firstmark_#1_tl } \c_empty_tl
+  \tl_gset_eq:cN { g_@@_botmark_#1_tl } \c_empty_tl
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\@@_get_boxmarks:n}
+% \begin{syntax}
+% \cs{@@_get_boxmarks:n}\marg{mark name}
+% \end{syntax}
+% Extract the marks of the last vsplitted box.
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_get_boxmarks:n #1
+{
+%    \end{macrocode}
+% Get our \cs{splitfirstmark}
+%    \begin{macrocode}
+  \tl_gset:No \l_@@_temp_tl
+    { \splitfirstmarks \use:c { c_@@_#1_int } }
+  \tl_if_empty:NF \l_@@_temp_tl
+%    \end{macrocode}
+% If not empty
+%    \begin{macrocode}
+    {
+      \tl_if_empty:cT { g_@@_firstmark_#1_tl }
+        {
+          \tl_gset_eq:cN { g_@@_firstmark_#1_tl } \l_@@_temp_tl
+        }
+      \tl_gset:co { g_@@_botmark_#1_tl }
+        { \splitbotmarks \use:c { c_@@_#1_int } }
+    }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}[internal]{\@@_boxmarks:n}
+% \begin{syntax}
+% \cs{@@_boxmarks:n}\marg{mark name}
+% \end{syntax}
+% Extract the local marks of the last vsplitted box.
+% This doesn't take into account any existing marks from outside the
+% box, in contrast to \cs{__extramarks_get_boxmarks:n}. So these will be
+% lost, which means that in general they should be saved first.
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_boxmarks:n #1
+{
+  \tl_gset:No \l_@@_temp_tl
+    { \splitfirstmarks \use:c{c_@@_#1_int} }
+  \tl_if_empty:NF \l_@@_temp_tl
+    {
+      \tl_gset_eq:cN { g_@@_firstmark_#1_tl } \l_@@_temp_tl
+      \tl_gset:co { g_@@_botmark_#1_tl }
+        { \splitbotmarks \use:c{c_@@_#1_int} }
+    }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\@@_vsplit_box}
+% \begin{syntax}
+% \cs{@@_vsplit_box}\meta{box}
+% \end{syntax}
+% Temporary \cs{vsplit} a box. This should be called inside a \TeX{} group.
+% This could generate a \TeX{} errormessage if the box to be split
+% contains infinite glue shrinkage. This is harmless for our purpose,
+% but unfortunately we cannot disable the error message. We temporarily
+% set \cs{errorcontextlines} to $-1$, however, to make the output as
+% little as possible. We need a variable to store the original value.
+% \begin{variable}[internal]{\l_@@_errorcontextlines}
+%    \begin{macrocode}
+\int_new:N \l_@@_errorcontextlines
+%    \end{macrocode}
+% \end{variable}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_vsplit_box #1
+{
+    \dim_set:Nn \tex_splitmaxdepth:D \c_max_dim
+    \int_set:Nn \tex_vbadness:D      \c_max_int
+%    \end{macrocode}
+% Make a temp copy of the box (otherwise it will become empty)
+%    \begin{macrocode}
+    \vbox_set:Nn \l_@@_temp_box { \unvcopy #1 \unskip }
+%    \end{macrocode}
+% Split the temporary box, with \cs{errorcontextlines} = $-1$.
+%    \begin{macrocode}
+    \int_set_eq:NN \l_@@_errorcontextlines \errorcontextlines
+    \int_set:Nn \errorcontextlines {-1}
+    \vbox_set_split_to_ht:NNn \l_@@_temp_box \l_@@_temp_box \c_max_dim
+    \int_set_eq:NN \errorcontextlines \l_@@_errorcontextlines
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% Patching the output routine:\\
+%
+% The patching must be done with \cs{ExplSyntaxOff}, because otherwise it
+% may fail if the macro to be patched contains \verb|_| : or significant
+% spaces. Therefore also the names of these macros are with @ instead of
+% \verb|_| and :
+%
+% First we save the \cs{@outputpage} macro, just in case we patched the
+% wrong version in a package that has its own one.
+%    \begin{macrocode}
+\cs_new_eq:NN \extramarks@saved@outputpage \@outputpage
+%    \end{macrocode}
+%
+% \begin{macro}[internal]{\extramarks@get@splitmarks}
+% \begin{syntax}
+% \cs{extramarks@get@splitmarks}\marg{context}
+% \end{syntax}
+% Process any marks in the last \cs{vsplit}ted box. \meta{context} is
+% the place in the code (for debugging).
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@get@splitmarks #1
+{
+  \seq_map_inline:Nn \g_@@_marks_seq
+    {
+%    \end{macrocode}
+% Process any marks in the BOX
+%    \begin{macrocode}
+      \@@_get_boxmarks:n { ##1 }
+      \extramarks@info
+        {
+          \string \@@_get_boxmarks:n \space { ##1 }~in~\string #1\MessageBreak
+          \@@_show_mark:n  { g_@@_firstmark_##1_tl }
+          \@@_show_mark:n  { g_@@_botmark_##1_tl }
+        }
+    }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% % \begin{macro}[internal]{\extramarks@insert@nonemptymarks}
+% \begin{syntax}
+% \cs{extramarks@insert@nonemptymarks}\marg{which}\marg{context},
+% where \meta{which} = \texttt{first} or \texttt{bot},
+% and \meta{context} = location where used (for debugging).
+% \end{syntax}
+% For each mark, if the \meta{which}mark is not empty, put the mark in
+% the vertical list.
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@insert@nonemptymarks #1 #2
+{
+  \seq_map_inline:Nn \g_@@_marks_seq
+    {
+      \tl_if_empty:cF {g_@@_#1mark_##1_tl}
+        {
+          \tex_marks:D \use:c{c_@@_##1_int} {\exp_not:v {g_@@_#1mark_##1_tl}}
+          \extramarks@info
+            {
+              In~\string \insert@nonemptymarks \space {#1}~from~\string #2\MessageBreak
+              \string \xmarks \use:c{c_@@_##1_int}
+                {\tl_to_str:c {g_@@_#1mark_##1_tl}}\MessageBreak
+            }
+        }
+    }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% Patch function for the processing of \cs{twocolumn} optional argument.
+% This is a bit more complicated, because there isn't a nice hook point.
+% That part does double-\cs{vbox}ing of the text in case of color.
+% But we need marks from the inner \cs{vbox}. So we have to patch that whole part.\\
+% By the way, \LaTeX's standard marks are lost in this part.
+% \begin{macro}[internal]{\extramarks@set@marks@topnewpage}
+% \begin{syntax}
+% \cs{extramarks@set@marks@topnewpage}\marg{text}, where \meta{text} is the
+% optional argument of \cs{twocolumn}.
+% \end{syntax}
+% The code makes the inner \cs{vbox}, extracts the marks from it (by using a
+% temporary \cs{vsplit}), and then does the color \cs{vbox}ing.
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@set@marks@topnewpage #1
+{
+  \group_begin:
+    \global\setbox\@currbox\vbox{
+        \hsize\textwidth
+        \@parboxrestore
+        \col@number \@ne
+        #1
+        \vskip -\dbltextfloatsep
+             }
+    \@@_vsplit_box \@currbox
+    \extramarks@get@splitmarks{\@topnewpage}
+    \global \setbox\@currbox
+    \color@vbox
+      \normalcolor
+      \copy\@currbox
+    \color@endbox
+  \group_end:
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\extramarks@getmarks}
+% \begin{syntax}
+% \cs{extramarks@getmarks}\marg{box}\marg{context}
+% \end{syntax}
+% Patch code for some box on a page. In the standard case this is used
+% for a `normal' one-column page, and for the second column on
+% \cs{twocolumn}, but it can be used for any box.
+% The box used is \meta{box}. \meta{context} is the place where called,
+% for debugging.
+% Do a temporary vsplit and process the marks of the box.
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@getmarks #1 #2
+{
+  \extramarks@info
+  {
+    \string \extramarks@getmarks \space (\string #1)~in~\string #2\MessageBreak
+  }
+  \group_begin:
+    \@@_vsplit_box #1
+    \extramarks@get@splitmarks { #2 }
+  \group_end:
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\extramarks@getlocalmarks}
+% \begin{syntax}
+% \cs{extramarks@getlocalmarks}\marg{box}\marg{context}
+% \end{syntax}
+% Get local marks fo some box on a page. This doesn't take into account
+% already aquired marks from outside. In general these should have been
+% saved before calling this function.
+% The box used is \meta{box}. \meta{context} is the place where called,
+% for debugging.
+% Do a temporary \cs{vsplit} and process the marks of the box.
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@getlocalmarks #1 #2
+{
+  \group_begin:
+    \@@_vsplit_box #1
+    \seq_map_inline:Nn \g_@@_marks_seq
+      {
+        \@@_boxmarks:n { ##1 }
+        \extramarks@info
+          {
+            \string \@@_boxmarks:n \space { ##1 }~in~\string #2\MessageBreak
+            \@@_show_mark:n  { g_@@_firstmark_##1_tl }
+            \@@_show_mark:n  { g_@@_botmark_##1_tl }
+          }
+      }
+  \group_end:
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\extramarks@initmarks}
+% \begin{syntax}
+% \cs{extramarks@initmarks}
+% \end{syntax}
+% INIT all marks
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@initmarks
+{
+  \seq_map_inline:Nn \g_@@_marks_seq
+  {
+    \@@_get_boxmarks_init:n { ##1 }
+    \extramarks@info
+      {
+        \string \@@_get_boxmarks_init:n \space { ##1 }\MessageBreak
+        \@@_show_mark:n  { g_@@_topmark_##1_tl }
+        \@@_show_mark:n  { g_@@_firstmark_##1_tl }
+        \@@_show_mark:n  { g_@@_botmark_##1_tl }
+      }
+  }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\extramarks@savemarks}
+% \begin{syntax}
+% \cs{extramarks@savemarks}
+% \end{syntax}
+% Save all marks to local variables
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@savemarks #1
+{
+  \seq_map_inline:Nn \g_@@_marks_seq
+    {
+      \tl_set_eq:cc {l_@@_save_topmark_##1_tl} {g_@@_topmark_##1_tl}
+      \tl_set_eq:cc {l_@@_save_firstmark_##1_tl} {g_@@_firstmark_##1_tl}
+      \tl_set_eq:cc {l_@@_save_botmark_##1_tl} {g_@@_botmark_##1_tl}
+      \extramarks@info
+        {
+          \string \extramarks@savemarks \space in~\string #1\MessageBreak
+          \@@_show_mark:n { g_@@_topmark_##1_tl }
+          \@@_show_mark:n { g_@@_firstmark_##1_tl }
+          \@@_show_mark:n { g_@@_botmark_##1_tl }
+        }
+    }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\extramarks@restoremarks}
+% \begin{syntax}
+% \cs{extramarks@restoremarks}
+% \end{syntax}
+% Restore all marks from local variables
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@restoremarks #1
+{
+  \seq_map_inline:Nn \g_@@_marks_seq
+    {
+      \tl_gset_eq:cc {g_@@_topmark_##1_tl} {l_@@_save_topmark_##1_tl}
+      \tl_gset_eq:cc {g_@@_firstmark_##1_tl} {l_@@_save_firstmark_##1_tl}
+      \tl_gset_eq:cc {g_@@_botmark_##1_tl} {l_@@_save_botmark_##1_tl}
+      \extramarks@info
+        {
+          \string \extramarks@restoremarks \space in~\string #1\MessageBreak
+          \@@_show_mark:n { g_@@_topmark_##1_tl }
+          \@@_show_mark:n { g_@@_firstmark_##1_tl }
+          \@@_show_mark:n { g_@@_botmark_##1_tl }
+        }
+    }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% From here on we use traditional \LaTeXe{} syntax, because we patch
+% traditional code.
+%    \begin{macrocode}
+\ExplSyntaxOff
+%    \end{macrocode}
+%
+% Patch the processing of \cs{twocolumn} optional argument (\cs{@topnewpage}).
+%
+%    \begin{macrocode}
+\patchcmd{\@topnewpage}{\global \setbox\@currbox
+    \color@vbox
+      \normalcolor
+      \vbox {%
+        \hsize\textwidth
+        \@parboxrestore
+        \col@number \@ne
+        #1%
+        \vskip -\dbltextfloatsep
+             }%
+    \color@endbox}
+  {\extramarks@set@marks@topnewpage{#1}}
+  {\extramarks@info{Patched \string \@topnewpage}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\@topnewpage}}
+%    \end{macrocode}
+%
+% Patch the \cs{@outputdblcol} macro for the first colum case.
+% \cs{@outputbox} contains the first column, and has been \cs{vsplit}
+% so we can get its marks with \cs{splitmarks}
+%
+%    \begin{macrocode}
+\patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
+  {\extramarks@get@splitmarks{\outputdblcol \space 1} \ifx\@firstcolfirstmark\@empty}
+  {\extramarks@info{Patched \string \@outputdblcol \space 1}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol \space patch 1}}
+%    \end{macrocode}
+%
+% Patch the \cs{@outputdblcol} macro for the second column case.
+% \cs{@outputbox} still contains the second column, not yet \cs{vsplit}ted.
+% Get the marks by \cs{vsplit} to the maximum height.\\
+%
+%    \begin{macrocode}
+\patchcmd{\@outputdblcol}{\global\@firstcolumntrue}
+  {\global\@firstcolumntrue\extramarks@getmarks\@outputbox{\@outputdblcol \space 2}}
+  {\extramarks@info{Patched \string \@outputdblcol \space 2}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol \space patch 2}}
+%    \end{macrocode}
+%
+% End of \cs{@outputdblcol} patching code
+% \\[2ex]
+% Patch the \cs{@opcol} macro for the single column case
+%
+%    \begin{macrocode}
+\patchcmd {\@opcol} {\@outputpage}
+  {\extramarks@getmarks\@outputbox{\@opcol} \@outputpage}
+  {\extramarks@info{Patched \string \@opcol}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {in \@opcol: \@outputpage} {}}
+%    \end{macrocode}
+%
+% End of \cs{@opcol} patching code
+% \\[2ex]
+% Patch the \cs{@outputpage} macro.
+% Put the INIT code at the end.
+%
+%    \begin{macrocode}
+\apptocmd {\@outputpage}
+  {\extramarks@initmarks}
+  {\extramarks@info{Patched end of \string \@outputpage}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {end of \@outputpage} {}}
+%    \end{macrocode}
+%
+% End of \cs{@outputpage} patching code
+% \\[2ex]
+% Create our two marks (\texttt{left} and \texttt{right}).
+%
+%    \begin{macrocode}
+\extramarksnewmark{left}
+\extramarksnewmark{right}
+%    \end{macrocode}
+% User-level commands.
+% \\[2ex]
+% \begin{macro}{\extramarksput}
+% \begin{syntax}
+% \cs{extramarksput}\marg{name}\marg{text}
+% \end{syntax}
+% Put the \meta{text} in the mark \meta{name}, with an extra pair of braces
+% around it to distinguish an empty mark from the absence of a mark.
+%
+%    \begin{macrocode}
+\ExplSyntaxOn
+\NewDocumentCommand \extramarksput { m m }
+{
+  \cs_if_exist:cTF {c_@@_#1_int}
+  {
+%    \end{macrocode}
+% Use protected eval
+%    \begin{macrocode}
+    \group_begin:
+      \cs_set_eq:NN \label    \scan_stop:
+      \cs_set_eq:NN \index    \scan_stop:
+      \cs_set_eq:NN \glossary \scan_stop:
+      \unrestored@protected@xdef \l_@@_temp_tl { #2 }
+%    \end{macrocode}
+% Put braced value in the mark
+%    \begin{macrocode}
+      \tex_marks:D \use:c { c_@@_#1_int } {{ \l_@@_temp_tl }}
+    \group_end:
+  }
+  { \msg_error:nnnn {extramarks} {not-defined} {\extramarksput} {#1} }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\extramarkstop}
+% \begin{syntax}
+% \cs{extramarkstop}\marg{name}
+% \end{syntax}
+% Extract the topmark of \meta{name}
+%    \begin{macrocode}
+\NewDocumentCommand \extramarkstop { m }
+{
+  \cs_if_exist:cTF {c_@@_#1_int}
+  {
+%    \end{macrocode}
+% Get unbraced value out of the mark
+%    \begin{macrocode}
+     \tl_head:v { g_@@_topmark_#1_tl }
+  }
+  { \msg_error:nnnn {extramarks} {not-defined} {\extramarkstop} {#1} }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% DELIVER \meta{which}mark, where \meta{which} = \texttt{first} or
+% \texttt{last} (internally \texttt{bot}) :\\
+% \mbox{~}   if \meta{which}mark = empty:\\
+% \mbox{\quad}    return \texttt{topmark}\\
+% \mbox{~}   else:\\
+% \mbox{\quad}    return \texttt{\meta{which}mark}\\
+%
+% \begin{macro}{\extramarksfirst}
+% \begin{syntax}
+% \cs{extramarksfirst}\marg{name}
+% \end{syntax}
+% Extract the firstmark of \meta{name}
+%
+%    \begin{macrocode}
+\NewDocumentCommand \extramarksfirst { m }
+{
+  \cs_if_exist:cTF {c_@@_#1_int}
+    {
+%    \end{macrocode}
+% Get unbraced value out of the mark
+%    \begin{macrocode}
+      \tl_if_empty:cTF { g_@@_firstmark_#1_tl }
+        {
+          \tl_head:v { g_@@_topmark_#1_tl }
+        }
+        {
+          \tl_head:v { g_@@_firstmark_#1_tl }
+        }
+    }
+    { \msg_error:nnnn {extramarks} {not-defined} {\extramarksfirst} {#1} }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\extramarkslast}
+% \begin{syntax}
+% \cs{extramarkslast}\marg{name}
+% \end{syntax}
+% Extract the lastmark (botmark) of \meta{name}
+%
+%    \begin{macrocode}
+\NewDocumentCommand \extramarkslast { m }
+{
+  \cs_if_exist:cTF {c_@@_#1_int}
+    {
+%    \end{macrocode}
+% Get unbraced value out of the mark
+%    \begin{macrocode}
+      \tl_if_empty:cTF { g_@@_botmark_#1_tl }
+        {
+          \tl_head:v { g_@@_topmark_#1_tl }
+        }
+        {
+          \tl_head:v { g_@@_botmark_#1_tl }
+        }
+    }
+    { \msg_error:nnnn {extramarks} {not-defined} {\extramarkslast} {#1} }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ifextramarksmissing}
+% \begin{syntax}
+% \cs{ifextramarksmissing}\marg{name}\marg{true code}\marg{false code}
+% \end{syntax}
+% Test if there is no mark of \meta{name} on this page. If there aren't any,
+% the \meta{true code} is executed. In this case both the
+% \texttt{firstmark} and \texttt{lastmark} (\cs{extramarksfirst} and
+% \cs{extramarkslast}) will be equal to \texttt{topmark} (\cs{extramarkstop}).
+% If there is at least one mark of \meta{name} on the page, the
+% \meta{false code} is executed.
+%
+%    \begin{macrocode}
+\NewDocumentCommand \ifextramarksmissing { m m m }
+{
+  \cs_if_exist:cTF {c_@@_#1_int}
+    {
+      \tl_if_empty:cTF { g_@@_firstmark_#1_tl }
+        { #2 }
+        { #3 }
+    }
+    { \msg_error:nnnn {extramarks} {not-defined} {\ifextramarksmissing} {#1} }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\extramarksreset}
+% \begin{syntax}
+% \cs{extramarksreset}\marg{name}
+% \end{syntax}
+% Reset the mark of \meta{name}, i.e. set its\texttt{topmark} (\cs{extramarkstop})
+% to an empty mark (braced, i.e. \verb|{ { } }|
+%
+%    \begin{macrocode}
+\NewDocumentCommand \extramarksreset { m }
+{
+  \cs_if_exist:cTF {c_@@_#1_int}
+    {
+      \tl_gset:cn { g_@@_topmark_#1_tl } { { } }
+    }
+    { \msg_error:nnnn {extramarks} {not-defined} {\extramarksreset} {#1} }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% ~\\[2ex]
+% Convenience functions (compatibility with v3)
+%
+% \begin{macro}{\extramarksleft}
+% \begin{syntax}
+% \cs{extramarksleft}\marg{text}
+% \end{syntax}
+% Put the \meta{text} in the \texttt{left} mark, with an extra pair of braces.
+%    \begin{macrocode}
+\NewDocumentCommand \extramarksleft { m }
+{
+  \extramarksput{left}{#1}
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\extramarksright}
+% \begin{syntax}
+% \cs{extramarksright}\marg{text}
+% \end{syntax}
+% Put the \meta{text} in the \texttt{right} mark, with an extra pair of braces.
+%
+%    \begin{macrocode}
+\NewDocumentCommand \extramarksright { m }
+{
+  \extramarksput{right}{#1}
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\extramarks}
+% \begin{syntax}
+% \cs{extramarks}\marg{aa}\marg{bb}
+% \end{syntax}
+% Put \meta{aa} in the \texttt{left} mark and \meta{bb} in the \texttt{right}
+% mark, with an extra pair of braces.
+%
+%    \begin{macrocode}
+\NewDocumentCommand \extramarks { m m }
+{
+  \extramarksput{left}{#1}
+  \extramarksput{right}{#2}
+}
+%    \end{macrocode}
+% \end{macro}
+% Shorthands
+%
+%    \begin{macrocode}
+\NewDocumentCommand\firstleftxmark  { } {\extramarksfirst {left}  }
+\NewDocumentCommand\firstrightxmark { } {\extramarksfirst {right} }
+\NewDocumentCommand\topleftxmark    { } {\extramarkstop   {left}  }
+\NewDocumentCommand\toprightxmark   { } {\extramarkstop   {right} }
+\NewDocumentCommand\lastleftxmark   { } {\extramarkslast  {left}  }
+\NewDocumentCommand\lastrightxmark  { } {\extramarkslast  {right} }
+
+\cs_new_eq:NN \firstxmark \firstleftxmark
+\cs_new_eq:NN \lastxmark \lastrightxmark
+\cs_new_eq:NN \topxmark \topleftxmark
+%    \end{macrocode}
+%
+% Missing commands for the standard \LaTeX{} marks.
+%
+%    \begin{macrocode}
+\cs_new_eq:NN \firstrightmark \rightmark
+\cs_new_eq:NN \lastleftmark \leftmark
+
+\NewDocumentCommand\firstleftmark { }
+  {\expandafter\@leftmark\firstmark\@empty\@empty}
+\NewDocumentCommand\lastrightmark { }
+  {\expandafter\@rightmark\botmark\@empty\@empty}
+%    \end{macrocode}
+%
+% \subsubsection*{Support for other packages}
+% \begin{macro}[internal]{\extramarks@patch,
+%                         \extramarks@patch@start,
+%                         \extramarks@patch@end}
+% \begin{syntax}
+%   \cs{extramarks@package}\marg{package name}
+%   \meta{patch code}
+%   \cs{extramarks@package@end}
+% \end{syntax}
+% We run the patch code for other packages in \cs{AtBeginDocument},
+% because that is the point where we know for sure if a package is
+% loaded, and is still early enough. This is a bit tricky code, because
+% when we patch code of that package, and the code has a \texttt{\#}-sign in it,
+% the code cannot be run directly in \cs{AtBeginDocument}, because the
+% \texttt{\#}-signs will be doubled, and this is not accepted by the patching
+% code. So we have some tricky code where we set the \cs{catcode} of \texttt{\#}
+% to 12 (other) before reading the code, but put it back to 6 before
+% using the code.
+% Because we patch traditional \LaTeX{} code, the patch code has to be
+% read and executed with \cs{ExplSyntaxOff}. If we want to patch
+% \Package{expl3} code we must write a new function for this.
+%    \begin{macrocode}
+\cs_new_protected:Npn \extramarks@patch #1
+{
+  \catcode`\#=12\relax
+  \ExplSyntaxOff
+  \extramarks@patch@start{#1}
+}
+\cs_new_protected:Npn \extramarks@patch@start #1 #2 \extramarks@patch@end
+{
+  \catcode`\#=6\relax
+  \AtBeginDocument{
+    \@ifpackageloaded{#1}
+    {#2}
+    { }
+  }
+  \ExplSyntaxOn
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsubsection*{Support for the \Package{multicol} package}
+%
+% The algorithm used for multicol is the one explained above.
+% In particular, when a \env{multicols} environment is encountered,
+% after creating the columns, the BOX code is run on the part of the
+% page \texttt{before} the \env{multicols} (which is in the box
+% \cs{partial@page}), and on each of the columns. Conveniently this can
+% be done in the macro \cs{set@keptmarks}, where \Package{multicol} also
+% processes the \LaTeX{} marks.
+%
+% When the \env{multicols} environment was interrupted by a page
+% break, this is all that is needed, as all the marks have been processed
+% and then the page is output.
+%
+% When the \env{multicols} environment ends before a page break, this
+% isn't sufficient, because more text can follow on the page. So the
+% page might eventually be processed by the regular one column output processing,
+% or another \env{multicols} may follow on the same page, meaning
+% that the current one ends up in the next  \cs{partial@page}.
+% In both cases we must preserve any marks that might have been found in the
+% \env{multicols} environment. We do this by putting the first and last marks found (if any) in
+% the vertical list, by patching \cs{return@nonemptymark}. Now if there
+% is any mark in \cs{partial@page}, this would be superfluously put in the
+% vertical list, but that doesn't do any harm, and it would be more
+% costly to check for that.
+%
+% We skip any processing for \emph{boxed} \env{multicols} (i.e. \env{multicols} in a box
+% or nested in another \env{multicols}).
+%
+% INIT processing has already been properly placed in \cs{@outputpage}.
+%
+% Here comes the \texttt{multicol} patching code.
+% \\[2ex]
+% \begin{tabular}{c l c l}
+% (1) & patch \cs{return@nonemptymark}        & $\Rightarrow$ & insert marks in stream\\
+% (2) & patch \cs{set@keptmarks}              & $\Rightarrow$ & For each BOX code\\
+%   \end{tabular}
+% \\[2ex]
+% (1) Patch function for \cs{return@nonemptymark} = \cs{insert@nonemptymarks}
+% \\
+% (2) Patch function for \cs{set@keptmarks} = \cs{extramarks@get@splitmarks}
+%
+%    \begin{macrocode}
+\extramarks@patch{multicol}
+%    \end{macrocode}
+%
+% The functions to be patched are in LaTeX2e syntax, so we can't use
+% expl3 here. Therefore no \verb|_| and : in their names.
+% \\[2ex]
+% (1) Patch \cs{return@nonemptymark}
+%    \begin{macrocode}
+\pretocmd{\return@nonemptymark}
+  {
+    \if@boxedmulticols\else
+      \extramarks@insert@nonemptymarks {#1} {\return@nonemptymark}\fi
+  }
+  {\extramarks@info{Patched \string \return@nonemptymark}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\return@nonemptymark}}
+%    \end{macrocode}
+%
+% (2) Patch \cs{set@keptmarks}
+%    \begin{macrocode}
+\pretocmd{\set@keptmarks}
+  {
+    \if@boxedmulticols\else\extramarks@get@splitmarks{\set@keptmarks}\fi
+  }
+  {\extramarks@info{Patched \string \set@keptmarks}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\set@keptmarks}}
+\extramarks@patch@end
+%    \end{macrocode}
+%
+% \subsubsection*{Support for the \Package{paracol} package}
+%<@@=>
+%
+% Support for the \Package{paracol} package is similar to
+% \Package{multicol} but slightly more complicated.
+%
+% First, the package changes the output routine \cs{@outputpage}, so if
+% it was loaded before \Package{extramarks} we have patched the wrong
+% version, namely \Package{paracol}s own version instead of \LaTeX's
+% one. So in that case we set it back, and then patch
+% \Package{paracol}s copy, which is in \cs{pcol@@ouputpage}. The rest of
+% the patching will be done in \cs{AtBeginDocument}.
+% \\[2ex]
+% The functions to be patched are in LaTeX2e syntax, so we can't use
+% expl3 here. Therefore no \verb|_| and : in their names.
+%
+%    \begin{macrocode}
+\@ifpackageloaded{paracol}
+  {
+    \cs_gset_eq:NN \@outputpage \extramarks@saved@outputpage
+%    \end{macrocode}
+% Patch the \cs{pcol@@outputpage} macro, which is the original \LaTeX{}
+% \cs{@outputpage}, just renamed. So the patch is equal to the
+% \cs{@outputpage} patch above.
+%
+%    \begin{macrocode}
+    \apptocmd {\pcol@@outputpage}
+      {\extramarks@initmarks}
+      {\extramarks@info{Patched end of \string \pcol@@outputpage}}
+      {\msg@error@nnn {extramarks} {cannot-patch} {end of \pcol@@outputpage}}
+  }
+  { }
+%    \end{macrocode}
+%
+% End of \cs{pcol@@outputpage} patching code.
+% \\[2ex]
+% The rest of the patching code goes to \cs{AtBeginDocument}.
+%    \begin{macrocode}
+\extramarks@patch{paracol}
+%    \end{macrocode}
+%
+% Output boxes are generated in \cs{pcol@ioutputelt},
+% \cs{pcol@makeflushedpage} and \cs{pcol@imakeflushedpage}
+% \\[2ex]
+% In \cs{pcol@ioutputelt}, box \cs{pcol@spanning} (text before
+% \env{paracol} environment).
+%    \begin{macrocode}
+\patchcmd{\pcol@ioutputelt}
+  {\unvbox\pcol@spanning}
+  {\extramarks@getmarks\pcol@spanning{\pcol@ioutputelt}\unvbox\pcol@spanning}
+  {\extramarks@info{Patched \string \pcol@ioutputelt \space (\string\pcol@spanning)}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@ioutputelt \space
+      (\pcol@spanning)}%
+  }
+%    \end{macrocode}
+%
+% In \cs{pcol@ioutputelt}, each column in box \cs{@currbox}.
+%    \begin{macrocode}
+\patchcmd{\pcol@ioutputelt}
+  {\ifvoid\@currbox\else}
+  {\ifvoid\@currbox\else\extramarks@getmarks\@currbox{\pcol@ioutputelt}}
+  {\extramarks@info{Patched \string \pcol@ioutputelt \space
+      (\string\@currbox)}%
+  }
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@ioutputelt \space
+      (\string\@currbox)}%
+  }
+%    \end{macrocode}
+%
+% In \cs{pcol@makeflushedpage}, box \cs{pcol@spanning} (text before
+% \env{paracol} environment).
+%    \begin{macrocode}
+\patchcmd{\pcol@makeflushedpage}
+  {\advance\@tempdima\dp\pcol@spanning}
+  {\advance\@tempdima\dp\pcol@spanning
+    \extramarks@getmarks\pcol@spanning{\pcol@makeflushedpage
+      (\string\pcol@spanning)}%
+  }
+  {\extramarks@info{Patched \string \pcol@makeflushedpage \space
+      (\string\pcol@spanning)}%
+  }
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@makeflushedpage
+      \space (\pcol@spanning)}%
+  }
+%    \end{macrocode}
+%
+% In \cs{pcol@imakeflushedpage}, each column in box \cs{@currbox}.
+%    \begin{macrocode}
+\patchcmd{\pcol@imakeflushedpage}
+  {\pcol@getcurrcol}
+  {\pcol@getcurrcol\extramarks@getmarks\@currbox{\pcol@imakeflushedpage}}
+  {\extramarks@info{Patched \string \pcol@imakeflushedpage \space
+      (\string\@currbox)}%
+  }
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@imakeflushedpage \space
+      (\string\@currbox)}%
+  }
+%    \end{macrocode}
+%
+% In \cs{pcol@outputpage@l}, box \cs{@outputbox}
+% (normal text outside \env{paracol}).
+%    \begin{macrocode}
+\patchcmd{\pcol@outputpage@l}
+  {\global\c@page#1\relax}
+  {\global\c@page#1\relax\extramarks@getmarks\@outputbox{\pcol@outputpage@l}}
+  {\extramarks@info{Patched \string \pcol@outputpage@l}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@outputpage@l}}
+%    \end{macrocode}
+%
+% In \cs{pcol@outputpage@r}, box \cs{pcol@rightpage}
+% (normal text outside \env{paracol}).
+%    \begin{macrocode}
+\patchcmd{\pcol@outputpage@r}
+  {\global\c@page#1\relax}
+  {\global\c@page#1\relax\extramarks@getmarks\pcol@rightpage{\pcol@outputpage@r}}
+  {\extramarks@info{Patched \string \pcol@outputpage@r}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@outputpage@r}}
+%    \end{macrocode}
+%
+% Sometimes \Package{paracol} puts a glue with a small but infinite shrink in
+% an output box. This gives an error message on our \cs{vsplit}
+% operation, which is annoying. Moreover, if there are more than 100
+% such messages, \TeX{} will stop processing, which is just intolerable.
+% So we replace these small but infinite shrinks with a large, finite
+% shrink. This can change the result a tiny bit, but generally it should be
+% invisible to the eye, according to my experiments\footnote{For
+% example, in the 69 page \Package{paracol} manual, where this is heavily used,
+% there was only one place where it made a difference of about 0.06 mm; I had to zoom
+% $10\times$ to see the difference.}.
+%
+%    \begin{macrocode}
+\patchcmd{\pcol@makecol}
+  {\@minus.0001fil}
+  {\@minus\maxdimen}
+  {\extramarks@info{Patched \string \pcol@makecol}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@makecol}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\patchcmd{\pcol@combinefloats}
+  {\@minus.0001fil}
+  {\@minus\maxdimen}
+  {\extramarks@info{Patched \string \pcol@combinefloats \space 1}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@combinefloats \space 1}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\patchcmd{\pcol@combinefloats}
+  {\@minus-.0001fil}
+  {\@minus-\maxdimen}
+  {\extramarks@info{Patched \string \pcol@combinefloats \space 1}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@combinefloats \space 2}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\patchcmd{\pcol@synccolumn}
+  {\@minus.0001fil}
+  {\@minus\maxdimen}
+  {\extramarks@info{Patched \string \pcol@synccolumn \space 1}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@synccolumn \space 1}}
+%    \end{macrocode}
+% In \cs{pcol@synccolumn}, box \cs{@currbox} is doubly \cs{vboxed}. So
+% we have to get the marks out of the box, and inject them outside of the box.
+% Save the global marks and get the local marks from \cs{@currbox}.
+%    \begin{macrocode}
+\patchcmd{\pcol@synccolumn}
+  {\global\pcol@prevdepth\@tempdimc}
+  {\global\pcol@prevdepth\@tempdimc
+    \extramarks@savemarks {\pcol@synccolumn}%
+    \extramarks@getlocalmarks \@currbox {\pcol@synccolumn}%
+  }
+  {\extramarks@info{Patched \string \pcol@synccolumn \space 2}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@synccolumn \space 2}}
+%    \end{macrocode}
+% Insert the local marks from \cs{@currbox} in the main vertical list
+% and restore the global marks.
+%    \begin{macrocode}
+\patchcmd{\pcol@synccolumn}
+  {\vbox to\@tempdimb{\unvbox\@currbox \vskip\z@\@plus.0001fil}\fi}
+  {\vbox to\@tempdimb{\unvbox\@currbox \vskip\z@\@plus.0001fil}\fi
+    \extramarks@insert@nonemptymarks{first}{\pcol@synccolumn}%
+    \extramarks@insert@nonemptymarks{bot}{\pcol@synccolumn}%
+    \extramarks@restoremarks{\pcol@synccolumn}%
+  }
+  {\extramarks@info{Patched \string \pcol@synccolumn \space 3}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@synccolumn \space 3}}
+\extramarks@patch@end
+%    \end{macrocode}
+%<@@=extramarks>
+%
+% End of \Package{paracol} patching code.
+%
+%    \begin{macrocode}
+\ExplSyntaxOff
+%    \end{macrocode}
+%
+%</extramarks>
+%
+% \section{extramarks-v3.sty}
+%
+%<*extramarks-v3>
+%
 % \changes{extramarks v1.99e}{2000/10/11}{Added a few \% marks to get rid
 % of unwanted spaces, and \cs{endinput}. \\
 % Added LPPL license clause.}
@@ -5248,14 +6755,14 @@
 %
 % \changes{extramarks v3.9a}{2017/06/30}{Restore \cs{newtoks}\cs{@temptokenb}}
 % \changes{extramarks v4.1}{2021/02/16}{Make \cs{newtoks}\cs{@temptokenb} conditional}
-% \begin{macro}{\@temptokenb}
+% \begin{variable}[internal]{\@temptokenb}
 % A token register to store some marks information
 %    \begin{macrocode}
 \ifx\@temptokenb\undefined \csname newtoks\endcsname\@temptokenb\fi
 %    \end{macrocode}
-% \end{macro}
+% \end{variable}
 %
-% \begin{macro}{\unrestored@protected@xdef}
+% \begin{macro}[internal]{\unrestored@protected@xdef}
 % Define this macro just in case it isn't defined (should be part of \LaTeX).
 %    \begin{macrocode}
 \providecommand\unrestored@protected@xdef{%
@@ -5263,7 +6770,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\markboth}
+% \begin{macro}[internal]{\markboth}
 % Our own definition of \cs{markboth}, mainly because \cs{@markboth}
 % gets more parameters.
 %    \begin{macrocode}
@@ -5277,11 +6784,11 @@
   \if@nobreak\ifvmode\nobreak\fi\fi}
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\markright}
+% \begin{macro}[internal]{\markright}
 %   We use the standard definition of \cs{markright}. No use to duplicate here.
 % \end{macro}
 %
-% \begin{macro}{\@markboth}
+% \begin{macro}[internal]{\@markboth}
 %   Note: put \texttt{\#3\#4} in toks register.
 %    \begin{macrocode}
 \def\@markboth#1#2#3#4#5#6{\@temptokena{{#3}{#4}}%
@@ -5289,7 +6796,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@markright}
+% \begin{macro}[internal]{\@markright}
 %   Note: put \texttt{\#1} and \texttt{\#3\#4} in toks registers.
 %   Maybe I can get rid of the extra \cs{@temptokenb} by doing the expansion
 %   of \texttt{\#5} to a temp separately. But then, nowadays registers
@@ -5300,8 +6807,8 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\@leftmark}
-% \begin{macro}{\@rightmark}
+% \begin{macro}[internal]{\@leftmark}
+% \begin{macro}[internal]{\@rightmark}
 % Internal macros to get the standard marks.
 %    \begin{macrocode}
 \def\@leftmark#1#2#3#4{#1}
@@ -5310,8 +6817,8 @@
 % \end{macro}
 % \end{macro}
 
-% \begin{macro}{\leftmark}
-% \begin{macro}{\rightmark}
+% \begin{macro}[internal]{\leftmark}
+% \begin{macro}[internal]{\rightmark}
 % \begin{macro}{\firstleftmark}
 % \begin{macro}{\lastrightmark}
 % \begin{macro}{\firstrightmark}
@@ -5336,7 +6843,7 @@
 % \end{macro}
 % \end{macro}
 
-% \begin{macro}{\@themark}
+% \begin{macro}[internal]{\@themark}
 % This is where the marks information is stored.
 %    \begin{macrocode}
 \def\@themark{{}{}{}{}}
@@ -5357,7 +6864,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@markextra}
+% \begin{macro}[internal]{\@markextra}
 % Internal macro to store the extra marks in the marks storage.\\
 %   Note: Put \texttt{\#1\#2} in toks register.
 %    \begin{macrocode}
@@ -5403,8 +6910,8 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\@tleftxmark}
-% \begin{macro}{\@rightxmark}
+% \begin{macro}[internal]{\@tleftxmark}
+% \begin{macro}[internal]{\@rightxmark}
 % Internal macros to extract the extra marks out of the marks storage.
 %    \begin{macrocode}
 \def\@leftxmark#1#2#3#4{#3}
@@ -5413,7 +6920,7 @@
 % \end{macro}
 % \end{macro}
 %
-%</extramarks>
+%</extramarks-v3>
 %
 % \section{fancyheadings.sty}
 %
@@ -5452,7 +6959,7 @@
 \RequirePackage{fancyhdr}
 %    \end{macrocode}
 %</fancyheadings>
-%
+% \end{implementation}
 %
 % \Finale
 \endinput
