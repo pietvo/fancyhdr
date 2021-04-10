@@ -6085,7 +6085,7 @@
 % Put braced value in the mark
 %    \begin{macrocode}
       \tex_marks:D \use:c { c_@@_#1_int } {{ \l_@@_temp_tl }}
-      \endgroup
+    \group_end:
   }
   { \msg_error:nnnn {extramarks} {not-defined} {\extramarksput} {#1} }
 }

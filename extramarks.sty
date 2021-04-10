@@ -280,7 +280,7 @@
       \cs_set_eq:NN \glossary \scan_stop:
       \unrestored@protected@xdef \l__extramarks_temp_tl { #2 }
       \tex_marks:D \use:c { c__extramarks_#1_int } {{ \l__extramarks_temp_tl }}
-      \endgroup
+    \group_end:
   }
   { \msg_error:nnnn {extramarks} {not-defined} {\extramarksput} {#1} }
 }
