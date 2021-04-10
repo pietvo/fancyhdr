@@ -47,3 +47,68 @@ fields/values from the point where it is defined. This includes:
 In this way \headheigth is set to a value that prevents fancyhdrs's warning messages.
 If the odd and the even header have different heights, the tallest one should
 be used in the example above. Or the maximum should be calculated.
+
+## Extramarks.sty
+
+This implementation of extramarks.sty is completely new. It has independent marks and several new commands. A preliminary version was earlier put here as extramarks2.sty. This is no longer the case, but it has been put in extramarks.sty. The old version is in extramarks-v3.sty. See the documentation for more details.
+
+The marks in the original extramarks package are tied to the normal marks
+and to each other; they are not independent. This may cause unwanted effects
+and therefore certain problems, like really independent marks for
+sections and subsections, are not possible with extramarks.
+On the other hand, the marks in the new version are really independent, and can
+be set separately. Also they don't influence each other. See below for an example.
+Moreover, you can define your own marks for even more freedom.
+
+There are also new commands:
+
+\extramarksleft{Some text}
+\extramarksright{Some text}
+
+These set the marks, independently. In fact the \extramarks command is redefined
+to call these, \extramarksleft with its first argument, and \extramarksright
+with the second one.
+
+Making new marks:
+
+\extramarksnewmark{name} - Create a new mark 'name'
+\extramarksput{name}{Some text} - Put some text in the mark 'name'
+
+Get the marks (for use in headers/footers)
+
+\extramarkstop{name}
+\extramarksfirst{name}
+\extramarkslast{name}
+
+The predefined marks are called 'left' and 'right', and the new commands
+\extramarksleft and \extramarksright are just shorthands for
+\extramarksput{left} and \extramarksput{right}.
+
+\firstleftxmark
+\firstrightxmark
+\topleftxmark
+\toprightxmark
+\lastleftxmark
+\lastrightxmark
+\firstleftmark
+\lastrightmark 
+
+These are the same commands as in the original version, but with a new implementation.
+
+Example: we want to have the first section title of a page in the left header,
+and the first subsection title in the right header:
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+
+\pagestyle{fancy}
+\fancyhead[L]{\firstleftxmark}  % section
+\fancyhead[R]{\firstrightxmark}  % subsection
+
+\renewcommand{\sectionmark}[1]{%
+  \extramarksleft{\thesection. #1}%
+}
+\renewcommand{\subsectionmark}[1]{%
+  \extramarksright{\thesubsection. #1}%
+}
+
