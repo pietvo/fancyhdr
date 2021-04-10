@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v3>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2021/04/08 v4.1beta
+%<fancyhdr|fancyheadings|extramarks>           [2021/04/10 v4.1beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -6194,6 +6194,25 @@
         { #3 }
     }
     { \msg_error:nnnn {extramarks} {not-defined} {\ifextramarksmissing} {#1} }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\extramarksreset}
+% \begin{syntax}
+% \cs{extramarksreset}\marg{name}
+% \end{syntax}
+% Reset the mark of \meta{name}, i.e. set its\texttt{topmark} (\cs{extramarkstop})
+% to an empty mark (braced, i.e. \verb|{ { } }|
+%
+%    \begin{macrocode}
+\NewDocumentCommand \extramarksreset { m }
+{
+  \cs_if_exist:cTF {c_@@_#1_int}
+    {
+      \tl_gset:cn { g_@@_topmark_#1_tl } { { } }
+    }
+    { \msg_error:nnnn {extramarks} {not-defined} {\extramarksreset} {#1} }
 }
 %    \end{macrocode}
 % \end{macro}
