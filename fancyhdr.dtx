@@ -3946,6 +3946,175 @@
 %
 % \end{document}
 % \end{example}
+%
+% \section{I want the first section and the first subsection in my headers}
+% \label{sec:firstsubsection}
+%
+% A question that is regularly asked (e.g. on
+% \texttt{tex.stackexchange.com}\footnote{See for example \url{https://tex.stackexchange.com/q/586066/113546}}) is how to get both the first section
+% title and the first subsection title in the headers. The standard \LaTeX{} page style
+% \emph{headings} in a class without chapters (like \texttt{article})
+% gives you the last section title and the first subsection title of the
+% page. However, \LaTeX's standard marks mechanism has some drawbacks. There are two problems:
+% \begin{itemize}
+% \item Standard \LaTeX{} uses left marks for the section title and
+% right marks for the subsection title. But it only has commands to
+% extract the last left mark (\cs{leftmark}) and the first right mark
+% (\cs{rightmark}). This means that if there are two or more sections on
+% the page you get the last one, which can be counter-intuitive.
+% The \Package{extramarks} can come to the rescue
+% here, because it also defines a command to extract the first left
+% mark (\cs{firstleftmark}).
+% \item However, this doesn't solve all the problems
+%  because the \cs{leftmark} and \cs{rightmark} are not independent.
+% If on a page you first have a \cs{section} command and then a
+% \cs{subsection} command, the \cs{section} command generates a
+% \cs{markboth}\marg{section title}\verb|{}| and the second empty
+% argument generates an empty right mark. This means that the
+% \cs{rightmark} will be empty rather than the subsection title.
+% \end{itemize}
+% To solve this you can use independent marks for the section and the
+% subsection title. In principle we could still use the original
+% \LaTeX{} mark for the section title, but for the second half of this
+% example this will not work.  So we will use the new independent
+% marks from the package \Package{extramarks} (version 4.1 or later),
+% the \emph{left} mark for the section title and the \emph{right} mark
+% for the subsection title.
+% We set the marks with \cs{extramarksleft} and \cs{extramarksright},
+% respectively, and retrieve them with
+% \cs{firstleftxmark} and \cs{firstrightxmark} (notice the \texttt{x} in the names).
+%
+% If there is no \cs{section} command on the page, it ``inherits'' the
+% last section title of a previous page. Similarly for subsections.
+%
+% \Example{35}
+% \begin{example}
+% \usepackage{fancyhdr}
+% \usepackage{extramarks}
+% \pagestyle{fancy}
+% \fancyhf{}
+% \fancyhead[L]{\firstleftxmark}
+% \fancyhead[R]{\firstrightxmark}
+% \fancyfoot[C]{\thepage}
+% \renewcommand*{\sectionmark}[1]{\extramarksleft{\thesection\ #1}}
+% \renewcommand*{\subsectionmark}[1]{\extramarksright{\thesubsection\ #1}}
+%
+% \begin{document}
+% \section{Section One}
+% \subsection{Subsection One}
+%  . . .
+% \end{example}
+% This effectively solves the problem. However, some refinement is
+% possible.
+%
+% When you have a \cs{section} command on a page, but it doesn't have a
+% subsection for an extended length, then, as described above, the
+% previous subsection title is ``inherited''. This may be sub-optimal,
+% because it combines the title of section $n$ with a subsection title
+% that belongs to section $n-1$, which looks unnatural. It could
+% even be a subsection title from several sections before. You may want to
+% suppress the subsection title in the header in this case. Version  4.1
+% and later of \Package{extramarks} has commands that make this possible.
+%
+% The algorithm we use is this:
+% \begin{quote}
+%   if there is a section mark on this page\\
+%   and there is no subsection mark on the page\\
+%   \mbox{\quad} then stop the ``inheritance'' for the subsection title.
+% \end{quote}
+% The two tests are done with the command \cs{ifextramarksmissing}, and
+% stopping the inheritance with \cs{extramarksreset} (which clears the
+% \emph{topmark}, which is used for the inheritance).
+%
+% We can put the \cs{extramarksreset} in the subsection header field
+% (the right header in this case), either before or after the defined
+% value \cs{firstrightxmark}. If we put it \emph{before}
+% \cs{firstrightxmark}, the inheritance will be stopped before we use
+% the mark, therefore the header field will be empty on the current page
+% and following pages until a subsection appears. If we put the
+% \cs{extramarksreset} \emph{after} \cs{firstrightxmark}, we will still
+% use the inherited subsection title on the current page, but not on the
+% following pages. This would be a nicer choice if the section starts in
+% the lower half of the page, whereas the first alternative would be
+% nicer if the section starts in the upper half of the page. There is no
+% way to test this inside the headers.
+%
+% However, we can find out while we are executing the \cs{sectionmark}
+% and then communicate this information to the headers.
+%
+% The command \cs{ifextramarksmissing}\marg{name}\marg{true code}\marg{false code}
+% executes the \meta{true code} if there is no \meta{name} mark on the
+% page, and \meta{false code} if there is at least one. We make a macro
+% \cs{rightreset} that contains the algorithm, and we define a variable
+% for the right header field. Now we must still decide whether to put
+% \cs{rightreset} before or after the mark. We also put the right header
+% field in a variable \cs{rightheader} so that we can change it later.
+%
+% \Example{35\\(continued)}
+% \begin{example}
+% \newcommand\rightreset{%
+%   \ifextramarksmissing{left}{}
+%   {% if there is a sectionmark on the page
+%     \ifextramarksmissing {right}
+%     % but no subsectionmark. then reset subsectionmark
+%     {\extramarksreset{right}}
+%     {}%
+%   }%
+% }
+% \newcommand\rightheader{\firstrightxmark}
+% \fancyhead[R]{\rightheader}
+% \end{example}
+%
+% \TeX{} has two variables that can help us, \cs{pagegoal} is the vertical size
+% that is available for the text, and \cs{pagetotal} is the amount we
+% have used so far\footnote{This doesn't include floats and footnotes.}.
+% So if \cs{pagetotal}$<$0.5\cs{pagegoal} we are in the upper half of
+% the page, otherwise in the lower half\footnote{Of course you could choose a
+% different split point.}.  We can use this information to
+% redefine \cs{rightheader} to include \cs{rightreset} either before or
+% after \cs{firstrightmark}. However, as explained in
+% section~\ref{sec:change}, setting information in the text body  and
+% using it in the headers without using marks can sometimes fail due to
+% the asynchronous processing of \TeX{}. In particular in our case it
+% could happen that a \cs{section} command appears near the end of a
+% page, and our algorithm determines that it is on the lower half of the
+% page, but then \TeX{} decides to move it to the next page, where
+% obviously it is in the upper half. So our decision is wrong in that
+% case.
+% Fortunately there is a way to detect this case. During the processing
+% of the \cs{section} command and its \cs{sectionmark}, the page number
+% is still the page under construction, but the mark generated by this
+% section command will be on the next page with the next page number. By
+% saving the current page number in a separate counter in the \cs{sectionmark}
+% command, and comparing it in the header with the actual page number we
+% can find out that this happened, and then do the reset 
+% before the mark. (In this case it will also be done after the mark,
+% but that does no harm, and it is simpler this way.) In the example 35 file you can see this in
+% section~6.
+%
+% This is done with the following code:
+% \Example{35}
+% \begin{example}
+% \newcounter{thispage}
+% \newcommand\rightresetbefore{% 
+%   \ifnum \value{thispage}<\value{page}\rightreset\fi
+% }
+% \renewcommand{\sectionmark}[1]{%
+%   \extramarksleft{\thesection. #1}%
+%   \ifdim\pagetotal<0.5\pagegoal
+%     % put \rightreset before
+%     \renewcommand\rightheader{\rightreset\firstrightxmark}%
+%   \else
+%     % save the current page number
+%     \setcounter{thispage}{\value{page}}%
+%     % put \rightreset after,
+%     % but sometimes also before (when page numbers differ)
+%     \renewcommand\rightheader{%
+%       \rightresetbefore\firstrightxmark\rightreset}%
+%   \fi
+% }
+% \end{example}
+%
 % \newpage
 % \part{Implementation}
 %
