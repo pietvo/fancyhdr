@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2021/04/10 v4.1beta
+           [2021/04/11 v4.1beta
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -411,11 +411,6 @@
   \def\@evenhead{\f@nch@head\f@nch@Oelh\f@nch@elh\f@nch@ech\f@nch@erh\f@nch@Oerh}%
   \def\@evenfoot{\f@nch@foot\f@nch@Oelf\f@nch@elf\f@nch@ecf\f@nch@erf\f@nch@Oerf}%
 }
-\def\ps@fancydefault{%
-  \f@nch@initialise
-  \ps@f@nch@fancyproto
-}
-\@namedef{f@nch@ps@fancydefault-is-fancyhdr}{}
 \def\f@nch@Oolh{\if@reversemargin\hss\else\relax\fi}
 \def\f@nch@Oorh{\if@reversemargin\relax\else\hss\fi}
 \let\f@nch@Oelh\f@nch@Oorh
@@ -511,6 +506,7 @@
     \@temptokenb={}%
   \fi
 }
+\fancypagestyle*{fancydefault}{\f@nch@initialise}
 \endinput
 %%
 %% End of file `fancyhdr.sty'.
