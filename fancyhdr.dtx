@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v3>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2021/04/10 v4.1beta
+%<fancyhdr|fancyheadings|extramarks>           [2021/04/11 v4.1beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -1264,6 +1264,10 @@
 % this version it is also possible to redefine page style \texttt{fancy}
 % in this way. In version~3.x and earlier this was not possible.
 %
+%
+% \subsubsection*{The page style \texttt{fancydefault}}
+% \label{sec:fancydefault}
+%
 % If you want to restore the original default definitions
 % from page style \texttt{fancy}  as described in section~\ref{sec:default}, you can use
 % \begin{code}
@@ -1273,16 +1277,25 @@
 % \end{code}
 % \PSindex{fancydefault}
 % Page style \texttt{fancydefault} is the version of page style
-% \texttt{fancy} that has all the initialisation embedded. Contrary to
+% \texttt{fancy} that has all the initialisation embedded, including the relevant
+% definitions of \cs{chaptermark} and \Cmd{[sub]sectionmark}. Contrary to
 % this, page style \texttt{fancy} as defined in the package uses the
 % same defaults, but doesn't have them embedded. It picks them up from
 % the environment. So if the environment changes, because you redefine
 % headers, footers, mark commands, etc, the functioning of page style
 % \texttt{fancy} changes with it. The page style \texttt{fancydefault}
-% does not change, however. It can be considered the \emph{closed}
-% version of page style \texttt{fancy} before any redefinitions are
-% done. However, \texttt{fancydefault} is only available
-% since fancyhdr version~4.0.
+% does not change, however. It is in fact the \emph{closed} version of
+% page style \texttt{fancy}, defined with
+% \Cmd{fancypagestyle*\{fancydefault\}}\marg{initialisation code} just after
+% \Package{fancyhdr}'s initialisation.  However, \texttt{fancydefault}
+% is only available since \Package{fancyhdr} version~4.0.
+%
+% If you don't like the defaults, you can redefine it yourself. For
+% example if you don't want to include the \Cmd{...mark} definitions,
+% just put \Cmd{fancypagestyle*\{fancydefault\}\{\}} after
+% \Cmd{usepackage\{fancyhdr\}}. Or if you want to include your own
+% header and/or footer definitions, use
+% \Cmd{fancypagestyle*\{fancydefault\}}\marg{your definitions}.
 %
 % \section{The scoop on \latex/'s marks}
 % \label{sec:scoop}
@@ -5176,21 +5189,6 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}[internal]{ps@fancydefault}
-% \changes{fancyhdr v4.0}{2019/03/21}{Added \cs{ps@fancydefault}}
-% This is page style \texttt{fancydefault}. It is in fact page style
-% \texttt{fancy} with all the defaults embedded. In contrast with page
-% style \texttt{fancy} that gets all its settings from the environment.
-% It reruns all initialisations and then calls \cs{ps@f@nch@fancyproto}.
-%    \begin{macrocode}
-\def\ps@fancydefault{%
-  \f@nch@initialise
-  \ps@f@nch@fancyproto
-}
-\@namedef{f@nch@ps@fancydefault-is-fancyhdr}{}
-%    \end{macrocode}
-%
-% \end{macro}
 %
 % \begin{macro}[internal]{\f@nch@Oolh}
 % \begin{macro}[internal]{\f@nch@Oorh}
@@ -5460,6 +5458,20 @@
     \@temptokenb={}%
   \fi
 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\ps@fancydefault}
+% \changes{fancyhdr v4.0}{2019/03/21}{Added \cs{ps@fancydefault}}
+% \changes{fancyhdr v4.1}{2021/04/11}{Defined \cs{ps@fancydefault} with
+% \cs{fancypagestyle*}}
+% This is page style \texttt{fancydefault}. It is in fact page style
+% \texttt{fancy} with all the defaults embedded, including the relevant
+% definitions of \cs{chaptermark} and \Cmd{[sub]sectionmark}. This is in
+% contrast with page style \texttt{fancy} that gets all its settings
+% from the environment. It is defined with \cs{fancypagestyle*}.
+%    \begin{macrocode}
+\fancypagestyle*{fancydefault}{\f@nch@initialise}
 %    \end{macrocode}
 % \end{macro}
 %
