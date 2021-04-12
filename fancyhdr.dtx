@@ -72,6 +72,7 @@
 \usepackage{subcaption}
 \usepackage[colorlinks,linktocpage]{hyperref}
 \usepackage{ifthen}
+\usepackage{xparse}
 \usepackage{fancyhdr}
 \GetFileInfo{fancyhdr.sty}
 \def\latex/{\protect\LaTeX{}}
@@ -191,9 +192,22 @@
   }
 }
 
+\newcommand\exampleindex{}
+\def\exampleindex#1#2#3\relax{%
+  \ifx \relax#2\relax \index{Example 0#1=Example #1}\else \index{Example #1#2#3}\fi}
+
 \newcommand{\ExampleLabel}{}
-\newcommand{\Example}[1]{\renewcommand{\ExampleLabel}{Example~#1}}
-\newcommand{\NoExample}[1]{\renewcommand{\ExampleLabel}{#1}}
+\NewDocumentCommand \Example { m o }
+  {
+    \renewcommand{\ExampleLabel}{Example~#1\IfNoValueF{#2}{\\#2}}%
+    \exampleindex#1\relax\relax%
+  }
+
+\newcommand{\NoExample}[1]
+  {%
+    \renewcommand{\ExampleLabel}{#1}%
+%    \index{Example `#1'}%
+  }
 \newcommand{\formatexample}{\hbox{\hspace{-2.5cm}%
     \raisebox{-2\baselineskip}[0pt][0pt]{%
       \parbox[t]{2.5cm}{\normalfont\normalsize
@@ -204,7 +218,9 @@
   \noindent\makebox[0pt][l]{\hspace{-2.5cm}\parbox[t][0pt]{2.5cm}{%
       \normalfont\normalsize
       \centering
-      Example #1}}}%
+      Example #1}}%
+  \exampleindex#1\relax\relax%
+}%
 
 \newcommand{\VL}{0.008} % size of vertical line segments
 \newcommand{\upperline}{%
@@ -2992,7 +3008,7 @@
 % The page doesn't have `contents' --
 % all the visual contents is generated
 % by the \verb|\overview| command in the header
-% \Example{31\\(continued)}
+% \Example{31}[(continued)]
 % \begin{example}
 % \fancyhead[L]{Overview}
 % \fancyhead[R]{\overview}
@@ -3276,7 +3292,7 @@
 % position option to give \LaTeX{} maximum freedom to place them. This
 % way we hope they keep them together, although there is no guarantee.
 %
-% \Example{33\\(A)}
+% \Example{33}[(A)]
 % \begin{example}
 % \newcommand{\fakecaption}[2]{% #1 = figure label #2 = caption
 %   \par Figure~\ref{#1}: #2
@@ -3308,7 +3324,7 @@
 % command more tidy, it is advised to put the code for the figures in a
 % macro, or in the file that is included with \cs{input}. For example:
 %
-% \Example{33\\(B)}
+% \Example{33}[(B)]
 % \begin{example}
 % \newcommand{\myfigures}{%
 %   \begin{figure}[!htbp]
@@ -3365,7 +3381,7 @@
 % previous example, but this will probably push the figures even further
 % towards the back.
 %
-% \Example{33\\(C)}
+% \Example{33}[(C)]
 % \begin{example}
 % \newcommand{\myfigures}{%
 %   \begin{figure}[p]
@@ -3388,7 +3404,7 @@
 % So maybe just use the previous example without \cs{afterpage} and
 % \cs{clearpage}.
 %
-% \Example{33\\(D)}
+% \Example{33}[(D)]
 % \begin{example}
 % \myfigures % (with the [p] placement)
 % \end{example}
@@ -3432,7 +3448,7 @@
 % The last subfigure (\ref{subfig:last} on page~\pageref{subfig:last})
 % has a label on the \cs{subcaption} that we refer to in this sentence.
 %
-% \Example{33\\(E)}
+% \Example{33}[(E)]
 % \begin{example}
 % \begin{figure}[p]
 %   \centering
@@ -3803,7 +3819,7 @@
 % \sectionmark{Short title}
 % \end{code}
 % To avoid all the repetitions, it is better to make a macro:
-% \Example{34b\\(continued)}
+% \Example{34b}[(continued)]
 % \begin{example}
 % \newcommand{\Section}[2]{%
 %             \section[#1]{#1\sectionmark{#2}}\sectionmark{#2}}
@@ -3815,7 +3831,7 @@
 % you can make a macro with three parameters. The third parameter is the
 % text to be put in the table of contents. We use this parameter as the
 % optional argument for the \cs{section} command.
-% \Example{34b\\(continued)}
+% \Example{34b}[(continued)]
 % \begin{example}
 % \newcommand{\Sectionx}[3]{%
 %             \section[#3]{#1\sectionmark{#2}}\sectionmark{#2}}
@@ -3987,7 +4003,7 @@
 % If there is no \cs{section} command on the page, it ``inherits'' the
 % last section title of a previous page. Similarly for subsections.
 %
-% \Example{35}
+% \Example{35}[(basic)]
 % \begin{example}
 % \usepackage{fancyhdr}
 % \usepackage{extramarks}
@@ -4050,7 +4066,7 @@
 % \cs{rightreset} before or after the mark. We also put the right header
 % field in a variable \cs{rightheader} so that we can change it later.
 %
-% \Example{35\\(continued)}
+% \Example{35}[(continued)]
 % \begin{example}
 % \newcommand\rightreset{%
 %   \ifextramarksmissing{left}{}
@@ -4093,7 +4109,7 @@
 % section~6.
 %
 % This is done with the following code:
-% \Example{35}
+% \Example{35}[(continued)]
 % \begin{example}
 % \newcounter{thispage}
 % \newcommand\rightresetbefore{% 
