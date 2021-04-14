@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v3>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2021/04/11 v4.1beta
+%<fancyhdr|fancyheadings|extramarks>           [2021/04/14 v4.1beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -5700,7 +5700,7 @@
 % for example in \cs{twocolumn}, or \Package{multicol}, on each column.
 % In the `normal' one-column case, on the main vertical box (\cs{@outputbox}). \\
 % The values in the variables reflect the marks on the current page;
-% they could be empty. On delivering the marks to the user, empty marks
+% they could be empty. On retrieving the marks, empty marks
 % are replaced by the value of \texttt{topmark}. (\textbf{NOTE}: What is called
 % \texttt{lastmark} on the user level, is called \texttt{botmark}
 % internally, because that is the name \TeX{} uses.)
@@ -5717,7 +5717,7 @@
 % \mbox{\quad}     if firstmark = empty:\\
 % \mbox{\quad}\mbox{\quad}       firstmark := splitfirstmark\\
 % \mbox{\quad}     botmark := splitbotmark\\[2ex]
-% DELIVER \meta{which}mark, where \meta{which} = \texttt{first} or
+% RETRIEVE \meta{which}mark, where \meta{which} = \texttt{first} or
 % \texttt{last} (internally \texttt{bot}) :\\
 % \mbox{~}   if \meta{which}mark = empty:\\
 % \mbox{\quad}    return \texttt{topmark}\\
@@ -6325,7 +6325,7 @@
 % \end{syntax}
 % Extract the topmark of \meta{name}
 %    \begin{macrocode}
-\NewDocumentCommand \extramarkstop { m }
+\NewExpandableDocumentCommand \extramarkstop { m }
 {
   \cs_if_exist:cTF {c_@@_#1_int}
   {
@@ -6339,7 +6339,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% DELIVER \meta{which}mark, where \meta{which} = \texttt{first} or
+% RETRIEVE \meta{which}mark, where \meta{which} = \texttt{first} or
 % \texttt{last} (internally \texttt{bot}) :\\
 % \mbox{~}   if \meta{which}mark = empty:\\
 % \mbox{\quad}    return \texttt{topmark}\\
@@ -6353,7 +6353,7 @@
 % Extract the firstmark of \meta{name}
 %
 %    \begin{macrocode}
-\NewDocumentCommand \extramarksfirst { m }
+\NewExpandableDocumentCommand \extramarksfirst { m }
 {
   \cs_if_exist:cTF {c_@@_#1_int}
     {
@@ -6380,7 +6380,7 @@
 % Extract the lastmark (botmark) of \meta{name}
 %
 %    \begin{macrocode}
-\NewDocumentCommand \extramarkslast { m }
+\NewExpandableDocumentCommand \extramarkslast { m }
 {
   \cs_if_exist:cTF {c_@@_#1_int}
     {
@@ -6412,7 +6412,7 @@
 % \meta{false code} is executed.
 %
 %    \begin{macrocode}
-\NewDocumentCommand \ifextramarksmissing { m m m }
+\NewExpandableDocumentCommand \ifextramarksmissing { m m m }
 {
   \cs_if_exist:cTF {c_@@_#1_int}
     {
@@ -6492,12 +6492,12 @@
 % Shorthands
 %
 %    \begin{macrocode}
-\NewDocumentCommand\firstleftxmark  { } {\extramarksfirst {left}  }
-\NewDocumentCommand\firstrightxmark { } {\extramarksfirst {right} }
-\NewDocumentCommand\topleftxmark    { } {\extramarkstop   {left}  }
-\NewDocumentCommand\toprightxmark   { } {\extramarkstop   {right} }
-\NewDocumentCommand\lastleftxmark   { } {\extramarkslast  {left}  }
-\NewDocumentCommand\lastrightxmark  { } {\extramarkslast  {right} }
+\NewExpandableDocumentCommand\firstleftxmark  { } {\extramarksfirst {left}  }
+\NewExpandableDocumentCommand\firstrightxmark { } {\extramarksfirst {right} }
+\NewExpandableDocumentCommand\topleftxmark    { } {\extramarkstop   {left}  }
+\NewExpandableDocumentCommand\toprightxmark   { } {\extramarkstop   {right} }
+\NewExpandableDocumentCommand\lastleftxmark   { } {\extramarkslast  {left}  }
+\NewExpandableDocumentCommand\lastrightxmark  { } {\extramarkslast  {right} }
 
 \cs_new_eq:NN \firstxmark \firstleftxmark
 \cs_new_eq:NN \lastxmark \lastrightxmark
@@ -6510,9 +6510,9 @@
 \cs_new_eq:NN \firstrightmark \rightmark
 \cs_new_eq:NN \lastleftmark \leftmark
 
-\NewDocumentCommand\firstleftmark { }
+\NewExpandableDocumentCommand\firstleftmark { }
   {\expandafter\@leftmark\firstmark\@empty\@empty}
-\NewDocumentCommand\lastrightmark { }
+\NewExpandableDocumentCommand\lastrightmark { }
   {\expandafter\@rightmark\botmark\@empty\@empty}
 %    \end{macrocode}
 %
