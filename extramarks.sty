@@ -335,6 +335,8 @@
   \cs_if_exist:cTF {c__extramarks_#1_int}
     {
       \tl_gset:cn { g__extramarks_topmark_#1_tl } { { } }
+      \tl_gset_eq:cN { g__extramarks_firstmark_#1_tl } \c_empty_tl
+      \tl_gset_eq:cN { g__extramarks_botmark_#1_tl } \c_empty_tl
     }
     { \msg_error:nnnn {extramarks} {not-defined} {\extramarksreset} {#1} }
 }

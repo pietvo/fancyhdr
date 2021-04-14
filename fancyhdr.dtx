@@ -655,7 +655,7 @@
 %
 % The command \cs{extramarksreset}\marg{name} can be used (in the headers
 % or footers) to reset the mark \meta{name}. This essentially means that
-% its \emph{topmark} will be cleared and therefore this is no longer
+% all marks (including \emph{topmark}) will be cleared and therefore this is no longer
 % propagated to the next page. See section~\ref{sec:firstsubsection} for
 % an example.
 %
@@ -4040,7 +4040,7 @@
 % \end{quote}
 % The two tests are done with the command \cs{ifextramarksmissing}, and
 % stopping the inheritance with \cs{extramarksreset} (which clears the
-% \emph{topmark}, which is used for the inheritance).
+% marks, including \emph{topmark}, which is used for the inheritance).
 %
 % We can put the \cs{extramarksreset} in the subsection header field
 % (the right header in this case), either before or after the defined
@@ -6438,6 +6438,8 @@
   \cs_if_exist:cTF {c_@@_#1_int}
     {
       \tl_gset:cn { g_@@_topmark_#1_tl } { { } }
+      \tl_gset_eq:cN { g_@@_firstmark_#1_tl } \c_empty_tl
+      \tl_gset_eq:cN { g_@@_botmark_#1_tl } \c_empty_tl
     }
     { \msg_error:nnnn {extramarks} {not-defined} {\extramarksreset} {#1} }
 }
