@@ -4008,7 +4008,6 @@
 % \usepackage{fancyhdr}
 % \usepackage{extramarks}
 % \pagestyle{fancy}
-% \fancyhf{}
 % \fancyhead[L]{\firstleftxmark}
 % \fancyhead[R]{\firstrightxmark}
 % \fancyfoot[C]{\thepage}
@@ -4035,12 +4034,56 @@
 % The algorithm we use is this:
 % \begin{quote}
 %   if there is a section mark on this page\\
-%   and there is no subsection mark on the page\\
+%   and there is no subsection mark following it on the page\\
 %   \mbox{\quad} then stop the ``inheritance'' for the subsection title.
 % \end{quote}
-% The two tests are done with the command \cs{ifextramarksmissing}, and
+% The first test can be done with the command \cs{ifextramarksmissing}, and
 % stopping the inheritance with \cs{extramarksreset} (which clears the
 % marks, including \emph{topmark}, which is used for the inheritance).
+% However, there is no command to see if the section mark is not
+% followed by a subsection mark, because the two are independent. And we
+% cannot use \LaTeX{} variables for this, because of the asynchronous
+% processing of the page breaking. But we can do this if we introduce a
+% new mark called \texttt{which}, that is used by both \cs{section} and
+% \cs{subsection}. We let \cs{sectionmark} put ``0'' in it, and
+% \cs{subsectionmark} ``1''. Then we can test if the \texttt{lastmark}
+% is equal to ``0'', which means there is no subsection following the last
+% section. This is exactly our second condition above.
+%
+% The command \cs{ifextramarksmissing}\marg{name}\marg{true code}\marg{false code}
+% executes the \meta{true code} if there is no \meta{name} mark on the
+% page, and \meta{false code} if there is at least one. We make a macro
+% \cs{checkrightreset} that contains the algorithm, and we also put the
+% right header field in a variable \cs{rightheader} so that we can
+% change it later.
+%
+% \Example{35}[(continued)]
+% \begin{example}
+% \extramarksnewmark{which}
+%
+% \newcommand\checkrightreset{%
+%   \ifextramarksmissing{left}
+%   {}
+%   {% if there is a sectionmark on the page
+%     \ifnum\extramarkslast{which}=0
+%       % that is the last (no subsection following on the page)
+%       % then reset the subsection mark
+%       \extramarksreset{right}%
+%     \fi
+%   }%
+% }
+%
+% \renewcommand{\sectionmark}[1]{%
+%   \extramarksleft{\thesection. #1}%
+%   \extramarksput{which}{0}%
+%
+% \renewcommand{\subsectionmark}[1]{%
+%   \extramarksright{\thesubsection\ #1}%
+%   \extramarksput{which}{1}%
+% }
+% \newcommand\rightheader{\firstrightxmark}
+% \fancyhead[R]{\rightheader}
+% \end{example}
 %
 % We can put the \cs{extramarksreset} in the subsection header field
 % (the right header in this case), either before or after the defined
@@ -4058,36 +4101,13 @@
 % However, we can find out while we are executing the \cs{sectionmark}
 % and then communicate this information to the headers.
 %
-% The command \cs{ifextramarksmissing}\marg{name}\marg{true code}\marg{false code}
-% executes the \meta{true code} if there is no \meta{name} mark on the
-% page, and \meta{false code} if there is at least one. We make a macro
-% \cs{rightreset} that contains the algorithm, and we define a variable
-% for the right header field. Now we must still decide whether to put
-% \cs{rightreset} before or after the mark. We also put the right header
-% field in a variable \cs{rightheader} so that we can change it later.
-%
-% \Example{35}[(continued)]
-% \begin{example}
-% \newcommand\rightreset{%
-%   \ifextramarksmissing{left}{}
-%   {% if there is a sectionmark on the page
-%     \ifextramarksmissing {right}
-%     % but no subsectionmark. then reset subsectionmark
-%     {\extramarksreset{right}}
-%     {}%
-%   }%
-% }
-% \newcommand\rightheader{\firstrightxmark}
-% \fancyhead[R]{\rightheader}
-% \end{example}
-%
 % \TeX{} has two variables that can help us, \cs{pagegoal} is the vertical size
 % that is available for the text, and \cs{pagetotal} is the amount we
 % have used so far\footnote{This doesn't include floats and footnotes.}.
 % So if \cs{pagetotal}$<$0.5\cs{pagegoal} we are in the upper half of
 % the page, otherwise in the lower half\footnote{Of course you could choose a
 % different split point.}.  We can use this information to
-% redefine \cs{rightheader} to include \cs{rightreset} either before or
+% redefine \cs{rightheader} to include \cs{checkrightreset} either before or
 % after \cs{firstrightmark}. However, as explained in
 % section~\ref{sec:change}, setting information in the text body  and
 % using it in the headers without using marks can sometimes fail due to
@@ -4095,7 +4115,7 @@
 % could happen that a \cs{section} command appears near the end of a
 % page, and our algorithm determines that it is on the lower half of the
 % page, but then \TeX{} decides to move it to the next page, where
-% obviously it is in the upper half. So our decision is wrong in that
+% it will probably be in the upper half. So our decision is wrong in that
 % case.
 % Fortunately there is a way to detect this case. During the processing
 % of the \cs{section} command and its \cs{sectionmark}, the page number
@@ -4103,7 +4123,7 @@
 % section command will be on the next page with the next page number. By
 % saving the current page number in a separate counter in the \cs{sectionmark}
 % command, and comparing it in the header with the actual page number we
-% can find out that this happened, and then do the reset 
+% can find out that this happened, and then do the reset
 % before the mark. (In this case it will also be done after the mark,
 % but that does no harm, and it is simpler this way.) In the example 35 file you can see this in
 % section~6.
@@ -4112,21 +4132,23 @@
 % \Example{35}[(continued)]
 % \begin{example}
 % \newcounter{thispage}
-% \newcommand\rightresetbefore{% 
-%   \ifnum \value{thispage}<\value{page}\rightreset\fi
+% \newcommand\checkrightresetbefore{%
+%   \ifnum \value{thispage}<\value{page}\checkrightreset\fi
 % }
+%
 % \renewcommand{\sectionmark}[1]{%
 %   \extramarksleft{\thesection. #1}%
+%   \extramarksput{which}{0}%
+%   % save the current page number
+%   \setcounter{thispage}{\value{page}}%
 %   \ifdim\pagetotal<0.5\pagegoal
-%     % put \rightreset before
-%     \renewcommand\rightheader{\rightreset\firstrightxmark}%
+%     % put \checkrightreset before
+%     \renewcommand\rightheader{\checkrightreset\firstrightxmark}%
 %   \else
-%     % save the current page number
-%     \setcounter{thispage}{\value{page}}%
-%     % put \rightreset after,
-%     % but sometimes also before (when page numbers differ)
+%     % put \checkrightreset after,
+%     % but sometimes before (when page numbers differ)
 %     \renewcommand\rightheader{%
-%       \rightresetbefore\firstrightxmark\rightreset}%
+%       \checkrightresetbefore\firstrightxmark\checkrightreset}%
 %   \fi
 % }
 % \end{example}
