@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v3>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2021/04/14 v4.1beta
+%<fancyhdr|fancyheadings|extramarks>           [2021/05/18 v4.1beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -2171,7 +2171,7 @@
 % document, with the occasional \cs{thispagestyle} excursion to page
 % style \texttt{plain} or \texttt{empty}, you can just keep the
 % definitions globally in your document, but as soon as you use more
-% than one page style, and swicth between them, it is highly advisable
+% than one page style, and switch between them, it is highly advisable
 % to define them (including page style \texttt{fancy}) with
 % \cs{fancypagestyle} and put all the relevant definitions inside them.
 %
@@ -6354,7 +6354,7 @@
 %    \end{macrocode}
 % Get unbraced value out of the mark
 %    \begin{macrocode}
-     \tl_head:v { g_@@_topmark_#1_tl }
+     \exp_last_unbraced:Nv \use:n { g_@@_topmark_#1_tl }
   }
   { \msg_error:nnnn {extramarks} {not-defined} {\extramarkstop} {#1} }
 }
@@ -6384,10 +6384,10 @@
 %    \begin{macrocode}
       \tl_if_empty:cTF { g_@@_firstmark_#1_tl }
         {
-          \tl_head:v { g_@@_topmark_#1_tl }
+          \exp_last_unbraced:Nv \use:n { g_@@_topmark_#1_tl }
         }
         {
-          \tl_head:v { g_@@_firstmark_#1_tl }
+          \exp_last_unbraced:Nv \use:n { g_@@_firstmark_#1_tl }
         }
     }
     { \msg_error:nnnn {extramarks} {not-defined} {\extramarksfirst} {#1} }
@@ -6411,10 +6411,10 @@
 %    \begin{macrocode}
       \tl_if_empty:cTF { g_@@_botmark_#1_tl }
         {
-          \tl_head:v { g_@@_topmark_#1_tl }
+          \exp_last_unbraced:Nv \use:n { g_@@_topmark_#1_tl }
         }
         {
-          \tl_head:v { g_@@_botmark_#1_tl }
+          \exp_last_unbraced:Nv \use:n { g_@@_botmark_#1_tl }
         }
     }
     { \msg_error:nnnn {extramarks} {not-defined} {\extramarkslast} {#1} }
