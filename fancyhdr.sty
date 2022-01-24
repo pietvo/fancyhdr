@@ -21,9 +21,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2021/05/29 v4.1beta
+           [2022/01/24 v4.1beta
                   Extensive control of page headers and footers]%
-% Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
+% Copyright (C) 1994-2022 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand\if@nch@mpty[1]{\def\temp@a{#1}\ifx\temp@a\@empty}
 \newif\iff@nch@check
@@ -476,7 +476,7 @@
 \newcommand\f@nch@pagestyle@setup{%
   \iff@nch@pagestyle@star
     \iff@nch@check\@temptokenb={\f@nch@checktrue}\else\@temptokenb={\f@nch@checkfalse}\fi
-    \@tfor\myname:=
+    \@tfor\temp@a:=
       \f@nch@olh\f@nch@och\f@nch@orh\f@nch@elh\f@nch@ech\f@nch@erh
       \f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@elf\f@nch@ecf\f@nch@erf
       \f@nch@Oolh\f@nch@Oorh\f@nch@Oelh\f@nch@Oerh
@@ -484,21 +484,21 @@
       \f@nch@headinit\f@nch@footinit
       \headrule\headrulewidth\footrule\footrulewidth
     \do {%
-      \toks@=\expandafter\expandafter\expandafter{\myname}%
+      \toks@=\expandafter\expandafter\expandafter{\temp@a}%
       \toks@=\expandafter\expandafter\expandafter{%
         \expandafter\expandafter\expandafter\def
-        \expandafter\expandafter\myname\expandafter{\the\toks@}}%
+        \expandafter\expandafter\temp@a\expandafter{\the\toks@}}%
       \edef\temp@b{\@temptokenb={\the\@temptokenb\the\toks@}}%
       \temp@b
     }%
-    \@tfor\myname:=
+    \@tfor\temp@a:=
       \f@nch@offset@olh\f@nch@offset@orh\f@nch@offset@elh\f@nch@offset@erh
       \f@nch@offset@olf\f@nch@offset@orf\f@nch@offset@elf\f@nch@offset@erf
     \do {%
-      \toks@=\expandafter\expandafter\expandafter{\expandafter\the\myname}%
+      \toks@=\expandafter\expandafter\expandafter{\expandafter\the\temp@a}%
       \toks@=\expandafter\expandafter\expandafter{%
         \expandafter\expandafter\expandafter\setlength
-        \expandafter\expandafter\myname\expandafter{\the\toks@}}%
+        \expandafter\expandafter\temp@a\expandafter{\the\toks@}}%
       \edef\temp@b{\@temptokenb={\the\@temptokenb\the\toks@}}%
       \temp@b
     }%
