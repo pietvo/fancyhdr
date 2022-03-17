@@ -34,7 +34,7 @@ the following packages installed:
 - subcaption (CTAN:/macros/latex/contrib/caption)
 - robustindex.sty (CTAN:/macros/latex/contrib/robustindex)
 
-This is version 4.1beta of fancyhdr.sty and extramarks.sty. They are
+This is version 5.0beta of fancyhdr.sty and extramarks.sty. They are
 described in the forthcoming third edition of The LaTeX Companion.
 Fancyhdr.sty has a number of new features.
 Extramarks.sty has a new implementation that solves a lot of problems

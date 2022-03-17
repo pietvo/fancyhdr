@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v3>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2022/01/24 v4.1beta
+%<fancyhdr|fancyheadings|extramarks>           [2022/03/17 v5.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -591,13 +591,13 @@
 % similar to the standard ones by \latex/, where \meta{aa} is the left
 % one and \meta{bb} is the right one.
 %
-% In versions before 4.1, the \texttt{extramarks} are connected to each
+% In versions before 5.0, the \texttt{extramarks} are connected to each
 % other and to the original \LaTeX{} marks; they are not independent.
 % For example, if you use \cs{markboth} or \cs{markright}, this
 % introduces empty \texttt{extramarks} or duplicates existing ones. This is
 % also true in the other direction. This sometimes caused unwanted effects.
 %
-% Since version 4.1 this is no longer the case.
+% Since version 5.0 this is no longer the case.
 % Now the \texttt{extramarks} are independent of the traditional marks,
 % and they can also be used independently of each other by the commands
 % \cs{extramarksleft}\marg{aa} and \cs{extramarksright}\marg{bb}.
@@ -1222,7 +1222,7 @@
 % \end{quote}
 %  With \texttt{*} it defines a ``\emph{closed}'' page style, otherwise an
 % ``\emph{open}'' one. (This version is only available in
-% \Package{fancyhdr} version 4.1 and later.) The difference is that the \emph{open} page style
+% \Package{fancyhdr} version 5.0 and later.) The difference is that the \emph{open} page style
 % does not necessarily have all the information in itself that is
 % necessary to construct the headers and footers. So it will need to pick up the
 % remaining elements from the environment of the text.
@@ -3686,7 +3686,16 @@
 %   \item Some documentation corrections, especially in sections
 %     \ref{sec:xmarks} and \ref{sec:movie}.
 %   \end{itemize}
-% \item Version 4.1, Feb 11-March 22, 2021
+% \end{itemize}
+%
+% \subsection{Changes in version 5}
+% \label{sec:version-5}
+% Version 5 adds a number of new features. Most notable is a new
+% implementation of the \texttt{extramarks} package, which now has
+% independent marks.
+%
+% \begin{itemize}
+% \item Version 5.0, Feb 11, 2021-March 17, 2022
 %   \begin{itemize}
 %   \item Shorten Warning message about \cs{headheight}/\cs{footskip} too large.
 %   \item If the option \texttt{[nocheck]} is given, just keep quiet and
@@ -3993,7 +4002,7 @@
 % subsection title. In principle we could still use the original
 % \LaTeX{} mark for the section title, but for the second half of this
 % example this will not work.  So we will use the new independent
-% marks from the package \Package{extramarks} (version 4.1 or later),
+% marks from the package \Package{extramarks} (version 5.0 or later),
 % the \emph{left} mark for the section title and the \emph{right} mark
 % for the subsection title.
 % We set the marks with \cs{extramarksleft} and \cs{extramarksright},
@@ -4028,7 +4037,7 @@
 % because it combines the title of section $n$ with a subsection title
 % that belongs to section $n-1$, which looks unnatural. It could
 % even be a subsection title from several sections before. You may want to
-% suppress the subsection title in the header in this case. Version  4.1
+% suppress the subsection title in the header in this case. Version  5.0
 % and later of \Package{extramarks} has commands that make this possible.
 %
 % The algorithm we use is this:
@@ -4341,7 +4350,7 @@
 % Initialise \cs{f@nch@gbl} to do nothing (except with the \texttt{compatV3}
 % option).
 % \changes{fancyhdr v4.0}{2019/03/19}{Remove the \cs{global} in definitions}
-% \changes{fancyhdr v4.1}{2021/02/24}{Untangle the code
+% \changes{fancyhdr v5.0}{2021/02/24}{Untangle the code
 % for\cs{f@nch@gbl} and the \texttt{compatV3} option}
 %    \begin{macrocode}
 \let\f@nch@gbl\relax
@@ -4552,7 +4561,7 @@
 %   This is similar to \LaTeX's \cs{@tfor}, but it expands the \texttt{charstring}.
 %    \begin{macrocode}
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
-% \changes{fancyhdr v4.1}{2021/05/29}{Make \cs{f@nch@rc} \cs{long}.}
+% \changes{fancyhdr v5.0}{2021/05/29}{Make \cs{f@nch@rc} \cs{long}.}
 \newcommand{\f@nch@forc}[3]{\expandafter\f@nchf@rc\expandafter#1\expandafter{#2}{#3}}
 \newcommand{\f@nchf@rc}[3]{\def\temp@ty{#2}\ifx\@empty\temp@ty\else
                                     \f@nch@rc#1#2\f@nch@rc{#3}\fi}
@@ -4636,7 +4645,7 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\f@nch@fancyhf}
-% \changes{fancyhdr v4.1}{2021/05/29}{Make \cs{f@nch@fancyhf} \cs{long}.}
+% \changes{fancyhdr v5.0}{2021/05/29}{Make \cs{f@nch@fancyhf} \cs{long}.}
 % This macro interprets the parameters for the headers and footers.\\
 % Parameters:\\
 % (1) The user command that was used (like \cs{fancyhead}). This is used
@@ -4671,7 +4680,7 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\f@nch@fancyhfoffs}
-% \changes{fancyhdr v4.1}{2021/03/27}{Change the offset length variables
+% \changes{fancyhdr v5.0}{2021/03/27}{Change the offset length variables
 % \cs{f@nch@O@xyz} to \cs{f@nch@offset@xyz}}
 % This macro interprets the parameters for the header and footer
 % offsets.\\
@@ -4765,7 +4774,7 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\f@nch@headwidth}
-% \changes{fancyhdr v4.1}{2021/03/27}{Change the offset length variables
+% \changes{fancyhdr v5.0}{2021/03/27}{Change the offset length variables
 % \cs{f@nch@O@xyz} to \cs{f@nch@offset@xyz}}
 % Length parameter to be used for \cs{headwidth}. We use this rather
 % than defining \cs{headwidth} as a length paramater directly to protect
@@ -5028,7 +5037,7 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\f@nch@height}
-% \changes{fancyhdr v4.1}{2021/02/20}{Length variable \cs{f@nch@height} added}
+% \changes{fancyhdr v5.0}{2021/02/20}{Length variable \cs{f@nch@height} added}
 % Length variable to store heigth of header/footer for use in \cs{fancyhdrsettoheight}
 %    \begin{macrocode}
 \newlength\f@nch@height
@@ -5036,7 +5045,7 @@
 % \end{macro}
 %
 % \begin{macro}{\fancyhdrsettoheight}
-% \changes{fancyhdr v4.1}{2021/02/20}{Macro \cs{fancyhdrsettoheight} added}
+% \changes{fancyhdr v5.0}{2021/02/20}{Macro \cs{fancyhdrsettoheight} added}
 % Macro to store the height of a header/footer in a length variable.\\
 % \cs{fancyhdrsettoheight}\marg{lengthvar}\marg{header/footer}\\
 % The second parameter can be \texttt{oddhead}, \texttt{evenhead},
@@ -5073,12 +5082,12 @@
 % \changes{fancyhdr v4.0}{2019/03/15}{Don't adjust the
 % \cs{headheight}/\cs{footskip}, except when the \texttt{compatV3} option is given.}
 % \changes{fancyhdr v4.0}{2019/03/15}{Don't check when the \texttt{nocheck} option is given.}
-% \changes{fancyhdr v4.1}{2021/02/11}{Shorten one sentence in the warning message.}
-% \changes{fancyhdr v4.1}{2021/02/11}{If the option \texttt{[nocheck]}
+% \changes{fancyhdr v5.0}{2021/02/11}{Shorten one sentence in the warning message.}
+% \changes{fancyhdr v5.0}{2021/02/11}{If the option \texttt{[nocheck]}
 % is given, just keep quiet and don't change the
 % \cs{headheight}/\cs{footskip} even if the \texttt{[compatV3]} option
 % is given.}
-% \changes{fancyhdr v4.1}{2021/02/20}{Set \cs{f@nch@height} to height of box}
+% \changes{fancyhdr v5.0}{2021/02/20}{Set \cs{f@nch@height} to height of box}
 %    \begin{macrocode}
 \newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
@@ -5432,7 +5441,7 @@
 %
 % \begin{macro}[internal]{\f@nch@offsolh}
 % \begin{macro}[internal]{\f@nch@offselh}
-% \changes{fancyhdr v4.1}{2021/03/27}{Change the offset length variables
+% \changes{fancyhdr v5.0}{2021/03/27}{Change the offset length variables
 % \cs{f@nch@O@xyz} to \cs{f@nch@offset@xyz}}
 %   New definitions for the use of \cs{fancyhfoffset},
 %   \cs{fancyheadoffset}, \cs{fancyfootoffset}.  These calculate the
@@ -5462,7 +5471,7 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\f@nch@setoffs}
-% \changes{fancyhdr v4.1}{2021/03/27}{Use \cs{def} instead of \cs{let}
+% \changes{fancyhdr v5.0}{2021/03/27}{Use \cs{def} instead of \cs{let}
 % to make it easier to pick up these macros for \cs{fancypagestyle*}}
 % Set the offset parts to be used in the construction of the headers and
 % footers. Depending on \cs{f@nch@gbl} it will be done globally (for
@@ -5491,7 +5500,7 @@
 %
 % \begin{macro}[internal]{\iff@nch@footnote}
 % \begin{macro}[internal]{\@makecol}
-% \changes{fancyhdr v4.1}{2021/03/27}{Change the internal variables
+% \changes{fancyhdr v5.0}{2021/03/27}{Change the internal variables
 % \cs{topfloat} and \cs{botfloat} to localised ones \cs{f@nch@topfloat}
 % and \cs{f@nch@botfloat}.}
 %   Redefine \cs{@makecol} so that we can capture if there are
@@ -5528,7 +5537,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \changes{fancyhdr v4.1}{2021/02/16}{Define \cs{newtoks}\cs{@temptokenb}}
+% \changes{fancyhdr v5.0}{2021/02/16}{Define \cs{newtoks}\cs{@temptokenb}}
 % \begin{macro}[internal]{\@temptokenb}
 % A token register to collect information for \cs{fancypagestyle*}. The
 % definition is conditional on the non-existence of it.
@@ -5537,7 +5546,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \changes{fancyhdr v4.1}{2021/02/17}{Define \cs{iff@nch@pagestyle@star}
+% \changes{fancyhdr v5.0}{2021/02/17}{Define \cs{iff@nch@pagestyle@star}
 % to record if \cs{fancypagestyle*} is used.}
 % \begin{macro}[internal]{\iff@nch@pagestyle@star}
 % A conditional to record if \cs{fancypagestyle*} is used.
@@ -5549,7 +5558,7 @@
 % \begin{macro}{\fancypagestyle}
 % Define a new page style. With \texttt{*} define a ``closed'' page
 % style, otherwise an ``open'' one.
-% \changes{fancyhdr v4.1}{2021/02/17}{Add \cs{fancypagestyle*}}
+% \changes{fancyhdr v5.0}{2021/02/17}{Add \cs{fancypagestyle*}}
 %    \begin{macrocode}
 \newcommand\fancypagestyle{%
   \@ifstar{\f@nch@pagestyle@startrue\f@nch@pagestyle}%
@@ -5571,7 +5580,7 @@
 % The actual code for \cs{fancypagestyle}. Build the page style body.
 % Declare it as a fancyhdr-based page style.
 % \changes{fancyhdr v4.0}{2019/09/05}{Make the definition of \cs{f@nch@pagestyle} \cs{long}.}
-% \changes{fancyhdr v4.1}{2021/02/17}{Add \cs{fancypagestyle*}}
+% \changes{fancyhdr v5.0}{2021/02/17}{Add \cs{fancypagestyle*}}
 %    \begin{macrocode}
 \long\def\f@nch@@pagestyle#1[#2]#3{%
   \f@nch@ifundefined{ps@#2}{%
@@ -5602,11 +5611,11 @@
 % Internal macro for \cs{fancypagestyle}. Setup \cs{@temptokenb}:\\
 % For \cs{fancypagestyle*} collect relevant macro definitions in \cs{@temptokenb}.\\
 % For \cs{fancypagestyle} make \cs{@temptokenb} empty.
-% \changes{fancyhdr v4.1}{2021/02/17}{Add \cs{f@nch@pagestyle@setup}
+% \changes{fancyhdr v5.0}{2021/02/17}{Add \cs{f@nch@pagestyle@setup}
 % macro for \cs{fancypagestyle*}}
-% \changes{fancyhdr v4.1}{2021/03/27}{Also save the offset length variables
+% \changes{fancyhdr v5.0}{2021/03/27}{Also save the offset length variables
 % \cs{f@nch@offset@xyz} with \cs{setlength}}
-% \changes{fancyhdr v4.1}{2022/01/24}{Replace \cs{myname} with \cs{temp@a}}
+% \changes{fancyhdr v5.0}{2022/01/24}{Replace \cs{myname} with \cs{temp@a}}
 %    \begin{macrocode}
 \newcommand\f@nch@pagestyle@setup{%
   \iff@nch@pagestyle@star
@@ -5673,7 +5682,7 @@
 %
 % \begin{macro}[internal]{\ps@fancydefault}
 % \changes{fancyhdr v4.0}{2019/03/21}{Added \cs{ps@fancydefault}}
-% \changes{fancyhdr v4.1}{2021/04/11}{Defined \cs{ps@fancydefault} with
+% \changes{fancyhdr v5.0}{2021/04/11}{Defined \cs{ps@fancydefault} with
 % \cs{fancypagestyle*}}
 % This is page style \texttt{fancydefault}. It is in fact page style
 % \texttt{fancy} with all the defaults embedded, including the relevant
@@ -5692,7 +5701,7 @@
 %<*extramarks>
 %<@@=extramarks>
 %
-% \changes{extramarks v4.1}{2021/03/22}{New implementation with
+% \changes{extramarks v5.0}{2021/03/22}{New implementation with
 % independent marks, and fallback option to earlier version 3.}
 % Provide a rollback to earlier version
 %    \begin{macrocode}
@@ -6872,7 +6881,7 @@
 % \changes{extramarks v3.9}{2016/10/12}{Unify version number with \Package{fancyhdr.sty}.}
 %
 % \changes{extramarks v3.9a}{2017/06/30}{Restore \cs{newtoks}\cs{@temptokenb}}
-% \changes{extramarks v4.1}{2021/02/16}{Make \cs{newtoks}\cs{@temptokenb} conditional}
+% \changes{extramarks v5.0}{2021/02/16}{Make \cs{newtoks}\cs{@temptokenb} conditional}
 % \begin{variable}[internal]{\@temptokenb}
 % A token register to store some marks information
 %    \begin{macrocode}
