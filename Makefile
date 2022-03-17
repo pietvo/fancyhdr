@@ -1,12 +1,12 @@
 .PHONY: all clean dist
 
-all: fancyhdr.sty extramarks.sty extramarks-v3.sty fancyheadings.sty fancyhdr.pdf
+all: fancyhdr.sty extramarks.sty extramarks-v4.sty fancyheadings.sty fancyhdr.pdf
 
 
-extramarks.sty fancyhdr.sty extramarks-v3.sty fancyheadings.sty: fancyhdr.dtx fancyhdr.ins
+extramarks.sty fancyhdr.sty extramarks-v4.sty fancyheadings.sty: fancyhdr.dtx fancyhdr.ins
 	tex fancyhdr.ins
 
-fancyhdr.pdf: fancyhdr.dtx fancyhdr.sty extramarks.sty extramarks-v3.sty fancyheadings.sty
+fancyhdr.pdf: fancyhdr.dtx fancyhdr.sty extramarks.sty extramarks-v4.sty fancyheadings.sty
 	rm -f fancyhdr.ind
 	latexmk fancyhdr.dtx
 

@@ -25,18 +25,18 @@
 \NeedsTeXFormat{LaTeX2e}
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
-%<extramarks|extramarks-v3>\ProvidesPackage{extramarks}
+%<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
 %<fancyhdr|fancyheadings|extramarks>           [2022/03/17 v5.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
 %<fancyhdr|extramarks>% Copyright (C) 1994-2022 by Pieter van Oostrum <pieter@vanoostrum.org>
-%<extramarks-v3>           [2021/01/01 v3
-%<extramarks-v3>                 Legacy version of extramarks for LaTeX]
-%<extramarks-v3>% Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
-%<extramarks-v3>%%
-%<extramarks-v3>%% This is a legacy version (v3) of extramarks.sty
-%<extramarks-v3>%%
+%<extramarks-v4>           [2021/01/01 v4
+%<extramarks-v4>                 Legacy version of extramarks for LaTeX]
+%<extramarks-v4>% Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
+%<extramarks-v4>%%
+%<extramarks-v4>%% This is a legacy version (v4) of extramarks.sty
+%<extramarks-v4>%%
 %<fancyheadings>% Public domain
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    \end{macrocode}
@@ -369,7 +369,7 @@
 % The preferred way to install this package is with a package installer.
 % If you want to install it by hand, then first run the command
 % `\verb+tex fancyhdr.ins+' and then move the files \texttt{fancyhdr.sty},
-% \texttt{extramarks.sty}, \texttt{extramarks-v3.sty}
+% \texttt{extramarks.sty}, \texttt{extramarks-v4.sty}
 % and \texttt{fancyheadings.sty} to a place
 % where \latex/ can find it, preferably in a directory similar to
 % \texttt{.../texmf/tex/latex/fancyhdr/} in your \tex/ directory tree.
@@ -663,11 +663,11 @@
 %
 % If you want to keep the old behaviour of \Package{extramarks}, you can use:
 % \begin{verbatim}
-% \usepackage{extramarks}[=v3]
+% \usepackage{extramarks}[=v4]
 % \end{verbatim}
 % or if you have an old \LaTeX{} system where the above doesn't work
 % \begin{verbatim}
-% \usepackage{extramarks-v3}
+% \usepackage{extramarks-v4}
 % \end{verbatim}
 % See sections~\ref{sec:scoop} and \ref{sec:xmarks} for more details
 % about the use of the package.
@@ -3704,7 +3704,7 @@
 %   \item Added \cs{fancypagestyle*} variant.
 %   \item Added command \cs{fancyhdrsettoheight}.
 %   \item New implementation of package \Package{extramarks} with
-%   fallback to \Package{extramarks-v3}.
+%   fallback to \Package{extramarks-v4}.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -5707,7 +5707,7 @@
 %    \begin{macrocode}
 \providecommand\DeclareRelease[3]{}
 \providecommand\DeclareCurrentRelease[2]{}
-\DeclareRelease{v3}{2021-01-01}{extramarks-v3.sty}
+\DeclareRelease{v4}{2021-01-01}{extramarks-v4.sty}
 \DeclareCurrentRelease{}{2021-03-22}
 
 \RequirePackage{expl3,xparse}
@@ -6481,7 +6481,7 @@
 % \end{macro}
 %
 % ~\\[2ex]
-% Convenience functions (compatibility with v3)
+% Convenience functions (compatibility with v4)
 %
 % \begin{macro}{\extramarksleft}
 % \begin{syntax}
@@ -6863,9 +6863,9 @@
 %
 %</extramarks>
 %
-% \section{extramarks-v3.sty}
+% \section{extramarks-v4.sty}
 %
-%<*extramarks-v3>
+%<*extramarks-v4>
 %
 % \changes{extramarks v1.99e}{2000/10/11}{Added a few \% marks to get rid
 % of unwanted spaces, and \cs{endinput}. \\
@@ -7047,7 +7047,7 @@
 % \end{macro}
 % \end{macro}
 %
-%</extramarks-v3>
+%</extramarks-v4>
 %
 % \section{fancyheadings.sty}
 %

@@ -1,9 +1,9 @@
-# Fancyhdr version V4.1beta
+# Fancyhdr version V5.0beta
 
 This is the ongoing development version of the fancyhdr package.
-It is not yet a stable release. Eventually it will be released as V4.1
+It is not yet a stable release. Eventually it will be released as V5.0
 
-The version number will remain V4.1beta, but the date will be updated if a new
+The version number will remain V5.0beta, but the date will be updated if a new
 version is made available.
 
 The code has been through all the tests I have, so in that sense it can be
@@ -50,7 +50,7 @@ be used in the example above. Or the maximum should be calculated.
 
 ## Extramarks.sty
 
-This implementation of extramarks.sty is completely new. It has independent marks and several new commands. A preliminary version was earlier put here as extramarks2.sty. This is no longer the case, but it has been put in extramarks.sty. The old version is in extramarks-v3.sty. See the documentation for more details.
+This implementation of extramarks.sty is completely new. It has independent marks and several new commands. A preliminary version was earlier put here as extramarks2.sty. This is no longer the case, but it has been put in extramarks.sty. The old version is in extramarks-v4.sty. See the documentation for more details.
 
 The marks in the original extramarks package are tied to the normal marks
 and to each other; they are not independent. This may cause unwanted effects
