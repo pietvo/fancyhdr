@@ -4901,7 +4901,8 @@
 %   \cs{hsize} to \cs{headwidth} (this helps for multicol); reset
 %   \bsbs, \cs{raggedleft}, \cs{raggedright} and \cs{centering} to
 %   their default values (for tabu), and \cs{everypar} to empty.\\
-%   The font is reset to \cs{normalfont}.
+%   The font is reset to \cs{normalfont}. Actually this is done in the
+%   \LaTeX{} output routine, so we don't have to do it here.
 %    \begin{macrocode}
 \def\f@nch@reset{\f@nch@everypar{}\restorecr\endlinechar=13
   \let\\\@normalcr \let\raggedleft\f@nch@raggedleft
