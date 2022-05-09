@@ -2946,6 +2946,16 @@
 %   \item Some documentation corrections, especially in sections
 %     \ref{sec:xmarks} and \ref{sec:movie}.
 %   \end{itemize}
+% \item Version 4.0.2, May 9, 2022
+%   \begin{itemize}
+% \item Added \cs{leavevmode}\cs{ignorespaces} to each header/footer
+%   field. The \cs{leavevmode} prevents a bug when a field starts with a
+%   \cs{color} command. The \cs{ignorespaces} skips initial spaces in
+%   the parameter, as is usual in a \cs{parbox}, for backwards
+%   compatibility. However, there are some rare cases where spurious
+%   spaces can still show up in the header/footer fields. In that case
+%   the user will have to eliminate these.
+%   \end{itemize}
 % \end{itemize}
 %
 %
@@ -4065,6 +4075,11 @@
 % \changes{fancyhdr v4.0}{2019/03/22}{Parameter \cs{headruleskip}.}
 % \changes{fancyhdr v4.0}{2019/03/25}{\cs{fancyheadinit} initialisation
 % code added and \cs{f@nch@reset} moved up.}
+% \changes{fancyhdr v4.0.2}{2022/05/09}{Added
+%   \cs{leavevmode}\cs{ignorespaces} to each  header/footer field.
+%   The \cs{leavevmode} prevents a bug when a field starts with a
+%   \cs{color} command. The \cs{ignorespaces} skips initial spaces in
+%   the parameter, as is usual in a \cs{parbox}, for backwards compatibility.}
 %   Put together a header or footer given the left, center and right
 %   text, fillers at left and right and a rule. The \cs{xlap} commands put
 %   the text into an hbox of zero size, so overlapping text does not
@@ -4091,11 +4106,11 @@
   \hbox to\headwidth{%
     \f@nch@vbox\headheight{%
       \hbox{%
-        \rlap{\parbox[b]{\headwidth}{\raggedright#2}}%
+        \rlap{\parbox[b]{\headwidth}{\raggedright\leavevmode\ignorespaces#2}}%
         \hfill
-        \parbox[b]{\headwidth}{\centering#3}%
+        \parbox[b]{\headwidth}{\centering\leavevmode\ignorespaces#3}%
         \hfill
-        \llap{\parbox[b]{\headwidth}{\raggedleft#4}}%
+        \llap{\parbox[b]{\headwidth}{\raggedleft\leavevmode\ignorespaces#4}}%
       }%
       \vskip\headruleskip\relax
       \headrule
@@ -4114,6 +4129,11 @@
 % definition.}
 % \changes{fancyhdr v4.0}{2019/03/25}{\cs{fancyfootinit} initialisation
 % code added and \cs{f@nch@reset} moved up.}
+% \changes{fancyhdr v4.0.2}{2022/05/09}{Added
+%   \cs{leavevmode}\cs{ignorespaces} to each  header/footer field.
+%   The \cs{leavevmode} prevents a bug when a field starts with a
+%   \cs{color} command. The \cs{ignorespaces} skips initial spaces in
+%   the parameter, as is usual in a \cs{parbox}, for backwards compatibility.}
 % We put the \cs{footrule} in a \cs{vbox} to accommodate for flexible
 % footrules (e.g. using \cs{hrulefill}), so that the \cs{headwidth} will
 % be used as the line width. But to preserve the vertical spacing we
@@ -4129,11 +4149,11 @@
       \setbox0=\vbox{\footrule}\unvbox0
       \vskip\footruleskip
       \hbox{%
-        \rlap{\parbox[t]{\headwidth}{\raggedright#2}}%
+        \rlap{\parbox[t]{\headwidth}{\raggedright\leavevmode\ignorespaces#2}}%
         \hfill
-        \parbox[t]{\headwidth}{\centering#3}%
+        \parbox[t]{\headwidth}{\centering\leavevmode\ignorespaces#3}%
         \hfill
-        \llap{\parbox[t]{\headwidth}{\raggedleft#4}}%
+        \llap{\parbox[t]{\headwidth}{\raggedleft\leavevmode\ignorespaces#4}}%
       }%
     }%
   }%

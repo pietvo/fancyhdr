@@ -310,11 +310,11 @@
   \hbox to\headwidth{%
     \f@nch@vbox\headheight{%
       \hbox{%
-        \rlap{\parbox[b]{\headwidth}{\raggedright#2}}%
+        \rlap{\parbox[b]{\headwidth}{\raggedright\leavevmode\ignorespaces#2}}%
         \hfill
-        \parbox[b]{\headwidth}{\centering#3}%
+        \parbox[b]{\headwidth}{\centering\leavevmode\ignorespaces#3}%
         \hfill
-        \llap{\parbox[b]{\headwidth}{\raggedleft#4}}%
+        \llap{\parbox[b]{\headwidth}{\raggedleft\leavevmode\ignorespaces#4}}%
       }%
       \vskip\headruleskip\relax
       \headrule
@@ -331,11 +331,11 @@
       \setbox0=\vbox{\footrule}\unvbox0
       \vskip\footruleskip
       \hbox{%
-        \rlap{\parbox[t]{\headwidth}{\raggedright#2}}%
+        \rlap{\parbox[t]{\headwidth}{\raggedright\leavevmode\ignorespaces#2}}%
         \hfill
-        \parbox[t]{\headwidth}{\centering#3}%
+        \parbox[t]{\headwidth}{\centering\leavevmode\ignorespaces#3}%
         \hfill
-        \llap{\parbox[t]{\headwidth}{\raggedleft#4}}%
+        \llap{\parbox[t]{\headwidth}{\raggedleft\leavevmode\ignorespaces#4}}%
       }%
     }%
   }%
