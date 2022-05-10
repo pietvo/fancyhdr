@@ -46,8 +46,8 @@
 \usepackage{boxedminipage}
 \usepackage{fourier-orns}
 \usepackage[T1]{fontenc}
-\usepackage{url}
 \usepackage[fit]{truncate}
+\usepackage[hyphens]{url}
 \usepackage[colorlinks,linktocpage]{hyperref}
 \usepackage{ifthen}
 \usepackage{fancyhdr}
@@ -719,11 +719,20 @@
 % \end{quote}
 % and leave the \texttt{[L,R]} parts empty.
 %
-% \textbf{Note 1}: If the whole of the \cs{fancycenter} is wider than
-% \cs{headwidth} it will stick out on the right. See
+% \textbf{Note 1}:
+% When \cs{fancycenter} is used inside a header or
+% \CmdIndex{linewidth}%
+% \CmdIndex{headwidth}%
+% footer, \cs{linewidth} usually is the same as \cs{headwidth}. Only
+% when  \cs{fancycenter} is used inside a box with a different width,
+% \cs{linewidth} will be the width of that box.
+%
+% \textbf{Note 2}:
+% If the whole of the \cs{fancycenter} is wider than
+% \cs{linewidth} it will stick out on the right. See
 % section~\ref{sec:longtitles} for possible solutions.
 %
-% \textbf{Note 2}: The usage of the \cs{fancycenter} command is not limited to the
+% \textbf{Note 3}: The usage of the \cs{fancycenter} command is not limited to the
 % argument of headers/footers. You can use it anywhere in your
 % document. Then \cs{linewidth} will be the width of the box or text in
 % which it is used.
@@ -1857,11 +1866,9 @@
 % For example
 % \begin{verbatim}
 % \pagestyle{fancy}
-% \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. ##1}{}}
-% \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
+% \renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. #1}{}}
+% \renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
 % \end{verbatim}
-% Please note that you have to double the \verb|#| signs, because the
-% definitions are inside a macro.
 %
 % If the previous page style was one of the standard \LaTeX{} page
 % styles, or some page style that is not based on \Package{fancyhdr},
@@ -1882,12 +1889,14 @@
 % ...
 % \pagestyle{myfancy}
 % \end{verbatim}
+% Please note that you now have to double the \verb|#| signs, because the
+% definitions are inside a macro.
 %
 % In general, when you use only one page style \texttt{fancy} in your
 % document, with the occasional \cs{thispagestyle} excursion to page
 % style \texttt{plain} or \texttt{empty}, you can just keep the
 % definitions globally in your document, but as soon as you use more
-% than one page style, and swicth between them, it is highly advisable
+% than one page style, and switch between them, it is highly advisable
 % to define them (including page style \texttt{fancy}) with
 % \cs{fancypagestyle} and put all the relevant definitions inside them.
 %
@@ -2039,7 +2048,7 @@
 % the page where ``This'' appears, or on the page where ``page''
 % appears. It depends on the positioning of the \cs{label} command.
 % Probably it is safer to make sure the sentence isn't broken. This can
-% be dome by putting the text in a \cs{parbox} or \texttt{minipage} environment.
+% be done by putting the text in a \cs{parbox} or \texttt{minipage} environment.
 % \begin{verbatim}
 % \noindent
 % \begin{minipage}{\textwidth}
@@ -2438,7 +2447,8 @@
 % Of course we have to take care of two-sided printing, and we may want to
 % have an index page with all the blobs in the correct position. The solution
 % requires some hand-tuning to get the blobs nicely spaced out vertically.
-% For the application that I had there were 12 sections, so I made the blobs
+% For the application that I originally designed this for, there were 12 sections,
+% so I made the blobs
 % 18 mm apart, i.e. 9~mm blob separated by 9~mm whitespace. In order to avoid
 % calculations they are set in a \texttt{picture} environment with the
 % \cs{unitlength} set to 18~mm. Page numbers are set in the headers at the
@@ -2523,13 +2533,17 @@
 %
 % \section{Float placement}
 %
+% \textbf{Note: This section is not about \Package{fancyhdr}, but about
+% page layout, especially about the placement of floats.}
+%
 % Floats are page elements that float with respect to the rest of the
 % document. Standard floats are tables and figures, but with the
+% \TTindex{float}%
 % \Package{float} package you can easily make new ones, like algorithms. Most
 % of the time floats work satisfactory, but sometimes \LaTeX{} seems too
 % stubborn to do what you want. This section describes how you can influence
 % \LaTeX{} so that it will do most of the time what you want. There might,
-% however be some pathological cases where it is impossible to convince
+% however, be some pathological cases where it is impossible to convince
 % \LaTeX{} to do things your way. In the following we will use figures as an
 % example but everything applies to other floats as well.
 %
@@ -2539,7 +2553,8 @@
 %   moves it, usually to the next page.
 % \item From a certain point, \LaTeX{} moves all your floats to the end of
 %   the document or the end of a chapter.
-% \item \LaTeX{} complains about ``Too many floats''.
+% \item \index{Too many floats}%
+%   \LaTeX{} complains about ``Too many floats''.
 % \end{enumerate}
 %
 % In the first two cases you must first check if you have given the correct
@@ -2547,7 +2562,7 @@
 % specifies that your figure may be placed either: Here (i.e. in the text
 % position where the command is given), on the Top of a page (which may be
 % the page where you put the command), or on a separate Page of floats. You
-% could also have specified ``b'' for Bottom of the page. The order of the
+% could also have specified ``\texttt{b}'' for Bottom of the page. The order of the
 % letters is insignificant, you cannot force \LaTeX{} to try Bottom first
 % and then Top by specifying \texttt{[bt]}.
 %
@@ -2559,11 +2574,11 @@
 %   \texttt{[b]} in the position parameter, \latex/ must save it until it has
 %   enough for a page of floats. So don't specify only \texttt{[h]}. If you
 %   want to give \latex/ a chance to put the float on a page of floats, you
-%   must also specify ``p''.
+%   must also specify ``\texttt{p}''.
 % \item The placement would violate the constraints imposed by \latex/'s
 %   float placement parameters. This is one of the most occurring causes and
 %   it can easily be corrected by changing the parameters. Here is a list of
-%   them:
+%   them with their default values:
 % \end{enumerate}
 % \begin{center}
 % \CmdIndex{topfraction}
@@ -2597,7 +2612,7 @@
 % The values in the righthand column are the defaults for the standard
 % \latex/ classes. Other classes could use different defaults. As you see
 % with the default values a float will not be put in the bottom of a page if
-% its height is more than 30\% of the page height. So if you specify [hb] for
+% its height is more than 30\% of the page height. So if you specify \texttt{[hb]} for
 % a float which is taller it has to move to a float page. But if it is less
 % than 50\% of the page height it will have to wait until some more floats
 % are given before a float page can be filled to satisfy the
@@ -2639,8 +2654,9 @@
 % If in spite of all your attempts \latex/ still moves your floats to the end
 % of the document or the end of a chapter, you can insert a \cs{clearpage}
 % command. This will start a new page and insert all pending floats before
-% continueing. If it is undesirable to have a pagebreak you can use the
+% continuing. If it is undesirable to have a pagebreak you can use the
 % \Package{afterpage} package and the following command:
+% \TTindex{afterpage}\CmdIndex{afterpage}\CmdIndex{clearpage}%
 % \begin{verbatim}
 % \afterpage{\clearpage}
 % \end{verbatim}
@@ -2652,6 +2668,7 @@
 % Finally, if you want a float only at the place where you define it, without
 % \latex/ moving it whatsoever, you can use the \Package{float} package and
 % give the command:
+% \TTindex{float}\CmdIndex{restylefloat}%
 % \begin{verbatim}
 % \restylefloat{figure}
 % \end{verbatim}
@@ -2661,6 +2678,7 @@
 % If you want to avoid the unwanted pagebreak, i.e. let
 % \LaTeX{} move the float only if it doesn't fit on the page, then use the
 % \Package{afterpage} package with:
+% \TTindex{afterpage}\CmdIndex{afterpage}\CmdIndex{clearpage}%
 % \begin{verbatim}
 % \afterpage{\clearpage \begin{figure}[H] ... \end{figure}}
 % \end{verbatim}
@@ -2670,10 +2688,21 @@
 % collecting too many of them. The solutions given above, especially those
 % with \cs{clearpage} in them will usually help. In some cases there
 % really are too many floats, as \latex/ has a limited number of ``boxes'' to
-% store the floats. The package \Package{morefloats} can be used to increase
+% store the floats. The package
+% \TTindex{morefloats}%
+% \Package{morefloats} can be used to increase
 % this number. If you need still more then you must edit a private copy of
 % this file, but even then there will be some limit that you cannot pass.
 % Then your only resort will be to change your document.
+%
+% A much more elaborate article about float placement by Frank
+% Mittelbach appeared in 2014 in TUGboat\footnote{%
+% Frank Mittelbach, \emph{How to influence the position of float
+% environments like figure and table in LATEX?}, TUGboat, Volume 35
+% (2014), No. 3, pp. 248–254.\\
+% \url{https://www.latex-project.org/publications/2014-FMi-TUB-tb111mitt-float-placement.pdf}
+% \\Also on Stackexchange:\\
+%  \url{https://tex.stackexchange.com/questions/39017/how-to-influence-the-position-of-float-environments-like-figure-and-table-in-lat}}.
 %
 % \section{Multipage Floats}
 %
@@ -2682,8 +2711,8 @@
 % to split these into multiple table or figure environments, but this has a
 % number of undesirable effects:
 % \begin{itemize}
-% \item Where do you split it? This is in general more difficult for tables
-%   than for figures.
+% \item Where do you split it? This is generally a more difficult decision
+%   for tables than for figures.
 % \item How do you keep them together?
 % \item You don't want more than one entry in the list of figures/tables.
 % \end{itemize}
@@ -2710,7 +2739,7 @@
 % to include it in an \cs{afterpage} command (using the \Package{afterpage}
 % package). As a \texttt{longtable} is by definition large, it is best to put
 % it in a separate file, and \cs{input} it in the \cs{afterpage} command:
-% \CmdIndex{afterpage}
+% \CmdIndex{afterpage}\TTindex{afterpage}\CmdIndex{clearpage}%
 % \begin{verbatim}
 % \afterpage{\input{mytable}}
 % \end{verbatim}
@@ -2723,8 +2752,8 @@
 %
 % \subsection{Figures}
 %
-% There isn't an equivalent \texttt{longfigure} solution, so for figures you
-% will usually have to split it yourself. In general this is less of a
+% There isn't an equivalent ``\texttt{longfigure}'' solution, so for figures you
+% will have to split yourself. In general this is less of a
 % problem. However, the problem you get now is how to keep them together,
 % i.e. how to get the parts on subsequent pages, and how to get a single
 % entry in the list of figures.
@@ -2734,7 +2763,8 @@
 % to use only the \texttt{[p]} placement, so that they will be put on
 % floatpages. As they are bigger than a page this is appropriate. The first
 % part would then get a \cs{caption}, the subsequent parts would be used
-% without a caption. If you want to add a caption-like text, enter it as
+% without a caption, or a caption that will not go to the list of figures.
+% If you want to add a caption-like text, enter it as
 % normal text rather than a \cs{caption}, so that it will not be entered in
 % the list of figures. It may also be desirable to issue a \cs{clearpage}
 % first, just like we did for the \texttt{longtable}, and to encapsulate this
@@ -2766,6 +2796,8 @@
 % If you want your multipage figure to start at a lefthand-side
 % (even-numbered) page you can use a test in the \cs{afterpage} command
 % (using the \Package{ifthen} package):
+% \CmdIndex{afterpage}
+% \CmdIndex{ifthenelse}
 % \begin{verbatim}
 % \afterpage{\clearpage
 % \ifthenelse{\isodd{\value{page}}{\afterpage{\input{myfigure}}} % odd page
@@ -2857,7 +2889,7 @@
 % Bugs and suggestions for improvements can be reported at\\
 % \url{https://github.com/pietvo/fancyhdr/issues}\\
 % Example files can be found at\\
-% \url{https://github.com/pietvo/fancyhdr/tree/Examples}
+% \url{https://github.com/pietvo/fancyhdr-examples}
 %
 % \section{Version information}
 % \begin{itemize}
@@ -2869,8 +2901,8 @@
 %   \item References to older \LaTeX{} versions removed.
 %   \item Removed obsolete source code of \Package{extramarks.sty}
 %   \item Changed font commands to \cs{textbf} and \cs{textsl}.
-%   \item Added description of the \cs{fancy\ldots offset} commands.
-%   \item Added various \cs{\ldots xmark} commands from \Package{extramarks.sty}.
+%   \item Added description of the \Cmd{fancy\ldots offset} commands.
+%   \item Added various \Cmd{\ldots xmark} commands from \Package{extramarks.sty}.
 %   \item Various corrections applied.
 %   \item Updated contact information.
 %   \item Added Version information. :)
@@ -2958,6 +2990,7 @@
 %   spaces can still show up in the header/footer fields. In that case
 %   the user will have to eliminate these.
 % \item Cleanup the documentation of the \cs{fancycenter} command.
+% \item Miscellaneous small documentation changes.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -2974,11 +3007,11 @@
 % gradually.
 %
 %
-% \section{Large chapter/section titles}
+% \section{Long chapter/section titles}
 % \label{sec:longtitles}
 %
 % \index{long titles}
-% Sometimes a chapter or section title is too large to fit in the header
+% Sometimes a chapter or section title is too long to fit in the header
 % or footer. It may take more than one line in the header/footer, or it
 % may overwrite other parts. How can we shorten these titles in the
 % header/footer without changing the actual title?
@@ -3011,8 +3044,8 @@
 % \subsection{Using optional arguments}
 %
 % As we have seen in section~\ref{sec:scoop}, the header info comes from
-% the marks. So if we want the text in the header to be smaller we have
-% to supply smaller marks. This can be done by giving these as optional
+% the marks. So if we want the text in the header to be shorter we have
+% to supply shorter marks. This can be done by giving these as optional
 % arguments in the \cs{chapter} and \cs{section} commands.\footnote{At
 % least in the \texttt{book} and \texttt{report} documentclasses. In the
 % \texttt{article} class this would be the \cs{section} and
@@ -3024,7 +3057,7 @@
 %         {This is a very long section title that will not fit in the header}
 % \end{verbatim}
 % The short titles will now appear in the header. However, these will
-% also appear in the table of contents. If that is what you want than
+% also appear in the table of contents. If that is what you want then
 % you are ready. But if you want to use the long titles in the table of
 % contents, you have to use some trickery. In particular you have to
 % supply the marks yourself.
@@ -3091,7 +3124,8 @@
 % \Sectioniii{Text title}{Header title}{TOC title}
 % \end{verbatim}
 % Please note that if you use the \texttt{article} class, instead of
-% \cs{chaptermark} and \cs{sectionmark}, you would probably use \cs{sectionmark}\cs{subsectionmark}.
+% \cs{chaptermark} and \cs{sectionmark}, you would probably use
+% \cs{sectionmark} and \cs{subsectionmark}.
 %
 % \subsection{Using automatic truncation}
 %
@@ -3126,7 +3160,9 @@
 % they could theoretically touch each other. This can be prevented by
 % making the widths slightly smaller. And when there is only one title
 % in the header, you can make the width equal to or slightly smaller
-% than \cs{headwidth}.
+% than \cs{headwidth}. A more sophisticated solution would be to check
+% if one of the header parts is small enough and then truncate the other
+% one for the remaining space.
 %
 % \section{I lost my chapter/section titles}
 %
@@ -3893,7 +3929,8 @@
 %   \cs{hsize} to \cs{headwidth} (this helps for multicol); reset
 %   \bsbs, \cs{raggedleft}, \cs{raggedright} and \cs{centering} to
 %   their default values (for tabu), and \cs{everypar} to empty.\\
-%   The font is reset to \cs{normalfont}.
+%   The font is reset to \cs{normalfont}. Actually this is done in the
+%   \LaTeX{} output routine, so we don't have to do it here.
 %    \begin{macrocode}
 \def\f@nch@reset{\f@nch@everypar{}\restorecr\endlinechar=13
   \let\\\@normalcr \let\raggedleft\f@nch@raggedleft
@@ -3919,7 +3956,8 @@
 }
 \def\f@nch@center#1[#2]#3#4#5{%
 %    \end{macrocode}
-% At first, we execute the case when the \meta{center-mark} is empty:
+% At first, we execute the case when the \meta{center-mark} is empty\footnote{%
+% This code is reused from the \Package{nccfancyhdr} by Alexander I. Rozhenko}:
 %    \begin{macrocode}
   \def\@tempa{#4}\ifx\@tempa\@empty
     \hbox to\linewidth{\color@begingroup{#3}\hfil {#5}\color@endgroup}%
@@ -4045,12 +4083,22 @@
 \newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
   \ifdim\ht0>#1\relax
+%    \end{macrocode}
+% This is the part where the the header/footer is too tall for the vertical space.
+% If the \texttt{[nocheck]} package option is not given, we give a
+% warning message.
+%    \begin{macrocode}
     \iff@nch@check
       \dimen0=#1\advance\dimen0-\ht0
       \f@nch@warning{%
         \string#1 is too small (\the#1): \MessageBreak
         Make it at least \the\ht0, for example:\MessageBreak
         \string\setlength{\string#1}{\the\ht0}%
+%    \end{macrocode}
+% If the \texttt{[compatV3} option was given (and not
+% \texttt{[nocheck]}), we will also change the
+% \cs{headheight}/\cs{footskip} globally below, and announce this in the warning message.
+%    \begin{macrocode}
         \iff@nch@compatViii .\MessageBreak
         We now make it that large for the rest of the document.\MessageBreak
         This may cause the page layout to be inconsistent, however
@@ -4186,7 +4234,7 @@
 % \changes{fancyhdr v4.0}{2019/03/21}{Put all the initialisation code in
 % \cs{f@nch@initialise}}
 % This macro initialises the headers and footers and \cs{chaptermark}
-% and/or \cs{[sub]sectionmark} for pagestyle \texttt{fancy}
+% and/or \Cmd{[sub]sectionmark} for pagestyle \texttt{fancy}
 %    \begin{macrocode}
 \def\f@nch@initialise{%
 %    \end{macrocode}
@@ -4489,7 +4537,7 @@
 % \end{macro}
 % \begin{macro}{\f@nch@pagestyle}
 % The actual code for \cs{fancypagestyle}. Build the page style body.
-% Declare it as a fancyhdr page style.
+% Declare it as a fancyhdr-based page style.
 % \changes{fancyhdr v4.0}{2019/09/05}{Make the definition of \cs{f@nch@pagestyle} \cs{long}.}
 %    \begin{macrocode}
 \long\def\f@nch@pagestyle#1[#2]#3{%
