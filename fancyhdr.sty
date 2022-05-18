@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2022/05/11 v5.0beta
+           [2022/05/18 v5.0beta
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2022 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -70,7 +70,7 @@
 \DeclareOption{headings}{%
   \f@nch@ifundefined{chapter}{%
     \if@twoside
-      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \def\@mkboth{\protect\markboth}
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -83,7 +83,7 @@
             \ifnum \c@secnumdepth >\@ne \thesubsection\quad \fi##1}}%
       }%
     \else
-      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \def\@mkboth{\protect\markboth}
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -95,7 +95,7 @@
       }%
     \fi
   }{\if@twoside
-      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \def\@mkboth{\protect\markboth}
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -109,7 +109,7 @@
             \ifnum \c@secnumdepth >\z@ \thesection. \ \fi##1}}}%
       }%
     \else
-      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \def\@mkboth{\protect\markboth}
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%

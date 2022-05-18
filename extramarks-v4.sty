@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks}
-           [2021/01/01 v4
+           [2022/05/18 v4.0.3
                  Legacy version of extramarks for LaTeX]
 % Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%
@@ -39,6 +39,7 @@
   \mark{\the\@temptokena}%
   \endgroup
   \if@nobreak\ifvmode\nobreak\fi\fi}
+\ifx\@mkboth\@gobbletwo\else\def\@mkboth{\protect\markboth}\fi
 \def\@markboth#1#2#3#4#5#6{\@temptokena{{#3}{#4}}%
   \unrestored@protected@xdef\@themark{{#5}{#6}\the\@temptokena}}
 \def\@markright#1#2#3#4#5{\@temptokena{#1}\@temptokenb{{#3}{#4}}%

@@ -26,12 +26,12 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2022/05/11 v5.0beta
+%<fancyhdr|fancyheadings|extramarks>           [2022/05/18 v5.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
 %<fancyhdr|extramarks>% Copyright (C) 1994-2022 by Pieter van Oostrum <pieter@vanoostrum.org>
-%<extramarks-v4>           [2021/01/01 v4
+%<extramarks-v4>           [2022/05/18 v4.0.3
 %<extramarks-v4>                 Legacy version of extramarks for LaTeX]
 %<extramarks-v4>% Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
 %<extramarks-v4>%%
@@ -3696,6 +3696,11 @@
 %   spaces can still show up in the header/footer fields. In that case
 %   the user will have to eliminate these.
 %   \end{itemize}
+% \item Version 4.0.3, May 18, 2022
+%   \begin{itemize}
+%   \item Initialize \cs{@mkboth} in \texttt{extramarks.sty} so that
+%     it will pick up changes to \cs{markboth}.
+%   \end{itemize}
 % \end{itemize}
 %
 % \subsection{Changes in version 5}
@@ -3705,7 +3710,7 @@
 % independent marks.
 %
 % \begin{itemize}
-% \item Version 5.0, Feb 11, 2021-March 17, 2022
+% \item Version 5.0, Feb 11, 2021-May 18, 2022
 %   \begin{itemize}
 %   \item Shorten Warning message about \cs{headheight}/\cs{footskip} too large.
 %   \item If the option \texttt{[nocheck]} is given, just keep quiet and
@@ -4466,6 +4471,10 @@
 % The redefinition of the \texttt{headings} style also differs for
 % book-like and article-like classes. It also differs for
 % one-side and two-side modes.
+% \changes{fancyhdr v4.0.3}{2022/05/18}{Changed definition of
+% \cs{@mkboth} from \cs{let}\cs{@mkboth}\cs{markboth} to
+% \cs{def}\Cmd{@mkboth\{\cs{protect}\cs{markboth}\}} so that it will pick up changes
+% to \cs{markboth}}
 %    \begin{macrocode}
 \DeclareOption{headings}{%
   \f@nch@ifundefined{chapter}{%
@@ -4473,7 +4482,7 @@
 %    \end{macrocode}
 % An article in two-side mode:
 %    \begin{macrocode}
-      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \def\@mkboth{\protect\markboth}
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -4489,7 +4498,7 @@
 %    \end{macrocode}
 % An article in one-side mode:
 %    \begin{macrocode}
-      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \def\@mkboth{\protect\markboth}
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -4504,7 +4513,7 @@
 %    \end{macrocode}
 % A book in two-side mode:
 %    \begin{macrocode}
-      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \def\@mkboth{\protect\markboth}
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -4521,7 +4530,7 @@
 %    \end{macrocode}
 % A book in one-side mode:
 %    \begin{macrocode}
-      \def\ps@headings{\ps@f@nch@fancyproto \let\@mkboth\markboth
+      \def\ps@headings{\ps@f@nch@fancyproto \def\@mkboth{\protect\markboth}
         \fancyhf{}
         \fancyhead[LE,RO]{\thepage}%
         \fancyhead[RE]{\slshape\leftmark}%
@@ -6930,6 +6939,17 @@
   \mark{\the\@temptokena}%
   \endgroup
   \if@nobreak\ifvmode\nobreak\fi\fi}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}[internal]{\@mkboth}
+% Initialization of \cs{@mkboth}, so that it will pick up changes to
+% \cs{markboth}
+% \changes{extramarks v4.0.3}{2022/05/18}{Initialize definition of
+% \cs{@mkboth} to \cs{def}\Cmd{@mkboth\{\cs{protect}\cs{markboth}\}}
+% if it wasn't equal to \cs{@gobbletwo} so that it will pick up
+% changes to \cs{markboth}}
+%    \begin{macrocode}
+\ifx\@mkboth\@gobbletwo\else\def\@mkboth{\protect\markboth}\fi
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}[internal]{\markright}
