@@ -18,3 +18,7 @@ dist: fancyhdr.zip
 distfiles = README fancyhdr.dtx fancyhdr.pdf fancyhdr.ins
 fancyhdr.zip: $(distfiles)
 	cd .. ; zip -u fancyhdr/fancyhdr.zip $(addprefix fancyhdr/,$(distfiles))
+
+install:
+	cp fancyhdr.sty extramarks*.sty ~/Library/texmf/tex/latex
+
