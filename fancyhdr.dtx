@@ -171,22 +171,22 @@
 }
 \fancypagestyle{showstruts}{%
   \fancyhead[L]{%
-    \ifthenelse{\value{page}=\pageref{showstruts}}%
+    \ifthenelse{\value{page}=\getpagerefnumber{showstruts}}%
       {\strutheader}%
       {\rightmark}%
   }
   \fancyfoot[L]{%
-    \ifthenelse{\value{page}=\pageref{showstruts}}%
+    \ifthenelse{\value{page}=\getpagerefnumber{showstruts}}%
       {\strutfooter}%
       {}%
   }
   \fancyheadinit{%
-    \ifthenelse{\value{page}=\pageref{showstruts}}%
+    \ifthenelse{\value{page}=\getpagerefnumber{showstruts}}%
       {\renewcommand{\headruleskip}{4pt}}%
       {\renewcommand{\headruleskip}{0pt}}%
   }
   \fancyfootinit{%
-    \ifthenelse{\value{page}=\pageref{showstruts}}%
+    \ifthenelse{\value{page}=\getpagerefnumber{showstruts}}%
       {\renewcommand{\footrulewidth}{0.4pt}}%
       {\renewcommand{\footrulewidth}{0pt}}%
   }
