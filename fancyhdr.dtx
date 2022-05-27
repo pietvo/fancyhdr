@@ -1758,6 +1758,7 @@
 % Some document writers prefer the pages to be numbered as \textsf{n} of
 % \textsf{m} where \textsf{m} is the number of pages in the document.
 % There is a package \Package{lastpage}
+% \TTindex{lastpage}
 % available which you can use with \Package{fancyhdr} as follows:
 %
 % \begin{verbatim}
@@ -1774,18 +1775,28 @@
 % We clear all the headers including its rule. The footer will be
 % ``inherited'' from the pagestyle \texttt{fancy}.
 %
-% The value of the \texttt{LastPage} label can be used to
+% The value of the \texttt{LastPage}\TTindex{LastPage} label can be used to
 % make different headers or footers on the last page of a document. E.g.\ if
 % you want the footer of every odd page, except if it is the last one, to
-% contain the text ``please turn over'', this can be done as
-% follows:
+% contain the text ``Please turn over'', this can be done by checking if
+% the page number is odd, and if it is equal to the number of the last page.
 %
+% We use the macro \cs{getpagerefnumber} from the package\TTindex{refcount}
+% \Package{refcount}, because \cs{pageref} isn't always usable in a
+% numerical context (it is meant for typesetting only). This is also done in
+% following similar examples.
+%
+% \TTindex{ifthen}\TTindex{lastpage}\TTindex{refcount}
 % \begin{verbatim}
-% \usepackage{lastpage}
 % \usepackage{ifthen}
+% \usepackage{lastpage}
+% \usepackage{refcount}
 % ...
-% \fancyfoot[R]{\ifthenelse{\isodd{\value{page}} \and \not
-%      \(\value{page}=\pageref{LastPage}\)}{please turn over}{}}
+% \fancyfoot[R]{%
+%   \ifthenelse{\isodd{\value{page}} \and
+%     \not \( \value{page}=\getpagerefnumber{LastPage} \) }%
+%       {Please turn over}{}%
+% }
 % \end{verbatim}
 %
 % In order to get the number of pages correctly used, you usually have
@@ -2022,12 +2033,14 @@
 % \end{verbatim}
 % ^^A\Example
 % we define a new pagestyle that makes the choice:
+% \TTindex{ifthen}\TTindex{refcount}
 % \begin{verbatim}
 % \usepackage{ifthen}
+% \usepackage{refcount}
 % . . .
 % \fancypagestyle{switch}{
 %   \fancyhead[LE,RO]{%
-%     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
+%     \ifthenelse{\value{page}=\getpagerefnumber{otherpagestyle}}
 %       {MYFANCY SECTION}
 %       {\textsl{\rightmark}}}
 % }
@@ -2085,7 +2098,7 @@
 % \begin{verbatim}
 % %%% NOTE: This does not work %%%%
 % \renewcommand{\footrulewidth}{%
-%   \ifthenelse{\value{page}=\pageref{otherpagestyle}}{0.4pt}{0pt}%
+%   \ifthenelse{\value{page}=\getpagerefnumber{otherpagestyle}}{0.4pt}{0pt}%
 % }
 % \end{verbatim}
 % For cases like this \Package{fancyhdr} version~4.0 and later has some
@@ -2103,15 +2116,16 @@
 % \cs{footrulewidth} depending on the page number. So instead of putting
 % the test inside the definition of \cs{headruleskip}, we can put it
 % outside, and then we can use the command \cs{ifthenelse}. So we put
-% the following in \Cmd{pagestyle\{switch\}}:
+% the following in \Cmd{pagestyle\{switch\}}\footnote{Assuming we have
+% already loaded package \Package{refcount}.}:
 % \begin{verbatim}
 %   \fancyheadinit{%
-%     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
+%     \ifthenelse{\value{page}=\getpagerefnumber{otherpagestyle}}
 %       {\renewcommand{\headruleskip}{4pt}}
 %       {\renewcommand{\headruleskip}{0pt}}
 %   }
 %   \fancyfootinit{%
-%     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
+%     \ifthenelse{\value{page}=\getpagerefnumber{otherpagestyle}}
 %       {\renewcommand{\footrulewidth}{0.4pt}}
 %       {\renewcommand{\footrulewidth}{0pt}}
 %   }
@@ -2120,22 +2134,22 @@
 % \begin{verbatim}
 % \fancypagestyle{showstruts}{%
 %   \fancyhead[L]{%
-%     \ifthenelse{\value{page}=\pageref{showstruts}}%
+%     \ifthenelse{\value{page}=\getpagerefnumber{showstruts}}%
 %       {\strutheader}%
 %       {\rightmark}%
 %   }
 %   \fancyfoot[L]{%
-%     \ifthenelse{\value{page}=\pageref{showstruts}}%
+%     \ifthenelse{\value{page}=\getpagerefnumber{showstruts}}%
 %       {\strutfooter}%
 %       {}%
 %   }
 %   \fancyheadinit{%
-%     \ifthenelse{\value{page}=\pageref{showstruts}}%
+%     \ifthenelse{\value{page}=\getpagerefnumber{showstruts}}%
 %       {\renewcommand{\headruleskip}{4pt}}%
 %       {\renewcommand{\headruleskip}{0pt}}%
 %   }
 %   \fancyfootinit{%
-%     \ifthenelse{\value{page}=\pageref{showstruts}}%
+%     \ifthenelse{\value{page}=\getpagerefnumber{showstruts}}%
 %       {\renewcommand{\footrulewidth}{0.4pt}}%
 %       {\renewcommand{\footrulewidth}{0pt}}%
 %   }
@@ -2156,11 +2170,11 @@
 % header and/or footer, for example to get large, red text in the
 % headers and footers on this specific page:
 % \begin{verbatim}
-%   \fancyhfinit{%
-%     \ifthenelse{\value{page}=\pageref{otherpagestyle}}
-%       {\color{red}\Large}
-%       {}
-%     }
+%  \fancyhfinit{%
+%    \ifthenelse{\value{page}=\getpagerefnumber{otherpagestyle}}
+%      {\color{red}\Large}
+%      {}
+%  }
 % \end{verbatim}
 %
 % \subsection{Changing the page style of the next page}
