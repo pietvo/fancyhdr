@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|fancyheadings|extramarks>           [2022/05/18 v5.0beta
+%<fancyhdr|fancyheadings|extramarks>           [2022/05/31 v5.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
@@ -5751,8 +5751,8 @@
 %    \begin{macrocode}
 \providecommand\DeclareRelease[3]{}
 \providecommand\DeclareCurrentRelease[2]{}
-\DeclareRelease{v4}{2021-01-01}{extramarks-v4.sty}
-\DeclareCurrentRelease{}{2021-03-22}
+\DeclareRelease{v4}{2022/05/18}{extramarks-v4.sty}
+\DeclareCurrentRelease{}{2022-05-31}
 
 \RequirePackage{expl3,xparse}
 \RequirePackage{etoolbox}
@@ -6292,9 +6292,34 @@
 %    \end{macrocode}
 %
 % Patch the processing of \cs{twocolumn} optional argument (\cs{@topnewpage}).
-%
+% \changes{extramarks v5.0}{2022/05/31}{Check if \cs{scr@topnewpage} is
+% defined to patch that instead of \cs{@topnewpage}.}
+% The \Package{koma-script} classes \texttt{screprt} and
+% \texttt{scrbook} redefine \cs{@topnewpage} and save the original
+% definition in \cs{scr@topnewpage}. So when \cs{scr@topnewpage} is
+% defined we patch that command instead of \cs{@topnewpage}.
 %    \begin{macrocode}
-\patchcmd{\@topnewpage}{\global \setbox\@currbox
+\ifdefined\scr@topnewpage
+  \patchcmd{\scr@topnewpage}{\global \setbox\@currbox
+    \color@vbox
+      \normalcolor
+      \vbox {%
+        \hsize\textwidth
+        \@parboxrestore
+        \col@number \@ne
+        #1%
+        \vskip -\dbltextfloatsep
+             }%
+    \color@endbox}
+  {\extramarks@set@marks@topnewpage{#1}}
+  {\extramarks@info{Patched \string \scr@topnewpage}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\scr@topnewpage}}
+\else
+%    \end{macrocode}
+%
+% Patch \cs{@topnewpage}.
+%    \begin{macrocode}
+  \patchcmd{\@topnewpage}{\global \setbox\@currbox
     \color@vbox
       \normalcolor
       \vbox {%
@@ -6308,6 +6333,7 @@
   {\extramarks@set@marks@topnewpage{#1}}
   {\extramarks@info{Patched \string \@topnewpage}}
   {\msg@error@nnn {extramarks} {cannot-patch} {\@topnewpage}}
+\fi
 %    \end{macrocode}
 %
 % Patch the \cs{@outputdblcol} macro for the first colum case.

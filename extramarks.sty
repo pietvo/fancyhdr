@@ -21,14 +21,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks}
-           [2022/05/18 v5.0beta
+           [2022/05/31 v5.0beta
                   Extra marks for LaTeX]
 % Copyright (C) 1994-2022 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \providecommand\DeclareRelease[3]{}
 \providecommand\DeclareCurrentRelease[2]{}
-\DeclareRelease{v4}{2021-01-01}{extramarks-v4.sty}
-\DeclareCurrentRelease{}{2021-03-22}
+\DeclareRelease{v4}{2022/05/18}{extramarks-v4.sty}
+\DeclareCurrentRelease{}{2022-05-31}
 
 \RequirePackage{expl3,xparse}
 \RequirePackage{etoolbox}
@@ -237,7 +237,23 @@
     }
 }
 \ExplSyntaxOff
-\patchcmd{\@topnewpage}{\global \setbox\@currbox
+\ifdefined\scr@topnewpage
+  \patchcmd{\scr@topnewpage}{\global \setbox\@currbox
+    \color@vbox
+      \normalcolor
+      \vbox {%
+        \hsize\textwidth
+        \@parboxrestore
+        \col@number \@ne
+        #1%
+        \vskip -\dbltextfloatsep
+             }%
+    \color@endbox}
+  {\extramarks@set@marks@topnewpage{#1}}
+  {\extramarks@info{Patched \string \scr@topnewpage}}
+  {\msg@error@nnn {extramarks} {cannot-patch} {\scr@topnewpage}}
+\else
+  \patchcmd{\@topnewpage}{\global \setbox\@currbox
     \color@vbox
       \normalcolor
       \vbox {%
@@ -251,6 +267,7 @@
   {\extramarks@set@marks@topnewpage{#1}}
   {\extramarks@info{Patched \string \@topnewpage}}
   {\msg@error@nnn {extramarks} {cannot-patch} {\@topnewpage}}
+\fi
 \patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
   {\extramarks@get@splitmarks{\outputdblcol \space 1} \ifx\@firstcolfirstmark\@empty}
   {\extramarks@info{Patched \string \@outputdblcol \space 1}}
