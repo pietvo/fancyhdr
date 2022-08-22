@@ -845,7 +845,7 @@
 % e.g. if part of your document needs a different page style. This command
 % has two mandatory parameters: the first one is the name of the page style to be defined, the
 % second consists of commands that change the headers and/or footers, i.e.
-% \verb|fancyhead| etc. Also allowed are changes to \cs{headrulewidth} and
+% \verb|\fancyhead| etc. Also allowed are changes to \cs{headrulewidth} and
 % \cs{footrulewidth} or even \cs{headrule} and \cs{footrule}.
 % The (re)defined page style uses the standard
 % \texttt{fancy} definitions, amended by the definitions in the second
@@ -916,8 +916,8 @@
 % definitions (headers, footers, marks) is:
 % \begin{enumerate}
 % \item The definitions from the base style are taken.
-% \item The definitions given in the \cs{fancypagestyle} command
-% override and/or augment these.
+% \item The definitions and/or augment given in the \cs{fancypagestyle} command
+% override these.
 % \item Any definitions that are not given by the two above, are taken
 % from the environment at the time the new page style is used.
 % \end{enumerate}
@@ -1039,7 +1039,7 @@
 % before, we get a layout that is very similar to the page style \texttt{headings}.
 %
 % On the pages where new chapters start, we get a centered page number
-% in the footer; there is no header, and there are no decorative lines.
+% in the footer; there is nothing in the header, and there are no decorative lines.
 %
 % On an even page, we get the layout:
 %
