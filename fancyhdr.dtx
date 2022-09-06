@@ -487,13 +487,15 @@
 % \end{quote}
 % The following options are supported:
 % \begin{center}
-% \OPTindex{nocheck}\OPTindex{compatV3}\OPTindex{headings}\OPTindex{myheadings}%
+% \OPTindex{nocheck}\OPTindex{compatV3}\OPTindex{twoside}\OPTindex{headings}\OPTindex{myheadings}%
 % \begin{tabular}{ l l }
 % \toprule
 % Option & Meaning \\
 % \midrule
 % \texttt{nocheck} & do not check the heights of the header and footer \\
 % \texttt{compatV3} & keep some behaviour (now considered undesirable) as in version~3 \\
+% \texttt{twoside} & use two-sided headers and footers even in one-sided documents \\
+%          & for \Package{fancyhdr}-based pagestyles (version 4.1 or later) \\
 % \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
 % \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
 % \bottomrule
@@ -524,6 +526,13 @@
 %   \end{enumerate}
 %   This option is scheduled to disappear in version~5 of
 %   \Package{fancyhdr}.
+%
+% \item \OPTindex{twoside}Option \texttt{twoside} implements two-sided headers
+% and footers in one-sided documents (version 4.1 or later). This applies only
+% for \Package{fancyhdr}-based pagestyles. This option doesn't do anything
+% special for two-sided documents (\texttt{twoside} documentclass option), as
+% these already have that functionality. And with the \texttt{twoside}
+% documentclass option that does apply to other pagestyles as well.
 %
 % \item \PSindex{headings}\PSindex{myheadings}\OPTindex{headings}\OPTindex{myheadings}
 %   The options \texttt{headings} and \texttt{myheadings} redefine the
@@ -3717,6 +3726,11 @@
 %   \item Initialize \cs{@mkboth} in \texttt{extramarks.sty} so that
 %     it will pick up changes to \cs{markboth}.
 %   \end{itemize}
+% \item Version 4.1, Sept 6, 2022
+%   \begin{itemize}
+%   \item Implement \texttt{twoside} package option to allow two-sided headers
+%   and footers in one-sided documents.
+%   \end{itemize}
 % \end{itemize}
 %
 % \subsection{Changes in version 5}
@@ -4294,7 +4308,7 @@
 % A check for \cs{headheight} is added. An errormessage is given (once) if the
 % header is too large. Empty headers don't generate the error even if
 % \cs{headheight} is very small or even 0pt. \\
-% Warning added for the use of '\texttt{E}' option when twoside option is not used.
+% Warning added for the use of '\texttt{E}' option when \texttt{twoside} option is not used.
 % In this case the '\texttt{E}' fields will never be used.}
 %
 % \changes{fancyhdr v2.1beta}{2002/03/10}{New command:
@@ -4396,6 +4410,20 @@
 \DeclareOption{compatV3}{%
   \let\f@nch@gbl\global
   \f@nch@compatViiitrue
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\iff@nch@twoside}
+% Boolean for the \texttt{twoside} option.
+% \changes{fancyhdr v4.1}{2022/09/06}{Implement \texttt{twoside} option.}
+% \OPTindex{twoside}
+% This is only set if the document itself is not two-sided.
+%    \begin{macrocode}
+\newif\iff@nch@twoside
+\f@nch@twosidefalse
+\DeclareOption{twoside}{%
+  \if@twoside\else\f@nch@twosidetrue\fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4679,8 +4707,21 @@
 % \end{macro}
 % \end{macro}
 %
+% \begin{macro}[internal]{\f@nch@fancyhf@Echeck}
+% \changes{fancyhdr v4.1}{2022/09/06}{Implement \texttt{twoside} option.}
+% Macro for warning if `E' is used without `twoside' option.
+%    \begin{macrocode}
+\def\f@nch@fancyhf@Echeck#1{%
+  \if@twoside\else
+    \iff@nch@twoside\else
+      \if\f@nch@@eo e%
+        \f@nch@warning {\string#1's `E' option without twoside option is useless.\MessageBreak
+          Please consider using the `twoside' option}%
+  \fi\fi\fi
+}
 % \begin{macro}[internal]{\f@nch@fancyhf}
-% \changes{fancyhdr v5.0}{2021/05/29}{Make \cs{f@nch@fancyhf} \cs{long}.}
+% \changes{fancyhdr v4.0.2}{2022/05/10}{Make \cs{f@nch@fancyhf} \cs{long}.}
+% \changes{fancyhdr v4.1}{2022/09/06}{Implement \texttt{twoside} option.}
 % This macro interprets the parameters for the headers and footers.\\
 % Parameters:\\
 % (1) The user command that was used (like \cs{fancyhead}). This is used
@@ -4702,9 +4743,9 @@
   \ifx\@empty\temp@c\else \f@nch@errmsg{Illegal char `\temp@c' in
     \string#1 argument: [#3]}%
   \fi \f@nch@for\temp@c{#3}%
-  {\f@nch@default\f@nch@@eo{eo}\temp@c \if@twoside\else \if\f@nch@@eo
-    e\f@nch@warning {\string#1's `E' option without twoside option is
-      useless}\fi\fi \f@nch@default\f@nch@@lcr{lcr}\temp@c
+  {\f@nch@default\f@nch@@eo{eo}\temp@c
+    \f@nch@fancyhf@Echeck{#1}%
+    \f@nch@default\f@nch@@lcr{lcr}\temp@c
     \f@nch@default\f@nch@@hf{hf}{#2\temp@c}%
     \f@nch@forc\f@nch@eo\f@nch@@eo
         {\f@nch@forc\f@nch@lcr\f@nch@@lcr
@@ -4715,6 +4756,7 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\f@nch@fancyhfoffs}
+% \changes{fancyhdr v4.1}{2022/09/06}{Implement \texttt{twoside} option.}
 % \changes{fancyhdr v5.0}{2021/03/27}{Change the offset length variables
 % \cs{f@nch@O@xyz} to \cs{f@nch@offset@xyz}}
 % This macro interprets the parameters for the header and footer
@@ -4739,9 +4781,9 @@
   \ifx\@empty\temp@c\else \f@nch@errmsg{Illegal char `\temp@c' in
     \string#1 argument: [#3]}%
   \fi \f@nch@for\temp@c{#3}%
-  {\f@nch@default\f@nch@@eo{eo}\temp@c \if@twoside\else \if\f@nch@@eo
-    e\f@nch@warning {\string#1's `E' option without twoside option is
-      useless}\fi\fi \f@nch@default\f@nch@@lcr{lr}\temp@c
+  {\f@nch@default\f@nch@@eo{eo}\temp@c
+    \f@nch@fancyhf@Echeck{#1}%
+    \f@nch@default\f@nch@@lcr{lr}\temp@c
     \f@nch@default\f@nch@@hf{hf}{#2\temp@c}%
     \f@nch@forc\f@nch@eo\f@nch@@eo
         {\f@nch@forc\f@nch@lcr\f@nch@@lcr
@@ -5438,6 +5480,7 @@
 %
 % \begin{macro}[internal]{\ps@f@nch@fancycore}
 % \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@fancy} to \cs{ps@f@nch@fancycore}}
+% \changes{fancyhdr v4.1}{2022/09/06}{Implement \texttt{twoside} option.}
 % The actual implementation of pagestyle \texttt{fancy}. For amsbook/amsart, which do
 % strange things with \cs{topskip}, we start with \cs{f@nch@ps@empty}. We
 % construct the even and odd headers and footers from all the parts that
@@ -5446,8 +5489,30 @@
 \def\ps@f@nch@fancycore{%
   \f@nch@ps@empty
   \def\@mkboth{\protect\markboth}%
-  \def\@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh}%
-  \def\@oddfoot{\f@nch@foot\f@nch@Oolf\f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@Oorf}%
+  \def\f@nch@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh}%
+  \def\@oddhead{%
+    \iff@nch@twoside
+      \ifodd\c@page
+        \f@nch@oddhead
+      \else
+        \@evenhead
+      \fi
+    \else
+      \f@nch@oddhead
+    \fi
+  }
+  \def\f@nch@oddfoot{\f@nch@foot\f@nch@Oolf\f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@Oorf}%
+  \def\@oddfoot{%
+    \iff@nch@twoside
+      \ifodd\c@page
+        \f@nch@oddfoot
+      \else
+        \@evenfoot
+      \fi
+    \else
+      \f@nch@oddfoot
+    \fi
+  }
   \def\@evenhead{\f@nch@head\f@nch@Oelh\f@nch@elh\f@nch@ech\f@nch@erh\f@nch@Oerh}%
   \def\@evenfoot{\f@nch@foot\f@nch@Oelf\f@nch@elf\f@nch@ecf\f@nch@erf\f@nch@Oerf}%
 }
