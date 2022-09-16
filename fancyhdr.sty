@@ -486,6 +486,19 @@
     }%
   }%
 }%
+\@ifclassloaded{newlfm}
+{
+  \let\ps@@empty\f@nch@ps@empty
+  \AtBeginDocument{%
+    \renewcommand{\@zfancyhead}[5]{\relax\hbox to\headwidth{\f@nch@reset
+      \@zfancyvbox\headheight{\hbox
+        {\rlap{\parbox[b]{\headwidth}{\raggedright\f@nch@olh}}\hfill
+          \parbox[b]{\headwidth}{\centering\f@nch@olh}\hfill
+          \llap{\parbox[b]{\headwidth}{\raggedleft\f@nch@orh}}}%
+        \zheadrule}}\relax}%
+  }
+}
+{}
 \endinput
 %%
 %% End of file `fancyhdr.sty'.

@@ -3024,10 +3024,11 @@
 %   \item Initialize \cs{@mkboth} in \texttt{extramarks.sty} so that
 %     it will pick up changes to \cs{markboth}.
 %   \end{itemize}
-% \item Version 4.1, Sept 6, 2022
+% \item Version 4.1, Sept 6-16, 2022
 %   \begin{itemize}
 %   \item Implement \texttt{twoside} package option to allow two-sided headers
 %   and footers in one-sided documents.
+% \item Make \Package{fancyhdr} compatible with the document class \Package{newlfm}.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -4649,6 +4650,30 @@
 }%
 %    \end{macrocode}
 % \end{macro}
+% \changes{fancyhdr v4.1}{202/09/16}{Support for class \Package{newlfm}.}
+% The (really outdated) document class \Package{newlfm} uses some internal
+% \Package{fancyhdr} commands that have gotten new names. So here we check if
+% that class is loaded and then we redefine the affected \Package{newlfm} macros.
+% We have to do some of the redefinitions in \cs{AtBeginDocument}, as
+% \Package{fancyhdr} is loaded before the affected macros are defined. Also
+% the macro \cs{@zfancyhead} is only called once, with wrong (outdated)
+% parameters, so instead of changing the call of the macro, we substitute the
+% right parameters inline.
+%    \begin{macrocode}
+\@ifclassloaded{newlfm}
+{
+  \let\ps@@empty\f@nch@ps@empty
+  \AtBeginDocument{%
+    \renewcommand{\@zfancyhead}[5]{\relax\hbox to\headwidth{\f@nch@reset
+      \@zfancyvbox\headheight{\hbox
+        {\rlap{\parbox[b]{\headwidth}{\raggedright\f@nch@olh}}\hfill
+          \parbox[b]{\headwidth}{\centering\f@nch@olh}\hfill
+          \llap{\parbox[b]{\headwidth}{\raggedleft\f@nch@orh}}}%
+        \zheadrule}}\relax}%
+  }
+}
+{}
+%    \end{macrocode}
 %</fancyhdr>
 %
 % \section{extramarks.sty}
