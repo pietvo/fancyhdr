@@ -232,13 +232,18 @@
 \let\f@nch@raggedright\raggedright
 \let\f@nch@centering\centering
 \let\f@nch@everypar\everypar
+\newcommand\f@nch@noUppercase[2][]{#2}
 \def\f@nch@reset{\f@nch@everypar{}\restorecr\endlinechar=13
   \let\\\@normalcr \let\raggedleft\f@nch@raggedleft
   \let\raggedright\f@nch@raggedright \let\centering\f@nch@centering
   \def\baselinestretch{1}%
   \hsize=\headwidth
-  \def\nouppercase##1{{\let\uppercase\relax\let\MakeUppercase\relax
-      \expandafter\let\csname MakeUppercase \endcsname\relax##1}}%
+  \def\nouppercase##1{{%
+      \let\uppercase\relax\let\MakeUppercase\f@nch@noUppercase
+      \expandafter\let\csname MakeUppercase \endcsname\relax
+      \expandafter\def\csname MakeUppercase\space\space\space\endcsname
+                                                   [####1]####2{####2}%
+      ##1}}%
   \f@nch@ifundefined{@newbaseline} % NFSS not present; 2.09 or 2e
   {\f@nch@ifundefined{@normalsize} {\normalsize} % for ucthesis.cls
    {\@normalsize}}%
