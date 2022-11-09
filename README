@@ -25,7 +25,7 @@ In order to latex the documentation you need to have a copy of
 boxedminipage.sty (CTAN:/macros/latex/contrib/boxedminipage) and
 refcount.sty (CTAN:/macros/latex/contrib/oberdiek/) installed.
 
-This is version 4.0.3 of fancyhdr.sty and extramarks.sty. They are
+This is version 4.1 of fancyhdr.sty and extramarks.sty. They are
 described in the forthcoming third edition of The LaTeX Companion.
 Extramarks.sty has not been changed, except for the version and
 copyright information.
