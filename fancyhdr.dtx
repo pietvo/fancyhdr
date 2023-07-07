@@ -847,14 +847,14 @@
 % redefine existing page styles (like \texttt{plain}) or to define new ones,
 % e.g. if part of your document needs a different page style. This command
 % has two mandatory parameters: the first one is the name of the page style to be defined, the
-% second consists of commands that change the headers and/or footers, i.e.
+% second consists of commands that change the headers and/or footers, i.e.,
 % \verb|\fancyhead| etc. Also allowed are changes to \cs{headrulewidth} and
 % \cs{footrulewidth} or even \cs{headrule} and \cs{footrule}.
 % The (re)defined page style uses the standard
 % \texttt{fancy} definitions, amended by the definitions in the second
 % parameter. In other words, those parts that are not redefined in the
 % second parameter get their value from the \texttt{fancy} definition that
-% is current. In particular, if the second parameter is empty, i.e. given
+% is current. In particular, if the second parameter is empty, i.e., given
 % as \verb+{}+, then the new page style is equal to page style
 % \texttt{fancy}.
 %
@@ -2303,9 +2303,9 @@
 % \cs{firstxmark} will be `Continued\ldots'; (2) the block ends at a
 % later page, therefore it does not contribute any marks to that page,
 % and the marks are `inherited' from the last values of the previous page,
-% i.e. those from \texttt{\%~2}.
+% i.e., those from \texttt{\%~2}.
 % On all of the pages after the block the values of \texttt{\%~4} will be used,
-% i.e. empty ones.
+% i.e., empty ones.
 % This final \verb+\extramarks{}{}+ is to prevent the `Continued\ldots'
 % header to spill over to the following pages.
 % Of course in real life you would leave out the numbers.
@@ -2475,7 +2475,7 @@
 % requires some hand-tuning to get the blobs nicely spaced out vertically.
 % For the application that I originally designed this for, there were 12 sections,
 % so I made the blobs
-% 18 mm apart, i.e. 9~mm blob separated by 9~mm whitespace. In order to avoid
+% 18 mm apart, i.e., 9~mm blob separated by 9~mm whitespace. In order to avoid
 % calculations they are set in a \texttt{picture} environment with the
 % \cs{unitlength} set to 18~mm. Page numbers are set in the headers at the
 % outer sides, and the blobs are attached to these. In this example the
@@ -2585,7 +2585,7 @@
 %
 % In the first two cases you must first check if you have given the correct
 % ``placement'' parameter to you float, e.g. \Cmd{begin\{figure\}[htp]}
-% specifies that your figure may be placed either: Here (i.e. in the text
+% specifies that your figure may be placed either: Here (i.e., in the text
 % position where the command is given), on the Top of a page (which may be
 % the page where you put the command), or on a separate Page of floats. You
 % could also have specified ``\texttt{b}'' for Bottom of the page. The order of the
@@ -2701,7 +2701,7 @@
 %  in the preamble. Now you will be able to
 % specify \texttt{[H]} as the position parameter, which will mean ``HERE
 % and only HERE''. This may cause an unwanted page break however.
-% If you want to avoid the unwanted pagebreak, i.e. let
+% If you want to avoid the unwanted pagebreak, i.e., let
 % \LaTeX{} move the float only if it doesn't fit on the page, then use the
 % \Package{afterpage} package with:
 % \TTindex{afterpage}\CmdIndex{afterpage}\CmdIndex{clearpage}%
@@ -2781,7 +2781,7 @@
 % There isn't an equivalent ``\texttt{longfigure}'' solution, so for figures you
 % will have to split yourself. In general this is less of a
 % problem. However, the problem you get now is how to keep them together,
-% i.e. how to get the parts on subsequent pages, and how to get a single
+% i.e., how to get the parts on subsequent pages, and how to get a single
 % entry in the list of figures.
 %
 % You will have to split the figure into pieces and put each part
@@ -3315,7 +3315,7 @@
 % conditionalized and they don't consume length registers. There is no need
 % to have them as length registers unless you want to do calculations with
 % them, which is unlikely. Note that this may make some uses of them
-% incompatible (i.e. if you have a file that uses \cs{setlength} or \cs{xxxx}!=)}
+% incompatible (i.e., if you have a file that uses \cs{setlength} or \cs{xxxx}!=)}
 %
 % \changes{fancyhdr v1.99a}{1996/05/10}{Added a few more \% signs.}
 %
