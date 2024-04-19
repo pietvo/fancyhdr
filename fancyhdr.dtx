@@ -4001,6 +4001,16 @@
 % \end{macro}
 % \end{macro}
 %
+% \begin{macro}{\f@nch@noUppercase}
+%   We want \cs{nouppercase} to work with the various evolutionary stages of
+%   \cs{MakeUppercase}. The current version (2022/11/09) accepts an optional
+%   argument with a language specification. Therefore we define a dummy macro
+%   \cs{f@nch@noUppercase} which copies its mandatory agument, as a
+%   replacement for \cs{MakeUppercase} while \cs{nouppercase} is active.
+%    \begin{macrocode}
+\newcommand\f@nch@noUppercase[2][]{#2}
+%    \end{macrocode}
+%
 % \begin{macro}{\f@nch@reset}
 %   Command to reset various things in the headers: a.o. single spacing
 %   (taken from setspace.sty) and the catcode of ^^M and
@@ -4015,14 +4025,7 @@
 %   \LaTeX{} output routine, so we don't have to do it here.
 %   \changes{fancyhdr v4.1}{2022/11/09}{Change \cs{nouppercase} to work with
 %     new definition of \cs{MakeUppercase}.}
-% \begin{macro}{\f@nch@noUppercase}
-%   We want \cs{nouppercase} to work with the various evolutionary stages of
-%   \cs{MakeUppercase}. The current version (2022/11/09) accepts an optional
-%   argument with a language specification. Therefore we define a dummy macro
-%   \cs{f@nch@noUppercase} which copies its mandatory agument, as a
-%   replacement for \cs{MakeUppercase} while \cs{nouppercase} is active.
 %    \begin{macrocode}
-\newcommand\f@nch@noUppercase[2][]{#2}
 \def\f@nch@reset{\f@nch@everypar{}\restorecr\endlinechar=13
   \let\\\@normalcr \let\raggedleft\f@nch@raggedleft
   \let\raggedright\f@nch@raggedright \let\centering\f@nch@centering
