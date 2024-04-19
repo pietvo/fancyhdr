@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2022/05/31 v5.0beta
+%<fancyhdr|extramarks>           [2024/04/22 v5.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -3742,6 +3742,12 @@
 %   \item Make \Package{fancyhdr} compatible with the document class \Package{newlfm}.
 %   \item Make \cs{nouppercase} compatible with newer definitions of \cs{MakeUppercase}.
 %   \end{itemize}
+% \item Version 4.2, April 19, 2024
+%   \begin{itemize}
+%   \item Reset catcodes to their default values in order to facilitate
+%         \cs{input} in headers/footers when \texttt{verbatim} is active.
+%         (Issue \# 8 \url{https://github.com/pietvo/fancyhdr/issues/8}.)
+%   \end{itemize}
 % \end{itemize}
 %
 % \subsection{Changes in version 5}
@@ -3751,7 +3757,7 @@
 % independent marks.
 %
 % \begin{itemize}
-% \item Version 5.0, Feb 11, 2021-May 18, 2022
+% \item Version 5.0, Feb 11, 2021-April 22, 2024
 %   \begin{itemize}
 %   \item Shorten Warning message about \cs{headheight}/\cs{footskip} too large.
 %   \item If the option \texttt{[nocheck]} is given, just keep quiet and
@@ -4993,7 +4999,9 @@
 %   Command to reset various things in the headers: a.o. single spacing
 %   (taken from setspace.sty) and the catcode of ^^M and
 %   \cs{endlinechar} (so that epsf files
-%   in the header work if a verbatim crosses a page boundary) It also
+%   in the header work if a verbatim crosses a page boundary).
+%   Also reset the catcodes that are changed in verbatim environments,
+%   \cs{makeatother} and \cs{ExplSyntaxOn}. It also
 %   defines a \cs{nouppercase} command that disables \cs{uppercase} and
 %   \cs{Makeuppercase}. It can only be used in the headers and footers. Set
 %   \cs{hsize} to \cs{headwidth} (this helps for multicol); reset
@@ -5003,8 +5011,16 @@
 %   \LaTeX{} output routine, so we don't have to do it here.
 %   \changes{fancyhdr v4.1}{2022/11/09}{Change \cs{nouppercase} to work with
 %     new definition of \cs{MakeUppercase}.}
+%   \changes{fancyhdr v4.2}{2024/04/19}{Reset catcodes to their default
+%   values in order to facilitate \cs{input} in headers/footers when \texttt{verbatim}
+%   is active. (Issue \# 8 \url{https://github.com/pietvo/fancyhdr/issues/8}.)}
 %    \begin{macrocode}
 \def\f@nch@reset{\f@nch@everypar{}\restorecr\endlinechar=13
+  \catcode`\\=0\catcode`\{=1\catcode`\}=2\catcode`\$=3\catcode`\&=4
+  \catcode`\#=6\catcode`\^=7\catcode`\_=8\catcode`\ =10\catcode`\@=11
+  \catcode`\:=11\catcode`\~=13\catcode`\%=14
+  \catcode0=15 %NULL
+  \catcode9=10 %TAB
   \let\\\@normalcr \let\raggedleft\f@nch@raggedleft
   \let\raggedright\f@nch@raggedright \let\centering\f@nch@centering
   \def\baselinestretch{1}%
