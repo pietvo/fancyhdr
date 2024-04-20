@@ -1408,7 +1408,7 @@
 % and footer fields. Note that this may screw other things, like uppercase
 % roman numerals in your headers, so it should be used with care. Essentially
 % this command typesets its argument in an environment where
-% \cs{MakeUppercase} and \cs{uppercase} are changed into do-nothing operations.
+% \cs{MakeUppercase} and \cs{uppercase} are changed into identity operations.
 %
 % \Example{7}
 % \begin{example}
@@ -3726,11 +3726,12 @@
 %   \item Initialize \cs{@mkboth} in \texttt{extramarks.sty} so that
 %     it will pick up changes to \cs{markboth}.
 %   \end{itemize}
-% \item Version 4.1, Sept 6-16, 2022
+% \item Version 4.1, Sept 6-Nov 9, 2022
 %   \begin{itemize}
 %   \item Implement \texttt{twoside} package option to allow two-sided headers
 %   and footers in one-sided documents.
 %   \item Make \Package{fancyhdr} compatible with the document class \Package{newlfm}.
+%   \item Make \cs{nouppercase} compatible with newer definitions of \cs{MakeUppercase}.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -4969,6 +4970,16 @@
 % \end{macro}
 % \end{macro}
 %
+% \begin{macro}[internal]{\f@nch@noUppercase}
+%   We want \cs{nouppercase} to work with the various evolutionary stages of
+%   \cs{MakeUppercase}. The current version (2022/11/09) accepts an optional
+%   argument with a language specification. Therefore we define a dummy macro
+%   \cs{f@nch@noUppercase} which copies its mandatory agument, as a
+%   replacement for \cs{MakeUppercase} while \cs{nouppercase} is active.
+%    \begin{macrocode}
+\newcommand\f@nch@noUppercase[2][]{#2}
+%    \end{macrocode}
+%
 % \begin{macro}[internal]{\f@nch@reset}
 %   Command to reset various things in the headers: a.o. single spacing
 %   (taken from setspace.sty) and the catcode of ^^M and
@@ -4981,20 +4992,27 @@
 %   their default values (for tabu), and \cs{everypar} to empty.\\
 %   The font is reset to \cs{normalfont}. Actually this is done in the
 %   \LaTeX{} output routine, so we don't have to do it here.
+%   \changes{fancyhdr v4.1}{2022/11/09}{Change \cs{nouppercase} to work with
+%     new definition of \cs{MakeUppercase}.}
 %    \begin{macrocode}
 \def\f@nch@reset{\f@nch@everypar{}\restorecr\endlinechar=13
   \let\\\@normalcr \let\raggedleft\f@nch@raggedleft
   \let\raggedright\f@nch@raggedright \let\centering\f@nch@centering
   \def\baselinestretch{1}%
   \hsize=\headwidth
-  \def\nouppercase##1{{\let\uppercase\relax\let\MakeUppercase\relax
-      \expandafter\let\csname MakeUppercase \endcsname\relax##1}}%
+  \def\nouppercase##1{{%
+      \let\uppercase\relax\let\MakeUppercase\f@nch@noUppercase
+      \expandafter\let\csname MakeUppercase \endcsname\relax
+      \expandafter\def\csname MakeUppercase\space\space\space\endcsname
+                                                   [####1]####2{####2}%
+      ##1}}%
   \f@nch@ifundefined{@newbaseline} % NFSS not present; 2.09 or 2e
   {\f@nch@ifundefined{@normalsize} {\normalsize} % for ucthesis.cls
    {\@normalsize}}%
   {\@newbaseline}% NFSS (2.09) present
   }
 %    \end{macrocode}
+% \end{macro}
 % \end{macro}
 %
 % \begin{macro}{\fancycenter}
