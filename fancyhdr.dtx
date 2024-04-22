@@ -1859,6 +1859,14 @@
 % \fancyheadoffset[LE,RO]{\marginparsep+\marginparwidth}
 % \end{example}
 %
+% \textbf{NOTE:} If you change the \cs{textwidth} in the middle of your
+% document, for example by using the \Package{geometry}\TTindex{geometry} package,
+% by default the \cs{headwidth} will not change, as it picks up the value
+% of \cs{textwidth} at the beginning of the document. If you want it to track
+% the changes to \cs{textwidth}, you should use the command \verb|\fancyhfoffset{0pt}|
+% in the neighborhood of your header/footer definitions, unless you
+% already use such an \texttt{\ldots offset} command, of course.
+% \vspace{\baselineskip}
 % For the second example, we take the \amslatex/ book\footnote{George Gratzer,
 % \textit{Math into LaTeX, An Introduction to \LaTeX{} and \amslatex/}, Birkhauser, Boston.}.
 %
