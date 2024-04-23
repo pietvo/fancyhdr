@@ -1,6 +1,8 @@
 fancyhdr – Extensive control of page headers and footers in LaTeX2ε
 
-The package provides extensive facilities, both for constructing headers and footers, and for controlling their use (for example, at times when LaTeX would automatically change the heading style in use).
+The package provides extensive facilities, both for constructing headers
+and footers, and for controlling their use (for example, at times when
+LaTeX would automatically change the heading style in use).
 
 The distribution package consists of the following files:
 
