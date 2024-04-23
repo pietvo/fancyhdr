@@ -2665,7 +2665,9 @@
 %   \extramarks{\noindent Continued\ldots\\[1ex]}%
 %              {Continued on next page\ldots}%
 %   \afterpage{\firstxmark}%
-%  }{
+%   \ignorespaces
+%  }{%
+%   \unskip
 %   \extramarks{\noindent Continued\ldots\\[1ex]}{}%
 %   \extramarks{}{}\par
 % }
@@ -2680,6 +2682,9 @@
 % argument in \cs{afterpage} so that it will appear at the top of the
 % next page body. That is also the reason for the \verb|\\[1ex]|, to
 % separate it from the rest of the page text.
+%
+% Note how we use \cs{ignorespaces}, \cs{unskip} and \texttt{\%} to
+% prevent unwanted spaces to creep into the text.
 %
 % However, there are some problems with this simple solution:
 % \begin{enumerate}
@@ -2753,8 +2758,8 @@
 %   \par\noindent\rule{\textwidth}{1mm}\\*
 %   \extramarks{}{}%
 %   \extramarks{\LM}{Continued on next page\ldots}%
-%   \startAP }{
-%   \noindent\rule{\textwidth}{1mm}%
+%   \startAP\ignorespaces}{%
+%   \unskip\noindent\rule{\textwidth}{1mm}%
 %   \extramarks{\LM}{}%
 %   \extramarks{}{}\par
 % }
@@ -2804,8 +2809,8 @@
 %   \par\noindent\rule{\textwidth}{1mm}\\*
 %   \extramarks{}{}%
 %   \extramarks{\LM}{Continued on next page\ldots}%
-%   \startAP }{
-%   \noindent\rule{\textwidth}{1mm}%
+%   \startAP\ignorespaces}{%
+%   \unskip\noindent\rule{\textwidth}{1mm}%
 %   \extramarks{\LM}{}%
 % |R  \extramarks{}{\noexpand\clearAPcommand}\par
 % }
@@ -2880,7 +2885,9 @@
 %   \par
 %   \extramarks{}{}%
 %   \extramarks{Continued}{Continued on next page\ldots}%
-% }{
+%   \ignorespaces
+% }{%
+%    \unskip
 %    \extramarks{Continued}{}%
 %    \extramarks{}{}%
 %    \mysaved\par
