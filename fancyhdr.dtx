@@ -2401,10 +2401,15 @@
 %   \extramarks{}{}%
 %   \extramarks{(Continued\ldots)}{Continued on next page\ldots}%
 %   \afterpage{\noindent\firstxmark\vspace{1ex}}%
-%   }{\extramarks{(Continued\ldots)}{}%
+%   \ignorespaces
+%   }{%
+%   \unskip\extramarks{(Continued\ldots)}{}%
 %   \extramarks{}{}\par
 % }
 % \end{verbatim}
+%
+% Note how we use \cs{ignorespaces}, \cs{unskip} and \texttt{\%} to
+% prevent unwanted spaces to creep into the text.
 %
 % It is a bit dangerous to use \cs{firstxmark} outside the page layout
 % routine, but apparently with \cs{afterpage} this works. If you would
@@ -2419,7 +2424,9 @@
 % \newenvironment{continued}{\par
 %   \extramarks{}{}%
 %   \extramarks{(Continued\ldots)}{Continued on next page\ldots}%
-%   }{\extramarks{(Continued\ldots)}{}%
+%   \ignorespaces
+%   }{%
+%   \unskip\extramarks{(Continued\ldots)}{}%
 %   \extramarks{}{}\par\vspace{1ex}\mysaved}%
 % }
 % \fancyhead[L]{\leftmark}
