@@ -2812,7 +2812,7 @@
 %   \startAP\ignorespaces}{%
 %   \unskip\noindent\rule{\textwidth}{1mm}%
 %   \extramarks{\LM}{}%
-% |R  \extramarks{}{\noexpand\clearAPcommand}\par
+% |R  \extramarks{}{\protect\clearAPcommand}\par
 % }
 % \end{example}
 %
@@ -2843,13 +2843,13 @@
 % definitions it does not make a difference, but it looks nicer to use
 % it there too.
 %
-% \textbf{Note 3.} In line 20 we use \cs{noexpand} to
+% \textbf{Note 3.} In line 20 we use \cs{protect} to
 % delay the expansion of \cs{clearAPcommand}. The marks in
 % \cs{extramarks} are expanded at the time they are given, so that they
 % can pick up section numbers and titles and similar information at that
 % point. However, \cs{clearAPcommand} should not be expanded at that
 % moment, but when it is used in the footer. That is exactly what
-% \cs{noexpand} does.
+% \cs{protect} does.
 %
 % \textbf{Note 4.} We test the value of \cs{APcommand} with \cs{ifx},
 % not with \cs{ifthenelse} from the \Package{ifthen} package. The
