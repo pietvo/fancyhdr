@@ -2121,11 +2121,15 @@
 %
 % \Example{23}
 % \begin{example}
+% \clearpage
 % \pagenumbering[\thesection]{bychapter}
 % \end{example}
 %
 % What the package also does is reset the page number to 1 at the beginning
 % of each chapter.
+%
+% In general it is advisable to give a \cs{clearpage} or
+% \cs{cleardoublepage} before changing the page numbering.
 %
 % In the frontmatter of your document (for example the Table of
 % Contents) there will be no chapter numbers. Therefore a simple page
