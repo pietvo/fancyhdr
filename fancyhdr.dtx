@@ -4007,17 +4007,18 @@
 % \Package{beamer} theme in use.
 %
 % Still people sometimes ask if \Package{fancyhdr} can be used for
-% header and footers because they are more familiar with this. Sometimes
-% you see answers that discourage the use of \Package{fancyhdr} with
-% \Package{beamer}, but actually it isn't difficult to use it if you
-% take provisions that the header (and maybe also the footer) doesn't
+% header and footers because they are more familiar with this. I would
+% advice to use the standard \Package{beamer} features if possible, but
+% actually it isn't difficult to use \Package{fancyhdr} if you take
+% provisions that the header and the footer don't
 % interfere with the \Package{beamer} layout. This can be done with
 % \begin{code}
 % \setbeamertemplate{headline}{\vspace{\headheight}}
+% \setbeamertemplate{footline}{\vspace{\footskip}}
 % \end{code}
-% \CmdIndex{headheight}%
-% after \cs{headheight} has got its proper value. Here is a complete
-% example:
+% \CmdIndex{headheight}\CmdIndex{footskip}%
+% after \cs{headheight} and/or \cs{footskip} have gotten their proper
+% values. Here is a complete example:
 % \NoExample{with-beamer}
 % \begin{example}
 % \documentclass{beamer}
@@ -4031,6 +4032,7 @@
 % \setlength{\footskip}{14pt}
 %
 % \setbeamertemplate{headline}{\vspace{\headheight}}
+% \setbeamertemplate{footline}{\vspace{\footskip}}
 %
 % \begin{document}
 %
