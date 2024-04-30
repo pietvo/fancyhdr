@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/04/22 v5.0beta
+%<fancyhdr|extramarks>           [2024/04/26 v5.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -5893,7 +5893,7 @@
 \providecommand\DeclareRelease[3]{}
 \providecommand\DeclareCurrentRelease[2]{}
 \DeclareRelease{v4}{2022/05/18}{extramarks-v4.sty}
-\DeclareCurrentRelease{}{2022-05-31}
+\DeclareCurrentRelease{}{2024/04/26}
 
 \RequirePackage{expl3,xparse}
 \RequirePackage{etoolbox}
@@ -6554,9 +6554,11 @@
       \cs_set_eq:NN \glossary \scan_stop:
       \unrestored@protected@xdef \l_@@_temp_tl { #2 }
 %    \end{macrocode}
-% Put braced value in the mark
+% Put braced value in the mark, evaluated once.
+% \changes{extramarks v5.0}{2024/04/26}{Use \cs{exp_not:o} to expand
+% the mark once.}
 %    \begin{macrocode}
-      \tex_marks:D \use:c { c_@@_#1_int } {{ \l_@@_temp_tl }}
+      \tex_marks:D \use:c { c_@@_#1_int } {{ \exp_not:o \l_@@_temp_tl }}
     \group_end:
   }
   { \msg_error:nnnn {extramarks} {not-defined} {\extramarksput} {#1} }
