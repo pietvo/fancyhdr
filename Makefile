@@ -13,6 +13,7 @@ fancyhdr.pdf: fancyhdr.dtx fancyhdr.sty extramarks.sty fancyheadings.sty
 clean:
 	rm -f *.aux *.log *.idx *.ind *.ilg *.fdb_latexmk *.fls *.glo *.gls *~ *.rel *.toc
 	rm -f *.synctex.gz *.bbl *.blg *.out fancyhdr.pdf
+	rm -f fancyhdr.sty extramarks*.sty fancyheadings.sty
 
 dist: fancyhdr.zip
 distfiles = README fancyhdr.dtx fancyhdr.pdf fancyhdr.ins
