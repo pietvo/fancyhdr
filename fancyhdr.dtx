@@ -304,16 +304,14 @@
 % \OPTindex{twoside}
 % \OPTindex{headings}
 % \OPTindex{myheadings}
-% \DescribeMacro{\fancyhead}
-% \DescribeMacro{\fancyfoot}
-% \DescribeMacro{\fancyhf}
-% \begin{verbatim}
-% \fancyhead[places]{field}
-% \fancyfoot[places]{field}
-% \fancyhf[places]{field}
-% \end{verbatim}
-% Here \texttt{places} is a comma-separated list of places where
-% \texttt{field} will be placed. There are 12 places defined: Left,
+%
+% \begin{flushleft}
+%   \cmd{\fancyhead}\oarg{places}\marg{field} \DescribeMacro{\fancyhead} \\
+%   \cmd{\fancyfoot}\oarg{places}\marg{field} \DescribeMacro{\fancyfoot} \\
+%   \cmd{\fancyhf}\oarg{places}\marg{field} \DescribeMacro{\fancyhf}
+% \end{flushleft}
+% Here \meta{places} is a comma-separated list of places where
+% \meta{field} will be placed. There are 12 places defined: Left,
 % Center and Right Headers and Footers, and both can be on Even or Odd
 % pages. Each place therefore has 3 coordinates which are the inital
 % letters of the above description: (1) \texttt{E} or \texttt{O}, (2) \texttt{L}, \texttt{C} or
@@ -321,14 +319,12 @@
 % letters, like \texttt{EOH}. A missing coordinate means: all
 % possibilities, except for \cs{fancyhead} where \texttt{H} is implied
 % and \cs{fancyfoot} where \texttt{F} is implied.
-% \DescribeMacro{\fancyheadoffset}
-% \DescribeMacro{\fancyfootoffset}
-% \DescribeMacro{\fancyhfoffset}
-% \begin{verbatim}
-% \fancyheadoffset[places]{field}
-% \fancyfootoffset[places]{field}
-% \fancyhfoffset[places]{field}
-% \end{verbatim}
+%
+% \begin{flushleft}
+%   \cmd{\fancyheadoffset}\oarg{places}\marg{field} \DescribeMacro{\fancyheadoffset} \\
+%   \cmd{\fancyfootoffset}\oarg{places}\marg{field} \DescribeMacro{\fancyfootoffset} \\
+%   \cmd{\fancyhfoffset}\oarg{places}\marg{field} \DescribeMacro{\fancyhfoffset}
+% \end{flushleft}
 % These define offsets to let the headers stick into the margin (or to
 % the inside if negative). Places cannot contain the \texttt{C}
 % specifier. See section~\ref{sec:book-examples} for more details.
@@ -340,7 +336,6 @@
 % \DescribeMacro{\headrule}
 % \DescribeMacro{\footrule}
 % \DescribeMacro{\headwidth}
-%
 % \cs{headrulewidth} and \cs{footrulewidth} are macros to define the
 % thickness of a line under the header and above the footer.
 % \cs{headruleskip} and \cs{footruleskip} are macros that define the
@@ -353,7 +348,6 @@
 % \DescribeMacro{\fancyheadinit}
 % \DescribeMacro{\fancyfootinit}
 % \DescribeMacro{\fancyhfinit}
-%
 % \cs{fancyheadinit} and \cs{fancyfootinit} can be used to define
 % initialisation code for the header and footer, respectively, and
 % \cs{fancyhfinit} defines both of these. These commands are only
@@ -367,7 +361,6 @@
 % \DescribeMacro{\ifbotfloat}
 % \DescribeMacro{\iffloatpage}
 % \DescribeMacro{\iffootnote}
-%
 % The macros \cs{iftopfloat}, \cs{ifbotfloat}, \cs{iffloatpage} and
 % \cs{iffootnote} are used to detect if there is a float on the top or
 % the bottom of the page, or the page is a float page, or if there is
@@ -375,10 +368,10 @@
 % different headers and/or footers if these conditions are met. See
 % section~\ref{sec:float} for more details.
 %
-% \begin{quote}
-% \DescribeMacro{\fancypagestyle}
-% \verb|\fancypagestyle|\marg{style-name}\oarg{base-style}\marg{definitions}
-% \end{quote}
+% \begin{flushleft}
+%   \DescribeMacro{\fancypagestyle}
+%   \cmd{\fancypagestyle}\marg{style-name}\oarg{base-style}\marg{definitions}
+% \end{flushleft}
 % This command lets you (re)define page styles for use in special
 % situations. See section~\ref{sec:fancypagestyle} for more details.
 %
@@ -393,13 +386,6 @@
 % \DescribeMacro{\lastrightmark}
 % \DescribeMacro{\firstrightmark}
 % \DescribeMacro{\lastleftmark}
-% \begin{verbatim}
-% \firstleftmark
-% \lastrightmark
-% \firstrightmark
-% \lastleftmark
-% \end{verbatim}
-%
 % Standard \latex/ has two marks: a left and a right one. The standard
 % command \cs{leftmark} gives you the last left mark on a page, and
 % \cs{rightmark} gives you the first right one. These macros give you
