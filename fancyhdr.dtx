@@ -385,39 +385,41 @@
 % headers and footers of the pages in a \latex/ document.
 % You load the package with the following command in the preamble:
 % \begin{quote}
-% \verb|\usepackage|\oarg{options}\verb|{fancyhdr}|
+% \cmd{usepackage}\oarg{options}\verb|{fancyhdr}|
 % \end{quote}
 % (Options are available since version~4.0.
 % See \smartref{sec:using-fancyhdr}{sec:options} for the details.)
 %
 % \begin{function}{\fancyhead,\fancyfoot,\fancyhf}
-% \begin{verbatim}
-% \fancyhead[places]{field}
-% \fancyfoot[places]{field}
-% \fancyhf[places]{field}
-% \end{verbatim}
-% Here \texttt{places} is a comma-separated list of places where
-% \texttt{field} will be placed. There are 12 places defined: Left,
+% \begin{syntax}
+%   \cmd{\fancyhead}\oarg{places}\marg{field} \\
+%   \cmd{\fancyfoot}\oarg{places}\marg{field} \\
+%   \cmd{\fancyhf}\oarg{places}\marg{field} 
+% \end{syntax}
+% Here \meta{places} is a comma-separated list of places where
+% \meta{field} will be placed. There are 12 places defined: Left,
 % Center and Right Headers and Footers, and both can be on Even or Odd
 % pages. Each place therefore has 3 coordinates which are the inital
 % letters of the above description: (1) \texttt{E} or \texttt{O}, (2) \texttt{L}, \texttt{C} or
 % \texttt{R}, (3) \texttt{H} or \texttt{F}. So a place is given with 3
 % letters, like \texttt{EOH}. A missing coordinate means: all
 % possibilities, except for \cs{fancyhead} where \texttt{H} is implied
-% and \cs{fancyfoot} where \texttt{F} is implied.
+% and \cs{fancyfoot} where \texttt{F} is implied. Although in this
+% documentation always uppercase letters are used in the \meta{places},
+% lowercase is also acceptable.
 % \end{function}
 %
-% \begin{function}{\fancyheadoffset,\fancyfootoffset,\fancyhfoffset}
-% \begin{verbatim}
-% \fancyheadoffset[places]{field}
-% \fancyfootoffset[places]{field}
-% \fancyhfoffset[places]{field}
-% \end{verbatim}
+% %\begin{function}{\fancyheadoffset,\fancyfootoffset,\fancyhfoffset}
+% \begin{syntax}
+%   \cmd{\fancyheadoffset}\oarg{places}\marg{length} \\
+%   \cmd{\fancyfootoffset}\oarg{places}\marg{length} \\
+%   \cmd{\fancyhfoffset}\oarg{places}\marg{length} 
+% \end{syntax}
 % These define offsets to let the headers stick into the margin (or to
 % the inside if negative). Places cannot contain the \texttt{C}
 % specifier. See sections~\ref{sec:book-examples}  and
 % \ref{sec:headwidth} for more details.
-% \end{function}
+% %\end{function}
 %
 % \begin{variable}{\headrulewidth, \footrulewidth, \headruleskip,
 %                  \footruleskip, \headwidth}
@@ -456,7 +458,7 @@
 % section~\ref{sec:float} for more details.
 % \end{function}
 %
-% \begin{function}{\fancypagestyle}
+% \begin{function}{\fancypagestyle,\fancypagestyle*}
 % \begin{syntax}
 % \cs{fancypagestyle}\marg{style-name}\oarg{base-style}\marg{definitions}\\
 % \cs{fancypagestyle}*\marg{style-name}\oarg{base-style}\marg{definitions}
@@ -574,23 +576,10 @@
 % that is given by the \cs{markboth} and \cs{markright} commands in the
 % text body.
 %
-% \subsubsection*{New commands for the standard \LaTeX{} marks
-%                        to be used in the headers or footers}
-%
 % \begin{function}{\firstleftmark, \lastrightmark, \firstrightmark, \lastleftmark}
-% \begin{verbatim}
-% \firstleftmark
-% \lastrightmark
-% \firstrightmark
-% \lastleftmark
-% \end{verbatim}
-%
-% The macros above give you the other combinations, where
+% These macros give you the other combinations, where
 % \cs{firstrightmark} = \cs{rightmark} and \cs{lastleftmark} = \cs{leftmark}.
-%
 % \end{function}
-%
-% \subsubsection*{\Package{Extramarks} commands to be used in the text body}
 %
 % \begin{function}{\extramarks, \extramarksleft, \extramarksright}
 % \begin{syntax}
@@ -745,7 +734,7 @@
 %
 % The page headers and footers in \LaTeX{} are defined by the
 % \cs{pagestyle} and \cs{pagenumbering} commands. \cs{pagestyle}
-% defines the general contents of the headers and footers (e.g. where the
+% defines the general contents of the headers and footers (e.g.\ where the
 % page number will be printed), while
 % \cs{pagenumbering} defines the format of the page number.
 % \LaTeX{} has four standard page styles:
@@ -786,7 +775,7 @@
 %
 % These are not user commands, but rather ``variables'' that are used by
 % \latex/'s output routine.
-% As the command names contain the character '\texttt{@}', they should
+% As the command names contain the character `\texttt{@}', they should
 % be defined in a package file, or otherwise be sandwiched between the commands
 % \cs{makeatletter} and \cs{makeatother}.
 %
@@ -1122,7 +1111,7 @@
 % for which pages and/or parts of the header/footer they apply. The first
 % \cs{fancyhead} command above omits this parameter, and thus applies to all
 % header fields. In general this is only useful to get rid of the defaults or
-% a previous definition, as is done here. Similar the \cs{fancyfoot} command
+% a previous definition, as is done here. Similarly the \cs{fancyfoot} command
 % without square brackets clears all footer fields. In this particular
 % example it could be omitted as all footer fields have a value specified.
 % The selectors that can be used
@@ -1184,7 +1173,7 @@
 % \cs{ps@plain} command, but \Package{fancyhdr} gives you an easier way
 % with the \cs{fancypagestyle} command. This command can be used to
 % redefine existing page styles (like \texttt{plain}) or to define new ones,
-% e.g. if part of your document needs a different page style. This command
+% e.g.\ if part of your document needs a different page style. This command
 % has two mandatory parameters: the first one is the name of the page style to be defined, the
 % second consists of commands that change the headers and/or footers, i.e.,
 % \verb|\fancyhead| etc. Also allowed are changes to \cs{headrulewidth} and
@@ -1498,7 +1487,7 @@
 %
 % As an example let's take a page layout where the leftmarks are generated by
 % the sections and the rightmarks by the subsections (as is default in the
-% \texttt{article} class). Take a page with some short sections, e.g.
+% \texttt{article} class). Take a page with some short sections, e.g.,
 %
 % \begin{samepage}
 % \noindent Section 1.\\
@@ -1530,7 +1519,7 @@
 % \end{example}
 %
 % Another problem with the marks in the standard \latex/ classes is that the
-% higher level sectioning commands (e.g. \cs{chapter}) call
+% higher level sectioning commands (e.g.\ \cs{chapter}) call
 % \cs{markboth} with an empty right argument. This means that on the first
 % page of a chapter (or a section in article style) the \cs{rightmark}
 % will be empty. The underlying problem is that the \tex/ machinery has
@@ -1546,7 +1535,7 @@
 % \cs{chapter} etc.\ commands do \emph{not} call the mark commands. So if
 % you want your preface to set the header info but not be numbered nor be put in
 % the table of contents, you must issue the \cs{markboth} command
-% yourself, e.g.
+% yourself, e.g.,
 %
 % \begin{code}
 % \chapter*{Preface}
@@ -3116,7 +3105,7 @@
 % \end{enumerate}
 %
 % In the first two cases you must first check if you have given the correct
-% ``placement'' parameter to you float, e.g. \Cmd{begin\{figure\}[htp]}
+% ``placement'' parameter to you float, e.g.\ \Cmd{begin\{figure\}[htp]}
 % specifies that your figure may be placed either: Here (i.e., in the text
 % position where the command is given), on the Top of a page (which may be
 % the page where you put the command), or on a separate Page of floats. You
@@ -3177,7 +3166,7 @@
 % are given before a float page can be filled to satisfy the
 % \phantomsection\label{page:floatpagefraction}^^A
 % \cs{floatpagefraction} parameter. If you have this kind of behaviour you
-% can easily adapt the parameters, e.g. with:
+% can easily adapt the parameters, e.g.\ with:
 % \begin{code}
 % \renewcommand{\textfraction}{0.05}
 % \renewcommand{\topfraction}{0.95}
@@ -3190,7 +3179,7 @@
 %
 % You can force \latex/ to ignore most of the parameters for one specific float
 % occurrence by
-% including an exclamation mark (\texttt{!}) in the placement parameters, e.g.
+% including an exclamation mark (\texttt{!}) in the placement parameters, e.g.,
 % \begin{code}
 % \begin{figure}[!htb]
 % \end{code}
@@ -3357,17 +3346,17 @@
 %  . . .
 % \end{example}
 %
-% There will most probably some of the normal text between the figure
+% There will probably be some of the normal text between the figure
 % parts, unless they happen to fit perfectly on the page, which isn't
 % very probable. But, what also can come between them is other floats,
-% such as \env{table}. We can prevent that previous floats can intrude
+% such as a \env{table}. We can prevent that previous floats intrude
 % here by issuing a \cs{clearpage} command, but this will abruptly end
 % the current page. As we have seen before, we can do better by
 % \CmdIndex{afterpage}\CmdIndex{clearpage}%
 % including the \cs{clearpage} command in \cs{afterpage}, and we would
 % also put the figures in the \cs{afterpage}. To keep the \cs{afterpage}
 % command more tidy, it is advised to put the code for the figures in a
-% macro, or in the file that is included with \cs{input}. For example:
+% macro, or in a file that is included with \cs{input}. For example:
 %
 % \Example{33}[(B)]
 % \begin{example}
@@ -4050,7 +4039,7 @@
 % \section{I want the first section and the first subsection in my headers}
 % \label{sec:firstsubsection}
 %
-% A question that is regularly asked (e.g. on
+% A question that is regularly asked (e.g.\ on
 % \texttt{tex.stackexchange.com}\footnote{See for example \url{https://tex.stackexchange.com/q/586066/113546}}) is how to get both the first section
 % title and the first subsection title in the headers. The standard \LaTeX{} page style
 % \emph{headings} in a class without chapters (like \texttt{article})
@@ -5343,7 +5332,7 @@
 %   \cs{color} command. The \cs{ignorespaces} skips initial spaces in
 %   the parameter, as is usual in a \cs{parbox}, for backwards compatibility.}
 % We put the \cs{footrule} in a \cs{vbox} to accommodate for flexible
-% footrules (e.g. using \cs{hrulefill}), so that the \cs{headwidth} will
+% footrules (e.g.\ using \cs{hrulefill}), so that the \cs{headwidth} will
 % be used as the line width. But to preserve the vertical spacing we
 % then \cs{unvbox} this box.
 %
@@ -5382,7 +5371,7 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\@chapapp}
-% Define \cs{@chapapp} for classes that don't have it, e.g. amsbook
+% Define \cs{@chapapp} for classes that don't have it, e.g.\ amsbook
 %    \begin{macrocode}
 \f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}%
 %    \end{macrocode}
