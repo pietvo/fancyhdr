@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/04/26 v5.0beta
+%<fancyhdr|extramarks>           [2024/05/08 v5.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -299,7 +299,7 @@
 % \DoNotIndex{\@ne}
 % \DoNotIndex{\@opcol}
 % \DoNotIndex{\advance,\begingroup,\catcode,\closein}
-% \DoNotIndex{\closeout,\day,\def,\edef,\else,\empty,\endgroup}
+% \DoNotIndex{\closeout,\day,\def,\edef,\else,\empty,\@empty,\endgroup}
 %
 % \title{The \Package{fancyhdr} and \Package{extramarks}
 % packages\\{\normalsize version \fileversion.}}
@@ -3757,7 +3757,7 @@
 % independent marks.
 %
 % \begin{itemize}
-% \item Version 5.0, Feb 11, 2021-April 22, 2024
+% \item Version 5.0, Feb 11, 2021-May 8, 2024
 %   \begin{itemize}
 %   \item Shorten Warning message about \cs{headheight}/\cs{footskip} too large.
 %   \item If the option \texttt{[nocheck]} is given, just keep quiet and
@@ -5683,9 +5683,10 @@
 % \begin{macro}{\iffootnote}
 % These can be used in a header/footer field to make them conditional on
 % the presence of floats and/or footnotes.
+% \changes{fancyhdr v5.0}{2024/05/08}{Replace \cs{empty} with \cs{@empty}}
 %    \begin{macrocode}
-\newcommand\iftopfloat[2]{\ifx\f@nch@topfloat\empty #2\else #1\fi}%
-\newcommand\ifbotfloat[2]{\ifx\f@nch@botfloat\empty #2\else #1\fi}%
+\newcommand\iftopfloat[2]{\ifx\f@nch@topfloat\@empty #2\else #1\fi}%
+\newcommand\ifbotfloat[2]{\ifx\f@nch@botfloat\@empty #2\else #1\fi}%
 \newcommand\iffloatpage[2]{\if@fcolmade #1\else #2\fi}%
 \newcommand\iffootnote[2]{\iff@nch@footnote #1\else #2\fi}%
 %    \end{macrocode}

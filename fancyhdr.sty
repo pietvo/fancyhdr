@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2024/04/26 v5.0beta
+           [2024/05/08 v5.0beta
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -489,8 +489,8 @@
   \def\@makecol{\ifvoid\footins\f@nch@footnotefalse\else\f@nch@footnotetrue\fi
     \let\f@nch@topfloat\@toplist\let\f@nch@botfloat\@botlist\latex@makecol}%
 }
-\newcommand\iftopfloat[2]{\ifx\f@nch@topfloat\empty #2\else #1\fi}%
-\newcommand\ifbotfloat[2]{\ifx\f@nch@botfloat\empty #2\else #1\fi}%
+\newcommand\iftopfloat[2]{\ifx\f@nch@topfloat\@empty #2\else #1\fi}%
+\newcommand\ifbotfloat[2]{\ifx\f@nch@botfloat\@empty #2\else #1\fi}%
 \newcommand\iffloatpage[2]{\if@fcolmade #1\else #2\fi}%
 \newcommand\iffootnote[2]{\iff@nch@footnote #1\else #2\fi}%
 \ifx\@temptokenb\undefined \csname newtoks\endcsname\@temptokenb\fi
