@@ -4617,25 +4617,8 @@
 \ProcessOptions*
 %    \end{macrocode}
 %
-% \begin{macro}[internal]{\f@nch@errmsg}
-%   This macro generates an error message.
-% \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{f@nch@ifundefined} instead of \cs{ifx}.}
-% \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
-%    \begin{macrocode}
-\newcommand\f@nch@errmsg[1]{%
-  \f@nch@ifundefined{PackageError}{\errmessage{#1}}{\PackageError{fancyhdr}{#1}{}}}
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}[internal]{\f@nch@warning}
-% This macro generates a warning.
-% \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{f@nch@ifundefined} instead of \cs{ifx}.}
-% \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
-%    \begin{macrocode}
-\newcommand\f@nch@warning[1]{%
-  \f@nch@ifundefined{PackageWarning}{\errmessage{#1}}{\PackageWarning{fancyhdr}{#1}{}}}
-%    \end{macrocode}
-% \end{macro}
-%
+% \changes{fancyhdr v5.0}{2024/05/08}{Removed \cs{f@nch@errmsg} and
+% \cs{f@nch@warning} and used \cs{PackageError} and \cs{PackageWarning} directly.}
 % \begin{macro}[internal]{\f@nch@forc}
 %   Usage: \cs{f@nch@forc} \cs{var} \texttt{\{charstring\}\{body\}}.\\
 %   Execute the body for each character in \texttt{charstring} bound
@@ -4734,7 +4717,7 @@
   \if@twoside\else
     \iff@nch@twoside\else
       \if\f@nch@@eo e%
-        \f@nch@warning {\string#1's `E' option without twoside option is useless.\MessageBreak
+        \PackageWarning{fancyhdr} {\string#1's `E' option without twoside option is useless.\MessageBreak
           Please consider using the `twoside' option}%
   \fi\fi\fi
 }
@@ -4759,8 +4742,8 @@
   \f@nch@forc\tmpf@ra{#3}%
   {\expandafter\f@nch@ifin\tmpf@ra{eolcrhf,EOLCRHF}%
     {}{\edef\temp@c{\temp@c\tmpf@ra}}}%
-  \ifx\@empty\temp@c\else \f@nch@errmsg{Illegal char `\temp@c' in
-    \string#1 argument: [#3]}%
+  \ifx\@empty\temp@c\else \PackageError{fancyhdr}{Illegal char `\temp@c' in
+    \string#1 argument: [#3]}{}%
   \fi \f@nch@for\temp@c{#3}%
   {\f@nch@default\f@nch@@eo{eo}\temp@c
     \f@nch@fancyhf@Echeck{#1}%
@@ -4797,8 +4780,8 @@
   \f@nch@forc\tmpf@ra{#3}%
   {\expandafter\f@nch@ifin\tmpf@ra{eolrhf,EOLRHF}%
     {}{\edef\temp@c{\temp@c\tmpf@ra}}}%
-  \ifx\@empty\temp@c\else \f@nch@errmsg{Illegal char `\temp@c' in
-    \string#1 argument: [#3]}%
+  \ifx\@empty\temp@c\else \PackageError{fancyhdr}{Illegal char `\temp@c' in
+    \string#1 argument: [#3]}{}%
   \fi \f@nch@for\temp@c{#3}%
   {\f@nch@default\f@nch@@eo{eo}\temp@c
     \f@nch@fancyhf@Echeck{#1}%
@@ -5177,7 +5160,7 @@
 %    \begin{macrocode}
 \newcommand\fancyhdrsettoheight[2]{%
   \expandafter\ifx\csname f@nch@#2\endcsname\fancyhdrsettoheight
-    \else\f@nch@errmsg{Unknown parameter #2 in \string\fancyhdrsettoheight}\fi
+    \else\PackageError{fancyhdr}{Unknown parameter #2 in \string\fancyhdrsettoheight}{}\fi
   \setbox\@tempboxa\hbox{{\f@nch@checkfalse\csname @#2\endcsname}}%
   \setlength{#1}\f@nch@height
   \setbox\@tempboxa\box\voidb@x
@@ -5224,7 +5207,7 @@
 %    \begin{macrocode}
     \iff@nch@check
       \dimen0=#1\advance\dimen0-\ht0
-      \f@nch@warning{%
+      \PackageWarning{fancyhdr}{%
         \string#1 is too small (\the#1): \MessageBreak
         Make it at least \the\ht0, for example:\MessageBreak
         \string\setlength{\string#1}{\the\ht0}%
@@ -5742,10 +5725,10 @@
 %    \begin{macrocode}
 \long\def\f@nch@@pagestyle#1[#2]#3{%
   \f@nch@ifundefined{ps@#2}{%
-    \f@nch@errmsg{\string\fancypagestyle: Unknown base page style `#2'}%
+    \PackageError{fancyhdr}{\string\fancypagestyle: Unknown base page style `#2'}{}%
   }{%
     \f@nch@ifundefined{f@nch@ps@#2-is-fancyhdr}{%
-      \f@nch@errmsg{\string\fancypagestyle: Base page style `#2' is not fancyhdr-based}%
+      \PackageError{fancyhdr}{\string\fancypagestyle: Base page style `#2' is not fancyhdr-based}{}%
     }%
     {%
 %    \end{macrocode}
