@@ -34,6 +34,10 @@
 \let\f@nch@gbl\relax
 \newif\iff@nch@compatViii
 \DeclareOption{compatV3}{%
+  \PackageWarningNoLine{fancyhdr}{The `compatV3' option is deprecated.\MessageBreak
+    It will disappear in one of the following releases.\MessageBreak
+    Please change your document to work\MessageBreak
+    without this option}%suppress line number
   \let\f@nch@gbl\global
   \f@nch@compatViiitrue
 }

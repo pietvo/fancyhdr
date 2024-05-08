@@ -527,8 +527,9 @@
 %     as soon as possible to work around this problem. In version~4.0 and
 %     later, without this option, the changes are always local.
 %   \end{enumerate}
-%   This option is scheduled to disappear in version~5 of
-%   \Package{fancyhdr}.
+%   This option is deprecated in version~5.0 of
+%   \Package{fancyhdr}. It will disappear in a later release. Please
+%   don't use this option anymore, but rather change your document.
 %
 % \item \OPTindex{twoside}Option \texttt{twoside} implements two-sided headers
 % and footers in one-sided documents (version 4.1 or later). This applies only
@@ -3766,7 +3767,8 @@
 %   \item Added \cs{fancypagestyle*} variant.
 %   \item Added command \cs{fancyhdrsettoheight}.
 %   \item New implementation of package \Package{extramarks} with
-%   fallback to \Package{extramarks-v4}.
+%     fallback to \Package{extramarks-v4}.
+%   \item Mark the \texttt{compatV3} option deprecated.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -4424,9 +4426,15 @@
 % \begin{macro}[internal]{\iff@nch@compatViii}
 % Define \cs{iff@nch@compatViii} to track the \texttt{compatV3} option.
 % \changes{fancyhdr v4.0}{2019/03/16}{Implement the \texttt{compatV3} option}
+% \changes{fancyhdr v5.0}{2024/05/08}{Add warning that the
+% \texttt{compatV3} option is deprecated}
 %    \begin{macrocode}
 \newif\iff@nch@compatViii
 \DeclareOption{compatV3}{%
+  \PackageWarningNoLine{fancyhdr}{The `compatV3' option is deprecated.\MessageBreak
+    It will disappear in one of the following releases.\MessageBreak
+    Please change your document to work\MessageBreak
+    without this option}%suppress line number
   \let\f@nch@gbl\global
   \f@nch@compatViiitrue
 }
