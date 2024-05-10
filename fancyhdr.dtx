@@ -613,8 +613,26 @@
 % \cs{extramarksleft}\marg{aa} and \cs{extramarksright}\marg{bb}.
 % \end{function}
 %
+% \begin{fblock}
+% \textbf{NOTE}: The implementation of \Package{extramarks} version 5
+% started in 2021. At that time there was no other way to obtain the
+% desired effects of these marks in a correct way. However, since the
+% November 2022 \LaTeX{} release, the \LaTeX{} kernel has gotten commands for
+% independent marks. These marks are described in \emph{The \LaTeX{}
+% Companion, Third Edition}, section 5.3.5 (Part I). These are similar
+% to the extra marks in \Package{extramarks} version 5, but both
+% implementations are independent of each other, and they can
+% coexist together. This new implementation of marks in \LaTeX{} makes
+% the \Package{extramarks} package less relevant now, but for
+% compatibility reasons it will keep being released.
+%
+% This manual contains several examples of the use of \Package{extramarks},
+% where its features are essential, but in future releases of this
+% manual these examples will be rewritten to use the new \LaTeX{} marks.
+% \end{fblock}
+%
 % \begin{function}{\extramarksnewmark, \extramarksput}
-% It is also possible to define your own additional marks.
+% It is also possible to define your own additional marks.\\
 % With \cs{extramarksnewmark}\marg{name} you define a new mark called
 % \meta{name}. You can then put a new mark with \cs{extramarksput}\marg{name}\marg{Some text}.
 %
@@ -679,6 +697,15 @@
 % \begin{verbatim}
 % \usepackage{extramarks-v4}
 % \end{verbatim}
+% Please note that in that case you can only use the commands
+% \cs{leftmark}, \cs{rightmark}, \cs{firstleftmark}, \cs{lastrightmark},
+% \cs{firstrightmark}, \cs{lastleftmark}, \cs{extramarks},
+% \cs{firstleftxmark}, \cs{firstrightxmark}, \cs{topleftxmark},
+% \cs{toprightxmark}, \cs{lastleftxmark}, \cs{lastrightxmark},
+% \cs{firstxmark}, \cs{lastxmark}, \cs{topxmark}, and not the other
+% commands mentioned above. Moreover, the \cs{top...} commands may give
+% you unexpected results.
+%
 % See sections~\ref{sec:scoop} and \ref{sec:xmarks} for more details
 % about the use of the package.
 %
