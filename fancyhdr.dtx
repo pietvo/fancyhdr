@@ -59,8 +59,6 @@
 \def\pAmS{{\the\textfont2
         A\kern-.1667em\lower.5ex\hbox{M}\kern-.125emS}}
 \def\amslatex/{\ams/-\latex/}
-\newcommand{\PSNFSS}{{\sf
-    PSNFSS}}
 \newcommand{\bs}{\symbol{'134}}
 \newcommand{\env}[1]{\texttt{#1}}
 \newcommand{\Package}[1]{\textsf{#1}}
@@ -1647,18 +1645,19 @@
 % \renewcommand{\footrulewidth}{0pt}
 % \end{verbatim}
 %
-% The font used in the headers is 9 pt bold Helvetica.  The \PSNFSS\ system
-% by Sebastian Rahtz uses the short (Karl Berry) name \verb|phv| for
-% Helvetica, so this font is selected with the commands:
+% The font used in the headers is 9 pt bold Helvetica.  The \textsf{PSNFSS} system
+% (originally by the late Sebastian Rahtz) uses the short (Karl Berry) name \texttt{phv} for
+% Helvetica. The more modern \LaTeX{} solution is to use the \TeX{} Gyre font
+% Heros, which uses the short name \texttt{qhv} so this font is selected with the commands^^A
+% \footnote{See \emph{The \LaTeX{} Companion, Third Edition}, Part I, section
+% 9.5.2, and Part II, section 10.8.16.}:
 % \begin{verbatim}
-% \fontfamily{phv}\fontseries{b}\fontsize{9}{11}\selectfont
+% \fontfamily{qhv}\fontseries{b}\fontsize{9}{11}\selectfont
 % \end{verbatim}
-% (See Sections 7.6.1 and 11.9.1 of the \latex/ \emph{Companion} or
-% Sections 7.6 and 7.9.1 of \emph{The \latex/ Companion, Second Edition}.)
 % Let us define a shorthand for this:
 % \begin{verbatim}
 % \newcommand{\helv}{%
-%    \fontfamily{phv}\fontseries{b}\fontsize{9}{11}\selectfont}
+%    \fontfamily{qhv}\fontseries{b}\fontsize{9}{11}\selectfont}
 % \end{verbatim}
 %
 % Now we are ready for the page layout:
@@ -1674,7 +1673,7 @@
 % \renewcommand{\headrulewidth}{0.5pt}
 % \renewcommand{\footrulewidth}{0pt}
 % \newcommand{\helv}{%
-%    \fontfamily{phv}\fontseries{b}\fontsize{9}{11}\selectfont}
+%    \fontfamily{qhv}\fontseries{b}\fontsize{9}{11}\selectfont}
 % \fancyhf{}
 % \fancyhead[LE,RO]{\helv \thepage}
 % \fancyhead[LO]{\helv \rightmark}
