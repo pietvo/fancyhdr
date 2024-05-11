@@ -4016,6 +4016,7 @@
 %   \changes{fancyhdr v4.2}{2024/04/19}{Reset catcodes to their default
 %   values in order to facilitate \cs{input} in headers/footers when \texttt{verbatim}
 %   is active. (Issue \# 8 \url{https://github.com/pietvo/fancyhdr/issues/8}.)}
+%   \changes{fancyhdr v4.3}{2024/05/08}{Remove pre-NFSS stuff}
 %    \begin{macrocode}
 \def\f@nch@reset{\f@nch@everypar{}\restorecr\endlinechar=13
   \catcode`\\=0\catcode`\{=1\catcode`\}=2\catcode`\$=3\catcode`\&=4
@@ -4033,10 +4034,8 @@
       \expandafter\def\csname MakeUppercase\space\space\space\endcsname
                                                    [####1]####2{####2}%
       ##1}}%
-  \f@nch@ifundefined{@newbaseline} % NFSS not present; 2.09 or 2e
-  {\f@nch@ifundefined{@normalsize} {\normalsize} % for ucthesis.cls
-   {\@normalsize}}%
-  {\@newbaseline}% NFSS (2.09) present
+  \f@nch@ifundefined{@normalsize} {\normalsize} % for ucthesis.cls
+   {\@normalsize}%
   }
 %    \end{macrocode}
 % \end{macro}

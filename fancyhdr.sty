@@ -245,10 +245,8 @@
       \expandafter\def\csname MakeUppercase\space\space\space\endcsname
                                                    [####1]####2{####2}%
       ##1}}%
-  \f@nch@ifundefined{@newbaseline} % NFSS not present; 2.09 or 2e
-  {\f@nch@ifundefined{@normalsize} {\normalsize} % for ucthesis.cls
-   {\@normalsize}}%
-  {\@newbaseline}% NFSS (2.09) present
+  \f@nch@ifundefined{@normalsize} {\normalsize} % for ucthesis.cls
+   {\@normalsize}%
   }
 \newcommand*{\fancycenter}[1][1em]{%
   \@ifnextchar[{\f@nch@center{#1}}{\f@nch@center{#1}[3]}%
