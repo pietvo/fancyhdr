@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/04/23 v4.2
+%<fancyhdr|extramarks>           [2024/05/08 v4.3
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -206,7 +206,7 @@
 % \DoNotIndex{\#,\$,\%,\&,\@,\\,\{,\},\^,\_,\~,\ }
 % \DoNotIndex{\@ne}
 % \DoNotIndex{\advance,\begingroup,\catcode,\closein}
-% \DoNotIndex{\closeout,\day,\def,\edef,\else,\empty,\endgroup}
+% \DoNotIndex{\closeout,\day,\def,\edef,\else,\empty,\@empty,\endgroup}
 %
 % \title{The \Package{fancyhdr} and \Package{extramarks}
 % packages\\{\normalsize version \fileversion.}}
@@ -4650,9 +4650,10 @@
 % \begin{macro}{\iffootnote}
 % These can be used in a header/footer field to make them conditional on
 % the presence of floats and/or footnotes.
+% \changes{fancyhdr v4.3}{2024/05/08}{Replace \cs{empty} with \cs{@empty}}
 %    \begin{macrocode}
-\newcommand\iftopfloat[2]{\ifx\topfloat\empty #2\else #1\fi}%
-\newcommand\ifbotfloat[2]{\ifx\botfloat\empty #2\else #1\fi}%
+\newcommand\iftopfloat[2]{\ifx\topfloat\@empty #2\else #1\fi}%
+\newcommand\ifbotfloat[2]{\ifx\botfloat\@empty #2\else #1\fi}%
 \newcommand\iffloatpage[2]{\if@fcolmade #1\else #2\fi}%
 \newcommand\iffootnote[2]{\iff@nch@footnote #1\else #2\fi}%
 %    \end{macrocode}
