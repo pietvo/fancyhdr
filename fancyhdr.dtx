@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/05/08 v5.0beta
+%<fancyhdr|extramarks>           [2024/05/13 v5.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -451,6 +451,17 @@
 % available in \Package{fancyhdr} version~4.0 and later. See section~\ref{sec:curpagestyle}.
 % \end{function}
 %
+% \begin{function}{\fancyfootalign}
+% \begin{syntax}
+% \cmd{\fancyfootalign}\texttt{\{\}}\\
+% \cmd{\fancyfootalign}\marg{length}
+% \end{syntax}
+% \end{function}
+% The command \cs{fancyfootalign} allows you to fine-tune the vertical
+% position of the footer with respect to the page bottom. This command
+% is only available in \Package{fancyhdr} 5.0 and later.
+% See section~\ref{sec:fancyfootalign}.
+% 
 % \begin{function}{\fancycenter}
 % (Only in version~4.0 and later.) The command \cs{fancycenter} packs 3
 % header fields into a full-width header. See section~\ref{sec:fancycenter}.
@@ -1795,6 +1806,54 @@
 %
 % The code for this can be found in section~\ref{sec:curpagestyle}.
 % \end{minipage}
+%
+% \paragraph{Fine-tuning the footer position.}
+% \label{sec:fancyfootalign}
+% By default \LaTeX{} positions the baseline of the footer on the bottom
+% edge of the bottom margin (the lower line of the footer box in
+% figure~\ref{fig:layout}). Most of the time this is what you want, but
+% it means that any descenders in the footer (symbols that extend below
+% the baseline, e.g. p and g or parentheses). See
+% figure~\ref{fig:footalign-default}, where the horizontal line denotes the
+% bottom border.
+% 
+% \begin{figure}[hbpt]
+%   \subcaptionsetup{format=hang}
+%   \centering\LARGE%\setlength\parindent{0pt}
+%     \subcaptionbox{default footer positioning\label{fig:footalign-default}}
+%       {\mbox{\rule{5cm}{0.2pt}\hspace{-4cm}\fbox{\strut Page Footer}}}
+%   \hspace{2cm}
+%     \subcaptionbox{\raggedright footer positioning with \cmd{\fancyfootalign}\marg{length}\label{fig:footalign-length}}[0.5\linewidth][l]
+%       {\mbox{\rule{6cm}{0.2pt}\hspace{-5.5cm}%
+%           \raisebox{0.7\baselineskip}[0.8\baselineskip][0pt]{\fbox{\strut Page Footer}}%
+%                \normalsize\raisebox{5pt}{$\swarrow$}\raisebox{10pt}{\meta{length}}}}
+%   \caption{Vertical footer positioning}
+% \end{figure}
+%
+% In some cases this is undesirable, for example when the bottom border
+% is completely missing (\texttt{0pt}). In that case the descenders are
+% cut off because they are outside of the paper, and even if there are
+% no descenders, the resulting layout with the footer at the edge of the
+% paper isn't esthetic. The beamer class has this layout.
+%
+% In this case we can shift the footer up with the \cs{fancyfootalign}
+% command (only available in \Package{fancyhdr} 5.0 and later).
+% This command has two versions:
+% \begin{flushleft}
+% \cs{fancyfootalign}\texttt{\{\}} -- This selects the default alignment,
+% as in figure~\ref{fig:footalign-default}.\\
+% \cs{fancyfootalign}\marg{length} -- This gives extra space of
+% \meta{length} between \emph{the bottom of the footer, (including the
+% space for descenders and the interline space)}, and the border. See
+% figure~\ref{fig:footalign-length}.
+% \end{flushleft}
+% Usually a \meta{length} of \texttt{0pt} is sufficient; this means that
+% the bottom of the footer box coincides with the bottom border. You can
+% also use negative \meta{length} values, so that the footer box only
+% partially sticks out under the border. A given \meta{length} applies
+% to all subsequent footers (but is subject to the local group
+% structure). It can be cancelled by \cs{fancyfootalign}\texttt{\{\}}.
+% See section~\ref{sec:beamer} for an example.
 %
 % \section{Two book examples}
 % \label{sec:book-examples}
@@ -3795,7 +3854,7 @@
 % independent marks.
 %
 % \begin{itemize}
-% \item Version 5.0, Feb 11, 2021-May 8, 2024
+% \item Version 5.0, Feb 11, 2021-May 13, 2024
 %   \begin{itemize}
 %   \item Shorten Warning message about \cs{headheight}/\cs{footskip} too large.
 %   \item If the option \texttt{[nocheck]} is given, just keep quiet and
@@ -3806,6 +3865,7 @@
 %   \item New implementation of package \Package{extramarks} with
 %     fallback to \Package{extramarks-v4}.
 %   \item Mark the \texttt{compatV3} option deprecated.
+%   \item Added command \cs{fancyfootalign}.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -4044,27 +4104,36 @@
 % actually it isn't difficult to use \Package{fancyhdr} if you take
 % provisions that the header and the footer don't
 % interfere with the \Package{beamer} layout. This can be done with
-% \begin{code}
-% \setbeamertemplate{headline}{\vspace{\headheight}}
-% \setbeamertemplate{footline}{\vspace{\footskip}}
+% \begin{code}[commandchars={+[]}]
+% \setbeamertemplate{headline}{\vspace{+meta[headheight]}}
+% \setbeamertemplate{footline}{\vspace{+meta[footskip]}}
 % \end{code}
 % \CmdIndex{headheight}\CmdIndex{footskip}%
-% after \cs{headheight} and/or \cs{footskip} have gotten their proper
-% values. Here is a complete example:
+% Note that \Package{beamer} sets \cs{headheight} and \cs{footskip} to
+% its own vales, so it doesn't make sense to set these in your document.
+% Instead you supply the desired values with \cs{setbeamertemplate} as above.
+% Also it is advised to add \cs{fancyfootalign}\texttt{\{0pt\}} to
+% prevent the footer to be too close to the bottom edge; see section~\ref{sec:fancyfootalign}
+% on page~\pageref{sec:fancyfootalign}.\\
+% Here is a complete example:
 % \NoExample{with-beamer}
 % \begin{example}
 % \documentclass{beamer}
-% \usepackage{fancyhdr}
 % \usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \pagestyle{fancy}
 % \fancyhead[L]{\includegraphics[width=0.1\textwidth]{example-image}}
 % \fancyhead[R]{Course Name}
 % \fancyhead[C]{\textbf{Subject}\\Author}
-% \pagestyle{fancy}
-% \setlength{\headheight}{30pt}
-% \setlength{\footskip}{14pt}
-%
-% \setbeamertemplate{headline}{\vspace{\headheight}}
-% \setbeamertemplate{footline}{\vspace{\footskip}}
+% \fancyfoot[L]{LEFT page footer}
+% \fancyfoot[R]{RIGHT page footer}
+% \fancyfoot[C]{{\thepage}}
+% \fancyfootinit{\tiny}
+% \renewcommand{\footrulewidth}{0.4pt}
+% 
+% \setbeamertemplate{headline}{\vspace{30pt}}
+% \setbeamertemplate{footline}{\vspace{14pt}}
+% \fancyfootalign{0pt}
 %
 % \begin{document}
 %
@@ -5195,6 +5264,36 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}[internal]{\f@nch@footalignment}
+% Length variable to store alignment length of \cs{fancyfootalign}
+%    \begin{macrocode}
+\newlength\f@nch@footalignment
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}[internal]{\iff@nch@footalign}
+% Boolean variable to store if a \meta{length} parameter was given to \cs{fancyfootalign}
+%    \begin{macrocode}
+\newif\iff@nch@footalign\f@nch@footalignfalse
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\fancyfootalign}
+% \changes{fancyhdr v5.0}{2024/05/13}{Macro \cs{fancyfootalign},
+% \cs{iff@nch@footalign} and length variable \cs{f@nch@footalignment} added}
+% This macro sets the distance between the bottom of the footer and the
+% bottom margin. The argument can be empty, or a \meta{length}.
+%    \begin{macrocode}
+\newcommand{\fancyfootalign}[1]{%
+  \def\temp@a{#1}%
+  \ifx\temp@a\@empty
+    \f@nch@footalignfalse
+  \else
+    \f@nch@footaligntrue
+    \setlength\f@nch@footalignment{#1}%
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+% 
 % \begin{macro}{\fancyhdrsettoheight}
 % \changes{fancyhdr v5.0}{2021/02/20}{Macro \cs{fancyhdrsettoheight} added}
 % Macro to store the height of a header/footer in a length variable.\\
@@ -5379,6 +5478,12 @@
         \hfill
         \llap{\parbox[t]{\headwidth}{\raggedleft\leavevmode\ignorespaces#4}}%
       }%
+%    \end{macrocode}
+% \changes{fancyhdr v5.0}{2024/05/13}{\cs{vskip}\meta{length}
+%  added if \cs{fancyfootalign}\protect\marg{length} was given.}
+%    Add vertical space if \cs{fancyfootalign}\marg{length} has been given.
+%    \begin{macrocode}
+    \iff@nch@footalign \vskip\f@nch@footalignment \fi
     }%
   }%
   #5%

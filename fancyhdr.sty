@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2024/05/08 v5.0beta
+           [2024/05/13 v5.0beta
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -296,6 +296,17 @@
   \def\f@nch@footinit{#1}%
 }
 \newlength\f@nch@height
+\newlength\f@nch@footalignment
+\newif\iff@nch@footalign\f@nch@footalignfalse
+\newcommand{\fancyfootalign}[1]{%
+  \def\temp@a{#1}%
+  \ifx\temp@a\@empty
+    \f@nch@footalignfalse
+  \else
+    \f@nch@footaligntrue
+    \setlength\f@nch@footalignment{#1}%
+  \fi
+}
 \newcommand\fancyhdrsettoheight[2]{%
   \expandafter\ifx\csname f@nch@#2\endcsname\fancyhdrsettoheight
     \else\PackageError{fancyhdr}{Unknown parameter #2 in \string\fancyhdrsettoheight}{}\fi
@@ -373,6 +384,7 @@
         \hfill
         \llap{\parbox[t]{\headwidth}{\raggedleft\leavevmode\ignorespaces#4}}%
       }%
+    \iff@nch@footalign \vskip\f@nch@footalignment \fi
     }%
   }%
   #5%
