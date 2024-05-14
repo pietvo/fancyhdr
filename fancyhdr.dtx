@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/05/13 v5.0beta
+%<fancyhdr|extramarks>           [2024/05/14 v5.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -319,10 +319,10 @@
 %
 % This documentation describes version 5.0 or later of the
 % \Package{fancyhdr} and \Package{extramarks} packages. The user
-% documentation is valid for the versions 4.0 or later of the
-% \Package{fancyhdr} package (except for the changes mentioned in
-% sections~\ref{sec:version-4} and \ref{sec:version-5}), and version 5.0 or later of the
-% \Package{extramarks} package.
+% documentation is also mostly valid for the versions 4.0 or later of
+% the \Package{fancyhdr} and \Package{extramarks} packages (except
+% for the changes mentioned in sections~\ref{sec:version-4} and
+% \ref{sec:version-5}).
 %
 % \end{abstract}
 %
@@ -602,9 +602,9 @@
 %
 % \begin{function}{\extramarks, \extramarksleft, \extramarksright}
 % \begin{syntax}
-% \cs{extramarks}\marg{aa}\marg{bb}\\
-% \cs{extramarksleft}\marg{aa}\\
-% \cs{extramarksright}\marg{bb}
+% \cs{extramarks}\marg{left-text}\marg{right-text}    
+% \cs{extramarksleft}\marg{left-text}\\
+% \cs{extramarksright}\marg{right-text}    
 % \end{syntax}
 %
 % The command \cs{extramarks}\marg{aa}\marg{bb} defines two extra marks,
@@ -623,6 +623,14 @@
 % and they can also be used independently of each other by the commands
 % \cs{extramarksleft}\marg{aa} and \cs{extramarksright}\marg{bb}.
 % \end{function}
+%
+% \begin{variable}{extramarks-left, extramarks-right}
+% \begin{syntax}
+% \texttt{extramarks-left}\\
+% \texttt{extramarks-right}
+% \end{syntax}
+%   These are the `mark classes' for the two marks.
+% \end{variable}
 %
 % \begin{fblock}
 % \textbf{NOTE}: The implementation of \Package{extramarks} version 5
@@ -3854,7 +3862,7 @@
 % independent marks.
 %
 % \begin{itemize}
-% \item Version 5.0, Feb 11, 2021-May 13, 2024
+% \item Version 5.0, Feb 11, 2021-May 14, 2024
 %   \begin{itemize}
 %   \item Shorten Warning message about \cs{headheight}/\cs{footskip} too large.
 %   \item If the option \texttt{[nocheck]} is given, just keep quiet and
@@ -6012,1195 +6020,152 @@
 % \section{extramarks.sty}
 % \setlength\parindent{0pt}
 %<*extramarks>
-%<@@=extramarks>
 %
-% \changes{extramarks v5.0}{2021/03/22}{New implementation with
+% \changes{extramarks v5.0}{2024/05/14}{New implementation with
 % independent marks, and fallback option to earlier version 4.}
 % Provide a rollback to earlier version
 %    \begin{macrocode}
 \providecommand\DeclareRelease[3]{}
 \providecommand\DeclareCurrentRelease[2]{}
 \DeclareRelease{v4}{2022/05/18}{extramarks-v4.sty}
-\DeclareCurrentRelease{}{2024/04/26}
-
-\RequirePackage{expl3,xparse}
-\RequirePackage{etoolbox}
-\ExplSyntaxOn
+\DeclareCurrentRelease{}{2024/05/14}
+\@ifundefined{NewMarkClass}
+             {\PackageWarningNoLine{extramarks}{%
+**************************************************\MessageBreak
+Your LaTeX installation is too old for extramarks version 5.\MessageBreak
+We will fallback to extramarks version 4 now.\MessageBreak
+Please note that some commands will not be available,\MessageBreak
+and that the functionality may be slightly different.\MessageBreak
+You are advised to update your LaTeX installation.\MessageBreak
+**************************************************}
+             \input{extramarks-v4.sty}\endinput}{}
 %    \end{macrocode}
 %
 % This package gives you extra marks, that you can define, set and use
-% in your page headers and footers. It is based on the \eTeX{}
-% \cs{marks} mechanism. However we cannot just use this mechanism
-% directly to extract the relevant marks from a page for two reasons:
-% \begin{enumerate}
-% \item \LaTeX's output routine may clobber the marks when floats are
-% processed on the page
-% \item Sometimes the marks are hidden inside boxes that constitute the
-% page, for example with \cs{twocolumn} mode and with
-% \Package{multicol}. In these cases we must extract the marks from all
-% the boxes that make up the page and combine them. So this package sets
-% the relevant marks during the construction of the page and puts them
-% in variables, from where they can be used in the headers and footers.
-% \end{enumerate}
+% in your page headers and footers. It is based on the new \LaTeX{}
+% marks mechanism as introduced in the 2022/06/01 \LaTeX() release. If
+% your \LaTeX{} inplementation is older it will fallback to
+% \Package{extramarks} version 4.
 %
-% \textbf{Algorithm for extracting the marks from a sequence of boxes on a page:}\\
-% for example in \cs{twocolumn}, or \Package{multicol}, on each column.
-% In the `normal' one-column case, on the main vertical box (\cs{@outputbox}). \\
-% The values in the variables reflect the marks on the current page;
-% they could be empty. On retrieving the marks, empty marks
-% are replaced by the value of \texttt{topmark}. (\textbf{NOTE}: What is called
-% \texttt{lastmark} on the user level, is called \texttt{botmark}
-% internally, because that is the name \TeX{} uses.)
-% \\[2ex]
-% For each mark:\\
-% INIT:\\
-% \mbox{~}    if botmark != empty:\\
-% \mbox{\quad}        topmark := botmark (= previous value: initial value \verb|{{}}|)\\
-% \mbox{~}    botmark := firstmark := empty\\
-% For each BOX:\\
-% \mbox{~}    (If the box was the result of a \cs{vsplit} skip next line:)\\
-% \mbox{~}    \cs{vsplit} box to maxdimen\\
-% \mbox{~}    if splitfirstmark not empty: (i.e. there are marks in the box)\\
-% \mbox{\quad}     if firstmark = empty:\\
-% \mbox{\quad}\mbox{\quad}       firstmark := splitfirstmark\\
-% \mbox{\quad}     botmark := splitbotmark\\[2ex]
-% RETRIEVE \meta{which}mark, where \meta{which} = \texttt{first} or
-% \texttt{last} (internally \texttt{bot}) :\\
-% \mbox{~}   if \meta{which}mark = empty:\\
-% \mbox{\quad}    return \texttt{topmark}\\
-% \mbox{~}   else:\\
-% \mbox{\quad}    return \texttt{\meta{which}mark}\\
+% \changes{extramarks v1.99e}{2000/10/11}{Added a few \% marks to get rid
+% of unwanted spaces, and \cs{endinput}. \\
+% Added LPPL license clause.}
+% \changes{extramarks v2.0beta}{2002/03/12}{Adapted for the new
+% implementation of marks in \LaTeX{} to solve bug latex/3203. \\
+% Added symmetric commands \cs{firstrightmark}, \cs{lastleftmark}, \cs{firstleftxmark},
+% \cs{firstrightxmark}, \cs{lastrightxmark}, \cs{lastleftxmark}, \cs{topleftxmark} and
+% \cs{toprightxmark}.}
+% \changes{extramarks v2.0x=fancyhdr v 2.0}{2004/03/03}{version 2.0 Release.}
+% \changes{extramarks v2.1}{2016/08/27}{Added a \cs{ProvidesPackage} line.\\
+% Updated contact information.}
+% \changes{extramarks v3.9}{2016/10/12}{Unify version number with \Package{fancyhdr.sty}.}
 %
-% INIT code will be run (trivially) at the creation of a mark,
-% and after a page has been output, so that it will be initialised for
-% the next page. This can be done naturally at the end of the page
-% building function \cs{@outputpage}.
-% \\[2ex]
-% In normal one-column output, we run BOX code on the
-% page, just before it is output.\\
-% In two-column mode, we run BOX code on (1) the optional argument of
-% \cs{twocolumn}, (2) the left column, (3) the right column.
-% In other packages, such as \Package{multicol} it may be more complicated.
+% \changes{extramarks v5.0}{2024/05/14}{New implementation with
+% independent marks}
 %
-% \begin{variable}[internal]{\g_@@_marks_seq}
-%   Sequence of defined extra marks
+% \begin{macro}[internal]{\@mkboth}
+% Initialization of \cs{@mkboth}, so that it will pick up changes to
+% \cs{markboth}
+% \changes{extramarks v4.0.3}{2022/05/18}{Initialize definition of
+% \cs{@mkboth} to \cs{def}\Cmd{@mkboth\{\cs{protect}\cs{markboth}\}}
+% if it wasn't equal to \cs{@gobbletwo} so that it will pick up
+% changes to \cs{markboth}}
 %    \begin{macrocode}
-\seq_new:N \g_@@_marks_seq
+\ifx\@mkboth\@gobbletwo\else\def\@mkboth{\protect\markboth}\fi
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{variable}{extramarks-left, extramarks-right}
+% \begin{syntax}
+% \texttt{extramarks-left}\\
+% \texttt{extramarks-right}
+% \end{syntax}
+%   We need two mark classes. We call them \texttt{extramarks-left} and \texttt{extramarks-right}.
+%    \begin{macrocode}
+\NewMarkClass{extramarks-left}
+\NewMarkClass{extramarks-right}
 %    \end{macrocode}
 % \end{variable}
-%
-% \begin{variable}[internal]{\l_@@_temp_box}
-%   Temporary box
-%    \begin{macrocode}
-\box_new:N \l_@@_temp_box
-%    \end{macrocode}
-% \end{variable}
-%
-% \begin{variable}[internal]{\l_@@_temp_tl}
-%   Temporary token list
-%    \begin{macrocode}
-\tl_new:N \l_@@_temp_tl
-%    \end{macrocode}
-% \end{variable}
-%
-% Debugging
-%
-% \begin{macro}[internal]{\@@_show_mark:n}
-% \begin{syntax}
-% \cs{@@_show_mark:n}\marg{mark variable name}
-% \end{syntax}
-%    \begin{macrocode}
-\cs_new:Nn \@@_show_mark:n
-{
-  \token_to_str:c { #1 } -> \tl_to_str:c { #1 }\MessageBreak
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[internal]{\extramarks@info}
-% \begin{syntax}
-% \cs{extramarks@info}\marg{message}
-% \end{syntax}
-% Option `debugshow': Print debugging message
-%    \begin{macrocode}
-\cs_new_eq:NN \extramarks@info \use_none:n
-\DeclareOption{debugshow}{%
-\cs_gset_protected:Npn \extramarks@info #1
-  {
-   \GenericWarning
-       {(extramarks)\@spaces\@spaces}
-       {Package~extramarks:~#1}
-  }
-}
-\ProcessOptions*
-%    \end{macrocode}
-% \end{macro}
-%
-% Messages
-%
-%    \begin{macrocode}
-\msg_new:nnn {extramarks} {not-defined} {\token_to_str:N #1:~mark~#2~not~defined}
-\msg_new:nnn {extramarks} {already-defined} {\token_to_str:N #1:~mark~#2~already~defined}
-\msg_new:nnn {extramarks} {cannot-patch} {Patch ~ \token_to_str:N #1~failed}
-%    \end{macrocode}
-% \begin{macro}[internal]{\msg@error@nnn, \msg@error@nnnn}
-% Use these names in the patching code (LaTeX2e syntax)
-%
-%    \begin{macrocode}
-\cs_new_eq:NN \msg@error@nnn  \msg_error:nnn
-\cs_new_eq:NN \msg@error@nnnn \msg_error:nnnn
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{variable}[internal]{\c_@@_<name>_int, \g_@@_topmark_<name>_tl,
-%      \g_@@_firstmark_<name>_tl, \g_@@_botmark_<name>_tl}
-% Variables for a new mark \meta{name} :
-% \begin{syntax}
-% \Cmd{c_@@_\meta{name}_int} : the mark (number as a char)
-% \Cmd{g_@@_topmark_\meta{name}_tl} : topmark (braced)
-% \Cmd{g_@@_firstmark_\meta{name}_tl} : firstmark (braced)
-% \Cmd{g_@@_botmark_\meta{name}_tl} : botmark (braced)
-% \Cmd{l_@@_save_topmark_\meta{name}_tl} : locally saved topmark (braced)
-% \Cmd{l_@@_save_firstmark_\meta{name}_tl} : locally saved firstmark (braced)
-% \Cmd{l_@@_save_botmark_\meta{name}_tl} : locally saved botmark (braced)
-% \end{syntax}
-% \end{variable}
-%
-% \begin{macro}{\extramarksput, \extramarkstop, \extramarksfirst, \extramarkslast}
-% Commands for a new mark \meta{name} :
-% \begin{syntax}
-% \cs{extramarksput}\marg{name}\marg{value} : command to set the mark
-% \cs{extramarkstop}\marg{name} : topmark (user level)
-% \cs{extramarksfirst}\marg{name} : firstmark (user level)
-% \cs{extramarkslast}\marg{name} : botmark (user level)
-% \end{syntax}
-% \end{macro}
-%
-% \begin{macro}{\extramarksnewmark}
-% \begin{syntax}
-% \cs{extramarksnewmark}\marg{name}
-% \end{syntax}
-% Create a new mark; parameter is a name, preferably alphabetical
-%    \begin{macrocode}
-\NewDocumentCommand \extramarksnewmark { m }
-{
-%    \end{macrocode}
-% Test if mark not yet defined
-%    \begin{macrocode}
-  \cs_if_exist:cTF {c_@@_#1_int}
-    { \msg_error:nnnn {extramarks} {already-defined}
-      {\extramarksnewmark} {#1} }
-    {
-%    \end{macrocode}
-% Create the mark
-%    \begin{macrocode}
-      \exp_args:Nc \newmarks {c_@@_#1_int}
-%    \end{macrocode}
-% Put it in the list of marks
-%    \begin{macrocode}
-      \seq_put_right:Nn \g_@@_marks_seq { #1 }
-%    \end{macrocode}
-% Create the mark's variables, initialize topmark to empty mark (braced).
-% Others are really empty.
-%    \begin{macrocode}
-      \tl_new:c {g_@@_topmark_#1_tl}
-      \tl_new:c {g_@@_firstmark_#1_tl}
-      \tl_new:c {g_@@_botmark_#1_tl}
-      \tl_gset:cn {g_@@_topmark_#1_tl} {{}}
-    }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[internal]{\@@_get_boxmarks_init:n}
-% \begin{syntax}
-% \cs{@@_get_boxmarks_init:n}\marg{mark name}
-% \end{syntax}
-% INIT code\\
-% \mbox{~}    if botmark != empty:\\
-% \mbox{\quad}        topmark := botmark (= previous value: initial value \verb|{{}}|)\\
-% \mbox{~}    botmark := firstmark := empty\\
-%
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_get_boxmarks_init:n #1
-{
-  \tl_if_empty:cF { g_@@_botmark_#1_tl }
-    {
-      \tl_gset_eq:cc { g_@@_topmark_#1_tl } { g_@@_botmark_#1_tl }
-    }
-  \tl_gset_eq:cN { g_@@_firstmark_#1_tl } \c_empty_tl
-  \tl_gset_eq:cN { g_@@_botmark_#1_tl } \c_empty_tl
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[internal]{\@@_get_boxmarks:n}
-% \begin{syntax}
-% \cs{@@_get_boxmarks:n}\marg{mark name}
-% \end{syntax}
-% Extract the marks of the last vsplitted box.
-%
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_get_boxmarks:n #1
-{
-%    \end{macrocode}
-% Get our \cs{splitfirstmark}
-%    \begin{macrocode}
-  \tl_gset:No \l_@@_temp_tl
-    { \splitfirstmarks \use:c { c_@@_#1_int } }
-  \tl_if_empty:NF \l_@@_temp_tl
-%    \end{macrocode}
-% If not empty
-%    \begin{macrocode}
-    {
-      \tl_if_empty:cT { g_@@_firstmark_#1_tl }
-        {
-          \tl_gset_eq:cN { g_@@_firstmark_#1_tl } \l_@@_temp_tl
-        }
-      \tl_gset:co { g_@@_botmark_#1_tl }
-        { \splitbotmarks \use:c { c_@@_#1_int } }
-    }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-%
-% \begin{macro}[internal]{\@@_boxmarks:n}
-% \begin{syntax}
-% \cs{@@_boxmarks:n}\marg{mark name}
-% \end{syntax}
-% Extract the local marks of the last vsplitted box.
-% This doesn't take into account any existing marks from outside the
-% box, in contrast to \cs{__extramarks_get_boxmarks:n}. So these will be
-% lost, which means that in general they should be saved first.
-%
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_boxmarks:n #1
-{
-  \tl_gset:No \l_@@_temp_tl
-    { \splitfirstmarks \use:c{c_@@_#1_int} }
-  \tl_if_empty:NF \l_@@_temp_tl
-    {
-      \tl_gset_eq:cN { g_@@_firstmark_#1_tl } \l_@@_temp_tl
-      \tl_gset:co { g_@@_botmark_#1_tl }
-        { \splitbotmarks \use:c{c_@@_#1_int} }
-    }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[internal]{\@@_vsplit_box}
-% \begin{syntax}
-% \cs{@@_vsplit_box}\meta{box}
-% \end{syntax}
-% Temporary \cs{vsplit} a box. This should be called inside a \TeX{} group.
-% This could generate a \TeX{} errormessage if the box to be split
-% contains infinite glue shrinkage. This is harmless for our purpose,
-% but unfortunately we cannot disable the error message. We temporarily
-% set \cs{errorcontextlines} to $-1$, however, to make the output as
-% little as possible. We need a variable to store the original value.
-% \begin{variable}[internal]{\l_@@_errorcontextlines}
-%    \begin{macrocode}
-\int_new:N \l_@@_errorcontextlines
-%    \end{macrocode}
-% \end{variable}
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_vsplit_box #1
-{
-    \dim_set:Nn \tex_splitmaxdepth:D \c_max_dim
-    \int_set:Nn \tex_vbadness:D      \c_max_int
-%    \end{macrocode}
-% Make a temp copy of the box (otherwise it will become empty)
-%    \begin{macrocode}
-    \vbox_set:Nn \l_@@_temp_box { \unvcopy #1 \unskip }
-%    \end{macrocode}
-% Split the temporary box, with \cs{errorcontextlines} = $-1$.
-%    \begin{macrocode}
-    \int_set_eq:NN \l_@@_errorcontextlines \errorcontextlines
-    \int_set:Nn \errorcontextlines {-1}
-    \vbox_set_split_to_ht:NNn \l_@@_temp_box \l_@@_temp_box \c_max_dim
-    \int_set_eq:NN \errorcontextlines \l_@@_errorcontextlines
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% Patching the output routine:\\
-%
-% The patching must be done with \cs{ExplSyntaxOff}, because otherwise it
-% may fail if the macro to be patched contains \verb|_| : or significant
-% spaces. Therefore also the names of these macros are with @ instead of
-% \verb|_| and :
-%
-% First we save the \cs{@outputpage} macro, just in case we patched the
-% wrong version in a package that has its own one.
-%    \begin{macrocode}
-\cs_new_eq:NN \extramarks@saved@outputpage \@outputpage
-%    \end{macrocode}
-%
-% \begin{macro}[internal]{\extramarks@get@splitmarks}
-% \begin{syntax}
-% \cs{extramarks@get@splitmarks}\marg{context}
-% \end{syntax}
-% Process any marks in the last \cs{vsplit}ted box. \meta{context} is
-% the place in the code (for debugging).
-%    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@get@splitmarks #1
-{
-  \seq_map_inline:Nn \g_@@_marks_seq
-    {
-%    \end{macrocode}
-% Process any marks in the BOX
-%    \begin{macrocode}
-      \@@_get_boxmarks:n { ##1 }
-      \extramarks@info
-        {
-          \string \@@_get_boxmarks:n \space { ##1 }~in~\string #1\MessageBreak
-          \@@_show_mark:n  { g_@@_firstmark_##1_tl }
-          \@@_show_mark:n  { g_@@_botmark_##1_tl }
-        }
-    }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% % \begin{macro}[internal]{\extramarks@insert@nonemptymarks}
-% \begin{syntax}
-% \cs{extramarks@insert@nonemptymarks}\marg{which}\marg{context},
-% where \meta{which} = \texttt{first} or \texttt{bot},
-% and \meta{context} = location where used (for debugging).
-% \end{syntax}
-% For each mark, if the \meta{which}mark is not empty, put the mark in
-% the vertical list.
-%    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@insert@nonemptymarks #1 #2
-{
-  \seq_map_inline:Nn \g_@@_marks_seq
-    {
-      \tl_if_empty:cF {g_@@_#1mark_##1_tl}
-        {
-          \tex_marks:D \use:c{c_@@_##1_int} {\exp_not:v {g_@@_#1mark_##1_tl}}
-          \extramarks@info
-            {
-              In~\string \insert@nonemptymarks \space {#1}~from~\string #2\MessageBreak
-              \string \xmarks \use:c{c_@@_##1_int}
-                {\tl_to_str:c {g_@@_#1mark_##1_tl}}\MessageBreak
-            }
-        }
-    }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% Patch function for the processing of \cs{twocolumn} optional argument.
-% This is a bit more complicated, because there isn't a nice hook point.
-% That part does double-\cs{vbox}ing of the text in case of color.
-% But we need marks from the inner \cs{vbox}. So we have to patch that whole part.\\
-% By the way, \LaTeX's standard marks are lost in this part.
-% \begin{macro}[internal]{\extramarks@set@marks@topnewpage}
-% \begin{syntax}
-% \cs{extramarks@set@marks@topnewpage}\marg{text}, where \meta{text} is the
-% optional argument of \cs{twocolumn}.
-% \end{syntax}
-% The code makes the inner \cs{vbox}, extracts the marks from it (by using a
-% temporary \cs{vsplit}), and then does the color \cs{vbox}ing.
-%    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@set@marks@topnewpage #1
-{
-  \group_begin:
-    \global\setbox\@currbox\vbox{
-        \hsize\textwidth
-        \@parboxrestore
-        \col@number \@ne
-        #1
-        \vskip -\dbltextfloatsep
-             }
-    \@@_vsplit_box \@currbox
-    \extramarks@get@splitmarks{\@topnewpage}
-    \global \setbox\@currbox
-    \color@vbox
-      \normalcolor
-      \copy\@currbox
-    \color@endbox
-  \group_end:
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[internal]{\extramarks@getmarks}
-% \begin{syntax}
-% \cs{extramarks@getmarks}\marg{box}\marg{context}
-% \end{syntax}
-% Patch code for some box on a page. In the standard case this is used
-% for a `normal' one-column page, and for the second column on
-% \cs{twocolumn}, but it can be used for any box.
-% The box used is \meta{box}. \meta{context} is the place where called,
-% for debugging.
-% Do a temporary vsplit and process the marks of the box.
-%    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@getmarks #1 #2
-{
-  \extramarks@info
-  {
-    \string \extramarks@getmarks \space (\string #1)~in~\string #2\MessageBreak
-  }
-  \group_begin:
-    \@@_vsplit_box #1
-    \extramarks@get@splitmarks { #2 }
-  \group_end:
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[internal]{\extramarks@getlocalmarks}
-% \begin{syntax}
-% \cs{extramarks@getlocalmarks}\marg{box}\marg{context}
-% \end{syntax}
-% Get local marks fo some box on a page. This doesn't take into account
-% already aquired marks from outside. In general these should have been
-% saved before calling this function.
-% The box used is \meta{box}. \meta{context} is the place where called,
-% for debugging.
-% Do a temporary \cs{vsplit} and process the marks of the box.
-%    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@getlocalmarks #1 #2
-{
-  \group_begin:
-    \@@_vsplit_box #1
-    \seq_map_inline:Nn \g_@@_marks_seq
-      {
-        \@@_boxmarks:n { ##1 }
-        \extramarks@info
-          {
-            \string \@@_boxmarks:n \space { ##1 }~in~\string #2\MessageBreak
-            \@@_show_mark:n  { g_@@_firstmark_##1_tl }
-            \@@_show_mark:n  { g_@@_botmark_##1_tl }
-          }
-      }
-  \group_end:
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[internal]{\extramarks@initmarks}
-% \begin{syntax}
-% \cs{extramarks@initmarks}
-% \end{syntax}
-% INIT all marks
-%    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@initmarks
-{
-  \seq_map_inline:Nn \g_@@_marks_seq
-  {
-    \@@_get_boxmarks_init:n { ##1 }
-    \extramarks@info
-      {
-        \string \@@_get_boxmarks_init:n \space { ##1 }\MessageBreak
-        \@@_show_mark:n  { g_@@_topmark_##1_tl }
-        \@@_show_mark:n  { g_@@_firstmark_##1_tl }
-        \@@_show_mark:n  { g_@@_botmark_##1_tl }
-      }
-  }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[internal]{\extramarks@savemarks}
-% \begin{syntax}
-% \cs{extramarks@savemarks}
-% \end{syntax}
-% Save all marks to local variables
-%    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@savemarks #1
-{
-  \seq_map_inline:Nn \g_@@_marks_seq
-    {
-      \tl_set_eq:cc {l_@@_save_topmark_##1_tl} {g_@@_topmark_##1_tl}
-      \tl_set_eq:cc {l_@@_save_firstmark_##1_tl} {g_@@_firstmark_##1_tl}
-      \tl_set_eq:cc {l_@@_save_botmark_##1_tl} {g_@@_botmark_##1_tl}
-      \extramarks@info
-        {
-          \string \extramarks@savemarks \space in~\string #1\MessageBreak
-          \@@_show_mark:n { g_@@_topmark_##1_tl }
-          \@@_show_mark:n { g_@@_firstmark_##1_tl }
-          \@@_show_mark:n { g_@@_botmark_##1_tl }
-        }
-    }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[internal]{\extramarks@restoremarks}
-% \begin{syntax}
-% \cs{extramarks@restoremarks}
-% \end{syntax}
-% Restore all marks from local variables
-%    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@restoremarks #1
-{
-  \seq_map_inline:Nn \g_@@_marks_seq
-    {
-      \tl_gset_eq:cc {g_@@_topmark_##1_tl} {l_@@_save_topmark_##1_tl}
-      \tl_gset_eq:cc {g_@@_firstmark_##1_tl} {l_@@_save_firstmark_##1_tl}
-      \tl_gset_eq:cc {g_@@_botmark_##1_tl} {l_@@_save_botmark_##1_tl}
-      \extramarks@info
-        {
-          \string \extramarks@restoremarks \space in~\string #1\MessageBreak
-          \@@_show_mark:n { g_@@_topmark_##1_tl }
-          \@@_show_mark:n { g_@@_firstmark_##1_tl }
-          \@@_show_mark:n { g_@@_botmark_##1_tl }
-        }
-    }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% From here on we use traditional \LaTeXe{} syntax, because we patch
-% traditional code.
-%    \begin{macrocode}
-\ExplSyntaxOff
-%    \end{macrocode}
-%
-% Patch the processing of \cs{twocolumn} optional argument (\cs{@topnewpage}).
-% \changes{extramarks v5.0}{2022/05/31}{Check if \cs{scr@topnewpage} is
-% defined to patch that instead of \cs{@topnewpage}.}
-% The \Package{koma-script} classes \texttt{screprt} and
-% \texttt{scrbook} redefine \cs{@topnewpage} and save the original
-% definition in \cs{scr@topnewpage}. So when \cs{scr@topnewpage} is
-% defined we patch that command instead of \cs{@topnewpage}.
-%    \begin{macrocode}
-\ifdefined\scr@topnewpage
-  \patchcmd{\scr@topnewpage}{\global \setbox\@currbox
-    \color@vbox
-      \normalcolor
-      \vbox {%
-        \hsize\textwidth
-        \@parboxrestore
-        \col@number \@ne
-        #1%
-        \vskip -\dbltextfloatsep
-             }%
-    \color@endbox}
-  {\extramarks@set@marks@topnewpage{#1}}
-  {\extramarks@info{Patched \string \scr@topnewpage}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\scr@topnewpage}}
-\else
-%    \end{macrocode}
-%
-% Patch \cs{@topnewpage}.
-%    \begin{macrocode}
-  \patchcmd{\@topnewpage}{\global \setbox\@currbox
-    \color@vbox
-      \normalcolor
-      \vbox {%
-        \hsize\textwidth
-        \@parboxrestore
-        \col@number \@ne
-        #1%
-        \vskip -\dbltextfloatsep
-             }%
-    \color@endbox}
-  {\extramarks@set@marks@topnewpage{#1}}
-  {\extramarks@info{Patched \string \@topnewpage}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\@topnewpage}}
-\fi
-%    \end{macrocode}
-%
-% Patch the \cs{@outputdblcol} macro for the first colum case.
-% \cs{@outputbox} contains the first column, and has been \cs{vsplit}
-% so we can get its marks with \cs{splitmarks}
-%
-%    \begin{macrocode}
-\patchcmd{\@outputdblcol}{\ifx\@firstcolfirstmark\@empty}
-  {\extramarks@get@splitmarks{\outputdblcol 1} \ifx\@firstcolfirstmark\@empty}
-  {\extramarks@info{Patched \string \@outputdblcol 1}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 1}}
-%    \end{macrocode}
-%
-% Patch the \cs{@outputdblcol} macro for the second column case.
-% \cs{@outputbox} still contains the second column, not yet \cs{vsplit}ted.
-% Get the marks by \cs{vsplit} to the maximum height.\\
-%
-%    \begin{macrocode}
-\patchcmd{\@outputdblcol}{\global\@firstcolumntrue}
-  {\global\@firstcolumntrue\extramarks@getmarks\@outputbox{\@outputdblcol 2}}
-  {\extramarks@info{Patched \string \@outputdblcol 2}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\@outputdblcol patch 2}}
-%    \end{macrocode}
-%
-% End of \cs{@outputdblcol} patching code
-% \\[2ex]
-% Patch the \cs{@opcol} macro for the single column case
-%
-%    \begin{macrocode}
-\patchcmd {\@opcol} {\@outputpage}
-  {\extramarks@getmarks\@outputbox{\@opcol} \@outputpage}
-  {\extramarks@info{Patched \string \@opcol}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {in \@opcol: \@outputpage} {}}
-%    \end{macrocode}
-%
-% End of \cs{@opcol} patching code
-% \\[2ex]
-% Patch the \cs{@outputpage} macro.
-% Put the INIT code at the end.
-%
-%    \begin{macrocode}
-\apptocmd {\@outputpage}
-  {\extramarks@initmarks}
-  {\extramarks@info{Patched end of \string \@outputpage}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {end of \@outputpage} {}}
-%    \end{macrocode}
-%
-% End of \cs{@outputpage} patching code
-% \\[2ex]
-% Create our two marks (\texttt{left} and \texttt{right}).
-%
-%    \begin{macrocode}
-\extramarksnewmark{left}
-\extramarksnewmark{right}
-%    \end{macrocode}
-% User-level commands.
-% \\[2ex]
-% \begin{macro}{\extramarksput}
-% \begin{syntax}
-% \cs{extramarksput}\marg{name}\marg{text}
-% \end{syntax}
-% Put the \meta{text} in the mark \meta{name}, with an extra pair of braces
-% around it to distinguish an empty mark from the absence of a mark.
-%
-%    \begin{macrocode}
-\ExplSyntaxOn
-\NewDocumentCommand \extramarksput { m m }
-{
-  \cs_if_exist:cTF {c_@@_#1_int}
-  {
-%    \end{macrocode}
-% Use protected eval
-%    \begin{macrocode}
-    \group_begin:
-      \cs_set_eq:NN \label    \scan_stop:
-      \cs_set_eq:NN \index    \scan_stop:
-      \cs_set_eq:NN \glossary \scan_stop:
-      \unrestored@protected@xdef \l_@@_temp_tl { #2 }
-%    \end{macrocode}
-% Put braced value in the mark, evaluated once.
-% \changes{extramarks v5.0}{2024/04/26}{Use \cs{exp_not:o} to expand
-% the mark once.}
-%    \begin{macrocode}
-      \tex_marks:D \use:c { c_@@_#1_int } {{ \exp_not:o \l_@@_temp_tl }}
-    \group_end:
-  }
-  { \msg_error:nnnn {extramarks} {not-defined} {\extramarksput} {#1} }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\extramarkstop}
-% \begin{syntax}
-% \cs{extramarkstop}\marg{name}
-% \end{syntax}
-% Extract the topmark of \meta{name}
-%    \begin{macrocode}
-\NewExpandableDocumentCommand \extramarkstop { m }
-{
-  \cs_if_exist:cTF {c_@@_#1_int}
-  {
-%    \end{macrocode}
-% Get unbraced value out of the mark
-%    \begin{macrocode}
-     \exp_last_unbraced:Nv \use:n { g_@@_topmark_#1_tl }
-  }
-  { \msg_error:nnnn {extramarks} {not-defined} {\extramarkstop} {#1} }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% RETRIEVE \meta{which}mark, where \meta{which} = \texttt{first} or
-% \texttt{last} (internally \texttt{bot}) :\\
-% \mbox{~}   if \meta{which}mark = empty:\\
-% \mbox{\quad}    return \texttt{topmark}\\
-% \mbox{~}   else:\\
-% \mbox{\quad}    return \texttt{\meta{which}mark}\\
-%
-% \begin{macro}{\extramarksfirst}
-% \begin{syntax}
-% \cs{extramarksfirst}\marg{name}
-% \end{syntax}
-% Extract the firstmark of \meta{name}
-%
-%    \begin{macrocode}
-\NewExpandableDocumentCommand \extramarksfirst { m }
-{
-  \cs_if_exist:cTF {c_@@_#1_int}
-    {
-%    \end{macrocode}
-% Get unbraced value out of the mark
-%    \begin{macrocode}
-      \tl_if_empty:cTF { g_@@_firstmark_#1_tl }
-        {
-          \exp_last_unbraced:Nv \use:n { g_@@_topmark_#1_tl }
-        }
-        {
-          \exp_last_unbraced:Nv \use:n { g_@@_firstmark_#1_tl }
-        }
-    }
-    { \msg_error:nnnn {extramarks} {not-defined} {\extramarksfirst} {#1} }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\extramarkslast}
-% \begin{syntax}
-% \cs{extramarkslast}\marg{name}
-% \end{syntax}
-% Extract the lastmark (botmark) of \meta{name}
-%
-%    \begin{macrocode}
-\NewExpandableDocumentCommand \extramarkslast { m }
-{
-  \cs_if_exist:cTF {c_@@_#1_int}
-    {
-%    \end{macrocode}
-% Get unbraced value out of the mark
-%    \begin{macrocode}
-      \tl_if_empty:cTF { g_@@_botmark_#1_tl }
-        {
-          \exp_last_unbraced:Nv \use:n { g_@@_topmark_#1_tl }
-        }
-        {
-          \exp_last_unbraced:Nv \use:n { g_@@_botmark_#1_tl }
-        }
-    }
-    { \msg_error:nnnn {extramarks} {not-defined} {\extramarkslast} {#1} }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\ifextramarksmissing}
-% \begin{syntax}
-% \cs{ifextramarksmissing}\marg{name}\marg{true code}\marg{false code}
-% \end{syntax}
-% Test if there is no mark of \meta{name} on this page. If there aren't any,
-% the \meta{true code} is executed. In this case both the
-% \texttt{firstmark} and \texttt{lastmark} (\cs{extramarksfirst} and
-% \cs{extramarkslast}) will be equal to \texttt{topmark} (\cs{extramarkstop}).
-% If there is at least one mark of \meta{name} on the page, the
-% \meta{false code} is executed.
-%
-%    \begin{macrocode}
-\NewExpandableDocumentCommand \ifextramarksmissing { m m m }
-{
-  \cs_if_exist:cTF {c_@@_#1_int}
-    {
-      \tl_if_empty:cTF { g_@@_firstmark_#1_tl }
-        { #2 }
-        { #3 }
-    }
-    { \msg_error:nnnn {extramarks} {not-defined} {\ifextramarksmissing} {#1} }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\extramarksreset}
-% \begin{syntax}
-% \cs{extramarksreset}\marg{name}
-% \end{syntax}
-% Reset the mark of \meta{name}, i.e. set its\texttt{topmark} (\cs{extramarkstop})
-% to an empty mark (braced, i.e. \verb|{ { } }|
-%
-%    \begin{macrocode}
-\NewDocumentCommand \extramarksreset { m }
-{
-  \cs_if_exist:cTF {c_@@_#1_int}
-    {
-      \tl_gset:cn { g_@@_topmark_#1_tl } { { } }
-      \tl_gset_eq:cN { g_@@_firstmark_#1_tl } \c_empty_tl
-      \tl_gset_eq:cN { g_@@_botmark_#1_tl } \c_empty_tl
-    }
-    { \msg_error:nnnn {extramarks} {not-defined} {\extramarksreset} {#1} }
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% ~\\[2ex]
-% Convenience functions (compatibility with v4)
-%
-% \begin{macro}{\extramarksleft}
-% \begin{syntax}
-% \cs{extramarksleft}\marg{text}
-% \end{syntax}
-% Put the \meta{text} in the \texttt{left} mark, with an extra pair of braces.
-%    \begin{macrocode}
-\NewDocumentCommand \extramarksleft { m }
-{
-  \extramarksput{left}{#1}
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\extramarksright}
-% \begin{syntax}
-% \cs{extramarksright}\marg{text}
-% \end{syntax}
-% Put the \meta{text} in the \texttt{right} mark, with an extra pair of braces.
-%
-%    \begin{macrocode}
-\NewDocumentCommand \extramarksright { m }
-{
-  \extramarksput{right}{#1}
-}
-%    \end{macrocode}
-% \end{macro}
 %
 % \begin{macro}{\extramarks}
-% \begin{syntax}
-% \cs{extramarks}\marg{aa}\marg{bb}
-% \end{syntax}
-% Put \meta{aa} in the \texttt{left} mark and \meta{bb} in the \texttt{right}
-% mark, with an extra pair of braces.
-%
+% This command is used to define the extra marks.
 %    \begin{macrocode}
-\NewDocumentCommand \extramarks { m m }
-{
-  \extramarksput{left}{#1}
-  \extramarksput{right}{#2}
-}
-%    \end{macrocode}
-% \end{macro}
-% Shorthands
-%
-%    \begin{macrocode}
-\NewExpandableDocumentCommand\firstleftxmark  { } {\extramarksfirst {left}  }
-\NewExpandableDocumentCommand\firstrightxmark { } {\extramarksfirst {right} }
-\NewExpandableDocumentCommand\topleftxmark    { } {\extramarkstop   {left}  }
-\NewExpandableDocumentCommand\toprightxmark   { } {\extramarkstop   {right} }
-\NewExpandableDocumentCommand\lastleftxmark   { } {\extramarkslast  {left}  }
-\NewExpandableDocumentCommand\lastrightxmark  { } {\extramarkslast  {right} }
-
-\cs_new_eq:NN \firstxmark \firstleftxmark
-\cs_new_eq:NN \lastxmark \lastrightxmark
-\cs_new_eq:NN \topxmark \topleftxmark
-%    \end{macrocode}
-%
-% Missing commands for the standard \LaTeX{} marks.
-%
-%    \begin{macrocode}
-\cs_new_eq:NN \firstrightmark \rightmark
-\cs_new_eq:NN \lastleftmark \leftmark
-
-\NewExpandableDocumentCommand\firstleftmark { }
-  {\expandafter\@leftmark\firstmark\@empty\@empty}
-\NewExpandableDocumentCommand\lastrightmark { }
-  {\expandafter\@rightmark\botmark\@empty\@empty}
-%    \end{macrocode}
-%
-% \subsubsection*{Support for other packages}
-% \begin{macro}[internal]{\extramarks@patch,
-%                         \extramarks@patch@start,
-%                         \extramarks@patch@end}
-% \begin{syntax}
-%   \cs{extramarks@package}\marg{package name}
-%   \meta{patch code}
-%   \cs{extramarks@package@end}
-% \end{syntax}
-% We run the patch code for other packages in \cs{AtBeginDocument},
-% because that is the point where we know for sure if a package is
-% loaded, and is still early enough. This is a bit tricky code, because
-% when we patch code of that package, and the code has a \texttt{\#}-sign in it,
-% the code cannot be run directly in \cs{AtBeginDocument}, because the
-% \texttt{\#}-signs will be doubled, and this is not accepted by the patching
-% code. So we have some tricky code where we set the \cs{catcode} of \texttt{\#}
-% to 12 (other) before reading the code, but put it back to 6 before
-% using the code.
-% Because we patch traditional \LaTeX{} code, the patch code has to be
-% read and executed with \cs{ExplSyntaxOff}. If we want to patch
-% \Package{expl3} code we must write a new function for this.
-%    \begin{macrocode}
-\cs_new_protected:Npn \extramarks@patch #1
-{
-  \catcode`\#=12\relax
-  \ExplSyntaxOff
-  \extramarks@patch@start{#1}
-}
-\cs_new_protected:Npn \extramarks@patch@start #1 #2 \extramarks@patch@end
-{
-  \catcode`\#=6\relax
-  \AtBeginDocument{
-    \@ifpackageloaded{#1}
-    {#2}
-    { }
-  }
-  \ExplSyntaxOn
-}
+\newcommand\extramarks[2]{%
+  \InsertMark{extramarks-left}{#1}%
+  \InsertMark{extramarks-right}{#2}}
 %    \end{macrocode}
 % \end{macro}
 %
-%
-% \subsubsection*{Support for the \Package{multicol} package}
-%
-% The algorithm used for multicol is the one explained above.
-% In particular, when a \env{multicols} environment is encountered,
-% after creating the columns, the BOX code is run on the part of the
-% page \texttt{before} the \env{multicols} (which is in the box
-% \cs{partial@page}), and on each of the columns. Conveniently this can
-% be done in the macro \cs{set@keptmarks}, where \Package{multicol} also
-% processes the \LaTeX{} marks.
-%
-% When the \env{multicols} environment was interrupted by a page
-% break, this is all that is needed, as all the marks have been processed
-% and then the page is output.
-%
-% When the \env{multicols} environment ends before a page break, this
-% isn't sufficient, because more text can follow on the page. So the
-% page might eventually be processed by the regular one column output processing,
-% or another \env{multicols} may follow on the same page, meaning
-% that the current one ends up in the next  \cs{partial@page}.
-% In both cases we must preserve any marks that might have been found in the
-% \env{multicols} environment. We do this by putting the first and last marks found (if any) in
-% the vertical list, by patching \cs{return@nonemptymark}. Now if there
-% is any mark in \cs{partial@page}, this would be superfluously put in the
-% vertical list, but that doesn't do any harm, and it would be more
-% costly to check for that.
-%
-% We skip any processing for \emph{boxed} \env{multicols} (i.e. \env{multicols} in a box
-% or nested in another \env{multicols}).
-%
-% INIT processing has already been properly placed in \cs{@outputpage}.
-%
-% Here comes the \texttt{multicol} patching code.
-% \\[2ex]
-% \begin{tabular}{c l c l}
-% (1) & patch \cs{return@nonemptymark}        & $\Rightarrow$ & insert marks in stream\\
-% (2) & patch \cs{set@keptmarks}              & $\Rightarrow$ & For each BOX code\\
-%   \end{tabular}
-% \\[2ex]
-% (1) Patch function for \cs{return@nonemptymark} = \cs{insert@nonemptymarks}
-% \\
-% (2) Patch function for \cs{set@keptmarks} = \cs{extramarks@get@splitmarks}
-%
+% \begin{macro}{\extramarksleft,\extramarksright}
+% These commands can be used to set the two marks independently. These
+% are only available in \Package{extramarks} version 5 or later.
 %    \begin{macrocode}
-\extramarks@patch{multicol}
+\newcommand\extramarksleft[1]{%
+  \InsertMark{extramarks-left}{#1}}
+\newcommand\extramarksright[1]{%
+  \InsertMark{extramarks-right}{#1}}
 %    \end{macrocode}
+% \end{macro}
 %
-% The functions to be patched are in LaTeX2e syntax, so we can't use
-% expl3 here. Therefore no \verb|_| and : in their names.
-% \\[2ex]
-% (1) Patch \cs{return@nonemptymark}
+% \begin{macro}{\firstleftmark}
+% \begin{macro}{\lastrightmark}
+% \begin{macro}{\firstrightmark}
+% \begin{macro}{\lastleftmark}
+% The new marks to be used in the headers and/or footers (based on the standard marks info).
 %    \begin{macrocode}
-\pretocmd{\return@nonemptymark}
-  {
-    \if@boxedmulticols\else
-      \extramarks@insert@nonemptymarks {#1} {\return@nonemptymark}\fi
-  }
-  {\extramarks@info{Patched \string \return@nonemptymark}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\return@nonemptymark}}
+\newcommand\firstleftmark{\FirstMark{2e-left}}
+\newcommand\lastrightmark{\LastMark{2e-right}}
 %    \end{macrocode}
-%
-% (2) Patch \cs{set@keptmarks}
+% We first define the following commands with \cs{newcommand} to detect
+% possible name clashes; then we redefine them with \cs{let}.
 %    \begin{macrocode}
-\pretocmd{\set@keptmarks}
-  {
-    \if@boxedmulticols\else\extramarks@get@splitmarks{\set@keptmarks}\fi
-  }
-  {\extramarks@info{Patched \string \set@keptmarks}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\set@keptmarks}}
-\extramarks@patch@end
+\newcommand\firstrightmark{\rightmark}
+\let\firstrightmark \rightmark
+\newcommand\lastleftmark{\leftmark}
+\let\lastleftmark \leftmark
 %    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
 %
-% \subsubsection*{Support for the \Package{paracol} package}
-%<@@=>
-%
-% Support for the \Package{paracol} package is similar to
-% \Package{multicol} but slightly more complicated.
-%
-% First, the package changes the output routine \cs{@outputpage}, so if
-% it was loaded before \Package{extramarks} we have patched the wrong
-% version, namely \Package{paracol}s own version instead of \LaTeX's
-% one. So in that case we set it back, and then patch
-% \Package{paracol}s copy, which is in \cs{pcol@@ouputpage}. The rest of
-% the patching will be done in \cs{AtBeginDocument}.
-% \\[2ex]
-% The functions to be patched are in LaTeX2e syntax, so we can't use
-% expl3 here. Therefore no \verb|_| and : in their names.
-%
+% \begin{macro}{\firstleftxmark}
+% \begin{macro}{\firstrightxmark}
+% \begin{macro}{\topleftxmark}
+% \begin{macro}{\toprightxmark}
+% \begin{macro}{\lastleftxmark}
+% \begin{macro}{\lastrightxmark}
+% \begin{macro}{\firstxmark}
+% \begin{macro}{\lastxmark}
+% \begin{macro}{\topxmark}
+% The new extra marks.
 %    \begin{macrocode}
-\@ifpackageloaded{paracol}
-  {
-    \cs_gset_eq:NN \@outputpage \extramarks@saved@outputpage
+\newcommand\firstleftxmark{\FirstMark{extramarks-left}}
+\newcommand\lastrightxmark{\LastMark{extramarks-right}}
+\newcommand\firstrightxmark{\FirstMark{extramarks-right}}
+\newcommand\topleftxmark{\TopMark{extramarks-left}}
+\newcommand\toprightxmark{\TopMark{extramarks-right}}
+\newcommand\lastleftxmark{\LastMark{extramarks-left}}
 %    \end{macrocode}
-% Patch the \cs{pcol@@outputpage} macro, which is the original \LaTeX{}
-% \cs{@outputpage}, just renamed. So the patch is equal to the
-% \cs{@outputpage} patch above.
-%
+% We first define the following commands with \cs{newcommand} to detect
+% possible name clashes; then we redefine them with \cs{let}.
 %    \begin{macrocode}
-    \apptocmd {\pcol@@outputpage}
-      {\extramarks@initmarks}
-      {\extramarks@info{Patched end of \string \pcol@@outputpage}}
-      {\msg@error@nnn {extramarks} {cannot-patch} {end of \pcol@@outputpage}}
-  }
-  { }
+\newcommand\firstxmark{\firstleftxmark}
+\let\firstxmark\firstleftxmark
+\newcommand\lastxmark{\lastrightxmark}
+\let\lastxmark\lastrightxmark
+\newcommand\topxmark{\topleftxmark}
+\let\topxmark\topleftxmark
 %    \end{macrocode}
-%
-% End of \cs{pcol@@outputpage} patching code.
-% \\[2ex]
-% The rest of the patching code goes to \cs{AtBeginDocument}.
-%    \begin{macrocode}
-\extramarks@patch{paracol}
-%    \end{macrocode}
-%
-% Output boxes are generated in \cs{pcol@ioutputelt},
-% \cs{pcol@makeflushedpage} and \cs{pcol@imakeflushedpage}
-% \\[2ex]
-% In \cs{pcol@ioutputelt}, box \cs{pcol@spanning} (text before
-% \env{paracol} environment).
-%    \begin{macrocode}
-\patchcmd{\pcol@ioutputelt}
-  {\unvbox\pcol@spanning}
-  {\extramarks@getmarks\pcol@spanning{\pcol@ioutputelt}\unvbox\pcol@spanning}
-  {\extramarks@info{Patched \string \pcol@ioutputelt (\string\pcol@spanning)}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@ioutputelt
-      (\pcol@spanning)}%
-  }
-%    \end{macrocode}
-%
-% In \cs{pcol@ioutputelt}, each column in box \cs{@currbox}.
-%    \begin{macrocode}
-\patchcmd{\pcol@ioutputelt}
-  {\ifvoid\@currbox\else}
-  {\ifvoid\@currbox\else\extramarks@getmarks\@currbox{\pcol@ioutputelt}}
-  {\extramarks@info{Patched \string \pcol@ioutputelt
-      (\string\@currbox)}%
-  }
-  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@ioutputelt
-      (\string\@currbox)}%
-  }
-%    \end{macrocode}
-%
-% In \cs{pcol@makeflushedpage}, box \cs{pcol@spanning} (text before
-% \env{paracol} environment).
-%    \begin{macrocode}
-\patchcmd{\pcol@makeflushedpage}
-  {\advance\@tempdima\dp\pcol@spanning}
-  {\advance\@tempdima\dp\pcol@spanning
-    \extramarks@getmarks\pcol@spanning{\pcol@makeflushedpage
-      (\string\pcol@spanning)}%
-  }
-  {\extramarks@info{Patched \string \pcol@makeflushedpage
-      (\string\pcol@spanning)}%
-  }
-  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@makeflushedpage
-      (\pcol@spanning)}%
-  }
-%    \end{macrocode}
-%
-% In \cs{pcol@imakeflushedpage}, each column in box \cs{@currbox}.
-%    \begin{macrocode}
-\patchcmd{\pcol@imakeflushedpage}
-  {\pcol@getcurrcol}
-  {\pcol@getcurrcol\extramarks@getmarks\@currbox{\pcol@imakeflushedpage}}
-  {\extramarks@info{Patched \string \pcol@imakeflushedpage
-      (\string\@currbox)}%
-  }
-  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@imakeflushedpage
-      (\string\@currbox)}%
-  }
-%    \end{macrocode}
-%
-% In \cs{pcol@outputpage@l}, box \cs{@outputbox}
-% (normal text outside \env{paracol}).
-%    \begin{macrocode}
-\patchcmd{\pcol@outputpage@l}
-  {\global\c@page#1\relax}
-  {\global\c@page#1\relax\extramarks@getmarks\@outputbox{\pcol@outputpage@l}}
-  {\extramarks@info{Patched \string \pcol@outputpage@l}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@outputpage@l}}
-%    \end{macrocode}
-%
-% In \cs{pcol@outputpage@r}, box \cs{pcol@rightpage}
-% (normal text outside \env{paracol}).
-%    \begin{macrocode}
-\patchcmd{\pcol@outputpage@r}
-  {\global\c@page#1\relax}
-  {\global\c@page#1\relax\extramarks@getmarks\pcol@rightpage{\pcol@outputpage@r}}
-  {\extramarks@info{Patched \string \pcol@outputpage@r}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@outputpage@r}}
-%    \end{macrocode}
-%
-% Sometimes \Package{paracol} puts a glue with a small but infinite shrink in
-% an output box. This gives an error message on our \cs{vsplit}
-% operation, which is annoying. Moreover, if there are more than 100
-% such messages, \TeX{} will stop processing, which is just intolerable.
-% So we replace these small but infinite shrinks with a large, finite
-% shrink. This can change the result a tiny bit, but generally it should be
-% invisible to the eye, according to my experiments\footnote{For
-% example, in the 69 page \Package{paracol} manual, where this is heavily used,
-% there was only one place where it made a difference of about 0.06 mm; I had to zoom
-% $10\times$ to see the difference.}.
-%
-%    \begin{macrocode}
-\patchcmd{\pcol@makecol}
-  {\@minus.0001fil}
-  {\@minus\maxdimen}
-  {\extramarks@info{Patched \string \pcol@makecol}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@makecol}}
-%    \end{macrocode}
-%
-%    \begin{macrocode}
-\patchcmd{\pcol@combinefloats}
-  {\@minus.0001fil}
-  {\@minus\maxdimen}
-  {\extramarks@info{Patched \string \pcol@combinefloats 1}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@combinefloats 1}}
-%    \end{macrocode}
-%
-%    \begin{macrocode}
-\patchcmd{\pcol@combinefloats}
-  {\@minus-.0001fil}
-  {\@minus-\maxdimen}
-  {\extramarks@info{Patched \string \pcol@combinefloats 2}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@combinefloats 2}}
-%    \end{macrocode}
-%
-%    \begin{macrocode}
-\patchcmd{\pcol@synccolumn}
-  {\@minus.0001fil}
-  {\@minus\maxdimen}
-  {\extramarks@info{Patched \string \pcol@synccolumn 1}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@synccolumn 1}}
-%    \end{macrocode}
-% In \cs{pcol@synccolumn}, box \cs{@currbox} is doubly \cs{vboxed}. So
-% we have to get the marks out of the box, and inject them outside of the box.
-% Save the global marks and get the local marks from \cs{@currbox}.
-%    \begin{macrocode}
-\patchcmd{\pcol@synccolumn}
-  {\global\pcol@prevdepth\@tempdimc}
-  {\global\pcol@prevdepth\@tempdimc
-    \extramarks@savemarks {\pcol@synccolumn}%
-    \extramarks@getlocalmarks \@currbox {\pcol@synccolumn}%
-  }
-  {\extramarks@info{Patched \string \pcol@synccolumn 2}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@synccolumn 2}}
-%    \end{macrocode}
-% Insert the local marks from \cs{@currbox} in the main vertical list
-% and restore the global marks.
-%    \begin{macrocode}
-\patchcmd{\pcol@synccolumn}
-  {\vbox to\@tempdimb{\unvbox\@currbox \vskip\z@\@plus.0001fil}\fi}
-  {\vbox to\@tempdimb{\unvbox\@currbox \vskip\z@\@plus.0001fil}\fi
-    \extramarks@insert@nonemptymarks{first}{\pcol@synccolumn}%
-    \extramarks@insert@nonemptymarks{bot}{\pcol@synccolumn}%
-    \extramarks@restoremarks{\pcol@synccolumn}%
-  }
-  {\extramarks@info{Patched \string \pcol@synccolumn 3}}
-  {\msg@error@nnn {extramarks} {cannot-patch} {\pcol@synccolumn 3}}
-\extramarks@patch@end
-%    \end{macrocode}
-%<@@=extramarks>
-%
-% End of \Package{paracol} patching code.
-%
-%    \begin{macrocode}
-\ExplSyntaxOff
-%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
 %
 %</extramarks>
 %
