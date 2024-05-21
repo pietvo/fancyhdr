@@ -1705,6 +1705,21 @@
 % \renewcommand{\headrulewidth}{\iffloatpage{0pt}{0.4pt}}
 % \end{verbatim}
 %
+% \textbf{NOTE:} There is also a package \TTindex{floatpag}%
+% \Package{floatpag}\footnote{\url{https://www.ctan.org/pkg/floatpag}} by Vytas
+% Statulevičius and Sigitas Tolušis that has a command
+% \cs{floatpagestyle}\marg{pagestyle}, that applies \meta{pagestyle} to
+% all float pages, where \meta{pagestyle} can be defined with
+% \cs{fancypagestyle} (or by any other means).
+%
+% \textbf{NOTE:} There is also a package \TTindex{floatpag}%
+% \Package{floatpag}\footnote{\url{https://www.ctan.org/pkg/floatpag}} by Vytas
+% Statulevičius and Sigitas Tolušis that has a command
+% \cs{floatpagestyle}\marg{pagestyle}, that applies \meta{pagestyle} to
+% all float pages, where \meta{pagestyle} can be defined with
+% \cs{fancypagestyle} (or by any other means). In some cases this might
+% be simpler than putting \cs{iffloatpage} in various headers or footers.
+%
 % Sometimes you may want to change the layout also for pages that contain a
 % float on the top of the page, a float on the bottom of the page or a footnote on the bottom of the page.
 %
