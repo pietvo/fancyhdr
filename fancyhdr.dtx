@@ -359,7 +359,7 @@
 % differences between version 4 and 5.
 %
 % This document also describes version 5 of \Package{extramarks}. This
-% is a new implementation that differs signifucantly from the previous
+% is a new implementation that differs significantly from the previous
 % versions. See section~\ref{sec:extramarks-5} on
 % page~\pageref{sec:extramarks-5} for more details.
 %
@@ -602,14 +602,14 @@
 %
 % \begin{function}{\extramarks, \extramarksleft, \extramarksright}
 % \begin{syntax}
-% \cs{extramarks}\marg{left-text}\marg{right-text}    
+% \cs{extramarks}\marg{left-text}\marg{right-text}
 % \cs{extramarksleft}\marg{left-text}\\
-% \cs{extramarksright}\marg{right-text}    
+% \cs{extramarksright}\marg{right-text}
 % \end{syntax}
 %
-% The command \cs{extramarks}\marg{aa}\marg{bb} defines two extra marks,
-% similar to the standard ones by \latex/, where \meta{aa} is the left
-% one and \meta{bb} is the right one.
+% The command \cs{extramarks}\marg{$m_1$}\marg{$m_2$} defines two extra marks,
+% similar to the standard ones by \latex/, where \meta{$m_1$} is the left
+% mark and \meta{$m_2$} is the right mark.
 %
 % \label{sec:extramarks-5}
 % In versions before 5.0, the \texttt{extramarks} are connected to each
@@ -620,8 +620,8 @@
 %
 % Since version 5.0 this is no longer the case.
 % Now the \texttt{extramarks} are independent of the traditional marks,
-% and they can also be used independently of each other by the commands
-% \cs{extramarksleft}\marg{aa} and \cs{extramarksright}\marg{bb}.
+% and they can also be set independently of each other by the commands
+% \cs{extramarksleft}\marg{$m_1$} and \cs{extramarksright}\marg{$m_2$}.
 % \end{function}
 %
 % \begin{variable}{extramarks-left, extramarks-right}
@@ -632,80 +632,32 @@
 %   These are the `mark classes' for the two marks.
 % \end{variable}
 %
-% \begin{fblock}
+% \medskip
+%
 % \textbf{NOTE}: The implementation of \Package{extramarks} version 5
-% started in 2021. At that time there was no other way to obtain the
-% desired effects of these marks in a correct way. However, since the
-% November 2022 \LaTeX{} release, the \LaTeX{} kernel has gotten commands for
-% independent marks. These marks are described in \emph{The \LaTeX{}
-% Companion, Third Edition}, section 5.3.5 (Part I). These are similar
-% to the extra marks in \Package{extramarks} version 5, but both
-% implementations are independent of each other, and they can
-% coexist together. This new implementation of marks in \LaTeX{} makes
-% the \Package{extramarks} package less relevant now, but for
-% compatibility reasons it will keep being released.
+% only is available if your \LaTeX{} release is the
+% November 2022 \LaTeX{} release or newer. It uses the new \LaTeX{}
+% marks introduced in that release. These marks are described in \emph{The \LaTeX{}
+% Companion, Third Edition}, section 5.3.5 (Part I). Of course you can
+% also use these new marks directly, or use additional ones if you need
+% more. Some examples in this manual use these.
 %
 % This manual contains several examples of the use of \Package{extramarks},
 % where its features are essential, but in future releases of this
 % manual these examples will be rewritten to use the new \LaTeX{} marks.
-% \end{fblock}
-%
-% \begin{function}{\extramarksnewmark, \extramarksput}
-% It is also possible to define your own additional marks.\\
-% With \cs{extramarksnewmark}\marg{name} you define a new mark called
-% \meta{name}. You can then put a new mark with \cs{extramarksput}\marg{name}\marg{Some text}.
-%
-% The `standard' extra marks are called `left' and `right', and the new commands
-% \cs{extramarksleft} and \cs{extramarksright} are just shorthands for
-% \Cmd{extramarksput\{left\}} and \Cmd{extramarksput\{right\}}.
-% \end{function}
 %
 % \subsubsection*{Extramarks commands to be used in the headers or footers}
 %
 % \begin{function}{\firstleftxmark, \firstrightxmark, \topleftxmark,
 %                  \toprightxmark, \lastleftxmark, \lastrightxmark, \firstxmark,
 %                  \lastxmark, \topxmark}
-% \begin{syntax}
-% \cs{firstleftxmark}
-% \cs{firstrightxmark}
-% \cs{topleftxmark}
-% \cs{toprightxmark}
-% \cs{lastleftxmark}
-% \cs{lastrightxmark}
-% \cs{firstxmark}
-% \cs{lastxmark}
-% \cs{topxmark}
-% \end{syntax}
-% The commands above are used to extract the marks defined by
-% \cs{extramarks}\marg{aa}\marg{bb}, \cs{extramarksleft}\marg{aa}\ and
-% \cs{extramarksright}\marg{bb} described above. They are used in the
-% headers or footers, similar to the ones without the \texttt{x}.
-% \end{function}
-%
-% \begin{function}{\extramarksfirst, \extramarkslast, \extramarkstop,
-%                  \ifextramarksmissing, \extramarksreset}
-%
-% Inside the headers or footers of the page you can extract your own defined
-% marks with \cs{extramarksfirst}\marg{name}, \cs{extramarkslast}\marg{name}
-% and \cs{extramarkstop}\marg{name}. The first two are similar to
-% \Cmd{first...mark} en \Cmd{last...mark}, and
-% \cs{extramarkstop}\marg{name} is the last mark from the previous page
-% (the so called \emph{topmark}).
-%
-% If there are no marks on the current page, all three are the same. The
-% \emph{firstmark} and \emph{lastmark} will take the value of
-% \emph{topmark} in this case. You can test for this situation with
-% \cs{ifextramarksmissing}\marg{name}\marg{true code}\marg{false code}.
-% If there aren't any \meta{name} marks on the page the \meta{true code}
-% is executed. If there is at least one \meta{name} mark on the page,
-% the \meta{false code} is executed.
-%
-% The command \cs{extramarksreset}\marg{name} can be used (in the headers
-% or footers) to reset the mark \meta{name}. This essentially means that
-% all marks (including \emph{topmark}) will be cleared and therefore this is no longer
-% propagated to the next page. See section~\ref{sec:firstsubsection} for
-% an example.
-%
+% \begin{flushleft}
+% These commands are used to extract the marks defined by
+% \cs{extramarks}\marg{$m_1$}\marg{$m_2$}, \cs{extramarksleft}\marg{$m_1$}\ and
+% \cs{extramarksright}\marg{$m_2$} described above.\\
+% They are used in the headers or footers, similar to the ones without
+% the \texttt{x}.
+% \end{flushleft}
 % \end{function}
 %
 % If you want to keep the old behaviour of \Package{extramarks}, you can use:
@@ -716,14 +668,10 @@
 % \begin{verbatim}
 % \usepackage{extramarks-v4}
 % \end{verbatim}
-% Please note that in that case you can only use the commands
-% \cs{leftmark}, \cs{rightmark}, \cs{firstleftmark}, \cs{lastrightmark},
-% \cs{firstrightmark}, \cs{lastleftmark}, \cs{extramarks},
-% \cs{firstleftxmark}, \cs{firstrightxmark}, \cs{topleftxmark},
-% \cs{toprightxmark}, \cs{lastleftxmark}, \cs{lastrightxmark},
-% \cs{firstxmark}, \cs{lastxmark}, \cs{topxmark}, and not the other
-% commands mentioned above. Moreover, the \cs{top...} commands may give
-% you unexpected results.
+% Please note that in that case you cannot use the commands
+% \cs{extramarksleft} and \cs{extramarksright}. Moreover, the
+% \cs{topleftxmark}, \cs{toprightxmark} and \cs{topxmark} commands may
+% give you unexpected results.
 %
 % See sections~\ref{sec:scoop} and \ref{sec:xmarks} for more details
 % about the use of the package.
