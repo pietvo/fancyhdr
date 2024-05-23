@@ -4112,191 +4112,245 @@
 % \label{sec:firstsubsection}
 %
 % A question that is regularly asked (e.g.\ on
-% \texttt{tex.stackexchange.com}\footnote{See for example \url{https://tex.stackexchange.com/q/586066/113546}}) is how to get both the first section
-% title and the first subsection title in the headers. The standard \LaTeX{} page style
-% \emph{headings} in a class without chapters (like \texttt{article})
-% gives you the last section title and the first subsection title of the
-% page. However, \LaTeX's standard marks mechanism has some drawbacks. There are two problems:
+% \texttt{tex.stackexchange.com}\footnote{See for example
+% \url{https://tex.stackexchange.com/q/586066/113546}}) is how to get
+% both the first section title and the first subsection title in the
+% headers in the \Package{article} documentclass. Unfortunately,
+% traditional \LaTeX{} (releases before November 2022) can't give you
+% the first subsection on the page. There are two problems:
 % \begin{itemize}
-% \item Standard \LaTeX{} uses left marks for the section title and
+% \item Traditional \LaTeX{} uses left marks for the section title and
 % right marks for the subsection title. But it only has commands to
 % extract the last left mark (\cs{leftmark}) and the first right mark
 % (\cs{rightmark}). This means that if there are two or more sections on
 % the page you get the last one, which can be counter-intuitive.
-% The \Package{extramarks} can come to the rescue
-% here, because it also defines a command to extract the first left
-% mark (\cs{firstleftmark}).
-% \item However, this doesn't solve all the problems
-%  because the \cs{leftmark} and \cs{rightmark} are not independent.
-% If on a page you first have a \cs{section} command and then a
-% \cs{subsection} command, the \cs{section} command generates a
-% \cs{markboth}\marg{section title}\verb|{}| and the second empty
-% argument generates an empty right mark. This means that the
-% \cs{rightmark} will be empty rather than the subsection title.
+% The newer \LaTeX{} releases (November 2022 or newer) have a command to
+% get the first of the left marks, however. \textbf{We assume in the
+% following code that your \LaTeX{} is recent enough.}
+% \item \LaTeX{} uses \cs{markboth} at a section title in the
+% \Package{article} class. This also sets an empty right mark. So in
+% some cases you would get an empty subsection title in the header. To
+% avoid this, \LaTeX{} now also has a mark that saves the non-empty
+% right mark in a separate mark \texttt{2e-right-nonempty}
 % \end{itemize}
-% To solve this you can use independent marks for the section and the
-% subsection title. In principle we could still use the original
-% \LaTeX{} mark for the section title, but for the second half of this
-% example this will not work.  So we will use the new independent
-% marks from the package \Package{extramarks} (version 5.0 or later),
-% the \emph{left} mark for the section title and the \emph{right} mark
-% for the subsection title.
-% We set the marks with \cs{extramarksleft} and \cs{extramarksright},
-% respectively, and retrieve them with
-% \cs{firstleftxmark} and \cs{firstrightxmark} (notice the \texttt{x} in the names).
 %
-% If there is no \cs{section} command on the page, it ``inherits'' the
+% If there is no \cs{section} command on the page, it `inherits' the
 % last section title of a previous page. Similarly for subsections.
+% This gives us the following code:
 %
 % \Example{35}[(basic)]
 % \begin{example}
 % \usepackage{fancyhdr}
-% \usepackage{extramarks}
 % \pagestyle{fancy}
-% \fancyhead[L]{\firstleftxmark}
-% \fancyhead[R]{\firstrightxmark}
+% \fancyhead[L]{\FirstMark{2e-left}}
+% \fancyhead[R]{\FirstMark{2e-right-nonempty}}
 % \fancyfoot[C]{\thepage}
-% \renewcommand*{\sectionmark}[1]{\extramarksleft{\thesection\ #1}}
-% \renewcommand*{\subsectionmark}[1]{\extramarksright{\thesubsection\ #1}}
 %
 % \begin{document}
 % \section{Section One}
 % \subsection{Subsection One}
 %  . . .
 % \end{example}
-% This effectively solves the problem. However, some refinement is
-% possible.
+% This effectively solves the problem, but it has some undesirable
+% properties, see below. Therefore, some refinement is
+% possible. But we need an extra mark for this. So we are going
+% to use the \LaTeX{} marks directly, instead of using the standard
+% marks. This gives us a bit more control. We need two marks for this,
+% one for the section title, and one for the subsection title. We call
+% these \texttt{section} and \texttt{subsection} respectively. We
+% replace the marking code above with the following, which gives
+% the same result:
+% \Example{35}[(new marks)]
+% \begin{example}
+% \usepackage{fancyhdr}
+% \pagestyle{fancy}
+% \NewMarkClass{section}
+% \NewMarkClass{subsection}
+% \fancyhead[L]{\FirstMark{section}}
+% \fancyhead[R]{\FirstMark{subsection}}
+% \renewcommand{\sectionmark}[1]{%
+%     \InsertMark{section}{\thesection. #1}}
+% \renewcommand{\subsectionmark}[1]{%
+%     \InsertMark{subsection}{\thesubsection. #1}}
+% \end{example}
 %
 % When you have a \cs{section} command on a page, but it doesn't have a
-% subsection for an extended length, then, as described above, the
-% previous subsection title is ``inherited''. This may be sub-optimal,
+% subsection for an extended length, then, the
+% previous subsection title is `inherited'. This may be sub-optimal,
 % because it combines the title of section $n$ with a subsection title
-% that belongs to section $n-1$, which looks unnatural. It could
-% even be a subsection title from several sections before. You may want to
-% suppress the subsection title in the header in this case. Version  5.0
-% and later of \Package{extramarks} has commands that make this possible.
+% that belongs to a previous section, so the subsection isn't even
+% present on the page, which looks unnatural. You may want to
+% suppress the subsection title in the right header in this case. With the new
+% \LaTeX{} marks this is possible.
 %
-% The algorithm we use is this:
-% \begin{quote}
-%   if there is a section mark on this page\\
-%   and there is no subsection mark following it on the page\\
-%   \mbox{\quad} then stop the ``inheritance'' for the subsection title.
-% \end{quote}
-% The first test can be done with the command \cs{ifextramarksmissing}, and
-% stopping the inheritance with \cs{extramarksreset} (which clears the
-% marks, including \emph{topmark}, which is used for the inheritance).
-% However, there is no command to see if the section mark is not
-% followed by a subsection mark, because the two are independent. And we
+% What we want is essentially the following:
+% \begin{enumerate}
+% \item If there is at least one subsection on the page, use the first one.
+% \item Otherwise, if the previous page ended in a subsection (i.e., the page
+% break was inside a subsection), use that subsection title.
+% \item Otherwise (the page break was inside a section that had no
+% subsections thus far), leave the right header empty.
+% \end{enumerate}
+%
+% The first test can be done by comparing the subsection `topmark' and
+% `firstmark'. The topmark is the last mark from the previous page
+% (which might even have been inherited from an earlier page). If there
+% is no subsection mark on the current page, firstmark is made equal to
+% topmark. If there is a subsection mark on the page, firstmark will be
+% a different mark. \LaTeX{} now has a command to compare the
+% marks, like this:\\
+% \hspace*{\parindent}\cs{IfMarksEqualTF}\marg{mark}\marg{pos1}\marg{pos2}\marg{true
+% code}\marg{false code}\\
+% where the \emph{pos} arguments are \texttt{top}, \texttt{first} or \texttt{last}.
+% Please note that this test makes only sense in a header or
+% footer\footnote{Or more generally, when \LaTeX's page building is active.}.
+% So if we use\\
+% \hspace*{\parindent}\cs{IfMarksEqualTF}\texttt{\{subsection\}\{top\}\{first\}}\ldots\\
+% the \meta{true code} is executed when there is no subsection title on the
+% current page, and the \meta{false code} when there is at least one.
+%
+% However, there is no command to see if the pagebreak is at the section
+% or subsection level, because the two are independent. And we
 % cannot use \LaTeX{} variables for this, because of the asynchronous
 % processing of the page breaking. But we can do this if we introduce a
-% new mark called \texttt{which}, that is used by both \cs{section} and
+% new mark `\texttt{which}', that is used by both \cs{section} and
 % \cs{subsection}. We let \cs{sectionmark} put ``0'' in it, and
-% \cs{subsectionmark} ``1''. Then we can test if the \texttt{lastmark}
-% is equal to ``0'', which means there is no subsection following the last
-% section. This is exactly our second condition above.
+% \cs{subsectionmark} ``1''. The lastmark of `\texttt{which}' on a page then
+% indicates if the page ends within a subsection or not. And as the
+% topmark on the following page is the same as lastmark on the previous
+% page, we can use this topmark to see whether the text at the beginning
+% of the page comes from a subsection (topmark = 1 means yes).
 %
-% The command \cs{ifextramarksmissing}\marg{name}\marg{true code}\marg{false code}
-% executes the \meta{true code} if there is no \meta{name} mark on the
-% page, and \meta{false code} if there is at least one. We make a macro
-% \cs{checkrightreset} that contains the algorithm, and we also put the
-% right header field in a variable \cs{rightheader} so that we can
-% change it later.
+% There is one caveat, however. If the page begins immediately with a
+% section title, the topmark may indicate that the previous page ended
+% with a subsection, but that subsection did not extend past the
+% pagebreak. It is tricky to detect this situation, but we will propose
+% a solution at the end of the current section.
+% So the new code for the right header becomes the following. We use the
+% package \TTindex{ifthen}\Package{ifthen} for the test.
 %
 % \Example{35}[(continued)]
 % \begin{example}
-% \extramarksnewmark{which}
+% \NewMarkClass{which}  % Preamble
+% \InsertMark{which}{0} % Initialize so there is always a valid value
 %
-% \newcommand\checkrightreset{%
-%   \ifextramarksmissing{left}
-%   {}
-%   {% if there is a sectionmark on the page
-%     \ifnum\extramarkslast{which}=0
-%       % that is the last (no subsection following on the page)
-%       % then reset the subsection mark
-%       \extramarksreset{right}%
-%     \fi
-%   }%
+% \fancyhead[R]{%
+%   \IfMarksEqualTF{subsection}{top}{first}
+%     {% no subsection mark on this page
+%       \ifthenelse{\TopMark{which}=1} % previous page ended in a subsection
+%         % then use that subsection
+%         {\TopMark{subsection}}% = \FirstMark{subsection}
+%         {}% otherwise empty right header
+%     }
+%     {% there is a subsectionmark on the page, use it
+%       \FirstMark{subsection}%
+%     }%
 % }
-%
 % \renewcommand{\sectionmark}[1]{%
-%   \extramarksleft{\thesection. #1}%
-%   \extramarksput{which}{0}%
-%
-% \renewcommand{\subsectionmark}[1]{%
-%   \extramarksright{\thesubsection\ #1}%
-%   \extramarksput{which}{1}%
+%   \InsertMark{section}{\thesection. #1}%
+%   \InsertMark{which}{0}%
 % }
-% \newcommand\rightheader{\firstrightxmark}
-% \fancyhead[R]{\rightheader}
+% \renewcommand{\subsectionmark}[1]{%
+%   \InsertMark{subsection}{\thesubsection. #1}%
+%   \InsertMark{which}{1}%
+% }
 % \end{example}
 %
-% We can put the \cs{extramarksreset} in the subsection header field
-% (the right header in this case), either before or after the defined
-% value \cs{firstrightxmark}. If we put it \emph{before}
-% \cs{firstrightxmark}, the inheritance will be stopped before we use
-% the mark, therefore the header field will be empty on the current page
-% and following pages until a subsection appears. If we put the
-% \cs{extramarksreset} \emph{after} \cs{firstrightxmark}, we will still
-% use the inherited subsection title on the current page, but not on the
-% following pages. This would be a nicer choice if the section starts in
-% the lower half of the page, whereas the first alternative would be
-% nicer if the section starts in the upper half of the page. There is no
-% way to test this inside the headers.
-%
-% However, we can find out while we are executing the \cs{sectionmark}
-% and then communicate this information to the headers.
+% Now we want to suppress the `inheritance' of the subsection if there
+% is a section title at the top of the page and the page contains no
+% subsection title. The information whether a section title is at the
+% top of the page is not available in the marks, so we need some other
+% way to detect this.
 %
 % \TeX{} has two variables that can help us, \cs{pagegoal} is the vertical size
-% that is available for the text, and \cs{pagetotal} is the amount we
+% that is still available on the page, and \cs{pagetotal} is the amount we
 % have used so far\footnote{This doesn't include floats and footnotes.}.
-% So if \cs{pagetotal}$<$0.5\cs{pagegoal} we are in the upper half of
-% the page, otherwise in the lower half\footnote{Of course you could choose a
-% different split point.}.  We can use this information to
-% redefine \cs{rightheader} to include \cs{checkrightreset} either before or
-% after \cs{firstrightmark}. However, as explained in
-% section~\ref{sec:change}, setting information in the text body  and
-% using it in the headers without using marks can sometimes fail due to
-% the asynchronous processing of \TeX{}. In particular in our case it
-% could happen that a \cs{section} command appears near the end of a
-% page, and our algorithm determines that it is on the lower half of the
-% page, but then \TeX{} decides to move it to the next page, where
-% it will probably be in the upper half. So our decision is wrong in that
-% case.
-% Fortunately there is a way to detect this case. During the processing
-% of the \cs{section} command and its \cs{sectionmark}, the page number
-% is still the page under construction, but the mark generated by this
-% section command will be on the next page with the next page number. By
-% saving the current page number in a separate counter in the \cs{sectionmark}
-% command, and comparing it in the header with the actual page number we
-% can find out that this happened, and then do the reset
-% before the mark. (In this case it will also be done after the mark,
-% but that does no harm, and it is simpler this way.) In the example 35 file you can see this in
-% section~6.
+% So if \cs{pagetotal}=\texttt{0pt} we are at the top of
+% the page, otherwise somewhat further down.  We can use this information to
+% communicate to the header that no inheritance should take place. In
+% reality, sometimes there is already a small amount of whitespace on
+% the page, so the test should be less strict than
+% \cs{pagetotal}=\texttt{0pt}. We might even choose to not inherit the
+% subsection title if only a few lines of the previous subsection are
+% present at the top of the page. Or maybe your design askr for no
+% inheritance if the subsection at the top of the page before the
+% section header is smaller than 1/3 of the page. The test would then be
+% \cs{pagetotal}$<$0.33\cs{pagegoal}. In the code below we choose a few
+% lines as the limit.
 %
-% This is done with the following code:
+% We have to do the test just before the \cs{section} command is
+% processed. This can be done with a \LaTeX{} \emph{hook}.
+%
+% The next question is how to communicate the fact that the section
+% starts at (or near) to top of the page to the header. A simple way to
+% do this is to set the `\texttt{which}' mark to $-1$ instead of 0.
+% (Another way could be to define a special pagestyle that does not do
+% the inheritance, and activate that with \cs{thispagestyle}.)
+%
+% \begin{code}
+% \AddToHook{cmd/section/before}{%
+%   % use whatever test your design requires
+%   \ifthenelse{\lengthtest{\pagetotal<4\baselineskip}}
+%     {\InsertMark{which}{-1}}
+%     {\InsertMark{which}{0}}
+% }
+% \end{code}
+%
+% It appears, however that this is the wrong place to set the mark. A
+% pagebreak could occur between this code and the actual section title,
+% so that the mark is put on the wrong page. The proper place for setting the
+% mark is in the \cs{sectionmark} command, as that is guaranteed to
+% always be together with the section title. So we must put the required
+% value for the mark in a variable.
+%
+% There is another situation where a section title could end up at the
+% top of the page: when it is processed at the bottom of the page, but
+% there isn't enough space left to place it there. It will then be
+% pushed to the next page. In that case the \cs{pagetotal} will be in
+% the neighbourhood of \cs{pagegoal}. In the code below we test for
+% \cs{pagetotal}$>$0.9\cs{pagegoal}, but some experimentation may be
+% necessary to find a proper value.
+% In the example 35 file you can see this in section~6.
+%
+% \emph{(Another way could be to put the current page number in a mark
+% and then check in the header if this is the same as the page number
+% where the header is put on the page. If different, don't
+% inherit. This is left as an exercice for the reader.)}
+%
 % \Example{35}[(continued)]
 % \begin{example}
-% \newcounter{thispage}
-% \newcommand\checkrightresetbefore{%
-%   \ifnum \value{thispage}<\value{page}\checkrightreset\fi
+% \newcommand{\which}{}
+% \AddToHook{cmd/section/before}{%
+%   \ifthenelse{\lengthtest{\pagetotal<4\baselineskip}\or
+%               \lengthtest{\pagetotal>0.9\pagegoal}}{%
+%   {\renewcommand\which{-1}}%
+%   {\renewcommand\which{0}}%
 % }
-%
 % \renewcommand{\sectionmark}[1]{%
-%   \extramarksleft{\thesection. #1}%
-%   \extramarksput{which}{0}%
-%   % save the current page number
-%   \setcounter{thispage}{\value{page}}%
-%   \ifdim\pagetotal<0.5\pagegoal
-%     % put \checkrightreset before
-%     \renewcommand\rightheader{\checkrightreset\firstrightxmark}%
-%   \else
-%     % put \checkrightreset after,
-%     % but sometimes before (when page numbers differ)
-%     \renewcommand\rightheader{%
-%       \checkrightresetbefore\firstrightxmark\checkrightreset}%
-%   \fi
+%   \InsertMark{section}{\thesection\ #1}%
+%   \InsertMark{which}{\which}%
+% }%
+% \end{example}
+%
+% The final code for the right header will now be:
+% \Example{35}[(continued)]
+% \begin{example}
+% \fancyhead[R]{%
+%   \IfMarksEqualTF{subsection}{top}{first}
+%     {% no subsection mark on this page
+%       \ifthenelse{\TopMark{which}=1}{%
+%         % use previous subsection unless suppressed by which = -1
+%         \ifthenelse{\FirstMark{which}<0} % -1
+%           {\FirstMark{subsection}}% = \TopMark{subsection}
+%       }
+%     }
+%     {% if there is a subsectionmark on the page, use it
+%       \FirstMark{subsection}%
+%     }%
 % }
 % \end{example}
+% In the actual code in the Example 35 file there is also some debugging
+% code added.
 %
 % \newpage
 % \part{Implementation}
