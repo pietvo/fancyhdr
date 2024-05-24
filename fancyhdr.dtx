@@ -2702,23 +2702,48 @@
 %
 % Finally you may want to put ``(Continued\ldots)'' in the \emph{text}
 % rather than in the header or the margin. Then you have to use the
-% \TTindex{afterpage.sty}
+% \TTindex{afterpage}%
 % \Package{afterpage} package. We also decide to make a separate
-% environment \env{continued} for it. First we give a simple (but
+% environment \env{continued} for it\footnote{In the example files for
+% examples 27 and 28 this is also done; it is just not documented here.}.
+%
+% The first thought might be to use
+% \cs{afterpage}\texttt{\{\cs{firstxmark}\}}. But the marks can only be
+% used in the headers and footers, not in the running text%
+% \footnote{NOTE: This used to be different in \Package{extramarks} version 4 and earlier.}.
+% Moreover, we
+% need the value that will become \cs{firstxmark} (=\cs{firstleftxmark})
+% on the next page, but on the current page it will be in \cs{lastleftxmark}.
+%
+% Then you might think that the \cs{afterpage} command could be put in
+% a header or footer, but unfortunately it appears that then the timing is wrong.
+% The \cs{afterpage} text will appear one page too late.
+%
+% So what we do is, we put the \cs{lastleftxmark} in a variable during the
+% footer processing and then use this variable in \cs{afterpage}. As the
+% footer processing is done inside a \TeX{} group, we must use a global
+% definition. Also the mark must be expanded so that we get the contents
+% of the mark in our variable and not just the name. We can do this with
+% the primitive \TeX{} command \cs{xdef}. There is no \LaTeXe{} command
+% for this.
+%
+% First we give a simple (but
 % incomplete) solution.
 %
 % \NoExample{Incomplete!}
 % \begin{example}
+% \newcommand\ContiText{}
 % \fancyhead[L]{Example 29a}
 % \fancyhead[R]{\rightmark}
-% \fancyfoot[R]{\lastxmark}
+% \fancyfoot[R]{\lastrightxmark}
+% \fancyfoot[L]{\xdef\ContiText{\lastleftxmark}}
 %
 % \newenvironment{continued}{%
 %   \par
 %   \extramarks{}{}%
 %   \extramarks{\noindent Continued\ldots\\[1ex]}%
 %              {Continued on next page\ldots}%
-%   \afterpage{\firstxmark}%
+%   \afterpage{\ContiText}%
 %   \ignorespaces
 %  }{%
 %   \unskip
@@ -2732,9 +2757,9 @@
 % ``Continued'' information like in the previous examples. The
 % \cs{extramarks} contain essentially the same information as in the
 % previous examples, just formatted a little differently.
-% But the \cs{leftxmark} is not put in the header, but is used as
-% argument in \cs{afterpage} so that it will appear at the top of the
-% next page body. That is also the reason for the \verb|\\[1ex]|, to
+% But the \cs{...leftxmark} is not put in the header, but is eventually used as
+% the argument in \cs{afterpage} so that it will appear at the top of the
+% next page body. This is also the reason for the \verb|\\[1ex]|, to
 % separate it from the rest of the page text.
 %
 % Note how we use \cs{ignorespaces}, \cs{unskip} and \texttt{\%} to
@@ -2743,30 +2768,26 @@
 % However, there are some problems with this simple solution:
 % \begin{enumerate}
 % \item If the block spans more than one page boundary, the
-% \cs{afterpage} is not repeated on the following page breaks. So on
+% \cs{afterpage} is not repeated on the following page breaks
+% (\cs{afterpage} only applies to the next page). So on
 % these pages the ``Continued'' header will be missing.
-%
-% You might think that the \cs{afterpage} command could be put in the
-% non-empty footer (i.e.\ next to the ``Continued on next page'' text),
-% but unfortunately it appears that the timing is wrong then. The
-% \cs{afterpage} text will appear one page too late.
 %
 % We can solve this by repeating the \cs{afterpage} command in the
 % \cs{afterpage} text. To do this we have to put it in a macro
 % (\texttt{AP} stands for \texttt{afterpage}):
 % \begin{code}
-% \newcommand{\setAP}{\afterpage{\firstxmark\setAP}}
+% \newcommand{\setAP}{\afterpage{\ContiText\setAP}}
 % \end{code}
 % There is a disadvantage that the \cs{afterpage} will be continued on
-% all pages after the block has ended. But as \cs{firstxmark} will be
+% all pages after the block has ended. But as \cs{lastleftxmark} will be
 % empty then, no harm will be done. However, the following subsection (\ref{sec:afterpage2})
-% will give a solution for this.
+% will give a solution that stops this repetition.
 % \item If the page break comes out such that the beginning of the block
 % is pushed to the next page, but the \cs{afterpage} is given while
 % \LaTeX{} was still at the previous page, the \cs{afterpage} text will
 % be inserted before the block begins.
 %
-% Fortunately the \cs{firstxmark} on this page is empty, so the
+% Fortunately the \cs{lastleftxmark} on this page is empty, so the
 % \cs{afterpage} on this page is essentially harmless, and because we have it made
 % repeating by the previous point, it will be picked up at the
 % proper place.
@@ -2785,7 +2806,7 @@
 % \cs{afterpage} command, and then redefines itself do do nothing.
 % Because the \cs{startAP} is called inside a \TeX{} group (the
 % \env{continued} environment) we must do a \emph{global} redefine.
-% \LaTeX{} does not have a command for this, so we use the low-level
+% \LaTeXe{} does not have a command for this, so we use the low-level
 % \TeX{} command \cs{gdef} for this.
 % \begin{code}
 % \newcommand{\startAP}{\setAP\gdef\startAP{}}
@@ -2799,29 +2820,34 @@
 %
 % We also put some thick black rules around the environment.
 % And because the text for the left mark is used twice we put that in
-% a macro \cs{LM}.
+% a macro \cs{LM}. The order of the commands is chosen such that the
+% `Continued' marks don't go to the wrong page.
 % This makes the total solution like this:
 %
 % \Example{29a}
 % \begin{example}
-% \newcommand{\LM}{\noindent Continued from previous page\ldots\\[1ex]}
-% \newcommand{\setAP}{\afterpage{\firstxmark\setAP}}
+% \newcommand\ContiText{}
+% \newcommand{\LM}{\noindent\hl{Continued from previous page\ldots}\\[1ex]}
+% \newcommand{\setAP}{\afterpage{\ContiText\setAP}}
 % \newcommand{\startAP}{\setAP\gdef\startAP{}}
 %
+% \fancyhead[L]{Example 29a}
+% \fancyhead[R]{\rightmark}
+% \fancyfoot[R]{\lastrightxmark}
+% \fancyfoot[L]{\xdef\ContiText{\lastleftxmark}}
+%
 % \newenvironment{continued}{%
-%   \par\noindent\rule{\textwidth}{1mm}\\*
+%   \par\startAP
 %   \extramarks{}{}%
+%   \noindent\rule{\textwidth}{1mm}%
 %   \extramarks{\LM}{Continued on next page\ldots}%
-%   \startAP\ignorespaces}{%
-%   \unskip\noindent\rule{\textwidth}{1mm}%
-%   \extramarks{\LM}{}%
-%   \extramarks{}{}\par
+%   \\*\ignorespaces
+% }{%
+%    \unskip\noindent\rule{\textwidth}{1mm}%
+%    \extramarks{\LM}{}%
+%    \extramarks{}{}\par
 % }
 % \end{example}
-%
-% The marks like \cs{firstxmark} are not defined outside the page layout
-% routine, but as the  \cs{afterpage} text is executed while still in
-% the page layout routine, this appears to works.
 %
 % \subsection{More sophisticated solutions}
 % \label{sec:afterpage2}
