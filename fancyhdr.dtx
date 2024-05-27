@@ -2866,47 +2866,51 @@
 %
 % We must then take care of restarting the \cs{afterpage} sequence when
 % a new `Continued' block is started, and making sure that we don't get
-% more than one such sequence is activated. We do this by changing
+% more than one such sequence activated. We do this by changing
 % \cs{startAP} such that it only start an \cs{afterpage} if
 % \cs{APcommand} is empty.
 %
 % \Example{29b}
 % \newcommand{\R}{\color{red}}
-% \begin{example}[numbers=left,numbersep=1pt,commandchars=|<>]
+% \begin{example}[numbers=left,numbersep=1pt,commandchars=|\(\)]
+% \newcommand\ContiText{}
 % \newcommand*{\LM}{\noindent Continued from previous page\ldots\\[1ex]}
-% |R\newcommand*{\APcommand}{}
-% |R\newcommand*{\setAPcommand}{\gdef\APcommand{\firstxmark\setAP}}
-% |R\newcommand*{\clearAPcommand}{\gdef\APcommand{}}
-% |R\newcommand*{\setAP}{\afterpage{\APcommand}}
-% |R\newcommand*{\startAP}{\ifx\APcommand\empty\setAPcommand\setAP\fi}
+% |R\newcommand*{\APcommand}{}|label(line:apcommand)
+% |R\newcommand*{\setAPcommand}{\gdef\APcommand{\ContiText\setAP}}|label(line:set)
+% |R\newcommand*{\clearAPcommand}{\gdef\APcommand{}}|label(line:clr)
+% |R\newcommand*{\setAP}{\afterpage{\APcommand}}|label(line:setap)
+% |R\newcommand*{\startAP}{\ifx\APcommand\empty\setAPcommand\setAP\fi}|label(line:startap)
 %
 % \fancyhead[L]{Example 29b}
 % \fancyhead[R]{\rightmark}
-% \fancyfoot[R]{\lastxmark}
+% \fancyfoot[R]{\lastrightxmark}
+% \fancyfoot[L]{\xdef\ContiText{\lastleftxmark}}
 % \fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrule}{}}
 %
 % \newenvironment{continued}{%
-%   \par\noindent\rule{\textwidth}{1mm}\\*
+%   \par\startAP
 %   \extramarks{}{}%
+%   \noindent\rule{\textwidth}{1mm}%
 %   \extramarks{\LM}{Continued on next page\ldots}%
-%   \startAP\ignorespaces}{%
-%   \unskip\noindent\rule{\textwidth}{1mm}%
-%   \extramarks{\LM}{}%
-% |R  \extramarks{}{\protect\clearAPcommand}\par
+%   \\*\ignorespaces
+% }{%
+%    \unskip\noindent\rule{\textwidth}{1mm}%
+%    \extramarks{\LM}{}%
+% |R  \extramarks{}{\protect\clearAPcommand}\par|label(line:callclr)
 % }
 % \end{example}
 %
 % We have numbered the lines for easy reference. The changes are in
-% the red lines (2-6 and 20). \\
-% 2.~Here we define \cs{APcommand}.\\
-% 3,~4.~These are commands to set en clear \cs{APcommand}, respectively.\\
-% 5.~The \cs{afterpage} now uses \cs{APcommand} as argument.\\
-% 6.~\cs{startAP} now checks if \cs{APcommand} is empty, and if it is,
+% the red lines (\ref{line:apcommand}--\ref{line:startap} and \ref{line:callclr}). \\
+% \ref{line:apcommand}.~Here we define \cs{APcommand}.\\
+% \ref{line:set},~\ref{line:clr}.~These are commands to set en clear \cs{APcommand}, respectively.\\
+% \ref{line:setap}.~The \cs{afterpage} now uses \cs{APcommand} as argument.\\
+% \ref{line:startap}.~\cs{startAP} now checks if \cs{APcommand} is empty, and if it is,
 % it first fills \cs{APcommand} with the required value and then starts a
 % new \cs{afterpage} (with the \cs{setAP} command).
-% When \cs{APcommand} is not empty this means that a \cs{afterpage} is
+% When \cs{APcommand} is not empty this means that an \cs{afterpage} is
 % already active.\\
-% 20.~In the right part of the marks we now call \cs{clearAPcommand} to
+% \ref{line:callclr}.~In the right part of the marks we now call \cs{clearAPcommand} to
 % clear our variable \cs{APcommand}. This effectively stops the
 % \cs{afterpage} sequence.
 %
@@ -2919,11 +2923,11 @@
 % \textbf{Note 2.} We define \cs{APcommand} with \cs{newcommand*} rather
 % than \cs{newcommand} to make it compatible with \cs{gdef}. Without the
 % \texttt{*} it would be compatible with \cs{long}\cs{gdef}, but then it
-% would not compare equal to \cs{empty} in line 6. For the other
-% definitions it does not make a difference, but it looks nicer to use
-% it there too.
+% would not compare equal to \cs{empty} in line \ref{line:startap}. For the other
+% definitions it does not make a difference, but it looks nicer to also use
+% it there.
 %
-% \textbf{Note 3.} In line 20 we use \cs{protect} to
+% \textbf{Note 3.} In line \ref{line:callclr} we use \cs{protect} to
 % delay the expansion of \cs{clearAPcommand}. The marks in
 % \cs{extramarks} are expanded at the time they are given, so that they
 % can pick up section numbers and titles and similar information at that
@@ -2939,9 +2943,9 @@
 % \cs{APcommand}, not its expansion.
 %
 % \textbf{Note 5.} For debugging we can add some text in the
-% \cs{afterpage} command in line 5, to see the difference between an
+% \cs{afterpage} command in line \ref{line:setap}, to see the difference between an
 % empty \cs{afterpage} and no \cs{afterpage} at all.
-% Similarly we can add some text in the footer in line 20, to see where
+% Similarly we can add some text in the footer in line \ref{line:callclr}, to see where
 % the \cs{clearAPcommand} is called.
 %
 % \subsubsection*{Another use}
