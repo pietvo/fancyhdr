@@ -2952,51 +2952,45 @@
 %
 % If you would need the information further on in the page you must
 % remember the state of the marks in your own variable. You can set this
-% in one of the \Package{fancyhdr} header or footer fields. For example
+% in one of the \Package{fancyhdr} header or footer fields, like in
+% example 29a. For example
 % if you want to add something \emph{after} the broken block of text you
 % can use the following:
 %
 % \Example{29c}
 % \begin{example}
-% \newcommand*{\mysaved}{}
-%
-% \fancyfoot[R]{\lastxmark}
-% \fancyhead[C]{\ifthenelse{\equal{\lastxmark}{}}
-%   {\gdef\mysaved{}}
-%   {\gdef\mysaved{\\[1ex]\noindent\textbf{[Continued from previous page]}}}}
+% \newcommand{\ContiText}{}
+% \fancyhead[L]{Example 29c}
+% \fancyhead[R]{\rightmark}
+% \fancyfoot[R]{\lastrightxmark}
+% \fancyfoot[L]{\xdef\ContiText{\lastleftxmark}}
+% \fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrule}{}}
 %
 % \newenvironment{continued}{%
 %   \par
 %   \extramarks{}{}%
-%   \extramarks{Continued}{Continued on next page\ldots}%
-%   \ignorespaces
+%   \noindent\rule{\textwidth}{1pt}%
+%   \extramarks{\\[1ex]\noindent\textbf{[Continued
+%               from previous page]}}{Continued on next page\ldots}%
+%   \\*\ignorespaces
 % }{%
-%    \unskip
-%    \extramarks{Continued}{}%
+%    \unskip\noindent\rule{\textwidth}{1pt}%
 %    \extramarks{}{}%
-%    \mysaved\par
-%  }
+%    \ContiText\par
+% }
 % \end{example}
 %
-% Now if the block crosses a page boundary, the previous page footer has
-% a non-empty \cs{lastxmark}. In the \texttt{[C]} header field we use
-% this information to put a text in the macro \cs{mysaved}, and this is
-% typeset after the block ends. The \texttt{extramarks} left fields
-% (\cs{firstxmark}) are not used, they are only given for documentary purposes.
+% Now if the block crosses a page boundary, the \cs{lastleftxmark} has
+% the text that should be put under the block.
+% In the \texttt{[L]} footer field we put
+% this information in the macro \cs{ContiText}, and this is
+% typeset after the block ends. If the block doesn't cross the page
+% boundary, this text is empty.
 %
 % \textbf{NOTE:} This example is not completely safe; there can still be timing
-% issues. For example, when the end of the block is already typeset,
-% including an empty value of \cs{mysave}, but then is pushed to the
+% issues. For example, when the end of the block has already been typeset,
+% including an empty value of \cs{ContiText}, but then is pushed to the
 % next page. So you have to be very careful in using this kind of mechanism.
-%
-% In this example we cannot use \cs{firstxmark} to put in \cs{mysaved},
-% because we would need the value of the header on \emph{this} page, but
-% that is only available at the end of the page, when the whole page has
-% been typeset, and the headers and footers are added. If we use it to
-% put it in \cs{mysaved}, we would get the value of the previous page,
-% which is of no use in this example. On the other hand, the value of
-% \cs{lastxmark} of the previous page is just what we need, because that
-% indicates if the block crosses a page boundary.
 %
 % If you want to include one of the marks or other varying information in the
 % saved text, you must use \cs{xdef} rather than \cs{gdef}.
