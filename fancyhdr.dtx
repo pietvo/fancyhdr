@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/05/08 v4.3
+%<fancyhdr|extramarks>           [2024/07/18 v4.3
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -588,6 +588,12 @@
 %
 % We define each of the six ``fields'' and the two decorative lines
 % separately.
+%
+% \begin{fblock}
+%   \textbf{NOTE:} In \Package{fancyhdr} version 4.3 and later, paragraph
+% hooks will not work inside \Package{fancyhdr} headers and footers to
+% avoid unwanted interactions with the main text.
+% \end{fblock}
 %
 % \section{A simple example}
 % \label{sec:simple}
@@ -3059,7 +3065,18 @@
 %         \cs{input} in headers/footers when \texttt{verbatim} is active.
 %         (Issue \# 8 \url{https://github.com/pietvo/fancyhdr/issues/8}.)
 %   \end{itemize}
+% \item Version 4.3, July 17, 2024
+%   \begin{itemize}
+%   \item Changed \cs{f@nch@everypar}. If the LaTeX kernel has
+% \texttt{expl3}, use \cs{tex\_everypar:D}, and reset \cs{par},
+% \cs{@@par} and \cs{endgraf} to their original \TeX{} definitions, so that
+% no paragraph hooks will intrude in \Package{fancyhdr} code\footnote
+% {See \url{https://tex.stackexchange.com/q/691262/113546}}.
+% Therefore paragraph hooks will not work inside \Package{fancyhdr} headers and
+% footers to avoid unwanted interactions with the main text.
+%   \end{itemize}
 % \end{itemize}
+%
 %
 %
 % \StopEventually{%
@@ -3987,6 +4004,10 @@
 % \begin{macro}{\f@nch@raggedright}
 % \begin{macro}{\f@nch@centering}
 % \begin{macro}{\f@nch@everypar}
+% \changes{fancyhdr v4.3}{2024/07/17}{Changed \cs{f@nch@everypar}. If the
+% LaTeX kernel has  expl3, use \cs{tex\_everypar:D}, and reset \cs{par},
+% \cs{@@par} and \cs{endgraf} to their original \TeX{} definitions, so that
+% no paragraph hooks will intrude in \Package{fancyhdr} code.}
 % Save the standard definitions of \cs{raggedleft}, \cs{raggedright},
 % \cs{centering} and \cs{everypar} so that we can reset them when we are
 % typesetting the headers and footers. Some packages change these to
@@ -3995,7 +4016,22 @@
 \let\f@nch@raggedleft\raggedleft
 \let\f@nch@raggedright\raggedright
 \let\f@nch@centering\centering
-\let\f@nch@everypar\everypar
+\ifdefined\ExplSyntaxOn
+  \ExplSyntaxOn
+  \let\f@nch@everypar\tex_everypar:D
+  \newcommand\f@nch@resetpar{%
+    \f@nch@everypar{}%
+    \cs_set_eq:NN \par     \tex_par:D
+    \cs_set_eq:NN \@@par   \tex_par:D
+    \cs_set_eq:NN \endgraf \tex_par:D
+  }
+  \ExplSyntaxOff
+\else
+  \let\f@nch@everypar\everypar
+  \newcommand\f@nch@resetpar{%
+    \f@nch@everypar{}%
+  }
+\fi
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -4032,8 +4068,9 @@
 %   values in order to facilitate \cs{input} in headers/footers when \texttt{verbatim}
 %   is active. (Issue \# 8 \url{https://github.com/pietvo/fancyhdr/issues/8}.)}
 %   \changes{fancyhdr v4.3}{2024/05/08}{Remove pre-NFSS stuff}
+%   \changes{fancyhdr v4.3}{2024/07/17}{Replace \cs{f@nch@everypar} by \cs{f@nch@resetpar}.}
 %    \begin{macrocode}
-\def\f@nch@reset{\f@nch@everypar{}\restorecr\endlinechar=13
+\def\f@nch@reset{\f@nch@resetpar\restorecr\endlinechar=13
   \catcode`\\=0\catcode`\{=1\catcode`\}=2\catcode`\$=3\catcode`\&=4
   \catcode`\#=6\catcode`\^=7\catcode`\_=8\catcode`\ =10\catcode`\@=11
   \catcode`\:=11\catcode`\~=13\catcode`\%=14

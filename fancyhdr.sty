@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2024/05/08 v4.3
+           [2024/07/18 v4.3
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -227,9 +227,24 @@
 \let\f@nch@raggedleft\raggedleft
 \let\f@nch@raggedright\raggedright
 \let\f@nch@centering\centering
-\let\f@nch@everypar\everypar
+\ifdefined\ExplSyntaxOn
+  \ExplSyntaxOn
+  \let\f@nch@everypar\tex_everypar:D
+  \newcommand\f@nch@resetpar{%
+    \f@nch@everypar{}%
+    \cs_set_eq:NN \par     \tex_par:D
+    \cs_set_eq:NN \@@par   \tex_par:D
+    \cs_set_eq:NN \endgraf \tex_par:D
+  }
+  \ExplSyntaxOff
+\else
+  \let\f@nch@everypar\everypar
+  \newcommand\f@nch@resetpar{%
+    \f@nch@everypar{}%
+  }
+\fi
 \newcommand\f@nch@noUppercase[2][]{#2}
-\def\f@nch@reset{\f@nch@everypar{}\restorecr\endlinechar=13
+\def\f@nch@reset{\f@nch@resetpar\restorecr\endlinechar=13
   \catcode`\\=0\catcode`\{=1\catcode`\}=2\catcode`\$=3\catcode`\&=4
   \catcode`\#=6\catcode`\^=7\catcode`\_=8\catcode`\ =10\catcode`\@=11
   \catcode`\:=11\catcode`\~=13\catcode`\%=14
