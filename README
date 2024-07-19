@@ -35,10 +35,11 @@ the following packages installed:
 - robustindex.sty (CTAN:/macros/latex/contrib/robustindex)
 
 This is version 5.0beta of fancyhdr.sty and extramarks.sty. They are
-described in the forthcoming third edition of The LaTeX Companion.
+described in the third edition of The LaTeX Companion.
 Fancyhdr.sty has a number of new features.
-Extramarks.sty has a new implementation that solves a lot of problems
-with LaTeX's marks and offers new possibilities.
+Extramarks.sty has a new implementation based on the new marks mechanism
+in LaTeX. This solves a lot of problems with LaTeX's marks and offers
+new possibilities.
 
 The older versions fancyhdr.sty version 3 and extramarks.sty version 2
 and 3 are the packages as described in the second edition of The LaTeX
