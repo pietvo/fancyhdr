@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/07/18 v4.3
+%<fancyhdr|extramarks>           [2024/07/23 v4.3.1
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -3075,6 +3075,13 @@
 %     Therefore paragraph hooks will not work inside \Package{fancyhdr} headers and
 %     footers to avoid unwanted interactions with the main text.
 %   \end{itemize}
+% \item % Version 4.3.1, July 23, 2024
+%   \begin{itemize}
+%   \item Also reset \cs{everypar} to its original \TeX{} value
+%     \cs{tex\_everypar:D} in \cs{f@nch@resetpar}, otherwise environments
+%     based on \cs{trivlist} will not work properly in \Package{fancyhdr}
+%     headers and footers.
+%   \end{itemize}
 % \end{itemize}
 %
 %
@@ -4008,6 +4015,10 @@
 %   LaTeX kernel has  expl3, use \cs{tex\_everypar:D}, and reset \cs{par},
 %   \cs{@@par} and \cs{endgraf} to their original \TeX{} definitions, so that
 %   no paragraph hooks will intrude in \Package{fancyhdr} code.}
+% \changes{fancyhdr v4.3.1}{2024/07/23}{Also reset \cs{everypar} to its
+%   original \TeX{} value \cs{tex\_everypar:D} in \cs{f@nch@resetpar},
+%   otherwise environments based on \cs{trivlist}
+%   will not work properly in \Package{fancyhdr} headers and footers.}
 % Save the standard definitions of \cs{raggedleft}, \cs{raggedright},
 % \cs{centering} and \cs{everypar} so that we can reset them when we are
 % typesetting the headers and footers. Some packages change these to
@@ -4021,6 +4032,7 @@
   \let\f@nch@everypar\tex_everypar:D
   \newcommand\f@nch@resetpar{%
     \f@nch@everypar{}%
+    \cs_set_eq:NN \everypar\tex_everypar:D
     \cs_set_eq:NN \par     \tex_par:D
     \cs_set_eq:NN \@@par   \tex_par:D
     \cs_set_eq:NN \endgraf \tex_par:D
