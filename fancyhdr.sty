@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2024/07/19 v5.0beta
+           [2024/07/23 v5.0beta
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -236,6 +236,7 @@
   \let\f@nch@everypar\tex_everypar:D
   \newcommand\f@nch@resetpar{%
     \f@nch@everypar{}%
+    \cs_set_eq:NN \everypar\tex_everypar:D
     \cs_set_eq:NN \par     \tex_par:D
     \cs_set_eq:NN \@@par   \tex_par:D
     \cs_set_eq:NN \endgraf \tex_par:D
