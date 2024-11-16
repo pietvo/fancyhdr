@@ -21,9 +21,11 @@ fancyheadings.sty <V0> this loads fancyhdr with a warning message
 If you have a user distribution package (fancyhdr-dist-<V>.zip),
 then you don't have to do this processing.
 
-If you have a source distribution fancyhdr-<V>.zip, it will also contain these files.
-If you want to recreate them, then either just run the 'make' command, or
+If you have a source distribution fancyhdr-<V>.zip, it will also contain
+the .sty files, but not the .pdf file.
+To recreate the .sty files run
 tex fancyhdr.ins
+To create fancyhdr.pdf, either just run the 'make' command, or
 latexmk fancyhdr.dtx
 
 Fancyhdr is a replacement for the old LaTeX2 package fancyheadings. That
