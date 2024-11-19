@@ -20,7 +20,7 @@ clean:
 	rm -f *.synctex.gz *.bbl *.blg *.out fancyhdr.pdf
 	rm -f fancyhdr.sty extramarks*.sty fancyheadings.sty
 
-README: README.tpl fancyhdr.dtx
+README: README.TPL fancyhdr.dtx
 	sed -e "s@<V1>@$(VERSION1)@g" -e  "s@<V0>@$(VERSION0)@g" -e  "s@<V>@$(VERSION)@g" README.TPL > README
 
 install:
