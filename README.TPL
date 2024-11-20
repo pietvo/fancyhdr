@@ -5,6 +5,9 @@ The package provides extensive facilities, both for constructing headers
 and footers, and for controlling their use (for example, at times when
 LaTeX would automatically change the heading style in use).
 
+This is version <V> of fancyhdr.sty and extramarks.sty. They are
+described in the third edition of The LaTeX Companion.
+
 The distribution package (fancyhdr.zip) consists of the following files:
 
 README               This file
@@ -37,9 +40,6 @@ fancyhdr.sty and extramarks.sty.
 In order to latex the documentation you need to have a copy of
 boxedminipage.sty (CTAN:/macros/latex/contrib/boxedminipage) and
 refcount.sty (CTAN:/macros/latex/contrib/oberdiek/) installed.
-
-This is version <V> of fancyhdr.sty and extramarks.sty. They are
-described in the third edition of The LaTeX Companion.
 
 The older versions fancyhdr.sty version 3 and extramarks.sty version 2
 are the packages as described in the second edition of The LaTeX
