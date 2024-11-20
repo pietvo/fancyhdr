@@ -1,12 +1,12 @@
-.PHONY: all clean dist
-
-all: fancyhdr.sty extramarks.sty extramarks-v4.sty fancyheadings.sty fancyhdr.pdf
+.PHONY: all clean dist release
 
 VERSION1:=$(shell grep '%<fancyhdr|extramarks> *\[20' fancyhdr.dtx | sed 's/.*\[//' \
 			| awk '{print $$2 " " $$1}')
 VERSION0:=$(shell grep '%<fancyheadings> *\[20' fancyhdr.dtx | sed 's/.*\[//' \
 			| awk '{print $$2 " " $$1}')
 VERSION:=$(shell echo "$(VERSION1)" | awk '{print $$1}' | sed 's/v//')
+
+all: fancyhdr.sty extramarks.sty extramarks-v4.sty fancyheadings.sty fancyhdr.pdf
 
 extramarks.sty fancyhdr.sty extramarks-v4.sty fancyheadings.sty: fancyhdr.dtx fancyhdr.ins
 	tex fancyhdr.ins
@@ -22,11 +22,23 @@ clean:
 
 README: README.TPL fancyhdr.dtx
 	sed -e "s@<V1>@$(VERSION1)@g" -e  "s@<V0>@$(VERSION0)@g" -e  "s@<V>@$(VERSION)@g" README.TPL > README
-dist: fancyhdr.zip
-distfiles = README fancyhdr.dtx fancyhdr.pdf fancyhdr.ins
-fancyhdr.zip: $(distfiles)
-	cd .. ; zip -u fancyhdr/fancyhdr.zip $(addprefix fancyhdr/,$(distfiles))
 
 install:
 	cp fancyhdr.sty extramarks*.sty ~/Library/texmf/tex/latex
 
+# Make dist to make fancyhdr.zip for submission to CTAN
+dist: fancyhdr.zip
+distfiles = README fancyhdr.dtx fancyhdr.pdf fancyhdr.ins
+fancyhdr.zip: $(distfiles)
+	cd .. ; zip -u9 fancyhdr/fancyhdr.zip $(addprefix fancyhdr/,$(distfiles))
+
+# Make release for release files (like a github release)
+release: fancyhdr-$(VERSION).zip fancyhdr-dist-$(VERSION).zip
+
+releasefiles = README fancyhdr.sty fancyheadings.sty extramarks.sty fancyhdr.pdf
+fancyhdr-dist-$(VERSION).zip: $(releasefiles)
+	cd .. ; zip -u9 fancyhdr/fancyhdr-dist-$(VERSION).zip $(addprefix fancyhdr/,$(releasefiles))
+
+sourcefiles = README README.TPL fancyhdr.dtx fancyhdr.ins Makefile latexmkrc
+fancyhdr-$(VERSION).zip: $(sourcefiles)
+	cd .. ; zip -u9 fancyhdr/fancyhdr-$(VERSION).zip $(addprefix fancyhdr/,$(sourcefiles))
