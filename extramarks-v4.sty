@@ -21,9 +21,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks}
-           [2022/05/18 v4.0.3
+           [2024/11/20 v4.4
                  Legacy version of extramarks for LaTeX]
-% Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
+% Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%
 %% This is a legacy version (v4) of extramarks.sty
 %%
@@ -31,6 +31,24 @@
 \ifx\@temptokenb\undefined \csname newtoks\endcsname\@temptokenb\fi
 \providecommand\unrestored@protected@xdef{%
   \let\protect\@unexpandable@protect \xdef}
+\ifdefined\ExplSyntaxOn
+\ExplSyntaxOn
+\DeclareRobustCommand*\markboth[2]{%
+  \begingroup
+    \let\label\relax \let\index\relax \let\glossary\relax
+    \expandafter\@markboth\@themark{#1}{#2}%
+    \@temptokena \expandafter{\@themark}%
+    \ifdefined\mark_insert:nn
+    % 3 new lines to set the new marks
+      \mark_insert:nn{2e-left}{#1}
+      \mark_insert:nn{2e-right}{#2}
+      \tl_if_empty:nF{#2}{ \mark_insert:nn{2e-right-nonempty}{#2} }
+    \fi
+    \mark{\the\@temptokena}%
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi}
+\ExplSyntaxOff
+\else
 \def\markboth#1#2{%
   \begingroup
   \let\label\relax \let\index\relax \let\glossary\relax
@@ -39,6 +57,7 @@
   \mark{\the\@temptokena}%
   \endgroup
   \if@nobreak\ifvmode\nobreak\fi\fi}
+\fi
 \ifx\@mkboth\@gobbletwo\else\def\@mkboth{\protect\markboth}\fi
 \def\@markboth#1#2#3#4#5#6{\@temptokena{{#3}{#4}}%
   \unrestored@protected@xdef\@themark{{#5}{#6}\the\@temptokena}}

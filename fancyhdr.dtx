@@ -32,9 +32,9 @@
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
 %<fancyhdr|extramarks>% Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
-%<extramarks-v4>           [2022/05/18 v4.0.3
+%<extramarks-v4>           [2024/11/20 v4.4
 %<extramarks-v4>                 Legacy version of extramarks for LaTeX]
-%<extramarks-v4>% Copyright (C) 1994-2021 by Pieter van Oostrum <pieter@vanoostrum.org>
+%<extramarks-v4>% Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %<extramarks-v4>%%
 %<extramarks-v4>%% This is a legacy version (v4) of extramarks.sty
 %<extramarks-v4>%%
@@ -3849,12 +3849,18 @@
 %     Therefore paragraph hooks will not work inside \Package{fancyhdr} headers and
 %     footers to avoid unwanted interactions with the main text.
 %   \end{itemize}
-% \item % Version 4.3.1, July 23, 2024
+% \item Version 4.3.1, July 23, 2024
 %   \begin{itemize}
 %   \item Also reset \cs{everypar} to its original \TeX{} value
 %     \cs{tex\_everypar:D} in \cs{f@nch@resetpar}, otherwise environments
 %     based on \cs{trivlist} will not work properly in \Package{fancyhdr}
 %     headers and footers.
+%   \end{itemize}
+% \item Version 4.4, Nov 20, 2024
+%   \begin{itemize}
+%   \item Add setting the new style marks for \cs{leftmark}
+%     (\texttt{2e-left}) and \cs{rightmark} (\texttt{2e-right} and
+%     \texttt{2e-right-nonempty}) in \Package{extramarks.sty}.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -6289,7 +6295,34 @@ You are advised to update your LaTeX installation.\MessageBreak
 % \begin{macro}[internal]{\markboth}
 % Our own definition of \cs{markboth}, mainly because \cs{@markboth}
 % gets more parameters.
+% \changes{extramarks v4.4}{2024/11/20}{Add setting the new style marks
+% for \cs{leftmark} (\texttt{2e-left}) and \cs{rightmark}
+% (\texttt{2e-right} and \texttt{2e-right-nonempty}). We do this only if
+% the new marks are defined in the \LaTeX{} kernel.}
+% First the definition for modern \LaTeX{} distributions.
 %    \begin{macrocode}
+\ifdefined\ExplSyntaxOn
+\ExplSyntaxOn
+\DeclareRobustCommand*\markboth[2]{%
+  \begingroup
+    \let\label\relax \let\index\relax \let\glossary\relax
+    \expandafter\@markboth\@themark{#1}{#2}%
+    \@temptokena \expandafter{\@themark}%
+    \ifdefined\mark_insert:nn
+    % 3 new lines to set the new marks
+      \mark_insert:nn{2e-left}{#1}
+      \mark_insert:nn{2e-right}{#2}
+      \tl_if_empty:nF{#2}{ \mark_insert:nn{2e-right-nonempty}{#2} }
+    \fi
+    \mark{\the\@temptokena}%
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi}
+\ExplSyntaxOff
+%    \end{macrocode}
+% If we are with a pre-\LaTeX3 kernel, we use the definition from an
+% older version of \Package{extramarks}.
+%    \begin{macrocode}
+\else
 \def\markboth#1#2{%
   \begingroup
   \let\label\relax \let\index\relax \let\glossary\relax
@@ -6298,6 +6331,7 @@ You are advised to update your LaTeX installation.\MessageBreak
   \mark{\the\@temptokena}%
   \endgroup
   \if@nobreak\ifvmode\nobreak\fi\fi}
+\fi
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}[internal]{\@mkboth}
