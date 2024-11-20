@@ -5,7 +5,11 @@ The package provides extensive facilities, both for constructing headers
 and footers, and for controlling their use (for example, at times when
 LaTeX would automatically change the heading style in use).
 
-The distribution package (fancyhdr.zip) consists of the following files:
+This is version <V> of fancyhdr.sty and extramarks.sty. They are
+described in the third edition of The LaTeX Companion.
+
+The distribution package from CTAN (e.g. fancyhdr.zip)
+consists of the following files:
 
 README               This file
 fancyhdr.dtx         The complete source of the package and documentation
@@ -16,30 +20,27 @@ After processing (by tex) of fancyhdr.ins, the following package files will be g
 
 fancyhdr.sty      <V1> the LaTeX package
 extramarks.sty    <V1> a package for additional marks
+extramarks-v4.sty <V1> a legacy version of extramarks.sty
 fancyheadings.sty <V0> this loads fancyhdr with a warning message
 
-If you have a user distribution package (fancyhdr-dist-<V>.zip),
+If you have a user distribution package from github (fancyhdr-dist-<V>.zip),
 then you don't have to do this processing.
 
-If you have a source distribution fancyhdr-<V>.zip, it will also contain
-the .sty files, but not the .pdf file.
-To recreate the .sty files run
-tex fancyhdr.ins
-To create fancyhdr.pdf, either just run the 'make' command, or
+If you have a source distribution from github (fancyhdr-<V>.zip),
+it will also contain the .sty files, but not the .pdf file.
+To create fancyhdr.pdf, either just run the 'make' command, or:
 latexmk fancyhdr.dtx
+To recreate the .sty files run:
+tex fancyhdr.ins
 
-Fancyhdr is a replacement for the old LaTeX2 package fancyheadings. That
-one should not be used anymore. The package fancyheadings included here
-just loads fancyhdr with a warning message.
+The package fancyheadings included here is an ancient version of fancyhdr.
+It should not be used anymore. It just loads fancyhdr with a warning message.
 
 The documentation (fancyhdr.dtx/fancyhdr.pdf) describes both
 fancyhdr.sty and extramarks.sty.
 In order to latex the documentation you need to have a copy of
 boxedminipage.sty (CTAN:/macros/latex/contrib/boxedminipage) and
 refcount.sty (CTAN:/macros/latex/contrib/oberdiek/) installed.
-
-This is version <V> of fancyhdr.sty and extramarks.sty. They are
-described in the third edition of The LaTeX Companion.
 
 The older versions fancyhdr.sty version 3 and extramarks.sty version 2
 are the packages as described in the second edition of The LaTeX
