@@ -4028,7 +4028,12 @@
 % Save the standard definitions of \cs{raggedleft}, \cs{raggedright},
 % \cs{centering} and \cs{everypar} so that we can reset them when we are
 % typesetting the headers and footers. Some packages change these to
-% incompatible values.
+% incompatible values.\\
+% We also disable paragraph hooks, so that no paragraph hooks will
+% intrude in \Package{fancyhdr} code. \textbf{NOTE: This is a hack, and
+% should be replaced by cleaner code as soon as the \LaTeX{} kernel
+% provides the necessary commands.}
+% 
 %    \begin{macrocode}
 \let\f@nch@raggedleft\raggedleft
 \let\f@nch@raggedright\raggedright
