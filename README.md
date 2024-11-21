@@ -1,10 +1,10 @@
-# Fancyhdr version V5.0beta
+# Fancyhdr/Extramarks version V5.0beta
 
 This is the ongoing development version of the fancyhdr package.
 It is not yet a stable release. Eventually it will be released as V5.0
 
-The version number will remain V5.0beta, but the date will be updated if a new
-version is made available.
+The version number will remain V5.0beta until the release, but the date
+will be updated if a new version is made available.
 
 The code has been through all the tests I have, so in that sense it can be
 considered reliable. But before the release things can still change.
@@ -69,20 +69,13 @@ These set the marks, independently. In fact the \extramarks command is redefined
 to call these, \extramarksleft with its first argument, and \extramarksright
 with the second one.
 
-Making new marks:
+This implementation uses the new marks mechanism in the LaTeX kernel. See The LaTeX Companion, Third edition, pp. 390ff.
 
-\extramarksnewmark{name} - Create a new mark 'name'
-\extramarksput{name}{Some text} - Put some text in the mark 'name'
+In fact, with this new mechanism, extramarks.sty isn't thst useful anymore, just for legacy use. For new documents it is recommended to use the new LaTeX marks directly.
 
-Get the marks (for use in headers/footers)
-
-\extramarkstop{name}
-\extramarksfirst{name}
-\extramarkslast{name}
-
-The predefined marks are called 'left' and 'right', and the new commands
+The predefined marks are called 'extramarks-left' and 'extramarks-right', and the new commands
 \extramarksleft and \extramarksright are just shorthands for
-\extramarksput{left} and \extramarksput{right}.
+\InsertMark{extramarks-left} and \InsertMark{extramarks-right}.
 
 \firstleftxmark
 \firstrightxmark
