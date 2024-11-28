@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks}
-           [2024/11/20 v4.4
+           [2024/11/28 v4.5
                  Legacy version of extramarks for LaTeX]
 % Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%
@@ -66,11 +66,13 @@
 
 \def\@leftmark#1#2#3#4{#1}
 \def\@rightmark#1#2#3#4{#2}
-
-\def\leftmark{\expandafter\@leftmark
+\providecommand\IfFormatAtLeastTF{\@ifl@t@r\fmtversion}
+\IfFormatAtLeastTF{2025-06-01}{}{%
+  \def\leftmark{\expandafter\@leftmark
       \botmark\@empty\@empty\@empty\@empty}
-\def\rightmark{\expandafter\@rightmark
+    \def\rightmark{\expandafter\@rightmark
       \firstmark\@empty\@empty\@empty\@empty}
+}
 \def\firstleftmark{\expandafter\@leftmark
       \firstmark\@empty\@empty\@empty\@empty}
 \def\lastrightmark{\expandafter\@rightmark
