@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/11/21 v5.0beta
+%<fancyhdr|extramarks>           [2024/11/30 v5.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -92,18 +92,12 @@
 \RecordChanges
 \newcommand\bsbs{\char`\\\char`\\}
 \newcommand{\Cmd}[1]{\texttt{\def\{{\char`\{}\def\}{\char`\}}\bs#1}}
-\newcommand{\CmdIndex}[1]{\index{#1=\string\texttt{\bs#1}}}
-%\ExplSyntaxOn
-%\newcommand{\CmdIndex}[1]{\expandafter\SpecialCmdIndex\csname#1\endcsname{#1}}
-%\ExplSyntaxOff
-% \makeatletter
-% \newcommand{\SpecialCmdIndex}[2]{%
-%   \index{#2={\string\verbatim@font\space!\string\verb*&!\string#1&}%
-%     |hdclindex{\the\c@HD@hypercount}{usage}}}
-% \makeatother
-\newcommand{\TTindex}[1]{\index{#1=\string\texttt{#1}}}
+%\newcommand{\CmdIndex}[1]{\index{#1=\string\texttt{\bs#1}}}
+\newcommand{\CmdIndex}[1]{\setbox0\hbox{\cs{#1}}}
+\newcommand{\TTindex}[1]{\index{#1=\string\texttt{#1}}\ignorespaces}
 \newcommand{\PSindex}[1]{\index{page style>#1=\string\texttt{#1}}}
 \newcommand{\OPTindex}[1]{\index{option>#1=\string\texttt{#1}}}
+\newcommand{\PKGindex}[1]{\index{package>#1=\string\pkg{#1}}\ignorespaces}
 \renewcommand{\topfraction}{0.9}
 \renewcommand{\bottomfraction}{0.9}
 \renewcommand{\textfraction}{0.05}
@@ -5162,7 +5156,7 @@
 % intrude in \Package{fancyhdr} code. \textbf{NOTE: This is a hack, and
 % should be replaced by cleaner code as soon as the \LaTeX{} kernel
 % provides the necessary commands.}
-% 
+%
 %    \begin{macrocode}
 \let\f@nch@raggedleft\raggedleft
 \let\f@nch@raggedright\raggedright
@@ -6120,6 +6114,12 @@
 % \setlength\parindent{0pt}
 %<*extramarks>
 %
+% This package gives you extra marks, that you can define, set and use
+% in your page headers and footers. It is based on the new \LaTeX{}
+% marks mechanism as introduced in the 2022/06/01 \LaTeX{} release. If
+% your \LaTeX{} implementation is older it will fallback to
+% \Package{extramarks} version 4.
+%
 % \changes{extramarks v5.0}{2024/05/14}{New implementation with
 % independent marks, and fallback option to earlier version 4.}
 % Provide a rollback to earlier version
@@ -6137,14 +6137,31 @@ Please note that some commands will not be available,\MessageBreak
 and that the functionality may be slightly different.\MessageBreak
 You are advised to update your LaTeX installation.\MessageBreak
 **************************************************}
-             \input{extramarks-v4.sty}\endinput}{}
+             \RequirePackage{extramarks-v4}\endinput}{}
 %    \end{macrocode}
-%
-% This package gives you extra marks, that you can define, set and use
-% in your page headers and footers. It is based on the new \LaTeX{}
-% marks mechanism as introduced in the 2022/06/01 \LaTeX() release. If
-% your \LaTeX{} implementation is older it will fallback to
-% \Package{extramarks} version 4.
+% \changes{extramarks v5.0}{2024/11/30}{Check if \pkg{extramarks}
+% version 5 is not used with a too old version of \pkg{multicol}.}
+% We also do a sanity check for the package \PKGindex{multicol}\pkg{multicol}. If it is
+% too old it will not work correctly with the new \pkg{extramarks}. In that
+% case \pkg{extramarks-v4} should be used instead. So in that case
+% we give a warning and then load package \pkg{extramarks-v4}.
+% First \cs{extramarks} must be made undefined, otherwise loading
+% \Package{extramarks-v4} will give an error.
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \@ifpackageloaded{multicol}%
+    {\IfPackageAtLeastF{multicol}{2024-11-21}{%
+      \PackageWarningNoLine{extramarks}{%
+        You are using package `extramarks' with a version\MessageBreak
+        of `multicol' that is too old. The new version\MessageBreak
+        of `multicol' will be released on June 1, 2025.\MessageBreak
+        We will fallback to extramarks version 4 now.}%
+      \let\extramarks\undefined
+      \RequirePackage{extramarks-v4}
+      }%
+    }%
+}
+%    \end{macrocode}
 %
 % \changes{extramarks v1.99e}{2000/10/11}{Added a few \% marks to get rid
 % of unwanted spaces, and \cs{endinput}. \\

@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks}
-           [2024/11/21 v5.0beta
+           [2024/11/30 v5.0beta
                   Extra marks for LaTeX]
 % Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -38,7 +38,20 @@ Please note that some commands will not be available,\MessageBreak
 and that the functionality may be slightly different.\MessageBreak
 You are advised to update your LaTeX installation.\MessageBreak
 **************************************************}
-             \input{extramarks-v4.sty}\endinput}{}
+             \RequirePackage{extramarks-v4}\endinput}{}
+\AtBeginDocument{%
+  \@ifpackageloaded{multicol}%
+    {\IfPackageAtLeastF{multicol}{2024-11-21}{%
+      \PackageWarningNoLine{extramarks}{%
+        You are using package `extramarks' with a version\MessageBreak
+        of `multicol' that is too old. The new version\MessageBreak
+        of `multicol' will be released on June 1, 2025.\MessageBreak
+        We will fallback to extramarks version 4 now.}%
+      \let\extramarks\undefined
+      \RequirePackage{extramarks-v4}
+      }%
+    }%
+}
 \ifx\@mkboth\@gobbletwo\else\def\@mkboth{\protect\markboth}\fi
 \NewMarkClass{extramarks-left}
 \NewMarkClass{extramarks-right}
