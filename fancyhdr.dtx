@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/11/20 v4.4
+%<fancyhdr|extramarks>           [2024/11/28 v4.5
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -3088,6 +3088,11 @@
 %     (\texttt{2e-left}) and \cs{rightmark} (\texttt{2e-right} and
 %     \texttt{2e-right-nonempty}) in \Package{extramarks.sty}.
 %   \end{itemize}
+% \item Version 4.5, Nov 28, 2024
+%   \begin{itemize}
+%   \item \Package{extramarks}: Don't redefine \cs{leftmark} and \cs{rightmark} in
+%   \LaTeX{} kernel 2025-06-01 and later.
+%   \end{itemize}
 % \end{itemize}
 %
 %
@@ -4891,7 +4896,9 @@
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
-
+% \changes{extramarks v4.5}{2024/11/28}{Don't redefine \cs{leftmark}
+% and \cs{rightmark} in \LaTeX{} kernel 2025-06-01 and later.}
+%
 % \begin{macro}{\leftmark}
 % \begin{macro}{\rightmark}
 % \begin{macro}{\firstleftmark}
@@ -4899,11 +4906,19 @@
 % \begin{macro}{\firstrightmark}
 % \begin{macro}{\lastleftmark}
 % The standard marks + the new ones (based on the standard marks info).
+% We provide \cs{IfFormatAtLeastTF} in case we have a rather old \LaTeX{}
+% format (in which case the test will always be false).
+% If the \LaTeX{} format is 2025-06-01 or later, \cs{leftmark} and
+% \cs{rightmark} have definitions based upon the new marks, so we should
+% not redefine these in \Package{extramarks}.
 %    \begin{macrocode}
-\def\leftmark{\expandafter\@leftmark
+\providecommand\IfFormatAtLeastTF{\@ifl@t@r\fmtversion}
+\IfFormatAtLeastTF{2025-06-01}{}{%
+  \def\leftmark{\expandafter\@leftmark
       \botmark\@empty\@empty\@empty\@empty}
-\def\rightmark{\expandafter\@rightmark
+    \def\rightmark{\expandafter\@rightmark
       \firstmark\@empty\@empty\@empty\@empty}
+}
 \def\firstleftmark{\expandafter\@leftmark
       \firstmark\@empty\@empty\@empty\@empty}
 \def\lastrightmark{\expandafter\@rightmark
