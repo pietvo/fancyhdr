@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2024/11/28 v4.5
+           [2024/11/29 v4.5
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -227,19 +227,28 @@
 \let\f@nch@raggedleft\raggedleft
 \let\f@nch@raggedright\raggedright
 \let\f@nch@centering\centering
+\let\f@nch@everypar\everypar
 \ifdefined\ExplSyntaxOn
   \ExplSyntaxOn
-  \let\f@nch@everypar\tex_everypar:D
-  \newcommand\f@nch@resetpar{%
-    \f@nch@everypar{}%
-    \cs_set_eq:NN \everypar\tex_everypar:D
-    \cs_set_eq:NN \par     \tex_par:D
-    \cs_set_eq:NN \@@par   \tex_par:D
-    \cs_set_eq:NN \endgraf \tex_par:D
+  \providecommand\IfFormatAtLeastTF{\@ifl@t@r\fmtversion}
+  \IfFormatAtLeastTF{2021-06-01}{
+    \cs_new:Npn \f@nch@clear@par@hook:n #1{
+      \tl_clear:c {__hook~#1}
+    }
+    \newcommand\f@nch@resetpar{
+      \f@nch@everypar{}
+      \f@nch@clear@par@hook:n{para/before}
+      \f@nch@clear@par@hook:n{para/begin}
+      \f@nch@clear@par@hook:n{para/end}
+      \f@nch@clear@par@hook:n{para/after}
+    }
+  }{
+  \newcommand\f@nch@resetpar{
+    \f@nch@everypar{}
   }
+}
   \ExplSyntaxOff
 \else
-  \let\f@nch@everypar\everypar
   \newcommand\f@nch@resetpar{%
     \f@nch@everypar{}%
   }

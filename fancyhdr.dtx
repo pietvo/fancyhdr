@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/11/28 v4.5
+%<fancyhdr|extramarks>           [2024/11/29 v4.5
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -3092,6 +3092,8 @@
 %   \begin{itemize}
 %   \item \Package{extramarks}: Don't redefine \cs{leftmark} and \cs{rightmark} in
 %   \LaTeX{} kernel 2025-06-01 and later.
+%   \item \Package{fancyhdr}: use a better method to disable paragraph
+%   hooks than the v4.3 code.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -4038,29 +4040,48 @@
 % intrude in \Package{fancyhdr} code. \textbf{NOTE: This is a hack, and
 % should be replaced by cleaner code as soon as the \LaTeX{} kernel
 % provides the necessary commands.}
-% 
+% \changes{fancyhdr v4.5}{2024/11/29}{We use a less fragile way to
+% disable paragraph hooks, thereby partially reverting the solution in
+% version v4.3 and v4.3.1. This is less intruding in the hook system,
+% and especially it doesn't affect kernel hooks, only user provided
+% ones. We check the kernel version to see if it support paragraph hooks.}
 %    \begin{macrocode}
 \let\f@nch@raggedleft\raggedleft
 \let\f@nch@raggedright\raggedright
 \let\f@nch@centering\centering
+\let\f@nch@everypar\everypar
 \ifdefined\ExplSyntaxOn
   \ExplSyntaxOn
-  \let\f@nch@everypar\tex_everypar:D
-  \newcommand\f@nch@resetpar{%
-    \f@nch@everypar{}%
-    \cs_set_eq:NN \everypar\tex_everypar:D
-    \cs_set_eq:NN \par     \tex_par:D
-    \cs_set_eq:NN \@@par   \tex_par:D
-    \cs_set_eq:NN \endgraf \tex_par:D
+  \providecommand\IfFormatAtLeastTF{\@ifl@t@r\fmtversion}
+  \IfFormatAtLeastTF{2021-06-01}{
+%    \end{macrocode}
+% \begin{macro}{\f@nch@clear@par@hook:n}
+% Clear a (paragraph) hook locally.
+% We don't need to restore as this will be done by the \TeX{} grouping.
+%    \begin{macrocode}
+    \cs_new:Npn \f@nch@clear@par@hook:n #1{
+      \tl_clear:c {__hook~#1}
+    }
+    \newcommand\f@nch@resetpar{
+      \f@nch@everypar{}
+      \f@nch@clear@par@hook:n{para/before}
+      \f@nch@clear@par@hook:n{para/begin}
+      \f@nch@clear@par@hook:n{para/end}
+      \f@nch@clear@par@hook:n{para/after}
+    }
+  }{
+  \newcommand\f@nch@resetpar{
+    \f@nch@everypar{}
   }
+}
   \ExplSyntaxOff
 \else
-  \let\f@nch@everypar\everypar
   \newcommand\f@nch@resetpar{%
     \f@nch@everypar{}%
   }
 \fi
 %    \end{macrocode}
+% \end{macro}
 % \end{macro}
 % \end{macro}
 % \end{macro}
