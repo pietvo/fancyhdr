@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks}
-           [2024/11/29 v4.5
+           [2024/11/30 v4.5
                   Extra marks for LaTeX]
 % Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -89,6 +89,27 @@
   \if@nobreak\ifvmode\nobreak\fi\fi}
 \def\@markextra#1#2#3#4#5#6{\@temptokena {{#1}{#2}}%
   \unrestored@protected@xdef\@themark{\the\@temptokena{#5}{#6}}}
+\def\extramarksleft#1{%
+  \begingroup
+  \let\label\relax \let\index\relax \let\glossary\relax
+  \expandafter\@markextraleft\@themark{#1}%
+  \@temptokena \expandafter{\@themark}%
+  \mark{\the\@temptokena}%
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi}
+\def\@markextraleft#1#2#3#4#5{\@temptokena {{#1}{#2}}%
+  \@temptokenb {{#4}}%
+  \unrestored@protected@xdef\@themark{\the\@temptokena{#5}\the\@temptokenb}}
+\def\extramarksright#1{%
+  \begingroup
+  \let\label\relax \let\index\relax \let\glossary\relax
+  \expandafter\@markextraright\@themark{#1}%
+  \@temptokena \expandafter{\@themark}%
+  \mark{\the\@temptokena}%
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi}
+\def\@markextraright#1#2#3#4#5{\@temptokena {{#1}{#2}{#3}}%
+  \unrestored@protected@xdef\@themark{\the\@temptokena{#5}}}
 \def\firstleftxmark{\expandafter\@leftxmark
       \firstmark\@empty\@empty\@empty\@empty}
 \def\firstrightxmark{\expandafter\@rightxmark
