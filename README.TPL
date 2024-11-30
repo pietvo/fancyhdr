@@ -20,7 +20,7 @@ After processing (by tex) of fancyhdr.ins, the following package files will be g
 
 fancyhdr.sty      <V1> the LaTeX package
 extramarks.sty    <V1> a package for additional marks
-extramarks-v4.sty <V1> a legacy version of extramarks.sty
+extramarks-v4.sty <V4> a legacy version of extramarks.sty
 fancyheadings.sty <V0> this loads fancyhdr with a warning message
 
 If you have a user distribution package from github (fancyhdr-dist-<V>.zip),

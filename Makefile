@@ -4,6 +4,8 @@ VERSION1:=$(shell grep '%<fancyhdr|extramarks> *\[20' fancyhdr.dtx | sed 's/.*\[
 			| awk '{print $$2 " " $$1}')
 VERSION0:=$(shell grep '%<fancyheadings> *\[20' fancyhdr.dtx | sed 's/.*\[//' \
 			| awk '{print $$2 " " $$1}')
+VERSION4:=$(shell grep '%<extramarks-v4> *\[20' fancyhdr.dtx | sed 's/.*\[//' \
+			| awk '{print $$2 " " $$1}')
 VERSION:=$(shell echo "$(VERSION1)" | awk '{print $$1}' | sed 's/v//')
 
 all: fancyhdr.sty extramarks.sty extramarks-v4.sty fancyheadings.sty fancyhdr.pdf
@@ -21,7 +23,8 @@ clean:
 	rm -f fancyhdr.sty extramarks*.sty fancyheadings.sty
 
 README: README.TPL fancyhdr.dtx
-	sed -e "s@<V1>@$(VERSION1)@g" -e  "s@<V0>@$(VERSION0)@g" -e  "s@<V>@$(VERSION)@g" README.TPL > README
+	sed -e "s@<V1>@$(VERSION1)@g" -e  "s@<V0>@$(VERSION0)@g" -e  "s@<V4>@$(VERSION4)@g" \
+		-e  "s@<V>@$(VERSION)@g" README.TPL > README
 
 install:
 	cp fancyhdr.sty extramarks*.sty ~/Library/texmf/tex/latex
