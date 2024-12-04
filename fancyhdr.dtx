@@ -609,7 +609,7 @@
 % In versions before 5.0, the \texttt{extramarks} are connected to each
 % other and to the original \LaTeX{} marks; they are not independent.
 % For example, if you use \cs{markboth} or \cs{markright}, this
-% introduces empty \texttt{extramarks} or duplicates existing ones. This is
+% introduced empty \texttt{extramarks} or duplicated existing ones. This is
 % also true in the other direction. This sometimes caused unwanted effects.
 %
 % Since version 5.0 this is no longer the case.
@@ -1774,14 +1774,14 @@
 %
 % \begin{figure}[hbpt]
 %   \subcaptionsetup{format=hang}
-%   \centering\LARGE%\setlength\parindent{0pt}
+%   \centering\LARGE\setlength\parindent{0pt}
 %     \subcaptionbox{default footer positioning\label{fig:footalign-default}}
 %       {\mbox{\rule{5cm}{0.2pt}\hspace{-4cm}\fbox{\strut Page Footer}}}
 %   \hspace{2cm}
 %     \subcaptionbox{\raggedright footer positioning with \cmd{\fancyfootalign}\marg{length}\label{fig:footalign-length}}[0.5\linewidth][l]
 %       {\mbox{\rule{6cm}{0.2pt}\hspace{-5.5cm}%
 %           \raisebox{0.7\baselineskip}[0.8\baselineskip][0pt]{\fbox{\strut Page Footer}}%
-%                \normalsize\raisebox{5pt}{$\swarrow$}\raisebox{10pt}{\meta{length}}}}
+%                \normalsize\hspace{-4pt}\raisebox{5pt}{$\swarrow$}\raisebox{10pt}{\meta{length}}}}
 %   \caption{Vertical footer positioning}
 % \end{figure}
 %
@@ -6005,7 +6005,7 @@
     {%
 %    \end{macrocode}
 % First put necessary definitions in \cs{@temptokenb}, if required
-% (\cs{fancyhdr*}) by calling \cs{f@nch@pagestyle@setup}.
+% (\cs{fancypagestyle*}) by calling \cs{f@nch@pagestyle@setup}.
 % Then define the page style by expanding \cs{the}\cs{@temptokenb} and
 % adding the base style and our definitions.
 %    \begin{macrocode}
