@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/11/30 v4.5
+%<fancyhdr|extramarks>           [2024/12/05 v4.5
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -205,6 +205,7 @@
 % \DoNotIndex{\@ne}
 % \DoNotIndex{\advance,\begingroup,\catcode,\closein}
 % \DoNotIndex{\closeout,\day,\def,\edef,\else,\empty,\@empty,\endgroup}
+% \ProvideDocElement[printtype=\textit{hook},idxtype=hook,idxgroup=Hooks]{Hook}{hookdecl}%
 %
 % \title{The \Package{fancyhdr} and \Package{extramarks}
 % packages\\{\normalsize version \fileversion.}}
@@ -2210,6 +2211,95 @@
 %  }
 % \end{verbatim}
 %
+% \subsection{\Package{Fancyhdr} hooks}
+% \label{sec:hooks}
+%
+% \LaTeX{} has a system of \emph{hooks}\index{hooks} since the 2020/10/01 release.
+% This allows packages and classes (and other \LaTeX{} software) to
+% define points in its code where other \LaTeX{} code can insert a piece
+% of code. For more details, see  \emph{The \LaTeX{} Companion, Third
+% Edition}, part I, pp. 671ff or the documentation that can be read
+% with the command `\texttt{texdoc lthooks-doc}'.
+%
+% \Package{Fancyhdr} version 4.5 or later defines a number of hooks to be executed at the
+% beginning or end of the header and/or footer, if your \LaTeX{} version
+% supports it. The hooks are defined in
+% mirrored pairs, which means the second one of the pair is executed in the
+% reverse order compared to the first one (see the hooks documentation).
+% \begin{description}
+% \item[\texttt{fancyhdr/before}, \texttt{fancyhdr/after}]
+% \TTindex{fancyhdr/before}\TTindex{fancyhdr/after}
+% these are executed before the
+% header or footer is constructed, and after the header or footer is
+% finished, respectively.
+% \item[\texttt{fancyhdr/head/begin}, \texttt{fancyhdr/head/end}]
+% \TTindex{fancyhdr/head/begin}\TTindex{fancyhdr/head/end}
+% these are run at the
+% beginning and the end of the header construction, respectively
+% \item[\texttt{fancyhdr/foot/begin}, \texttt{fancyhdr/foot/end}]
+% \TTindex{fancyhdr/foot/begin}\TTindex{fancyhdr/foot/end}
+% these are run at the
+% beginning and the end of the footer construction, respectively
+% \end{description}
+%
+% The interaction of the hooks and the \cs{fancyhfinit} code described in
+% the previous section with the construction of the
+% header and footer is as follows: for the header construction
+% \begin{itemize}
+% \item first the \texttt{fancyhdr/before} hooks are run, then the
+% \texttt{fancyhdr/head/begin} hooks, then the \cs{fancyheadinit} code.
+% Then the header is constructed. Finally, the
+% \texttt{fancyhdr/head/end} hooks are run followed by the
+% \texttt{fancyhdr/after} hooks.
+% \item For the construction of the footer, it is similar, just replace
+% \texttt{head} by \texttt{foot}.
+% \item Note that between the construction of the header and the footer,
+% \LaTeX{} builds the body of the page. This process consists mainly of
+% putting boxes next to each other, and \Package{fancyhdr} does not
+% interfere with this, and neither should the hook code.
+% \end{itemize}
+%
+% The reason there are separate \texttt{fancyhdr/before} and
+% \texttt{fancyhdr/after} hooks and the \texttt{head} and \texttt{foot}
+% hooks, is
+% \begin{enumerate}
+% \item If you want to use the same hooks for headers and footers, use
+% the \texttt{fancyhdr/before} and \texttt{fancyhdr/after} hooks. This
+% prevents you to have to specify the same hook code twice.
+% \item If you want to have different hooks for the header and footer,
+% use the \texttt{head} and \texttt{foot} hooks.
+% \end{enumerate}
+% The \texttt{after} and \texttt{end} hooks are meant to undo changes
+% made in the \texttt{before} and \texttt{begin} hooks, respectively. If
+% the hooks make only local changes (which is recommended), the \TeX{}
+% grouping mechanism will take care of this, so you can leave out the
+% \texttt{after} and \texttt{end} hooks in that case.
+%
+% At first sight it may seem that the \cs{fancyhfinit} mechanism is no
+% longer useful with the introduction of hooks. One reason it exists is
+% that hooks were not available at the time it was introduced, and for
+% compatibility reasons it remains. However, there are some significant
+% differences between the \cs{fancyhfinit} mechanism and the hook
+% mechanism, so you should choose carefully which one to use.
+% \begin{itemize}
+% \item Hooks are global, but the \cs{fancyhfinit} declarations are
+% local. That is, if \cs{fancyhfinit} (or its siblings
+% \texttt{fancyheadinit} or \cs{fancyfootinit}) are given in a \TeX{}
+% group, they last until the end of the group. They will disappear
+% outside of the group, or be reset to the value they had outside of the group.
+% \item \cs{fancyhfinit} is meant to be used by the user who writes the
+% document, i.e. it is meant for the current document.
+% \cs{fancyhfinit} \emph{should not be used by package or class writers
+% and similar. They should use the hooks mechanism.} On the other hand
+% the user can also use hooks in the document instead of, or in addition
+% to the \cs{fancyhfinit} mechanism.
+% \item Hooks can be added multiple times, but the \cs{fancyhfinit} code
+% can only be given once (i.e. a new one overwrites the previous one).
+% \item \cs{fancyhfinit} has no corresponding \texttt{exit} function, so
+% if you need some code to be executed after the construction of the header or
+% footer, you have to use hooks.
+% \end{itemize}
+%
 % \subsection{Changing the page style of the next page}
 %
 % If you want the change of the page style to take effect
@@ -3088,7 +3178,7 @@
 %     (\texttt{2e-left}) and \cs{rightmark} (\texttt{2e-right} and
 %     \texttt{2e-right-nonempty}) in \Package{extramarks.sty}.
 %   \end{itemize}
-% \item Version 4.5, Nov 21-30, 2024
+% \item Version 4.5, Nov 21-Dec 5, 2024
 %   \begin{itemize}
 %   \item \Package{extramarks}: Don't redefine \cs{leftmark} and \cs{rightmark} in
 %   \LaTeX{} kernel 2025-06-01 and later.
@@ -3096,6 +3186,7 @@
 %   hooks than the v4.3 code.
 %   \item \Package{extramarks}: add commands \cs{extramarksleft} and
 %   \cs{extramarksright}.
+%   \item \pkg{fancyhdr}: added hooks.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -4262,6 +4353,20 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{hookdecl}{fancyhdr/before, fancyhdr/after, fancyhdr/head/begin,
+%               fancyhdr/head/end, fancyhdr/foot/begin, fancyhdr/foot/end}
+% \changes{fancyhdr v4.5}{2024/12/05}{Hooks added}
+% Here we define the \Package{fancyhdr} hooks. It will be conditional on
+% the presence of hook support in the \LaTeX{} kernel.
+%    \begin{macrocode}
+\ifdefined\NewMirroredHookPair
+  \NewMirroredHookPair{fancyhdr/before}{fancyhdr/after}
+  \NewMirroredHookPair{fancyhdr/head/begin}{fancyhdr/head/end}
+  \NewMirroredHookPair{fancyhdr/foot/begin}{fancyhdr/foot/end}
+\fi
+%    \end{macrocode}
+% \end{hookdecl}
+%
 % \begin{macro}{\f@nch@vbox}
 % Make a \cs{vbox} with the header or footer. Check whether there is
 % enough space and give a warning if not.
@@ -4328,6 +4433,7 @@
 %   The \cs{leavevmode} prevents a bug when a field starts with a
 %   \cs{color} command. The \cs{ignorespaces} skips initial spaces in
 %   the parameter, as is usual in a \cs{parbox}, for backwards compatibility.}
+% \changes{fancyhdr v4.5}{2024/12/05}{Hooks added}
 %   Put together a header or footer given the left, center and right
 %   text, fillers at left and right and a rule. The \cs{xlap} commands put
 %   the text into an hbox of zero size, so overlapping text does not
@@ -4342,13 +4448,23 @@
 %   4. \cs{f@nch@orh}, \cs{f@nch@erh}, \cs{f@nch@orf} or \cs{f@nch@erf}.
 %   This is the right component. \\
 %   5. RIGHTSIDE BEARING. This is always \cs{relax} or \cs{hss}
-%   (after expansion).
+%   (after expansion).\\
 % Before constructing the header or footer, the environment is reset to
-% a known state, and then the corresponding initialisation code as given
-% in \cs{fancyheadinit} or \cs{fancyfootinit}, respectively, is run.
+% a known state, the appropriate hooks (\texttt{fancyhdr/before} and
+% \TTindex{fancyhdr/before}
+% \TTindex{fancyhdr/head/begin}\TTindex{fancyhdr/foot/begin}
+% \texttt{fancyhdr/head/begin} or \texttt{fancyhdr/foot/begin}) are
+% executed, and then the corresponding initialisation code as given in
+% \cs{fancyheadinit} or \cs{fancyfootinit}, respectively, is run.\\
+% After constructing the header or footer, the hooks for the end
+% (\texttt{fancyhdr/head/end} or \texttt{fancyhdr/foot/end} and
+% \TTindex{fancyhdr/head/end}\TTindex{fancyhdr/foot/end}
+% \TTindex{fancyhdr/after}
+% \texttt{fancyhdr/after}) are run.
 %    \begin{macrocode}
 \newcommand\f@nch@head[5]{%
   \f@nch@reset
+  \ifdefined\UseHook\UseHook{fancyhdr/before}\UseHook{fancyhdr/head/begin}\fi
   \f@nch@headinit\relax
   #1%
   \hbox to\headwidth{%
@@ -4365,6 +4481,7 @@
     }%
   }%
   #5%
+  \ifdefined\UseHook\UseHook{fancyhdr/head/end}\UseHook{fancyhdr/after}\fi
 }
 %    \end{macrocode}
 %
@@ -4382,6 +4499,7 @@
 %   The \cs{leavevmode} prevents a bug when a field starts with a
 %   \cs{color} command. The \cs{ignorespaces} skips initial spaces in
 %   the parameter, as is usual in a \cs{parbox}, for backwards compatibility.}
+% \changes{fancyhdr v4.5}{2024/12/05}{Hooks added}
 % We put the \cs{footrule} in a \cs{vbox} to accommodate for flexible
 % footrules (e.g.\ using \cs{hrulefill}), so that the \cs{headwidth} will
 % be used as the line width. But to preserve the vertical spacing we
@@ -4390,6 +4508,7 @@
 %    \begin{macrocode}
 \newcommand\f@nch@foot[5]{%
   \f@nch@reset
+  \ifdefined\UseHook\UseHook{fancyhdr/before}\UseHook{fancyhdr/foot/begin}\fi
   \f@nch@footinit\relax
   #1%
   \hbox to\headwidth{%
@@ -4406,6 +4525,7 @@
     }%
   }%
   #5%
+  \ifdefined\UseHook\UseHook{fancyhdr/foot/end}\UseHook{fancyhdr/after}\fi
 }
 %    \end{macrocode}
 % \end{macro}

@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2024/11/30 v4.5
+           [2024/12/05 v4.5
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -316,6 +316,11 @@
   \def\f@nch@headinit{#1}%
   \def\f@nch@footinit{#1}%
 }
+\ifdefined\NewMirroredHookPair
+  \NewMirroredHookPair{fancyhdr/before}{fancyhdr/after}
+  \NewMirroredHookPair{fancyhdr/head/begin}{fancyhdr/head/end}
+  \NewMirroredHookPair{fancyhdr/foot/begin}{fancyhdr/foot/end}
+\fi
 \newcommand\f@nch@vbox[2]{%
   \setbox0\vbox{#2}%
   \ifdim\ht0>#1\relax
@@ -347,6 +352,7 @@
   \box0}
 \newcommand\f@nch@head[5]{%
   \f@nch@reset
+  \ifdefined\UseHook\UseHook{fancyhdr/before}\UseHook{fancyhdr/head/begin}\fi
   \f@nch@headinit\relax
   #1%
   \hbox to\headwidth{%
@@ -363,9 +369,11 @@
     }%
   }%
   #5%
+  \ifdefined\UseHook\UseHook{fancyhdr/head/end}\UseHook{fancyhdr/after}\fi
 }
 \newcommand\f@nch@foot[5]{%
   \f@nch@reset
+  \ifdefined\UseHook\UseHook{fancyhdr/before}\UseHook{fancyhdr/foot/begin}\fi
   \f@nch@footinit\relax
   #1%
   \hbox to\headwidth{%
@@ -382,6 +390,7 @@
     }%
   }%
   #5%
+  \ifdefined\UseHook\UseHook{fancyhdr/foot/end}\UseHook{fancyhdr/after}\fi
 }
 \f@nch@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
 \f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}%
