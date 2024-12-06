@@ -26,13 +26,13 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/11/29 v5.0beta
+%<fancyhdr|extramarks>           [2024/11/30 v5.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
 %<extramarks>                  Extra marks for LaTeX]
 %<fancyhdr|extramarks>% Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
-%<extramarks-v4>           [2024/11/28 v4.5
+%<extramarks-v4>           [2024/11/30 v4.5
 %<extramarks-v4>                 Legacy version of extramarks for LaTeX]
 %<extramarks-v4>% Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %<extramarks-v4>%%
@@ -662,8 +662,7 @@
 % \begin{verbatim}
 % \usepackage{extramarks-v4}
 % \end{verbatim}
-% Please note that in that case you cannot use the commands
-% \cs{extramarksleft} and \cs{extramarksright}. Moreover, the
+% Please note that in that case the
 % \cs{topleftxmark}, \cs{toprightxmark} and \cs{topxmark} commands may
 % give you unexpected results.
 %
@@ -3862,6 +3861,8 @@
 %   \LaTeX{} kernel 2025-06-01 and later.
 %   \item \Package{fancyhdr}: use a better method to disable paragraph
 %   hooks than the v4.3 code.
+%   \item \Package{extramarks-v4} (legacy version): add commands
+%   \cs{extramarksleft} and \cs{extramarksright}.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -6147,8 +6148,8 @@
 %    \begin{macrocode}
 \providecommand\DeclareRelease[3]{}
 \providecommand\DeclareCurrentRelease[2]{}
-\DeclareRelease{v4}{2024/11/28}{extramarks-v4.sty}
-\DeclareCurrentRelease{}{2024/11/28}
+\DeclareRelease{v4}{2024/11/30}{extramarks-v4.sty}
+\DeclareCurrentRelease{}{2024/11/30}
 \@ifundefined{NewMarkClass}
              {\PackageWarningNoLine{extramarks}{%
 **************************************************\MessageBreak
@@ -6232,7 +6233,7 @@ You are advised to update your LaTeX installation.\MessageBreak
 %
 % \begin{macro}{\extramarksleft,\extramarksright}
 % These commands can be used to set the two marks independently. These
-% are only available in \Package{extramarks} version 5 or later.
+% are only available in \Package{extramarks} version 4.5 or later.
 %    \begin{macrocode}
 \newcommand\extramarksleft[1]{%
   \InsertMark{extramarks-left}{#1}}
@@ -6486,6 +6487,54 @@ You are advised to update your LaTeX installation.\MessageBreak
 %    \begin{macrocode}
 \def\@markextra#1#2#3#4#5#6{\@temptokena {{#1}{#2}}%
   \unrestored@protected@xdef\@themark{\the\@temptokena{#5}{#6}}}
+%    \end{macrocode}
+% \end{macro}
+% \changes{extramarks-v4 v4.5}{2024/11/30}{Add commands
+% \cs{extramarksleft} and \cs{extramarksright} for compatibility with
+% \Package{extramarks} version 5.}
+% \begin{macro}{\extramarksleft}
+% This command is used to define the left extra mark.
+% As this is not independent from the other marks, it is not perfect.
+%    \begin{macrocode}
+\def\extramarksleft#1{%
+  \begingroup
+  \let\label\relax \let\index\relax \let\glossary\relax
+  \expandafter\@markextraleft\@themark{#1}%
+  \@temptokena \expandafter{\@themark}%
+  \mark{\the\@temptokena}%
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}[internal]{\@extramarksleft}
+% Internal macro to store the left mark in the marks storage.\\
+%   Note: Put \texttt{\#1\#2} and \texttt{\#4}in toks registers.
+%    \begin{macrocode}
+\def\@markextraleft#1#2#3#4#5{\@temptokena {{#1}{#2}}%
+  \@temptokenb {{#4}}%
+  \unrestored@protected@xdef\@themark{\the\@temptokena{#5}\the\@temptokenb}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\extramarksright}
+% This command is used to define the right extra mark.
+% As this is not independent from the other marks, it is not perfect.
+%    \begin{macrocode}
+\def\extramarksright#1{%
+  \begingroup
+  \let\label\relax \let\index\relax \let\glossary\relax
+  \expandafter\@markextraright\@themark{#1}%
+  \@temptokena \expandafter{\@themark}%
+  \mark{\the\@temptokena}%
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}[internal]{\@extramarksright}
+% Internal macro to store the right mark in the marks storage.\\
+%   Note: Put \texttt{\#1\#2\#3} in toks register.
+%    \begin{macrocode}
+\def\@markextraright#1#2#3#4#5{\@temptokena {{#1}{#2}{#3}}%
+  \unrestored@protected@xdef\@themark{\the\@temptokena{#5}}}
 %    \end{macrocode}
 % \end{macro}
 %

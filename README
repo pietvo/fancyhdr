@@ -20,7 +20,7 @@ After processing (by tex) of fancyhdr.ins, the following package files will be g
 
 fancyhdr.sty      v5.0beta 2024/11/30 the LaTeX package
 extramarks.sty    v5.0beta 2024/11/30 a package for additional marks
-extramarks-v4.sty v4.5 2024/11/28 a legacy version of extramarks.sty
+extramarks-v4.sty v4.5 2024/11/30 a legacy version of extramarks.sty
 fancyheadings.sty v4.1 2022/11/09 this loads fancyhdr with a warning message
 
 If you have a user distribution package from github (fancyhdr-dist-5.0beta.zip),
