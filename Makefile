@@ -33,15 +33,15 @@ install:
 dist: fancyhdr.zip
 distfiles = README fancyhdr.dtx fancyhdr.pdf fancyhdr.ins
 fancyhdr.zip: $(distfiles)
-	cd .. ; zip -u9 fancyhdr/fancyhdr.zip $(addprefix fancyhdr/,$(distfiles))
+	cd .. ; zip -9 fancyhdr/fancyhdr.zip $(addprefix fancyhdr/,$(distfiles))
 
 # Make release for release files (like a github release)
 release: fancyhdr-$(VERSION).zip fancyhdr-dist-$(VERSION).zip
 
 releasefiles = README fancyhdr.sty fancyheadings.sty extramarks.sty fancyhdr.pdf
 fancyhdr-dist-$(VERSION).zip: $(releasefiles)
-	cd .. ; zip -u9 fancyhdr/fancyhdr-dist-$(VERSION).zip $(addprefix fancyhdr/,$(releasefiles))
+	cd .. ; zip -9 fancyhdr/fancyhdr-dist-$(VERSION).zip $(addprefix fancyhdr/,$(releasefiles))
 
 sourcefiles = README README.TPL fancyhdr.dtx fancyhdr.ins Makefile latexmkrc
 fancyhdr-$(VERSION).zip: $(sourcefiles)
-	cd .. ; zip -u9 fancyhdr/fancyhdr-$(VERSION).zip $(addprefix fancyhdr/,$(sourcefiles))
+	cd .. ; zip -9 fancyhdr/fancyhdr-$(VERSION).zip $(addprefix fancyhdr/,$(sourcefiles))
