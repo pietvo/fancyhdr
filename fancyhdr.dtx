@@ -294,6 +294,15 @@
 % \DoNotIndex{\advance,\begingroup,\catcode,\closein}
 % \DoNotIndex{\closeout,\day,\def,\edef,\else,\empty,\@empty,\endgroup}
 % \ProvideDocElement[printtype=\textit{hook},idxtype=hook,idxgroup=Hooks]{Hook}{hookdecl}%
+% \newcommand\makedate{}
+% \def\makedate#1/#2/#3/{%
+%   \date{%
+%     \ifcase #2\or
+%     Jan\or Feb\or March\or Apr\or May\or June\or
+%     July\or Aug\or Sept\or Oct\or Nov\or Dec\fi~\number #3,
+%     #1}%
+% }
+% \expandafter\makedate\filedate/
 %
 % \title{The \Package{fancyhdr} and \Package{extramarks}
 % packages\\{\normalsize version \fileversion.}}
