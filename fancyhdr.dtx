@@ -85,7 +85,6 @@
 \newcommand{\bs}{\symbol{'134}}
 \providecommand\env{}
 \renewcommand{\env}[1]{\texttt{#1}}
-\newcommand{\Package}[1]{\textsf{#1}}
 \renewcommand{\partname}{Part}
 \DisableCrossrefs
 \CodelineIndex
@@ -304,7 +303,7 @@
 % }
 % \expandafter\makedate\filedate/
 %
-% \title{The \Package{fancyhdr} and \Package{extramarks}
+% \title{The \pkg{fancyhdr} and \pkg{extramarks}
 % packages\\{\normalsize version \fileversion.}}
 % \author{Pieter van Oostrum\thanks{Part of this documentation was
 %     written by  George
@@ -323,9 +322,9 @@
 %   the page.
 %
 % This documentation describes version 5.0 or later of the
-% \Package{fancyhdr} and \Package{extramarks} packages. The user
+% \pkg{fancyhdr} and \pkg{extramarks} packages. The user
 % documentation is also mostly valid for the versions 4.0 or later of
-% the \Package{fancyhdr} and \Package{extramarks} packages (except
+% the \pkg{fancyhdr} and \pkg{extramarks} packages (except
 % for the changes mentioned in sections~\ref{sec:version-4} and
 % \ref{sec:version-5}).
 %
@@ -340,18 +339,18 @@
 % This document contains four parts:
 %
 % Part I is a short documentation on
-% the user commands of the \Package{fancyhdr} and \Package{extramarks} packages.
+% the user commands of the \pkg{fancyhdr} and \pkg{extramarks} packages.
 %
 % Part II contains elaborate documentation on page layout in \latex/.
-% This used to be the complete documentation of \Package{fancyhdr} and
-% \Package{extramarks} for several years.
+% This used to be the complete documentation of \pkg{fancyhdr} and
+% \pkg{extramarks} for several years.
 %
 % Part III contains Questions and Answers.
 %
 % Part IV contains the annotated implementation.
 %
-% This document describes version 5 of \Package{fancyhdr}. This version
-% is an extension of \Package{fancyhdr} version 4, which is described in
+% This document describes version 5 of \pkg{fancyhdr}. This version
+% is an extension of \pkg{fancyhdr} version 4, which is described in
 % the \emph{The \LaTeX{} Companion, Third Edition}. It just
 % has some additional commands that are not mentioned in \emph{The
 % \LaTeX{} Companion}.
@@ -363,7 +362,7 @@
 % is only available in version 4 or a later version, or when there are
 % differences between version 4 and 5.
 %
-% This document also describes version 5 of \Package{extramarks}. This
+% This document also describes version 5 of \pkg{extramarks}. This
 % is a new implementation that differs significantly from the previous
 % versions. See section~\ref{sec:extramarks-5} on
 % page~\pageref{sec:extramarks-5} for more details.
@@ -383,17 +382,17 @@
 %
 % The preferred way to install this package is with a package installer.
 % If you want to install it by hand, then first run the command
-% `\verb+tex fancyhdr.ins+' and then move the files \texttt{fancyhdr.sty},
-% \texttt{extramarks.sty}, \texttt{extramarks-v4.sty}
-% and \texttt{fancyheadings.sty} to a place
+% `\verb+tex fancyhdr.ins+' and then move the files \pkg{fancyhdr.sty},
+% \pkg{extramarks.sty}, \pkg{extramarks-v4.sty}
+% and \pkg{fancyheadings.sty} to a place
 % where \latex/ can find it, preferably in a directory similar to
 % \texttt{.../texmf/tex/latex/fancyhdr/} in your \tex/ directory tree.
 % To get the documentation, run `\verb+pdflatex fancyhdr.dtx+'.
 %
-% \section{Using \Package{fancyhdr}}
+% \section{Using \pkg{fancyhdr}}
 % \label{sec:using-fancyhdr}
 %
-% The package \Package{fancyhdr} gives you several commands to define
+% The package \pkg{fancyhdr} gives you several commands to define
 % headers and footers of the pages in a \latex/ document.
 % You load the package with the following command in the preamble:
 % \begin{quote}
@@ -453,7 +452,7 @@
 % \cs{fancyheadinit} and \cs{fancyfootinit} can be used to define
 % initialisation code for the header and footer, respectively, and
 % \cs{fancyhfinit} defines both of these. These commands are only
-% available in \Package{fancyhdr} version~4.0 and later. See section~\ref{sec:curpagestyle}.
+% available in \pkg{fancyhdr} version~4.0 and later. See section~\ref{sec:curpagestyle}.
 % \end{function}
 %
 % \begin{function}{\fancyfootalign}
@@ -464,7 +463,7 @@
 % \end{function}
 % The command \cs{fancyfootalign} allows you to fine-tune the vertical
 % position of the footer with respect to the page bottom. This command
-% is only available in \Package{fancyhdr} 5.0 and later.
+% is only available in \pkg{fancyhdr} 5.0 and later.
 % See section~\ref{sec:fancyfootalign}.
 %
 % \begin{function}{\fancycenter}
@@ -502,10 +501,10 @@
 % outside of a header or footer.
 % \end{function}
 %
-% \section{Package \Package{fancyhdr} options}
+% \section{Package \pkg{fancyhdr} options}
 % \label{sec:options}
 %
-% \textbf{NOTE:} This section applies to fancyhdr version~4.0 and later.
+% \textbf{NOTE:} This section applies to \pkg{fancyhdr} version~4.0 and later.
 %
 % You can supply options to the \cs{usepackage} command:
 % \begin{quote}
@@ -521,7 +520,7 @@
 % \texttt{nocheck} & do not check the heights of the header and footer \\
 % \texttt{compatV3} & keep some behaviour (now considered undesirable) as in version~3 \\
 % \texttt{twoside} & use two-sided headers and footers even in one-sided documents \\
-%          & for \Package{fancyhdr}-based pagestyles (version 4.1 or later) \\
+%          & for \pkg{fancyhdr}-based pagestyles (version 4.1 or later) \\
 % \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
 % \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
 % \bottomrule
@@ -532,14 +531,14 @@
 % \item Options \texttt{nocheck} and \texttt{compatV3} are described in
 % section~\ref{sec:warning} on page~\pageref{page:warning}.
 %
-% \item \OPTindex{compatV3}Option \texttt{compatV3} keeps two fancyhdr
+% \item \OPTindex{compatV3}Option \texttt{compatV3} keeps two \pkg{fancyhdr}
 %   version~3.x (or earlier) features that are now considered undesirable.
 %   \begin{enumerate}
 %   \item The automatic adjustment of \cs{headheight} or \cs{footskip}
 %     when these are too small. This causes the page layout to become
 %     inconsistent.
 %   \item In these previous versions the changes to the
-%     \Package{fancyhdr} headers and footers (including those by
+%     \pkg{fancyhdr} headers and footers (including those by
 %     \cs{fancyhead}, \cs{fancyheadoffset} and similar commands) are
 %     made globally, except within a page style defined by
 %     \cs{fancypagestyle}. That is, when these commands are given inside
@@ -551,23 +550,23 @@
 %     later, without this option, the changes are always local.
 %   \end{enumerate}
 %   This option is deprecated in version~5.0 of
-%   \Package{fancyhdr}. It will disappear in a later release. Please
+%   \pkg{fancyhdr}. It will disappear in a later release. Please
 %   don't use this option anymore, but rather change your document.
 %
 % \item \OPTindex{twoside}Option \texttt{twoside} implements two-sided headers
 % and footers in one-sided documents (version 4.1 or later). This applies only
-% for \Package{fancyhdr}-based pagestyles. This option doesn't do anything
+% for \pkg{fancyhdr}-based pagestyles. This option doesn't do anything
 % special for two-sided documents (\texttt{twoside} documentclass option), as
 % these already have that functionality. And with the \texttt{twoside}
 % documentclass option that does apply to other pagestyles as well.
 %
 % \item \PSindex{headings}\PSindex{myheadings}\OPTindex{headings}\OPTindex{myheadings}
 %   The options \texttt{headings} and \texttt{myheadings} redefine the
-%   corresponding page style with fancyhdr commands (including a
+%   corresponding page style with \pkg{fancyhdr} commands (including a
 %   decorative line under the header), so that you can later select this
 %   page style as the page style for (part of) the
 %   document\footnote{These options were copied from the
-%   \texttt{nccfancyhdr} package, but contrary to that package, they are
+%   \pkg{nccfancyhdr} package, but contrary to that package, they are
 %   not automatically selected.}.
 % \end{itemize}
 %
@@ -590,7 +589,7 @@
 % footers in this way, but instead define your
 % own page style, as explained in section~\ref{sec:fancypagestyle}.
 %
-% \section{Using \Package{extramarks}}
+% \section{Using \pkg{extramarks}}
 % \label{sec:using-extramarks}
 %
 % Standard \latex/ has two marks: a left one and a right one. The standard
@@ -639,7 +638,7 @@
 %
 % \medskip
 %
-% \textbf{NOTE}: The implementation of \Package{extramarks} version 5
+% \textbf{NOTE}: The implementation of \pkg{extramarks} version 5
 % only is available if your \LaTeX{} release is the
 % November 2022 \LaTeX{} release or newer. It uses the new \LaTeX{}
 % marks introduced in that release. These marks are described in \emph{The \LaTeX{}
@@ -647,7 +646,7 @@
 % also use these new marks directly, or use additional ones if you need
 % more. Some examples in this manual use these.
 %
-% This manual contains several examples of the use of \Package{extramarks},
+% This manual contains several examples of the use of \pkg{extramarks},
 % where its features are essential, but in future releases of this
 % manual these examples will be rewritten to use the new \LaTeX{} marks directly.
 %
@@ -665,7 +664,7 @@
 % \end{flushleft}
 % \end{function}
 %
-% If you want to keep the old behaviour of \Package{extramarks}, you can use:
+% If you want to keep the old behaviour of \pkg{extramarks}, you can use:
 % \begin{verbatim}
 % \usepackage{extramarks}[=v4]
 % \end{verbatim}
@@ -811,9 +810,9 @@
 % to what page they apply (see section \ref{sec:change}).
 %
 %
-% \section{What is \Package{fancyhdr}}
+% \section{What is \pkg{fancyhdr}}
 %
-% The \Package{fancyhdr} macro package allows you to customize
+% The \pkg{fancyhdr} macro package allows you to customize
 % in \latex/ your page headers and footers in an easy way.  You can
 % define:
 % \begin{itemize}
@@ -829,7 +828,7 @@
 % Of course, you also have complete control over fonts, uppercase
 % and lowercase displays, etc.
 %
-% \section{Simple use of \Package{fancyhdr}}  To use this package
+% \section{Simple use of \pkg{fancyhdr}}  To use this package
 % install it in a place where \latex/ can find it (see
 % section~\ref{sec:installation})\footnote{In most modern \tex/
 % installation the package is already included.}, and include in the preamble of your document
@@ -841,7 +840,7 @@
 % \pagestyle{fancy}
 % \end{code}
 %
-% We can visualize the page layout we can create with \Package{fancyhdr}
+% We can visualize the page layout we can create with \pkg{fancyhdr}
 % as follows:
 %
 % \begin{fblock}
@@ -861,8 +860,8 @@
 % separately.
 %
 % \begin{fblock}
-%   \textbf{NOTE:} In \Package{fancyhdr} version 4.3 and later, paragraph
-% hooks will not work inside \Package{fancyhdr} headers and footers to
+%   \textbf{NOTE:} In \pkg{fancyhdr} version 4.3 and later, paragraph
+% hooks will not work inside \pkg{fancyhdr} headers and footers to
 % avoid unwanted interactions with the main text.
 % \end{fblock}
 %
@@ -887,7 +886,7 @@
 % bit thicker (2pt).
 %
 % This is accomplished by these commands following
-% \Cmd{pagestyle\{fancy\}}\footnote{Note that version 1 of fancyheadings
+% \Cmd{pagestyle\{fancy\}}\footnote{Note that version 1 of \pkg{fancyheadings}
 % used the \cs{setlength} command to change the \texttt{\bs...rulewidth} parameters.}:
 % \CmdIndex{fancyhead}
 % \CmdIndex{fancyfoot}
@@ -936,19 +935,19 @@
 %
 % \section{The default layout}
 % \label{sec:default}
-% Let us use the \verb|book.cls| documentclass and the default settings for
-% \Package{fancyhdr}; so we don't use any of the page style options in
+% Let us use the \pkg{book.cls} documentclass and the default settings for
+% \pkg{fancyhdr}; so we don't use any of the page style options in
 % the \Cmd{usepackage\{fancyhdr\}} command, and we don't redefine any
 % headers or footers. So just:
 % \begin{code}
 % \usepackage{fancyhdr}
 % \pagestyle{fancy}
 % \end{code}
-% and let \Package{fancyhdr} take care of everything.  As mentioned
+% and let \pkg{fancyhdr} take care of everything.  As mentioned
 % before, we get a layout that is similar to the page style
 % \texttt{headings}, but it is not exactly the same. If you want to have
 % the same layout as the page style \texttt{headings}, but with a line
-% under the header, use (you need \Package{fancyhdr} version 4 or later
+% under the header, use (you need \pkg{fancyhdr} version 4 or later
 % for this):
 % \PSindex{headings}
 % \begin{code}
@@ -1008,13 +1007,13 @@
 % \end{tabbing}
 %
 % The header text is turned into all uppercase by the standard \LaTeX{}
-% code in \verb|book.cls|.
+% code in \pkg{book.cls}.
 %
 % \section{Fancy Centering}
 % \label{sec:fancycenter}
 %
-% \textbf{Note:} This section only applies to \Package{fancyhdr} version~4.0
-% and later\footnote{This comes from the \Package{nccfancyhdr}
+% \textbf{Note:} This section only applies to \pkg{fancyhdr} version~4.0
+% and later\footnote{This comes from the \pkg{nccfancyhdr}
 % package by Alexander I. Rozhenko.}.
 %
 % The fields in a fancy header and footer are prepared using \cs{parbox}
@@ -1083,9 +1082,9 @@
 % \section{An example of two-sided printing}\label{two-sided}
 %
 % \TTindex{twoside}
-% Some document classes, such as \verb|book.cls|, print two-sided by default: the even
+% Some document classes, such as \pkg{book.cls}, print two-sided by default: the even
 % pages and the odd pages have different layouts; other document classes
-% use the \verb|twoside| option to print two-sided.
+% use the \texttt{twoside} option to print two-sided.
 %
 % Now let us print the report two-sided.  Let the above page
 % layout be used for the odd (right-side) pages, and the
@@ -1183,7 +1182,7 @@
 %
 % To customize even such pages you must redefine the \texttt{plain}
 % page style. As we indicated before you could do this by defining the
-% \cs{ps@plain} command, but \Package{fancyhdr} gives you an easier way
+% \cs{ps@plain} command, but \pkg{fancyhdr} gives you an easier way
 % with the \cs{fancypagestyle} command. This command can be used to
 % redefine existing page styles (like \texttt{plain}) or to define new ones,
 % e.g.\ if part of your document needs a different page style. This command
@@ -1236,7 +1235,7 @@
 % \end{quote}
 %  With \texttt{*} it defines a ``\emph{closed}'' page style, otherwise an
 % ``\emph{open}'' one. (This version is only available in
-% \Package{fancyhdr} version 5.0 and later.) The difference is that the \emph{open} page style
+% \pkg{fancyhdr} version 5.0 and later.) The difference is that the \emph{open} page style
 % does not necessarily have all the information in itself that is
 % necessary to construct the headers and footers. So it will need to pick up the
 % remaining elements from the environment of the text.
@@ -1274,7 +1273,7 @@
 %
 % You can also give an optional base page style to the
 % \cs{fancypagestyle} command. Then the new page style will be based on
-% the base style. This base style must be a \texttt{fancyhdr}-defined
+% the base style. This base style must be a \pkg{fancyhdr}-defined
 % style. You should take care not to
 % create circular dependencies. In this case the order of picking up the
 % definitions (headers, footers, marks) is:
@@ -1317,8 +1316,8 @@
 % does not change, however. It is in fact the \emph{closed} version of
 % page style \texttt{fancy}, defined with
 % \Cmd{fancypagestyle*\{fancydefault\}}\marg{initialisation code} just after
-% \Package{fancyhdr}'s initialisation.  However, \texttt{fancydefault}
-% is only available since \Package{fancyhdr} version~4.0.
+% \pkg{fancyhdr}'s initialisation.  However, \texttt{fancydefault}
+% is only available since \pkg{fancyhdr} version~4.0.
 %
 % If you don't like the defaults, you can redefine it yourself. For
 % example if you don't want to include the \Cmd{...mark} definitions,
@@ -1407,7 +1406,7 @@
 % explicitly given in the definition of \cs{thebibliography}. Similar for
 % \index{INDEX}
 % \textsc{index} etc.\ If you don't want to redefine these commands, you can
-% use the \cs{nouppercase} command that \Package{fancyhdr} makes available in the header
+% use the \cs{nouppercase} command that \pkg{fancyhdr} makes available in the header
 % and footer fields. Note that this may screw other things, like uppercase
 % roman numerals in your headers, so it should be used with care. Essentially
 % this command typesets its argument in an environment where
@@ -1496,7 +1495,7 @@
 % chapters (which always start on a new page) and sections (which are
 % reasonably long).  It does not work quite as well with short sections and
 % subsections.  This is a problem with \latex/, not with
-% \Package{fancyhdr}.
+% \pkg{fancyhdr}.
 %
 % As an example let's take a page layout where the leftmarks are generated by
 % the sections and the rightmarks by the subsections (as is default in the
@@ -1516,7 +1515,7 @@
 % One thing you can do in these cases is use only the \cs{rightmark}s and
 % redefine \cs{sectionmark} accordingly.
 %
-% However, the \Package{extramarks} package described in section~\ref{sec:xmarks}
+% However, the \pkg{extramarks} package described in section~\ref{sec:xmarks}
 % contains a command
 % \CmdIndex{firstleftmark}
 % \cs{firstleftmark} that can be used to get the first of the leftmarks
@@ -1567,7 +1566,7 @@
 % \index{concordance}
 % Dictionaries and concordances usually have a header containing the first
 % word defined on the page or both the first and the last words. This can
-% easily be accomplished with \Package{fancyhdr} and \latex/'s
+% easily be accomplished with \pkg{fancyhdr} and \latex/'s
 % \texttt{mark} mechanism. Of course if you use the marks for dictionary
 % style headers, you cannot use them for chapter and section information, so
 % if there are also chapters and sections present, you must redefine the
@@ -1589,7 +1588,7 @@
 % marks are the same.  However, \tex/'s marks are strange beasts, which
 % cannot be compared out of the box with the plain \tex/ \cs{if} commands.
 % \TTindex{ifthen}
-% Fortunately the \Package{ifthen} package works well:
+% Fortunately the \pkg{ifthen} package works well:
 %
 % \Example{15}
 % \begin{example}
@@ -1658,7 +1657,7 @@
 %     {\makebox[\headwidth]{\dotfill}\vss}}
 % \end{code}
 %
-% The redefined \cs{headrule} should preferably take up no vertical space, as in the example above, and as in the standard definition. If it does take vertical space, the header may come too close to the text, or even intrude in the text. In that case \Package{fancyhdr} will give you a warning that \cs{headheight} is too small. Like
+% The redefined \cs{headrule} should preferably take up no vertical space, as in the example above, and as in the standard definition. If it does take vertical space, the header may come too close to the text, or even intrude in the text. In that case \pkg{fancyhdr} will give you a warning that \cs{headheight} is too small. Like
 % \begin{code}
 % Package fancyhdr Warning: \headheight is too small (12.0pt):
 % (fancyhdr)                Make it at least 14.0pt, for example:
@@ -1668,7 +1667,7 @@
 % \end{code}
 % \label{page:warning}\index{Warning}
 % You will probably get this warning on every page.
-% \textbf{Note:} Before version 4.0, \Package{fancyhdr} would change the
+% \textbf{Note:} Before version 4.0, \pkg{fancyhdr} would change the
 % \cs{headheight} itself, causing the text on the following pages
 % to come out lower than on this page. This appeared to be confusing, so
 % since version~4.0 this is no longer done (except when you give the
@@ -1803,7 +1802,7 @@
 % paper isn't esthetic. The beamer class has this layout.
 %
 % In this case we can shift the footer up with the \cs{fancyfootalign}
-% command (only available in \Package{fancyhdr} 5.0 and later).
+% command (only available in \pkg{fancyhdr} 5.0 and later).
 % This command has two versions:
 % \begin{flushleft}
 % \cs{fancyfootalign}\texttt{\{\}} -- This selects the default alignment,
@@ -1884,7 +1883,7 @@
 % been redefined to eliminate the chapter numbers and the uppercaseness.
 %
 % For more control about the horizontal position of the headers and/or
-% footers, \Package{fancyhdr} has additional commands to specify the
+% footers, \pkg{fancyhdr} has additional commands to specify the
 % offset of the header and/or footer elements. Use
 % \Cmd{fancyhfoffset[place]\{length\}}
 % \CmdIndex{fancyhfoffset}
@@ -1903,7 +1902,7 @@
 % based on the given parameters.
 %
 % So the above example could also have been done with (N.B. You can only
-% use such an expression as a length parameter if the \Package{calc}
+% use such an expression as a length parameter if the \pkg{calc}
 % package is used):
 %
 % \Example{19}
@@ -1912,7 +1911,7 @@
 % \end{example}
 %
 % \textbf{NOTE:} If you change the \cs{textwidth} in the middle of your
-% document, for example by using the \Package{geometry}\TTindex{geometry} package,
+% document, for example by using the \pkg{geometry}\TTindex{geometry} package,
 % by default the \cs{headwidth} will not change, as it picks up the value
 % of \cs{textwidth} at the beginning of the document. If you want it to track
 % the changes to \cs{textwidth}, you should use the command \verb|\fancyhfoffset{0pt}|
@@ -2027,7 +2026,7 @@
 % are generated autonomically by \latex/, the user doesn't have any control
 % over them. There is no \cs{thispagestyle} for float pages and any change
 % of the page style will at least also affect the page before the float page.
-% With \Package{fancyhdr}, however, you can specify in each of
+% With \pkg{fancyhdr}, however, you can specify in each of
 % the header- or footer fields
 %
 % \medskip
@@ -2043,7 +2042,7 @@
 % \end{example}
 %
 % \textbf{NOTE:} There is also a package \TTindex{floatpag}%
-% \Package{floatpag}\footnote{\url{https://www.ctan.org/pkg/floatpag}} by Vytas
+% \pkg{floatpag}\footnote{\url{https://www.ctan.org/pkg/floatpag}} by Vytas
 % Statulevičius and Sigitas Tolušis that has a command
 % \cs{floatpagestyle}\marg{pagestyle}, that applies \meta{pagestyle} to
 % all float pages, where \meta{pagestyle} can be defined with
@@ -2053,7 +2052,7 @@
 % Sometimes you may want to change the layout also for pages that contain a
 % float on the top of the page, a float on the bottom of the page or a footnote on the bottom of the page.
 %
-% \Package{fancyhdr} gives you the commands \cs{iftopfloat}, \cs{ifbotfloat} and \cs{iffootnote}
+% \pkg{fancyhdr} gives you the commands \cs{iftopfloat}, \cs{ifbotfloat} and \cs{iffootnote}
 % similar to \cs{iffloatpage}. For example:
 % \begin{code}
 % \fancyhead[R]{\iftopfloat{This page has a topfloat}
@@ -2110,9 +2109,9 @@
 %
 % Some document writers prefer the pages to be numbered as \textsf{n} of
 % \textsf{m} where \textsf{m} is the number of pages in the document.
-% There is a package \Package{lastpage}
+% There is a package \pkg{lastpage}
 % \TTindex{lastpage}
-% available which you can use with \Package{fancyhdr} as follows:
+% available which you can use with \pkg{fancyhdr} as follows:
 %
 % \Example{22}
 % \begin{example}
@@ -2136,7 +2135,7 @@
 % the page number is odd, and if it is equal to the number of the last page.
 %
 % We use the macro \cs{getpagerefnumber} from the package\TTindex{refcount}
-% \Package{refcount}, because \cs{pageref} isn't always usable in a
+% \pkg{refcount}, because \cs{pageref} isn't always usable in a
 % numerical context (it is meant for typesetting only). This is also done in
 % following similar examples.
 %
@@ -2162,7 +2161,7 @@
 % In technical documentation very often page numbers are used of the form
 % 2-10 where the first number is the chapter number and the second is the
 % pagenumber relative to the chapter. Sometimes section is used rather than
-% chapter. The package \Package{chappg} can be used to get this format.
+% chapter. The package \pkg{chappg} can be used to get this format.
 %
 % Basically this package redefines \cs{thepage} as
 % \cs{thechapter}\cs{chappgsep}\Cmd{arabic\{page\}}, where
@@ -2209,7 +2208,7 @@
 %
 % There is a caveat when you have appendices in your document. Before the
 % \cs{appendix} command you should give a \cs{clearpage} or
-% \cs{cleardoublepage}. See the \Package{chappg} documentation for
+% \cs{cleardoublepage}. See the \pkg{chappg} documentation for
 % details.
 %
 % There is a fundamental difference between the page numbering of the style
@@ -2241,10 +2240,10 @@
 % \end{code}
 %
 % If the previous page style was one of the standard \LaTeX{} page
-% styles, or some page style that is not based on \Package{fancyhdr},
+% styles, or some page style that is not based on \pkg{fancyhdr},
 % then the definitions of \cs{fancyhead} or \cs{fancyfoot} are not
 % affected. So strictly you don't have to include them. But if it was
-% based on \Package{fancyhdr} and had different definitions, you will
+% based on \pkg{fancyhdr} and had different definitions, you will
 % get the wrong headers and/or footers when you switch back to page
 % style \texttt{fancy}. So it is safer to include them anyway.
 %
@@ -2296,7 +2295,7 @@
 % Sometimes you want to change only a header or footer without changing
 % the whole page style.
 %
-% It should be noted that although the \Package{fancyhdr} commands like
+% It should be noted that although the \pkg{fancyhdr} commands like
 % \cs{fancyhead} take effect immediately, this does not mean that any
 % ``variables'' used in these commands get the value they have at the place
 % where these commands are given. E.g.\ if \Cmd{fancyfoot[C]\{}\Cmd{thepage\}} is given
@@ -2462,7 +2461,7 @@
 %   \ifthenelse{\value{page}=\getpagerefnumber{otherpagestyle}}{0.4pt}{0pt}%
 % }
 % \end{code}
-% For cases like this \Package{fancyhdr} version~4.0 and later has some
+% For cases like this \pkg{fancyhdr} version~4.0 and later has some
 % new commands \cs{fancyheadinit}, \cs{fancyfootinit} and \cs{fancyhfinit}.
 % \CmdIndex{fancyheadinit}
 % With \Cmd{fancyheadinit\{\meta{code}\}} you can define some code that will be executed
@@ -2478,7 +2477,7 @@
 % the test inside the definition of \cs{headruleskip}, we can put it
 % outside, and then we can use the command \cs{ifthenelse}. So we put
 % the following in \Cmd{pagestyle\{switch\}}\footnote{Assuming we have
-% already loaded package \Package{refcount}.}:
+% already loaded package \pkg{refcount}.}:
 % \begin{code}
 %   \fancyheadinit{%
 %     \ifthenelse{\value{page}=\getpagerefnumber{otherpagestyle}}
@@ -2539,7 +2538,7 @@
 %  }
 % \end{code}
 %
-% \subsection{\Package{Fancyhdr} hooks}
+% \subsection{\pkg{Fancyhdr} hooks}
 % \label{sec:hooks}
 %
 % \LaTeX{} has a system of \emph{hooks}\index{hooks} since the 2020/10/01 release.
@@ -2549,7 +2548,7 @@
 % Edition}, part I, pp. 671ff or the documentation that can be read
 % with the command `\texttt{texdoc lthooks-doc}'.
 %
-% \Package{Fancyhdr} version 4.5 or later defines a number of hooks to be executed at the
+% \pkg{Fancyhdr} version 4.5 or later defines a number of hooks to be executed at the
 % beginning or end of the header and/or footer, if your \LaTeX{} version
 % supports it. The hooks are defined in
 % mirrored pairs, which means the second one of the pair is executed in the
@@ -2583,7 +2582,7 @@
 % \texttt{head} by \texttt{foot}.
 % \item Note that between the construction of the header and the footer,
 % \LaTeX{} builds the body of the page. This process consists mainly of
-% putting boxes next to each other, and \Package{fancyhdr} does not
+% putting boxes next to each other, and \pkg{fancyhdr} does not
 % interfere with this, and neither should the hook code.
 % \end{itemize}
 %
@@ -2612,7 +2611,7 @@
 % \begin{itemize}
 % \item Hooks are global, but the \cs{fancyhfinit} declarations are
 % local. That is, if \cs{fancyhfinit} (or its siblings
-% \texttt{fancyheadinit} or \cs{fancyfootinit}) are given in a \TeX{}
+% \cs{fancyheadinit} or \cs{fancyfootinit}) are given in a \TeX{}
 % group, they last until the end of the group. They will disappear
 % outside of the group, or be reset to the value they had outside of the group.
 % \item \cs{fancyhfinit} is meant to be used by the user who writes the
@@ -2646,7 +2645,7 @@
 %
 % If this is not what you want, you can use the
 % \TTindex{afterpage.sty}%
-% \Package{afterpage} package with:\\[1ex]
+% \pkg{afterpage} package with:\\[1ex]
 % \CmdIndex{afterpage}\Cmd{afterpage\{}\Cmd{fancyhead[L]\{new value\}\}} or\\
 % \CmdIndex{pagenumbering}\Cmd{afterpage\{}\Cmd{pagenumbering\{roman\}\}}.
 % \\[1ex]
@@ -2656,7 +2655,7 @@
 % changes. The \cs{pagenumbering} and the \cs{thispagestyle}
 % command make global changes, as well as changes to \LaTeX's counters,
 % such as \cs{setcounter} and \cs{addtocounter}.
-% So these can be used\footnote{In \Package{fancyhdr} version~3 and
+% So these can be used\footnote{In \pkg{fancyhdr} version~3 and
 % earlier the commands like \cs{fancyhead} and \cs{fancyfoot} also made
 % global changes. This is no longer the case in version~4.0 and later.}.
 % Here is an example to change the page style of the next page with \cs{afterpage}:
@@ -2696,7 +2695,7 @@
 % You cannot use \latex/'s mark mechanisms for this if you also want to use
 % chapter and section information.
 %
-% The \Package{extramarks} package gives you
+% The \pkg{extramarks} package gives you
 % two extra marks that can be used in this situation.
 % Here is a way to use this package:
 %
@@ -2725,7 +2724,7 @@
 % header will be necessary on these pages.
 % Also the \cs{extramarks} command must be close to the text, i.e no
 % empty lines (paragraph boundaries) should intervene. Otherwise the page may
-% be broken at that boundary and the extramarks would come on the wrong page.
+% be broken at that boundary and the \texttt{extramarks} would come on the wrong page.
 %
 % Explanation: There are two new marks that can be used in the page layout with this
 % package: If commands of the form
@@ -2808,14 +2807,14 @@
 % Finally you may want to put ``(Continued\ldots)'' in the \emph{text}
 % rather than in the header or the margin. Then you have to use the
 % \TTindex{afterpage}%
-% \Package{afterpage} package. We also decide to make a separate
+% \pkg{afterpage} package. We also decide to make a separate
 % environment \env{continued} for it\footnote{In the example files for
 % examples 27 and 28 this is also done; it is just not documented here.}.
 %
 % The first thought might be to use
 % \cs{afterpage}\texttt{\{\cs{firstxmark}\}}. But the marks can only be
 % used in the headers and footers, not in the running text%
-% \footnote{NOTE: This used to be different in \Package{extramarks} version 4 and earlier.}.
+% \footnote{NOTE: This used to be different in \pkg{extramarks} version 4 and earlier.}.
 % Moreover, we
 % need the value that will become \cs{firstxmark} (=\cs{firstleftxmark})
 % on the next page, but on the current page it will be in \cs{lastleftxmark}.
@@ -3041,7 +3040,7 @@
 % \cs{protect} does.
 %
 % \textbf{Note 4.} We test the value of \cs{APcommand} with \cs{ifx},
-% not with \cs{ifthenelse} from the \Package{ifthen} package. The
+% not with \cs{ifthenelse} from the \pkg{ifthen} package. The
 % latter completely expands its parameters, and because \cs{APcommand}
 % has a recursive definition when it is not empty, that would cause
 % \TeX{} to fail. We only want to check the definition of
@@ -3057,7 +3056,7 @@
 %
 % If you would need the information further on in the page you must
 % remember the state of the marks in your own variable. You can set this
-% in one of the \Package{fancyhdr} header or footer fields, like in
+% in one of the \pkg{fancyhdr} header or footer fields, like in
 % example 29a. For example
 % if you want to add something \emph{after} the broken block of text you
 % can use the following:
@@ -3107,7 +3106,7 @@
 % \TTindex{picture}
 % If you put at each page on the same place a picture that slightly changes
 % from page to page you can get a movie-like effect by flipping through the
-% pages. You can create such a movie easily with fancyhdr. For
+% pages. You can create such a movie easily with \pkg{fancyhdr}. For
 % simplicity we assume that we use a PDF-producing \LaTeX{} (such as
 % \texttt{pdflatex}) and each picture is in a PNG file called
 % \texttt{pic}$\langle n\rangle$.\texttt{png}%
@@ -3115,7 +3114,7 @@
 % pictures. With a DVI based \texttt{latex} we could use PS or EPS
 % pictures. Or any other supported image format.}
 % where $\langle n\rangle$ is
-% the page number and that we use the \Package{graphics} or  \Package{graphicx} package.
+% the page number and that we use the \pkg{graphics} or  \pkg{graphicx} package.
 % \TTindex{graphics}
 % \TTindex{graphicx}
 % To put the movie in the  righthandside bottom corner the following will work:
@@ -3132,7 +3131,7 @@
 % the odd pages, by specifying \verb|\fancyfoot[RO]|.
 %
 % Notice that the \cs{unitlength} parameter should
-% be set locally in the fancyhdr field in order to avoid unwanted
+% be set locally in the \pkg{fancyhdr} field in order to avoid unwanted
 % interference with its value in the text.
 %
 % \section{Thumb-indexes}
@@ -3270,13 +3269,13 @@
 %
 % \section{Float placement}
 %
-% \textbf{Note: This section is not about \Package{fancyhdr}, but about
+% \textbf{Note: This section is not about \pkg{fancyhdr}, but about
 % page layout, especially about the placement of floats.}
 %
 % Floats are page elements that float with respect to the rest of the
 % document. Standard floats are tables and figures, but with the
 % \TTindex{float}%
-% \Package{float} package you can easily make new ones, like algorithms. Most
+% \pkg{float} package you can easily make new ones, like algorithms. Most
 % of the time floats work satisfactory, but sometimes \LaTeX{} seems too
 % stubborn to do what you want. This section describes how you can influence
 % \LaTeX{} so that it will do most of the time what you want. There might,
@@ -3383,7 +3382,7 @@
 %   undesirable, as you may want the float to be placed at the top of the
 %   next page.
 % \item \TTindex{flafter}%
-%   use the \Package{flafter} package which causes floats never to be
+%   use the \pkg{flafter} package which causes floats never to be
 %   placed ``backwards''.
 % \item use the command \cs{suppressfloats[t]}.  This
 % \CmdIndex{suppressfloats}%
@@ -3396,18 +3395,18 @@
 % of the document or the end of a chapter, you can insert a \cs{clearpage}
 % command. This will start a new page and insert all pending floats before
 % continuing. If it is undesirable to have a pagebreak you can use the
-% \Package{afterpage} package and the following command:
+% \pkg{afterpage} package and the following command:
 % \TTindex{afterpage}\CmdIndex{afterpage}\CmdIndex{clearpage}%
 % \begin{code}
 % \afterpage{\clearpage}
 % \end{code}
 %
 % This will wait until the current page is finished and then flush all
-% outstanding floats. In some pathological circumstances \Package{afterpage}
+% outstanding floats. In some pathological circumstances \pkg{afterpage}
 % may give strange results, however.
 %
 % Finally, if you want a float only at the place where you define it, without
-% \latex/ moving it whatsoever, you can use the \Package{float} package and
+% \latex/ moving it whatsoever, you can use the \pkg{float} package and
 % give the command:
 % \TTindex{float}\CmdIndex{restylefloat}%
 % \begin{code}
@@ -3418,7 +3417,7 @@
 % and only HERE''. This may cause an unwanted page break however.
 % If you want to avoid the unwanted pagebreak, i.e., let
 % \LaTeX{} move the float only if it doesn't fit on the page, then use the
-% \Package{afterpage} package with:
+% \pkg{afterpage} package with:
 % \TTindex{afterpage}\CmdIndex{afterpage}\CmdIndex{clearpage}%
 % \begin{code}
 % \afterpage{\clearpage \begin{figure}[H] ... \end{figure}}
@@ -3432,7 +3431,7 @@
 % really are too many floats, as \latex/ has a limited number of ``boxes'' to
 % store the floats. The package
 % \TTindex{morefloats}%
-% \Package{morefloats} can be used to increase
+% \pkg{morefloats} can be used to increase
 % this number. If you need still more then you must edit a private copy of
 % this file, but even then there will be some limit that you cannot pass.
 % Then your only resort will be to change your document.
@@ -3464,7 +3463,7 @@
 %
 % \subsection{Tables}
 %
-% For tables longer than a page you can use the \Package{longtable} package.
+% For tables longer than a page you can use the \pkg{longtable} package.
 % \TTindex{longtable}
 % This package defines a \texttt{longtable} environment that is a kind of
 % amalgamation of \texttt{table} and \texttt{tabular}. It has approximately
@@ -3478,7 +3477,7 @@
 % out of order. Another problem could be that the \texttt{longtable} starts
 % rather far down the page, which isn't a pleasant sight. If you want the
 % \texttt{longtable} to start at the top of the page, the best thing to do is
-% to include it in an \cs{afterpage} command (using the \Package{afterpage}
+% to include it in an \cs{afterpage} command (using the \pkg{afterpage}
 % package). As a \texttt{longtable} is by definition large, it is best to put
 % it in a separate file, and \cs{input} it in the \cs{afterpage} command:
 % \CmdIndex{afterpage}\TTindex{afterpage}\CmdIndex{clearpage}%
@@ -3571,7 +3570,7 @@
 %
 % If you want your multipage figure to start at a lefthand-side
 % (even-numbered) page you can use a test in the \cs{afterpage} command
-% (using the \Package{ifthen} package):
+% (using the \pkg{ifthen} package):
 % \CmdIndex{afterpage}
 % \CmdIndex{ifthenelse}
 % \begin{code}
@@ -3639,7 +3638,7 @@
 % \item It is hard to refer to the parts separately
 % \end{enumerate}
 % \TTindex{subcaption}%
-% For this the \Package{subcaption} package comes to the rescue. First it
+% For this the \pkg{subcaption} package comes to the rescue. First it
 % \CmdIndex{ContinuedFloat}%
 % has a \cs{ContinuedFloat} command to indicate that a figure is a
 % continuation of a previous one, and therefore will not get a new
@@ -3739,7 +3738,7 @@
 % \label{sec:depr}
 %
 % This section contains the description of deprecated commands. These
-% were parts of the original implementation of \Package{fancyheadings}.
+% were parts of the original implementation of \pkg{fancyheadings}.
 % They continue to work for compatibility reasons,
 % but it is recommended not to use them anymore. This description is
 % given so that you know what they mean and how to convert them to the
@@ -3829,10 +3828,10 @@
 %   \begin{itemize}
 %   \item Removed references to fixmarks.sty as that is no longer used.
 %   \item References to older \LaTeX{} versions removed.
-%   \item Removed obsolete source code of \Package{extramarks.sty}
+%   \item Removed obsolete source code of \pkg{extramarks.sty}
 %   \item Changed font commands to \cs{textbf} and \cs{textsl}.
 %   \item Added description of the \Cmd{fancy\ldots offset} commands.
-%   \item Added various \Cmd{\ldots xmark} commands from \Package{extramarks.sty}.
+%   \item Added various \Cmd{\ldots xmark} commands from \pkg{extramarks.sty}.
 %   \item Various corrections applied.
 %   \item Updated contact information.
 %   \item Added Version information. :)
@@ -3848,8 +3847,8 @@
 %   \end{itemize}
 % \item Version 3.9, October 13, 2016.
 %   \begin{itemize}
-%   \item Documentation integrated in \texttt{fancyhdr.dtx}.
-%   \item Version number unified with \Package{fancyhdr.sty}.
+%   \item Documentation integrated in \pkg{fancyhdr.dtx}.
+%   \item Version number unified with \pkg{fancyhdr.sty}.
 %   \item All deprecated commands moved to a separate section (\ref{sec:depr}).
 %   \item Documentation expanded.
 %   \end{itemize}
@@ -3897,7 +3896,7 @@
 %   \item The \cs{fancyheadinit}, \cs{fancyfootinit}, and
 %     \cs{fancyhfinit} commands.
 %   \item[] \textbf{Note:} The following changes were mostly copied from the
-%     \texttt{nccfancyhdr} package by Alexander I. Rozhenko.
+%     \pkg{nccfancyhdr} package by Alexander I. Rozhenko.
 %   \item The \cs{fancycenter} command (section~\ref{sec:fancycenter}).
 %   \item The \texttt{headings} and \texttt{myheadings} package options
 %     (see section~\ref{sec:options}).
@@ -3922,14 +3921,14 @@
 %   \end{itemize}
 % \item Version 4.0.3, May 18, 2022
 %   \begin{itemize}
-%   \item Initialize \cs{@mkboth} in \texttt{extramarks.sty} so that
+%   \item Initialize \cs{@mkboth} in \pkg{extramarks.sty} so that
 %     it will pick up changes to \cs{markboth}.
 %   \end{itemize}
 % \item Version 4.1, Sept 6-Nov 9, 2022
 %   \begin{itemize}
 %   \item Implement \texttt{twoside} package option to allow two-sided headers
 %   and footers in one-sided documents.
-%   \item Make \Package{fancyhdr} compatible with the document class \Package{newlfm}.
+%   \item Make \pkg{fancyhdr} compatible with the document class \pkg{newlfm}.
 %   \item Make \cs{nouppercase} compatible with newer definitions of \cs{MakeUppercase}.
 %   \end{itemize}
 % \item Version 4.2, April 19, 2024
@@ -3943,31 +3942,31 @@
 %   \item Changed \cs{f@nch@everypar}. If the LaTeX kernel has
 %     \texttt{expl3}, use \cs{tex\_everypar:D}, and reset \cs{par},
 %     \cs{@@par} and \cs{endgraf} to their original \TeX{} definitions, so that
-%     no paragraph hooks will intrude in \Package{fancyhdr} code\footnote
+%     no paragraph hooks will intrude in \pkg{fancyhdr} code\footnote
 %     {See \url{https://tex.stackexchange.com/q/691262/113546}}.
-%     Therefore paragraph hooks will not work inside \Package{fancyhdr} headers and
+%     Therefore paragraph hooks will not work inside \pkg{fancyhdr} headers and
 %     footers to avoid unwanted interactions with the main text.
 %   \end{itemize}
 % \item Version 4.3.1, July 23, 2024
 %   \begin{itemize}
 %   \item Also reset \cs{everypar} to its original \TeX{} value
 %     \cs{tex\_everypar:D} in \cs{f@nch@resetpar}, otherwise environments
-%     based on \cs{trivlist} will not work properly in \Package{fancyhdr}
+%     based on \cs{trivlist} will not work properly in \pkg{fancyhdr}
 %     headers and footers.
 %   \end{itemize}
 % \item Version 4.4, Nov 20, 2024
 %   \begin{itemize}
 %   \item Add setting the new style marks for \cs{leftmark}
 %     (\texttt{2e-left}) and \cs{rightmark} (\texttt{2e-right} and
-%     \texttt{2e-right-nonempty}) in \Package{extramarks.sty}.
+%     \texttt{2e-right-nonempty}) in \pkg{extramarks.sty}.
 %   \end{itemize}
 % \item Version 4.5, Nov 21-30, 2024
 %   \begin{itemize}
-%   \item \Package{extramarks}: Don't redefine \cs{leftmark} and \cs{rightmark} in
+%   \item \pkg{extramarks}: Don't redefine \cs{leftmark} and \cs{rightmark} in
 %   \LaTeX{} kernel 2025-06-01 and later.
-%   \item \Package{fancyhdr}: use a better method to disable paragraph
+%   \item \pkg{fancyhdr}: use a better method to disable paragraph
 %   hooks than the v4.3 code.
-%   \item \Package{extramarks-v4} (legacy version): add commands
+%   \item \pkg{extramarks-v4} (legacy version): add commands
 %   \cs{extramarksleft} and \cs{extramarksright}.
 %   \item \pkg{fancyhdr}: added hooks.
 %   \end{itemize}
@@ -3976,7 +3975,7 @@
 % \subsection{Changes in version 5}
 % \label{sec:version-5}
 % Version 5 adds a number of new features. Most notable is a new
-% implementation of the \texttt{extramarks} package, which now has
+% implementation of the \pkg{extramarks} package, which now has
 % independent marks.
 %
 % \begin{itemize}
@@ -3988,8 +3987,8 @@
 %     \texttt{[compatV3]} option is given.
 %   \item Added \cs{fancypagestyle*} variant.
 %   \item Added command \cs{fancyhdrsettoheight}.
-%   \item New implementation of package \Package{extramarks} with
-%     fallback to \Package{extramarks-v4}.
+%   \item New implementation of package \pkg{extramarks} with
+%     fallback to \pkg{extramarks-v4}.
 %   \item Mark the \texttt{compatV3} option deprecated.
 %   \item Added command \cs{fancyfootalign}.
 %   \end{itemize}
@@ -4143,7 +4142,7 @@
 %
 % \subsection{Using automatic truncation}
 %
-% For this solution we use the \Package{truncate} package by Donald
+% For this solution we use the \pkg{truncate} package by Donald
 % Arseneau. This has a \cs{truncate}\CmdIndex{truncate} command that
 % truncates a text to a maximum size, when it exceeds that size. We put
 % both headers in \cs{truncate} to limit it to half the \cs{headwidth}.
@@ -4171,7 +4170,7 @@
 % \bigskip
 %
 % Note that we have used the \texttt{[fit]} option of the
-% \Package{truncate} package. Otherwise the right header will not be
+% \pkg{truncate} package. Otherwise the right header will not be
 % right aligned, but it will start at halfway the header.
 % Note also that, as each part can occupy half of the available width,
 % they could theoretically touch each other. This can be prevented by
@@ -4201,7 +4200,7 @@
 % \texttt{myheadings} (as well as \texttt{headings}\PSindex{headings}) redefines the
 % \cs{chaptermark} and \cs{sectionmark}, so when you return to pagestyle
 % \texttt{fancy}, the definitions you had given before (or the ones that
-% \Package{fancyhdr} provided) are lost. You
+% \pkg{fancyhdr} provided) are lost. You
 % just have to repeat them at the point where you switch back to
 % pagestyle \texttt{fancy}.
 %
@@ -4216,27 +4215,27 @@
 % \end{code}
 %
 %
-% \section{Can I use \Package{fancyhdr} with the \Package{beamer} class?}
+% \section{Can I use \pkg{fancyhdr} with the \pkg{beamer} class?}
 % \label{sec:beamer}
 %
 % \TTindex{beamer}%
-% The \Package{beamer} class has its own provisions for headers and
+% The \pkg{beamer} class has its own provisions for headers and
 % footers with the \texttt{headline} and \texttt{footline} templates.
 % The advantage of these is that they blend well with the
-% \Package{beamer} theme in use.
+% \pkg{beamer} theme in use.
 %
-% Still people sometimes ask if \Package{fancyhdr} can be used for
+% Still people sometimes ask if \pkg{fancyhdr} can be used for
 % header and footers because they are more familiar with this. I would
-% advice to use the standard \Package{beamer} features if possible, but
-% actually it isn't difficult to use \Package{fancyhdr} if you take
+% advice to use the standard \pkg{beamer} features if possible, but
+% actually it isn't difficult to use \pkg{fancyhdr} if you take
 % provisions that the header and the footer don't
-% interfere with the \Package{beamer} layout. This can be done with
+% interfere with the \pkg{beamer} layout. This can be done with
 % \begin{code}[commandchars={+[]}]
 % \setbeamertemplate{headline}{\vspace{+meta[headheight]}}
 % \setbeamertemplate{footline}{\vspace{+meta[footskip]}}
 % \end{code}
 % \CmdIndex{headheight}\CmdIndex{footskip}%
-% Note that \Package{beamer} sets \cs{headheight} and \cs{footskip} to
+% Note that \pkg{beamer} sets \cs{headheight} and \cs{footskip} to
 % its own vales, so it doesn't make sense to set these in your document.
 % Instead you supply the desired values with \cs{setbeamertemplate} as above.
 % Also it is advised to add \cs{fancyfootalign}\texttt{\{0pt\}} to
@@ -4278,7 +4277,7 @@
 % \texttt{tex.stackexchange.com}\footnote{See for example
 % \url{https://tex.stackexchange.com/q/586066/113546}}) is how to get
 % both the first section title and the first subsection title in the
-% headers in the \Package{article} documentclass. Unfortunately,
+% headers in the \pkg{article} documentclass. Unfortunately,
 % traditional \LaTeX{} (releases before November 2022) can't give you
 % the first subsection on the page. There are two problems:
 % \begin{itemize}
@@ -4291,7 +4290,7 @@
 % get the first of the left marks, however. \textbf{We assume in the
 % following code that your \LaTeX{} is recent enough.}
 % \item \LaTeX{} uses \cs{markboth} at a section title in the
-% \Package{article} class. This also sets an empty right mark. So in
+% \pkg{article} class. This also sets an empty right mark. So in
 % some cases you would get an empty subsection title in the header. To
 % avoid this, \LaTeX{} now also has a mark that saves the non-empty
 % right mark in a separate mark \texttt{2e-right-nonempty}
@@ -4390,7 +4389,7 @@
 % pagebreak. It is tricky to detect this situation, but we will propose
 % a solution at the end of the current section.
 % So the new code for the right header becomes the following. We use the
-% package \TTindex{ifthen}\Package{ifthen} for the test.
+% package \TTindex{ifthen}\pkg{ifthen} for the test.
 %
 % \Example{35}[(continued)]
 % \begin{example}
@@ -4519,7 +4518,7 @@
 % \part{Implementation}
 %
 % \begin{implementation}
-% \section{fancyhdr.sty}
+% \section{\pkg{fancyhdr.st}y}
 %
 %<*fancyhdr>
 % \changes{fancyhdr v1.4}{1994/09/16}{Correction for use with \cs{reversemarginpar}}
@@ -4528,13 +4527,13 @@
 % \cs{ifbotfloat} and \cs{iffloatpage} commands}
 %
 % \changes{fancyhdr v1.6}{1994/10/04}{Reset single spacing in headers/footers for use with
-% \Package{setspace.sty} or \Package{doublespace.sty}}
+% \pkg{setspace.sty} or \pkg{doublespace.sty}}
 %
 % \changes{fancyhdr v1.7}{1994/10/04}{Changed \cs{let}\cs{@mkboth}\cs{markboth} to
 % \texttt{\cs{def}\cs{@mkboth}\{\cs{protect}\cs{markboth}\}} to make it more robust.}
 %
 % \changes{fancyhdr v1.8}{1994/12/05}{corrections for
-% \Package{amsbook}/\Package{amsart}: define \cs{@chapapp} and (more
+% \pkg{amsbook}/\pkg{amsart}: define \cs{@chapapp} and (more
 % importantly) use the \cs{chapter/sectionmark} definitions from \texttt{ps@headings} if
 % they exist (which should be true for all standard classes).}
 %
@@ -4558,7 +4557,7 @@
 %
 % \changes{fancyhdr v1.95}{1996/01/31}{call \cs{@normalsize} in the reset code if that is defined,
 % otherwise \cs{normalsize}. This is to solve a problem with
-% \Package{ucthesis.cls}, as this doesn't define \cs{@currsize}.
+% \pkg{ucthesis.cls}, as this doesn't define \cs{@currsize}.
 % Unfortunately for latex209 calling \cs{normalsize} doesn't
 % work as this is optimized to do very little, so there \cs{@normalsize} should
 % be called. Hopefully this code works for all versions of LaTeX known to
@@ -4672,7 +4671,7 @@
 % \cs{raggedright} and \cs{centering} to their default values to avoid a
 % clash with the tabu package.\\
 % Move the redefinition of \cs{@makecol} to \texttt{\cs{begin}\{document\}} to
-% avoid a clash with the \Package{footmisc} package (and maybe others).\\
+% avoid a clash with the \pkg{footmisc} package (and maybe others).\\
 % Define a working \cs{iffootnote} command.}
 %
 % \changes{fancyhdr v3.9}{2016/10/11}{Put everything in a \texttt{.dtx} file.}
@@ -4770,7 +4769,7 @@
 % \cs{@ifundefined} that avoids these problems, but not everybody may
 % have such a version installed. Therefore we define our own version
 % \cs{f@nch@ifundefined}.
-% This definition is copied from the \Package{tocloft} package by Peter
+% This definition is copied from the \pkg{tocloft} package by Peter
 % Wilson and Will Robertson.
 %    \begin{macrocode}
 \newcommand{\f@nch@ifundefined}[1]{%
@@ -4786,7 +4785,7 @@
 % \changes{fancyhdr v4.0}{2019/03/17}{Added \texttt{headings} and
 % \texttt{myheadings} options.}
 % Standard styles are redefined optionally. These definitions are
-% borrowed from the \Package{nccfancyhdr} package by by Alexander I. Rozhenko.
+% borrowed from the \pkg{nccfancyhdr} package by by Alexander I. Rozhenko.
 %
 % \begin{macro}[internal]{\ps@myheadings}
 % The redefinition of the \texttt{myheadings} style is conditional.
@@ -5253,17 +5252,17 @@
 % \changes{fancyhdr v4.3}{2024/07/17}{Changed \cs{f@nch@everypar}. If the
 %   LaTeX kernel has  expl3, use \cs{tex\_everypar:D}, and reset \cs{par},
 %   \cs{@@par} and \cs{endgraf} to their original \TeX{} definitions, so that
-%   no paragraph hooks will intrude in \Package{fancyhdr} code.}
+%   no paragraph hooks will intrude in \pkg{fancyhdr} code.}
 % \changes{fancyhdr v4.3.1}{2024/07/23}{Also reset \cs{everypar} to its
 %   original \TeX{} value \cs{tex\_everypar:D} in \cs{f@nch@resetpar},
 %   otherwise environments based on \cs{trivlist}
-%   will not work properly in \Package{fancyhdr} headers and footers.}
+%   will not work properly in \pkg{fancyhdr} headers and footers.}
 % Save the standard definitions of \cs{raggedleft}, \cs{raggedright},
 % \cs{centering} and \cs{everypar} so that we can reset them when we are
 % typesetting the headers and footers. Some packages change these to
 % incompatible values.\\
 % We also disable paragraph hooks, so that no paragraph hooks will
-% intrude in \Package{fancyhdr} code. \textbf{NOTE: This is a hack, and
+% intrude in \pkg{fancyhdr} code. \textbf{NOTE: This is a hack, and
 % should be replaced by cleaner code as soon as the \LaTeX{} kernel
 % provides the necessary commands.}
 % \changes{fancyhdr v4.5}{2024/11/29}{We use a less fragile way to
@@ -5378,7 +5377,7 @@
 \def\f@nch@center#1[#2]#3#4#5{%
 %    \end{macrocode}
 % At first, we execute the case when the \meta{center-mark} is empty\footnote{%
-% This code is reused from the \Package{nccfancyhdr} by Alexander I. Rozhenko}:
+% This code is reused from the \pkg{nccfancyhdr} by Alexander I. Rozhenko}:
 %    \begin{macrocode}
   \def\@tempa{#4}\ifx\@tempa\@empty
     \hbox to\linewidth{\color@begingroup{#3}\hfil {#5}\color@endgroup}%
@@ -5489,7 +5488,7 @@
 % \begin{hookdecl}{fancyhdr/before, fancyhdr/after, fancyhdr/head/begin,
 %               fancyhdr/head/end, fancyhdr/foot/begin, fancyhdr/foot/end}
 % \changes{fancyhdr v4.5}{2024/12/05}{Hooks added}
-% Here we define the \Package{fancyhdr} hooks. It will be conditional on
+% Here we define the \pkg{fancyhdr} hooks. It will be conditional on
 % the presence of hook support in the \LaTeX{} kernel.
 %    \begin{macrocode}
 \ifdefined\NewMirroredHookPair
@@ -5881,7 +5880,7 @@
   \@fancyplainfalse\ps@f@nch@fancycore
 }%
 %    \end{macrocode}
-% Let the system know this is a \texttt{fancyhdr} pagestyle.
+% Let the system know this is a \pkg{fancyhdr} pagestyle.
 %    \begin{macrocode}
 \@namedef{f@nch@ps@f@nch@fancyproto-is-fancyhdr}{}
 %    \end{macrocode}
@@ -6242,12 +6241,12 @@
 \fancypagestyle*{fancydefault}{\f@nch@initialise}
 %    \end{macrocode}
 % \end{macro}
-% \changes{fancyhdr v4.1}{202/09/16}{Support for class \Package{newlfm}.}
-% The (really outdated) document class \Package{newlfm} uses some internal
-% \Package{fancyhdr} commands that have gotten new names. So here we check if
-% that class is loaded and then we redefine the affected \Package{newlfm} macros.
+% \changes{fancyhdr v4.1}{202/09/16}{Support for class \pkg{newlfm}.}
+% The (really outdated) document class \pkg{newlfm} uses some internal
+% \pkg{fancyhdr} commands that have gotten new names. So here we check if
+% that class is loaded and then we redefine the affected \pkg{newlfm} macros.
 % We have to do some of the redefinitions in \cs{AtBeginDocument}, as
-% \Package{fancyhdr} is loaded before the affected macros are defined. Also
+% \pkg{fancyhdr} is loaded before the affected macros are defined. Also
 % the macro \cs{@zfancyhead} is only called once, with wrong (outdated)
 % parameters, so instead of changing the call of the macro, we substitute the
 % right parameters inline.
@@ -6268,7 +6267,7 @@
 %    \end{macrocode}
 %</fancyhdr>
 %
-% \section{extramarks.sty}
+% \section{\pkg{extramarks.sty}}
 % \setlength\parindent{0pt}
 %<*extramarks>
 %
@@ -6276,7 +6275,7 @@
 % in your page headers and footers. It is based on the new \LaTeX{}
 % marks mechanism as introduced in the 2022/06/01 \LaTeX{} release. If
 % your \LaTeX{} implementation is older it will fallback to
-% \Package{extramarks} version 4.
+% \pkg{extramarks} version 4.
 %
 % \changes{extramarks v5.0}{2024/05/14}{New implementation with
 % independent marks, and fallback option to earlier version 4.}
@@ -6304,7 +6303,7 @@ You are advised to update your LaTeX installation.\MessageBreak
 % case \pkg{extramarks-v4} should be used instead. So in that case
 % we give a warning and then load package \pkg{extramarks-v4}.
 % First \cs{extramarks} must be made undefined, otherwise loading
-% \Package{extramarks-v4} will give an error.
+% \pkg{extramarks-v4} will give an error.
 %    \begin{macrocode}
 \AtBeginDocument{%
   \@ifpackageloaded{multicol}%
@@ -6332,7 +6331,7 @@ You are advised to update your LaTeX installation.\MessageBreak
 % \changes{extramarks v2.0x=fancyhdr v 2.0}{2004/03/03}{version 2.0 Release.}
 % \changes{extramarks v2.1}{2016/08/27}{Added a \cs{ProvidesPackage} line.\\
 % Updated contact information.}
-% \changes{extramarks v3.9}{2016/10/12}{Unify version number with \Package{fancyhdr.sty}.}
+% \changes{extramarks v3.9}{2016/10/12}{Unify version number with \pkg{fancyhdr.sty}.}
 %
 % \begin{macro}[internal]{\@mkboth}
 % Initialization of \cs{@mkboth}, so that it will pick up changes to
@@ -6369,7 +6368,7 @@ You are advised to update your LaTeX installation.\MessageBreak
 %
 % \begin{macro}{\extramarksleft,\extramarksright}
 % These commands can be used to set the two marks independently. These
-% are only available in \Package{extramarks} version 4.5 or later.
+% are only available in \pkg{extramarks} version 4.5 or later.
 %    \begin{macrocode}
 \newcommand\extramarksleft[1]{%
   \InsertMark{extramarks-left}{#1}}
@@ -6440,7 +6439,7 @@ You are advised to update your LaTeX installation.\MessageBreak
 %
 %</extramarks>
 %
-% \section{extramarks-v4.sty}
+% \section{\pkg{extramarks-v4.sty}}
 %
 %<*extramarks-v4>
 %
@@ -6455,7 +6454,7 @@ You are advised to update your LaTeX installation.\MessageBreak
 % \changes{extramarks v2.0x=fancyhdr v 2.0}{2004/03/03}{version 2.0 Release.}
 % \changes{extramarks v2.1}{2016/08/27}{Added a \cs{ProvidesPackage} line.\\
 % Updated contact information.}
-% \changes{extramarks v3.9}{2016/10/12}{Unify version number with \Package{fancyhdr.sty}.}
+% \changes{extramarks v3.9}{2016/10/12}{Unify version number with \pkg{fancyhdr.sty}.}
 %
 % \changes{extramarks v3.9a}{2017/06/30}{Restore \cs{newtoks}\cs{@temptokenb}}
 % \changes{extramarks v5.0}{2021/02/16}{Make \cs{newtoks}\cs{@temptokenb} conditional}
@@ -6502,7 +6501,7 @@ You are advised to update your LaTeX installation.\MessageBreak
 \ExplSyntaxOff
 %    \end{macrocode}
 % If we are with a pre-\LaTeX3 kernel, we use the definition from an
-% older version of \Package{extramarks}.
+% older version of \pkg{extramarks}.
 %    \begin{macrocode}
 \else
 \def\markboth#1#2{%
@@ -6573,7 +6572,7 @@ You are advised to update your LaTeX installation.\MessageBreak
 % format (in which case the test will always be false).
 % If the \LaTeX{} format is 2025-06-01 or later, \cs{leftmark} and
 % \cs{rightmark} have definitions based upon the new marks, so we should
-% not redefine these even in the \Package{extramarks-v4} mode.
+% not redefine these even in the \pkg{extramarks-v4} mode.
 %    \begin{macrocode}
 \providecommand\IfFormatAtLeastTF{\@ifl@t@r\fmtversion}
 \IfFormatAtLeastTF{2025-06-01}{}{%
@@ -6627,7 +6626,7 @@ You are advised to update your LaTeX installation.\MessageBreak
 % \end{macro}
 % \changes{extramarks-v4 v4.5}{2024/11/30}{Add commands
 % \cs{extramarksleft} and \cs{extramarksright} for compatibility with
-% \Package{extramarks} version 5.}
+% \pkg{extramarks} version 5.}
 % \begin{macro}{\extramarksleft}
 % This command is used to define the left extra mark.
 % As this is not independent from the other marks, it is not perfect.
@@ -6723,23 +6722,23 @@ You are advised to update your LaTeX installation.\MessageBreak
 %
 %</extramarks-v4>
 %
-% \section{fancyheadings.sty}
+% \section{\pkg{fancyheadings.sty}}
 %
 % Fancyheadings.sty was the original style file (as they were called
 % then) to implement fancy headers and footers in \LaTeX. This was in the time
 % when MSDOS was stil quite a dominant ``Operating System''. It had a
 % nasty property (amongst others): filenames consisted of at most 8
 % characters + a 3 character extension. This meant that the name
-% '\texttt{fancyheadings.sty}' was internally truncated in MSDOS to
-% '\texttt{fancyhea.sty}', although it was perfectly OK to say
-% 'fancyheadings' in \LaTeX. However, some people started to write also
-% 'fancyhea' in \LaTeX{} documents, which made them unportable to for
+% '\pkg{fancyheadings.sty}' was internally truncated in MSDOS to
+% '\pkg{fancyhea.sty}', although it was perfectly OK to say
+% '\pkg{fancyheadings}' in \LaTeX. However, some people started to write also
+% '\pkg{fancyhea}' in \LaTeX{} documents, which made them unportable to for
 % example Unix systems, unless there a copy or link was made to
-% 'fancyhea.sty'. I found this so annoying that I decided to rename the
-% package to 'fancyhdr.sty'. This package has evolved to a version that
-% is incompatible with the original 'fancyheadings'. Fancyheadings
+% '\pkg{fancyhea.sty}'. I found this so annoying that I decided to rename the
+% package to '\pkg{fancyhdr.sty}'. This package has evolved to a version that
+% is incompatible with the original '\pkg{fancyheadings}'. \pkg{Fancyheadings}
 % should no longer be used, therefore this package is provided that
-% issues a clear warning and then switches to fancyhdr.
+% issues a clear warning and then switches to \pkg{fancyhdr}.
 %
 %
 %<*fancyheadings>
