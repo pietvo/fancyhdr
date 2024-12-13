@@ -467,6 +467,9 @@
 % See section~\ref{sec:fancyfootalign}.
 %
 % \begin{function}{\fancycenter}
+% \begin{syntax}
+% \cs{fancycenter}\oarg{dist}\oarg{stretch}\marg{left-field}\marg{center-field}\marg{right-field}
+% \end{syntax}
 % (Only in version~4.0 and later.) The command \cs{fancycenter} packs 3
 % header fields into a full-width header. See section~\ref{sec:fancycenter}.
 % \end{function}
@@ -5369,14 +5372,14 @@
 %
 % \begin{macro}{\fancycenter}
 % \changes{fancyhdr v4.0}{2019/03/15}{Macro \cs{fancycenter} added}
-% \cs{fancycenter}\oarg{dist}\oarg{stretch}\marg{left-mark}\marg{center-mark}\marg{right-mark}
+% \cs{fancycenter}\oarg{dist}\oarg{stretch}\marg{left-field}\marg{center-field}\marg{right-field}
 %    \begin{macrocode}
 \newcommand*{\fancycenter}[1][1em]{%
   \@ifnextchar[{\f@nch@center{#1}}{\f@nch@center{#1}[3]}%
 }
 \def\f@nch@center#1[#2]#3#4#5{%
 %    \end{macrocode}
-% At first, we execute the case when the \meta{center-mark} is empty\footnote{%
+% At first, we execute the case when the \meta{center-field} is empty\footnote{%
 % This code is reused from the \pkg{nccfancyhdr} by Alexander I. Rozhenko}:
 %    \begin{macrocode}
   \def\@tempa{#4}\ifx\@tempa\@empty
@@ -5384,7 +5387,7 @@
   \else
 %    \end{macrocode}
 % All we need to do is to calculate skips inserted before and after
-% \meta{center-mark}. We will calculate them in the \verb|\@tempskipa|
+% \meta{center-field}. We will calculate them in the \verb|\@tempskipa|
 % and \verb|\@tempskipb| registers. At first:
 % \begin{quote}
 % \verb|\@tempdima:=|\meta{dist};\\
@@ -5403,22 +5406,22 @@
 % have the natural size \meta{dist}\verb|*|\meta{stretch},
 % unlimited stretchability, and the minimum size \meta{dist}.
 % Now we decrease the minimum size of \cs{@tempskipa} to zero if
-% the \meta{left-mark} is empty:
+% the \meta{left-field} is empty:
 %    \begin{macrocode}
     \def\@tempa{#3}\ifx\@tempa\@empty
       \addtolength\@tempskipa{\z@ \@minus \@tempdima}%
     \fi
 %    \end{macrocode}
 % Do the same things with the \cs{@tempskipb} register if the
-% \meta{right-mark} is empty:
+% \meta{right-field} is empty:
 %    \begin{macrocode}
     \def\@tempa{#5}\ifx\@tempa\@empty % empty right
       \addtolength\@tempskipb{\z@ \@minus \@tempdima}%
     \fi
 %    \end{macrocode}
 % Finally, we correct the left and right glues taking into
-% account the difference between lengths of \meta{left-mark}
-% and \meta{right-mark}. We calculate which mark is shorter
+% account the difference between lengths of \meta{left-field}
+% and \meta{right-field}. We calculate which mark is shorter
 % and increase the natural size of the corresponding register
 % by the difference between their lengths.
 %    \begin{macrocode}
