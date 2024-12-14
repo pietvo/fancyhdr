@@ -57,6 +57,8 @@
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{boxedminipage}
+\usepackage{fancyhdrbox} % TEMPORARY
+
 % The package fourier-orns defines \danger, which conflicts
 % with the 'danger' environment of l3doc.
 % We save, clear and restore \danger arounf this \usepackage
@@ -254,6 +256,20 @@
 
 \newlength{\normalparindent}
 \setlength{\normalparindent}{\parindent}
+
+% Macro to print a header in the running text
+\makeatletter
+\newcommand\showheader[2][O]{%
+% #1 optional = O/E (odd/even header)
+% #2 = fancyhdr code for the header
+%
+  \begingroup
+  \let\headwidth\textwidth
+  #2
+  \noindent\makebox[\textwidth][c]{\if O#1\@oddhead\else\@evenhead\fi}
+  \endgroup
+}
+\makeatother
 
 % l3doc resets section counters at \part.
 % I don't want that.
@@ -472,6 +488,15 @@
 % \end{syntax}
 % (Only in version~4.0 and later.) The command \cs{fancycenter} packs 3
 % header fields into a full-width header. See section~\ref{sec:fancycenter}.
+% \end{function}
+%
+% \begin{function}{\fancyhdrbox}
+% \begin{syntax}
+% \cs{fancyhdrbox}\oarg{alignment}\oarg{width}\marg{lines separated by \cmd{\\}}
+% \end{syntax}
+% (Only in version~5.0 and later.) The command \cs{fancyhdrbox} can be
+% used to align multi-line parts vertically and horizontally.
+% See section~\ref{sec:fancyhdrbox}.
 % \end{function}
 %
 % \begin{function}{\iftopfloat, \ifbotfloat, \iffloatpage, \iffootnote}
@@ -1082,6 +1107,334 @@
 % document. Then \cs{linewidth} will be the width of the box or text in
 % which it is used.
 %
+% \section{The \cs{fancyhdrbox} command}
+% \label{sec:fancyhdrbox}
+%
+% The \cs{fancyhdrbox} command can be used to align multi-line header
+% and footer fields and, for example, images. It is modeled after the
+% \PKGindex{makecell}
+% \pkg{makecell} package by Olga Lapko, but it is a bit simplified, and also has extra
+% vertical alignments \texttt{T} and \texttt{B}. And the vertical
+% centering of \cs{fancyhdrbox} is better than the one from
+% \pkg{makecell}. The \cs{fancyhdrbox} command is primarily meant for
+% use in headers and footers, but can be used anywhere in a document.
+%
+% The command is used as follows:
+%
+% \cs{fancyhdrbox}\oarg{alignment}\oarg{width}\marg{lines separated by \cmd{\\}}
+%
+% Here \meta{alignment} specifies both the vertical and the horizontal
+% alignment of the contents with respect to other text on the same line
+% (including other \cs{fancyhdrbox} instances). The result of the
+% command is a box in horizontal mode (in \LaTeX{} parlance an \textbf{LR
+% box}), similar to \cs{parbox} or \cs{makebox}.
+%
+% The \meta{alignment} optional parameter consists of two letters: a vertical
+% alignment, which indicates where the baseline of the complete box will
+% be, followed by a horizontal alignment that specifies how the lines will be
+% positioned horizontally in the box.
+%
+% The possibilities for the vertical alignment are:
+% \begin{description}
+% \item [\texttt{T}] The baseline of the box is on the top of the first line, i.e., just
+% where the top of the tallest character or item in the line is.
+% \item [\texttt{t}] The baseline of the box is the baseline of the first line.
+% \item [\texttt{c}] The baseline of the box is on the vertical center
+% of the box.
+% \item [\texttt{b}] The baseline of the box is the baseline of the last line.
+% \item [\texttt{B}] The baseline of the box is on the bottom of the last line, i.e., just
+% where the bottom of the deepest character or item in the line is.
+% \end{description}
+% The horizontal alignment can be
+% \begin{description}
+% \item[\texttt{l}] left aligned
+% \item[\texttt{c}] centered
+% \item[\texttt{r}] right aligned
+% \end{description}
+% These are the same as, for example, in \texttt{tabular} columns.
+%
+% Each of the vertical and horizontal alignments can be omitted. The
+% default is \texttt{c} for the vertical alignment, and \texttt{l} for
+% the horizontal alignment. If a single \texttt{c} is specified, it
+% counts as both the vertical and horizontal alignment, i.e., as \texttt{cc}.
+%
+% When multiple boxes are put next to each other (i.e., on the same
+% line), their baselines will be aligned. Therefore in general it makes
+% not much sense to specify different vertical alignments for them,
+% unless you want a special effect. And in that case the results may be surprising.
+%
+% The second optional parameter, \meta{width}, specifies the width of
+% the box. If this is not given, the box has its ``natural'' width,
+% detemined by its contents. With the \meta{width} parameter, the width
+% of the box is fixed to this value, independent of the contents. Note
+% that there will be no automatic line breaking of the lines if they
+% don't fit in the specified width. If a line is too long it will just
+% stick out of the box, and may overlap the following text. If you want
+% automatic line breaking, use a \cs{parbox}, a \texttt{tabular} with a
+% \texttt{p\{..\}} column, or something similar.
+%
+% The lines (rows) in the box are separated by \cmd{\\} just like in a
+% tabular. You can even use \cmd{\\}\oarg{length} to add extra
+% vertical space (or decrease the vertical space with a negative length).
+% Also allowed is \cs{hline} after \cmd{\\}.
+%
+% Here are examples of all the vertical alignment options, with some
+% variations of the horizontal alignment. Some lines use a bigger font
+% than others, in order to make the alignment non-trivial. All the
+% \cs{fancyhdrbox} boxes are enclosed in a tight \cs{fbox} to show how
+% big they are. The red horizontal line is the common baseline.
+%
+% \begingroup ^^A for some local definitions
+% \setlength\fboxsep{0pt}
+% ^^A Vertical bar to indicate measurements
+% \newcommand{\R}{\rule[-0.3\baselineskip]{0.1pt}{\baselineskip}\hspace{-0.1pt}}
+% \newcommand{\showbaseline}{^^A
+%   \begin{picture}(0,0)
+%     \put(-1cm,0){\color{red}\rule{7cm}{0.1pt}}
+%   \end{picture}^^A
+% }
+%
+% \subsubsection*{T-aligned boxes:}
+%
+% \begin{code}
+% \fancyhdrbox[T]{%
+%    ABC \\
+%    xyz \\ XYZ \\
+%   \Huge DEF ghij
+% }%
+% \fancyhdrbox[T]{%
+%   {\Huge ABC} \\
+%   DEF ghij}
+% \end{code}
+%
+% \fbox{\showbaseline\fancyhdrbox[T]{^^A
+%    ABC \\
+%    xyz \\ XYZ \\
+%   \Huge DEF ghij
+% }^^A
+% \fancyhdrbox[T]{{\Huge ABC} \\
+%   DEF ghij}}
+%
+% \subsubsection*{t-aligned boxes:}
+%
+% This example also uses right-alignment in the boxes, but the first
+% line in the left box has a 1cm space added to the right, so it is
+% shifted left 1cm.
+%
+% \begin{code}
+% \fancyhdrbox[tr]{%
+%    ABC\hspace{1cm} \\
+%    xyz \\ XYZ \\
+%   \Huge DEF ghij
+% }%
+% \fancyhdrbox[tr]{%
+%   {\Huge ABC} \\
+%   DEF ghij
+% }
+% \end{code}
+%
+% \fbox{\showbaseline\fancyhdrbox[tr]{^^A
+%    ABC\hspace{1cm} \\
+%    xyz \\ XYZ \\
+%   \Huge DEF ghij
+% }^^A
+% \fancyhdrbox[tr]{^^A
+%   {\Huge ABC} \\
+%   DEF ghij
+% }}
+%
+% \subsubsection*{b-aligned boxes:}
+%
+% \begin{code}
+% \fancyhdrbox[b]{%
+%    ABC \\
+%    xyz \\ XYZ \\
+%    \Huge DEF ghij
+% }%
+% \fancyhdrbox[b]{%
+%   {\Huge ABC} \\
+%   DEF ghij}
+% \end{code}
+%
+% \fbox{\showbaseline\fancyhdrbox[b]{^^A
+%    ABC \\
+%    xyz \\ XYZ \\
+%    \Huge DEF ghij
+% }^^A
+% \fancyhdrbox[b]{^^A
+%   {\Huge ABC} \\
+%   DEF ghij}}
+%
+% \subsubsection*{B-aligned boxes:}
+%
+% \begin{code}
+% \fancyhdrbox[B]{%
+%    ABC \\
+%    xyz \\ XYZ \\
+%   \Huge DEF ghij
+% }%
+% \fancyhdrbox[B]{%
+%   {\Huge ABC} \\
+%   DEF ghij}
+% \end{code}
+%
+% \fbox{\showbaseline\fancyhdrbox[B]{^^A
+%    ABC \\
+%    xyz \\ XYZ \\
+%   \Huge DEF ghij
+% }^^A
+% \fancyhdrbox[B]{^^A
+%   {\Huge ABC} \\
+%   DEF ghij}}
+%
+% \subsubsection*{c-aligned boxes:}
+%
+% The first box has an explicit \texttt{[c]} positioning, which implies
+% both vertical and horizontal centering. The second one uses the
+% default positioning (i.e., it is not explicitely specified), which make
+% it \texttt{[cl]}, i.e., horizontally left aligned.
+%
+% \begin{code}
+% \fancyhdrbox[c]{%
+%    ABC \\
+%    xyz \\ XYZ \\
+%   \Huge DEF ghij
+% }%
+% \fancyhdrbox{%
+%   {\Huge ABC} \\
+%   DEF ghij}
+% \end{code}
+%
+% \fbox{\showbaseline\fancyhdrbox[c]{^^A
+%    ABC \\
+%    xyz \\ XYZ \\
+%   \Huge DEF ghij
+% }^^A
+% \fancyhdrbox{^^A
+%   {\Huge ABC} \\
+%   DEF ghij}}
+%
+% \subsubsection*{c-aligned with \meta{width}:}
+%
+% This example shows the use of the second optional argument of
+% \cs{fancyhdrbox}, the width of the box.
+%
+% \begin{code}
+% \fancyhdrbox[c][5cm]{%
+%   ABC \\ xyz \\ XYZ\texttt{\textbackslash\textbackslash[10pt]} \\[10pt]
+%   \Huge DEF ghij%
+% }%
+% \fancyhdrbox[c][3cm]{%
+%   {\Huge ABC}\\
+%   DEF ghij}
+% \end{code}
+%
+% \noindent\R\makebox[5cm]{5cm}\R\makebox[3cm]{3cm}\R\\[2pt]
+% \fbox{\showbaseline\fancyhdrbox[c][5cm]{^^A
+%   ABC \\ xyz \\ XYZ\texttt{\textbackslash\textbackslash[10pt]} \\[10pt]
+%   {\Huge DEF ghij}^^A
+% }^^A
+% \fancyhdrbox[c][3cm]{^^A
+%   {\Huge ABC}\\
+%   DEF ghij}}
+%
+% \subsubsection*{Different vertical alignments}
+%
+% Here is an example with two different vertical alignments in boxes
+% next to each other, one with the \texttt{[b]} alignment and the other
+% one with \texttt{[t]}.
+%
+% \begin{code}
+%   \fbox{\showbaseline\fancyhdrbox[b]{%
+%      first line \\
+%      second line [b]
+%   }}
+%   baseline
+%   \fbox{\fancyhdrbox[t]{%
+%     first line [t] \\
+%     second line}}
+% \end{code}
+%
+% \fbox{\showbaseline\fancyhdrbox[b]{^^A
+%    first line \\
+%    second line [b]
+% }}
+% baseline
+% \fbox{\fancyhdrbox[t]{^^A
+%   first line [t] \\
+%   second line}}
+%
+% \endgroup
+%
+% \bigskip
+%
+% It may be surprising that the \texttt{[b]} box is on top and the
+% \texttt{[t]} box on the bottom of the total line, but if you look at
+% the baselines, it should become clear why this is so. This is just the
+% way vertical alignment works in \LaTeX. So if that is what you want,
+% just use it.
+%
+% \subsubsection*{Two headers with \cs{fancyhdrbox} parts}
+% Finally, two headers with \cs{fancyhdrbox} parts. Note that these are
+% in different header fields (left and right).
+%
+% \NoExample{image+\\twolineheader}
+% \begin{example}
+% \setlength{\headheight}{68pt}
+% \pagestyle{fancy}
+% \fancyhf{}
+% \rhead{\fancyhdrbox{\Large First Long Title \\ \large Second title}}
+% \lhead{\fancyhdrbox{\includegraphics[width=3cm]{example-image}}}
+% \end{example}
+%
+% \bigskip
+%
+% \showheader{%
+%   \setlength{\headheight}{68pt}
+%   \pagestyle{fancy}
+%   \fancyhf{}
+%   \rhead{\fancyhdrbox{\Large First Long Title \\ \large Second title}}
+%   \lhead{\fancyhdrbox{\includegraphics[width=3cm]{example-image}}}
+% }
+%
+% In the next example the left header has an image in a \cs{fancyhdrbox}
+% with the default alignment. The right header has two
+% \cs{fancyhdrbox}|es, one with an explicit width of 4cm, the second
+% one with its natural width.
+%
+% \NoExample{threeboxes}
+% \begin{example}
+%   \setlength{\headheight}{20pt}
+%   \pagestyle{fancy}
+%   \fancyhf{}
+%   \fancyhead[L]{\sffamily
+%     \fancyhdrbox{\includegraphics[height=3\normalbaselineskip]
+%                                  {example-image}}
+%   }
+%   \fancyhead[R]{%
+%     \fancyhdrbox[][4cm]{Our Office \\ Street 1 \\ City1 }%
+%     \fancyhdrbox[l]{ Our Factory \\ Street 2 \\ City2 }
+%   }
+% \end{example}
+%
+% \bigskip
+%
+% \showheader{%
+%   \setlength{\headheight}{40pt}
+%   \pagestyle{fancy}
+%   \fancyhf{}
+%   \fancyhead[L]{\sffamily
+%     \fancyhdrbox{\includegraphics[height=3\normalbaselineskip]
+%                                  {example-image}}
+%   }
+%   \fancyhead[R]{%
+%     \fancyhdrbox[][4cm]{Our Office \\ Street 1 \\ City1 }%
+%     \fancyhdrbox[l]{ Our Factory \\ Street 2 \\ City2 }
+%   }
+% }
+%
+% \bigskip
+%
 % \section{An example of two-sided printing}\label{two-sided}
 %
 % \TTindex{twoside}
@@ -1636,6 +1989,10 @@
 % \renewcommand{\subsectionmark}[1]{\markright{#1}}
 % \fancyhead[R]{\leftmark\\\rightmark}
 % \end{example}
+%
+% Note that if you want to use header or footer layouts with multiline
+% parts that have to be aligned, you can do this with
+% the \cs{fancyhdrbox} command. See section~\ref{sec:fancyhdrbox}.
 %
 % You can also customize the decorative lines.  You can make the decorative
 % line in the header quite thick with
@@ -3982,7 +4339,7 @@
 % independent marks.
 %
 % \begin{itemize}
-% \item Version 5.0, Feb 11, 2021-Dec 5, 2024
+% \item Version 5.0, Feb 11, 2021-Dec 14, 2024
 %   \begin{itemize}
 %   \item Shorten Warning message about \cs{headheight}/\cs{footskip} too large.
 %   \item If the option \texttt{[nocheck]} is given, just keep quiet and
@@ -3994,6 +4351,7 @@
 %     fallback to \pkg{extramarks-v4}.
 %   \item Mark the \texttt{compatV3} option deprecated.
 %   \item Added command \cs{fancyfootalign}.
+%   \item Added command \cs{fancyhdrbox} (section~\ref{sec:fancyhdrbox}).
 %   \end{itemize}
 % \end{itemize}
 %
