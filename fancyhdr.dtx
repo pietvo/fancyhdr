@@ -514,7 +514,8 @@
 % \cs{fancypagestyle}*\marg{style-name}\oarg{base-style}\marg{definitions}
 % \end{syntax}
 % This command lets you (re)define page styles for use in special
-% situations. See section~\ref{sec:fancypagestyle} for more details.
+% situations. See sections~\ref{sec:pagestyle-plain} and
+% \ref{sec:fancypagestyle} for more details.
 % \end{function}
 %
 % \begin{function}{\fancyhdrsettoheight}
@@ -1539,30 +1540,37 @@
 % To customize even such pages you must redefine the \texttt{plain}
 % page style. As we indicated before you could do this by defining the
 % \cs{ps@plain} command, but \pkg{fancyhdr} gives you an easier way
+% \CmdIndex{fancypagestyle}
 % with the \cs{fancypagestyle} command. This command can be used to
 % redefine existing page styles (like \texttt{plain}) or to define new ones,
 % e.g.\ if part of your document needs a different page style. This command
-% has two mandatory parameters: the first one is the name of the page style to be defined, the
-% second consists of commands that change the headers and/or footers, i.e.,
+% has two mandatory parameters and an optional one in between: the first parameter
+% is the name of the page style to be defined, then an optional
+% parameter of an existing base page style can be given, and the last
+% parameter consists of commands that change the headers and/or footers, i.e.
 % \verb|\fancyhead| etc. Also allowed are changes to \cs{headrulewidth} and
 % \cs{footrulewidth} or even \cs{headrule} and \cs{footrule}.
 % The (re)defined page style uses the standard
-% \texttt{fancy} definitions, amended by the definitions in the second
-% parameter. In other words, those parts that are not redefined in the
-% second parameter get their value from the \texttt{fancy} definition that
-% is current. In particular, if the second parameter is empty, i.e., given
-% as \verb+{}+, then the new page style is equal to page style
-% \texttt{fancy}.
+% \texttt{fancy} definitions, amended by the optional base style, and
+% finally the definitions in the last
+% parameter. For details see \smartref{sec:pagestyle-plain}{sec:fancypagestyle}.
+% In particular, if the last parameter is empty, i.e. given
+% as \verb+{}+, then the new page style is equal to base style.
 %
-%  As an example, let us redefine the \texttt{plain} style so that it will
-% be the same as page style \texttt{fancy}:
+% As an example, let us redefine the \texttt{plain} style so that it will
+% be the same as the standard page style \texttt{fancy}:
+% \begin{code}
+% \fancypagestyle{plain}[fancy]{}
+% \end{code}
+% If you have not redefined page style fancy with \cs{fancypagestyle},
+% this is equivalent to:
 % \begin{code}
 % \fancypagestyle{plain}{}
 % \end{code}
 % Now when these special pages use the \texttt{plain} page style, they use your redefined version.
 %
 % As another example, let us
-% redefine the \texttt{plain} style for the report in Section~\ref{two-sided} by
+% redefine the \texttt{plain} style for the report in section~\ref{two-sided} by
 % making the page number bold and enclosing it in en-dashes without any rules.
 % \PSindex{plain}
 %
@@ -1583,15 +1591,9 @@
 % Just like redefining the \texttt{plain} page style in the previous
 % section, you can define or redefine other page styles based on page
 % style \texttt{fancy}. This is also done with the \cs{fancypagestyle}
-% command. The general form of this command is:
-% \begin{quote}
-% \CmdIndex{fancypagestyle}
-% \cs{fancypagestyle}\marg{style-name}\oarg{base-style}\marg{definitions}\\
-% \cs{fancypagestyle*}\marg{style-name}\oarg{base-style}\marg{definitions}
-% \end{quote}
+% command.
 %  With \texttt{*} it defines a ``\emph{closed}'' page style, otherwise an
-% ``\emph{open}'' one. (This version is only available in
-% \pkg{fancyhdr} version 5.0 and later.) The difference is that the \emph{open} page style
+% ``\emph{open}'' one. The difference is that the \emph{open} page style
 % does not necessarily have all the information in itself that is
 % necessary to construct the headers and footers. So it will need to pick up the
 % remaining elements from the environment of the text.
@@ -1600,11 +1602,12 @@
 % rather than when it is used, and carries that with it.
 % The information that is picked up consists of:
 % \begin{itemize}
-% \item The header and footer fields in all variants (EO,LRC,HF) (12 items).
+% \item The header and footer fields in all variants (EO,LRC,HF) (12 items)
 % \item The header and footer offsets (EO,LR,HF) (8 items), see
-% section~\ref{sec:book-examples} and~\ref{sec:headwidth}.
-% \item The header and footer init values (2 items), see section~\ref{sec:curpagestyle}.
-% \item \cs{headrule}, \cs{headrulewidth}, \cs{footrule}, \cs{footrulewidth}.
+% section~\ref{sec:book-examples} and~\ref{sec:headwidth}
+% \item The header and footer init values (2 items), see section~\ref{sec:curpagestyle}
+% \item \cs{headrule}, \cs{headrulewidth}, \cs{footrule}, \cs{footrulewidth} (4 items)
+% \item the \texttt{[nocheck]} option
 % \end{itemize}
 % The \emph{closed} versions can come handy when you are switching back
 % and forth between different page styles, as explained in section~\ref{sec:change}.
@@ -1622,17 +1625,29 @@
 % of contents with \Cmd{pagestyle\{toc\}}.
 % Inside the definition you can define the headers and/or footers,
 % change the header and footer rules, and redefine commands like
-% \cs{chaptermark} (see section~\ref{sec:options} for an example). The
+% \cs{chaptermark} (see section~\ref{sec:scoop} for an example). The
 % headers and footers and marks that are not redefined inside the
 % \cs{fancypagestyle} definition, are taken from the global fancy page style
 % values.
 %
-% You can also give an optional base page style to the
-% \cs{fancypagestyle} command. Then the new page style will be based on
-% the base style. This base style must be a \pkg{fancyhdr}-defined
-% style. You should take care not to
-% create circular dependencies. In this case the order of picking up the
-% definitions (headers, footers, marks) is:
+% The general form of the command is:
+% \begin{quote}
+% \CmdIndex{fancypagestyle}
+% \verb|\fancypagestyle|\marg{style-name}\oarg{base-style}\marg{definitions}
+% \verb|\fancypagestyle*|\marg{style-name}\oarg{base-style}\marg{definitions}
+% \end{quote}
+% As you see, there is an optional \oarg{base-style} argument between the two mandatory arguments.
+%
+% If you give this optional base page style to the
+% \cs{fancypagestyle} command, then the new page style will be based on
+% that base style. This base style must be a \texttt{fancyhdr}-defined
+% style. Also you should take care not to
+% create circular dependencies.
+% When no base style is given, an internal base style, which has the
+% default values is used. This is the same as page style
+% \texttt{fancy}, unless the latter has been redefined.
+% The order of picking up the
+% definitions (headers, footers, marks, etc.) is:
 % \begin{enumerate}
 % \item The definitions from the base style are taken.
 % \item The definitions given in the \cs{fancypagestyle} command
@@ -1642,13 +1657,14 @@
 % new page style is used, for a \emph{closed} page style at the time it
 % is defined.
 % \end{enumerate}
-% In an \emph{open} page style, only the first two parts are embedded.
-% When no base style is given, part 1 is null.
+% In an \emph{open} page style, i.e. if you use the  form \cs{fancypagestyle}\oarg{base-style}\marg{style-name}\ldots\ {}
+% only the first two parts are embedded in the page style.
 %
-% The optional base style argument is only available since version~4.0. In
-% this version it is also possible to redefine page style \texttt{fancy}
+% The optional base style argument is only available in \pkg{fancyhdr} version~4.0 and later.
+% In these versions it is also possible to redefine page style \texttt{fancy}
 % in this way. In version~3.x and earlier this was not possible.
-%
+% The starred (\emph{closed}) version is only available in
+% \pkg{fancyhdr} version~5.0 and later.
 %
 % \subsubsection*{The page style \texttt{fancydefault}}
 % \label{sec:fancydefault}
