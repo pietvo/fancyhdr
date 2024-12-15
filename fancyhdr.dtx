@@ -1037,6 +1037,91 @@
 % The header text is turned into all uppercase by the standard \LaTeX{}
 % code in \pkg{book.cls}.
 %
+% \section{An example of two-sided printing}\label{two-sided}
+%
+% \TTindex{twoside}
+% Some document classes, such as \pkg{book.cls}, print two-sided by default: the even
+% pages and the odd pages have different layouts; other document classes
+% use the \texttt{twoside} option to print two-sided.
+%
+% Now let us print the report two-sided.  Let the above page
+% layout be used for the odd (right-side) pages, and the
+% following for the even (left-side) pages:
+%
+% \begin{fblock}
+%
+% \noindent\makebox[\textwidth]{\textbf{The performance of new
+% graduates}\hfill}\showrule
+% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[\baselineskip]
+% \noindent\makebox[\textwidth]{\hrulefill}
+% \noindent\makebox[\textwidth]{4\phantom{To: Dean A. Smith}\hfill
+%  From: K. Grant\hfill \phantom{4}To: Dean A. Smith}
+%
+% \end{fblock}
+% \noindent where ``4'' is the page number.
+%
+% Here are the commands:
+%
+% \Example{3}
+% \begin{example}
+% \fancyhead{} % clear all header fields
+% \fancyhead[RO,LE]{\textbf{The performance of new graduates}}
+% \fancyfoot{} % clear all footer fields
+% \fancyfoot[LE,RO]{\thepage}
+% \fancyfoot[LO,CE]{From: K. Grant}
+% \fancyfoot[CO,RE]{To: Dean A. Smith}
+% \renewcommand{\headrulewidth}{0.4pt}
+% \renewcommand{\footrulewidth}{0.4pt}
+% \end{example}
+%
+% \CmdIndex{fancyhead}
+% \CmdIndex{fancyfoot}
+% The commands \cs{fancyhead} and \cs{fancyfoot}
+% have an additional parameter between square brackets that specifies
+% for which pages and/or parts of the header/footer they apply. The first
+% \cs{fancyhead} command above omits this parameter, and thus applies to all
+% header fields. In general this is only useful to get rid of the defaults or
+% a previous definition, as is done here. Similarly the \cs{fancyfoot} command
+% without square brackets clears all footer fields. In this particular
+% example it could be omitted as all footer fields have a value specified.
+% The selectors that can be used
+% between the square brackets are given in figure~\ref{fig:sel}. Selectors can be combined so
+% \Cmd{fancyhead[LE,RO]\{text\}}
+% will define the field for both the left header on even pages and the right
+% header on odd pages. If you don't give an \texttt{E} or \texttt{O} the definition applies to
+% both. Similar for \texttt{LRC}.
+% The selectors may be given as uppercase or lowercase letters.
+% \begin{figure}[htb]
+%   \begin{center}
+%     \leavevmode
+%     \begin{tabular}{|l|l|}
+%       \hline
+%       E & Even page         \\
+%       O & Odd page          \\
+%       \hline
+%       L & Left field        \\
+%       C & Center field      \\
+%       R & Right field       \\
+%       \hline
+%       H & Header            \\
+%       F & Footer            \\
+%       \hline
+%     \end{tabular}
+%   \end{center}
+%   \caption{Selectors}
+%   \label{fig:sel}
+% \end{figure}
+%
+% \CmdIndex{fancyhf}
+% There is also a more general command \cs{fancyhf} that you can use to
+% combine the specifications for headers and footers. This allows additional
+% selectors \texttt{H} (header) and \texttt{F} (footer). In fact  \cs{fancyhead} and
+% \cs{fancyfoot} are just  \cs{fancyhf} with \texttt{H} and \texttt{F} pre-specified, respectively.
+%
+% Again, you may
+% use  \Cmd{thispagestyle\{plain\}} for a simple page layout for
+% page~1.
+%
 % \section{Fancy Centering}
 % \label{sec:fancycenter}
 %
@@ -1434,91 +1519,6 @@
 % }
 %
 % \bigskip
-%
-% \section{An example of two-sided printing}\label{two-sided}
-%
-% \TTindex{twoside}
-% Some document classes, such as \pkg{book.cls}, print two-sided by default: the even
-% pages and the odd pages have different layouts; other document classes
-% use the \texttt{twoside} option to print two-sided.
-%
-% Now let us print the report two-sided.  Let the above page
-% layout be used for the odd (right-side) pages, and the
-% following for the even (left-side) pages:
-%
-% \begin{fblock}
-%
-% \noindent\makebox[\textwidth]{\textbf{The performance of new
-% graduates}\hfill}\showrule
-% \noindent\makebox[\textwidth]{\hfill page body\hfill}\\[\baselineskip]
-% \noindent\makebox[\textwidth]{\hrulefill}
-% \noindent\makebox[\textwidth]{4\phantom{To: Dean A. Smith}\hfill
-%  From: K. Grant\hfill \phantom{4}To: Dean A. Smith}
-%
-% \end{fblock}
-% \noindent where ``4'' is the page number.
-%
-% Here are the commands:
-%
-% \Example{3}
-% \begin{example}
-% \fancyhead{} % clear all header fields
-% \fancyhead[RO,LE]{\textbf{The performance of new graduates}}
-% \fancyfoot{} % clear all footer fields
-% \fancyfoot[LE,RO]{\thepage}
-% \fancyfoot[LO,CE]{From: K. Grant}
-% \fancyfoot[CO,RE]{To: Dean A. Smith}
-% \renewcommand{\headrulewidth}{0.4pt}
-% \renewcommand{\footrulewidth}{0.4pt}
-% \end{example}
-%
-% \CmdIndex{fancyhead}
-% \CmdIndex{fancyfoot}
-% The commands \cs{fancyhead} and \cs{fancyfoot}
-% have an additional parameter between square brackets that specifies
-% for which pages and/or parts of the header/footer they apply. The first
-% \cs{fancyhead} command above omits this parameter, and thus applies to all
-% header fields. In general this is only useful to get rid of the defaults or
-% a previous definition, as is done here. Similarly the \cs{fancyfoot} command
-% without square brackets clears all footer fields. In this particular
-% example it could be omitted as all footer fields have a value specified.
-% The selectors that can be used
-% between the square brackets are given in figure~\ref{fig:sel}. Selectors can be combined so
-% \Cmd{fancyhead[LE,RO]\{text\}}
-% will define the field for both the left header on even pages and the right
-% header on odd pages. If you don't give an \texttt{E} or \texttt{O} the definition applies to
-% both. Similar for \texttt{LRC}.
-% The selectors may be given as uppercase or lowercase letters.
-% \begin{figure}[htb]
-%   \begin{center}
-%     \leavevmode
-%     \begin{tabular}{|l|l|}
-%       \hline
-%       E & Even page         \\
-%       O & Odd page          \\
-%       \hline
-%       L & Left field        \\
-%       C & Center field      \\
-%       R & Right field       \\
-%       \hline
-%       H & Header            \\
-%       F & Footer            \\
-%       \hline
-%     \end{tabular}
-%   \end{center}
-%   \caption{Selectors}
-%   \label{fig:sel}
-% \end{figure}
-%
-% \CmdIndex{fancyhf}
-% There is also a more general command \cs{fancyhf} that you can use to
-% combine the specifications for headers and footers. This allows additional
-% selectors \texttt{H} (header) and \texttt{F} (footer). In fact  \cs{fancyhead} and
-% \cs{fancyfoot} are just  \cs{fancyhf} with \texttt{H} and \texttt{F} pre-specified, respectively.
-%
-% Again, you may
-% use  \Cmd{thispagestyle\{plain\}} for a simple page layout for
-% page~1.
 %
 % \section{Redefining page style \texttt{plain}}
 % \label{sec:pagestyle-plain}
