@@ -78,12 +78,10 @@
 \usepackage{xparse}
 \usepackage{fancyhdr}
 \GetFileInfo{fancyhdr.sty}
-\def\latex/{\protect\LaTeX{}}
 \def\tex/{\TeX}
 \def\ams/{\protect\pAmS}
 \def\pAmS{{\the\textfont2
         A\kern-.1667em\lower.5ex\hbox{M}\kern-.125emS}}
-\def\amslatex/{\ams/-\latex/}
 \newcommand{\bs}{\symbol{'134}}
 \providecommand\env{}
 \renewcommand{\env}[1]{\texttt{#1}}
@@ -357,7 +355,7 @@
 % Part I is a short documentation on
 % the user commands of the \pkg{fancyhdr} and \pkg{extramarks} packages.
 %
-% Part II contains elaborate documentation on page layout in \latex/.
+% Part II contains elaborate documentation on page layout in \LaTeX.
 % This used to be the complete documentation of \pkg{fancyhdr} and
 % \pkg{extramarks} for several years.
 %
@@ -401,7 +399,7 @@
 % `\verb+tex fancyhdr.ins+' and then move the files \pkg{fancyhdr.sty},
 % \pkg{extramarks.sty}, \pkg{extramarks-v4.sty}
 % and \pkg{fancyheadings.sty} to a place
-% where \latex/ can find it, preferably in a directory similar to
+% where \LaTeX{} can find it, preferably in a directory similar to
 % \texttt{.../texmf/tex/latex/fancyhdr/} in your \tex/ directory tree.
 % To get the documentation, run `\verb+pdflatex fancyhdr.dtx+'.
 %
@@ -409,7 +407,7 @@
 % \label{sec:using-fancyhdr}
 %
 % The package \pkg{fancyhdr} gives you several commands to define
-% headers and footers of the pages in a \latex/ document.
+% headers and footers of the pages in a \LaTeX{} document.
 % You load the package with the following command in the preamble:
 % \begin{quote}
 % \cs{usepackage}\oarg{options}\verb|{fancyhdr}|
@@ -607,7 +605,7 @@
 %
 % Please note that these page styles redefine the \cs{chaptermark} and/or
 % \Cmd{[sub]sectionmark} commands (see section~\ref{sec:scoop}), as do the
-% standard \latex/ page styles. The consequence is, that if you select
+% standard \LaTeX{} page styles. The consequence is, that if you select
 % e.g.\ \Cmd{pagestyle\{headings\}}, the definitions of
 % \Cmd{pagestyle\{fancy\}} are overridden.
 % Also when you change the headers and/or footers
@@ -621,7 +619,7 @@
 % \section{Using \pkg{extramarks}}
 % \label{sec:using-extramarks}
 %
-% Standard \latex/ has two marks: a left one and a right one. The standard
+% Standard \LaTeX{} has two marks: a left one and a right one. The standard
 % command \cs{leftmark} gives you the last left mark on a page, and
 % \cs{rightmark} gives you the first right one. These are to be used in
 % the headers and footers of a page. These are derived from information
@@ -641,7 +639,7 @@
 % \end{syntax}
 %
 % The command \cs{extramarks}\marg{$m_1$}\marg{$m_2$} defines two extra marks,
-% similar to the standard ones by \latex/, where \meta{$m_1$} is the left
+% similar to the standard ones by \LaTeX, where \meta{$m_1$} is the left
 % mark and \meta{$m_2$} is the right mark.
 %
 % \label{sec:extramarks-5}
@@ -742,7 +740,7 @@
 %   \cs{evensidemargin} (on even-numbered pages) and \cs{oddsidemargin}
 %   (on odd-numbered pages). In one-sided documents
 %   \cs{oddsidemargin} is used for either.  \cs{leftmargin} is also a valid
-%   \latex/ parameter but it has a different use (namely the indentation of
+%   \LaTeX{} parameter but it has a different use (namely the indentation of
 %   lists).
 % \item Most of the parameters should not be changed in the middle of a
 %   document. Some changes might work at a pagebreak. If you want to change
@@ -809,7 +807,7 @@
 % \end{center}
 %
 % These are not user commands, but rather ``variables'' that are used by
-% \latex/'s output routine.
+% \LaTeX's output routine.
 % As the command names contain the character `\texttt{@}', they should
 % be defined in a package file, or otherwise be sandwiched between the commands
 % \cs{makeatletter} and \cs{makeatother}.
@@ -842,7 +840,7 @@
 % \section{What is \pkg{fancyhdr}}
 %
 % The \pkg{fancyhdr} macro package allows you to customize
-% in \latex/ your page headers and footers in an easy way.  You can
+% in \LaTeX{} your page headers and footers in an easy way.  You can
 % define:
 % \begin{itemize}
 % \item three-part headers and footers
@@ -858,7 +856,7 @@
 % and lowercase displays, etc.
 %
 % \section{Simple use of \pkg{fancyhdr}}  To use this package
-% install it in a place where \latex/ can find it (see
+% install it in a place where \LaTeX{} can find it (see
 % section~\ref{sec:installation})\footnote{In most modern \tex/
 % installation the package is already included.}, and include in the preamble of your document
 % the commands:
@@ -956,7 +954,7 @@
 % \end{code}
 % if you do not want any headers or footers.
 %
-% In fact the standard \latex/ classes have the command \cs{maketitle}
+% In fact the standard \LaTeX{} classes have the command \cs{maketitle}
 % defined in such a way that a \Cmd{thispagestyle\{plain\}} is automatically
 % issued. So if you \emph{do} want the fancy layout on a page containing
 % \cs{maketitle} you must issue a \Cmd{thispagestyle\{fancy\}} after the
@@ -1524,7 +1522,7 @@
 % \section{Redefining page style \texttt{plain}}
 % \label{sec:pagestyle-plain}
 %
-% Some \latex/ commands, like \cs{chapter}, use the \cs{thispagestyle}
+% Some \LaTeX{} commands, like \cs{chapter}, use the \cs{thispagestyle}
 % command to automatically switch to the \texttt{plain} page style, thus
 % ignoring the page style currently in effect.
 %
@@ -1698,14 +1696,14 @@
 % header and/or footer definitions, use
 % \Cmd{fancypagestyle*\{fancydefault\}}\marg{your definitions}.
 %
-% \section{The scoop on \latex/'s marks}
+% \section{The scoop on \LaTeX's marks}
 % \label{sec:scoop}
 %
 % Usually, for documents of class \verb|book| and \verb|report|, you may
 % want to use chapter and section information in the headings (chapter only
 % for one-sided printing), and for documents of class \verb|article|,
 % section and subsection information (section only for one-sided
-% printing).  \latex/ uses a marker mechanism to remember the chapter and
+% printing).  \LaTeX{} uses a marker mechanism to remember the chapter and
 % section (section and subsection) information for a page; this is
 % discussed in detail in \emph{The \LaTeX{} Companion, Third Edition},
 % section 5.3.4 (Part I).
@@ -1716,7 +1714,7 @@
 % \CmdIndex{leftmark}
 % \cs{leftmark}
 % (higher-level) and \cs{rightmark} (lower-level) contain the information
-% processed by \latex/, and you can use them directly as shown in
+% processed by \LaTeX, and you can use them directly as shown in
 % section~\ref{sec:default}.
 %
 % These marks are set by the commands
@@ -1794,7 +1792,7 @@
 % (the last example is appropriate in some non-English languages). The \texttt{\%}
 % signs at the end of the lines are to prevent unwanted space. Normally you
 % would continue the lines and remove these \texttt{\%} signs\footnote{The \texttt{\bs
-%     MakeUppercase} command is used in \latex/ to generate uppercase text,
+%     MakeUppercase} command is used in \LaTeX{} to generate uppercase text,
 %   while \cs{uppercase} is the plain \TeX{} command for this. The difference is
 %   that \cs{MakeUppercase} also deals with non-ASCII letters.}.
 %
@@ -1863,10 +1861,10 @@
 % \caption{Marker variants}\label{fig:markers}
 % \end{figure}
 %
-% It should be noted that the \latex/ marking mechanism works fine with
+% It should be noted that the \LaTeX{} marking mechanism works fine with
 % chapters (which always start on a new page) and sections (which are
 % reasonably long).  It does not work quite as well with short sections and
-% subsections.  This is a problem with \latex/, not with
+% subsections.  This is a problem with \LaTeX, not with
 % \pkg{fancyhdr}.
 %
 % As an example let's take a page layout where the leftmarks are generated by
@@ -1902,7 +1900,7 @@
 % \fancyhead[R]{\firstleftmark}
 % \end{example}
 %
-% Another problem with the marks in the standard \latex/ classes is that the
+% Another problem with the marks in the standard \LaTeX{} classes is that the
 % higher level sectioning commands (e.g.\ \cs{chapter}) call
 % \cs{markboth} with an empty right argument. This means that on the first
 % page of a chapter (or a section in article style) the \cs{rightmark}
@@ -1938,7 +1936,7 @@
 % \index{concordance}
 % Dictionaries and concordances usually have a header containing the first
 % word defined on the page or both the first and the last words. This can
-% easily be accomplished with \pkg{fancyhdr} and \latex/'s
+% easily be accomplished with \pkg{fancyhdr} and \LaTeX's
 % \texttt{mark} mechanism. Of course if you use the marks for dictionary
 % style headers, you cannot use them for chapter and section information, so
 % if there are also chapters and sections present, you must redefine the
@@ -2067,7 +2065,7 @@
 % \texttt{nocheck} option of the package. But this may risk unwanted
 % run-ins of the header or footer with other text. So this is generally
 % discouraged. It is better to change \cs{headheight}, \cs{footskip},
-% and/or \cs{topmargin}. But in cases where you generate the \latex/
+% and/or \cs{topmargin}. But in cases where you generate the \LaTeX{}
 % code automatically, and the software does not know how tall the header
 % or footer will be, this may be handy.
 %
@@ -2200,7 +2198,7 @@
 % \label{sec:book-examples}
 %
 % The following definitions give an approximation of the style
-% used in L. Lamport's \latex/ book.
+% used in L. Lamport's \LaTeX{} book.
 %
 % Lamport's header overhangs the outside margin.  This is done as follows.
 %
@@ -2274,7 +2272,7 @@
 % \CmdIndex{fancyheadoffset}
 % \CmdIndex{fancyfootoffset}
 %
-% When you use these commands, \latex/ will recalculate \cs{headwidth},
+% When you use these commands, \LaTeX{} will recalculate \cs{headwidth},
 % based on the given parameters.
 %
 % So the above example could also have been done with (N.B. You can only
@@ -2294,8 +2292,8 @@
 % in the neighborhood of your header/footer definitions, unless you
 % already use such an \texttt{\ldots offset} command, of course.
 % \vspace{\baselineskip}
-% For the second example, we take the \amslatex/ book\footnote{George Gratzer,
-% \textit{Math into LaTeX, An Introduction to \LaTeX{} and \amslatex/}, Birkhauser, Boston.}.
+% For the second example, we take the \ams/-\LaTeX{} book\footnote{George Gratzer,
+% \textit{Math into LaTeX, An Introduction to \LaTeX{} and \ams/-\LaTeX}, Birkhauser, Boston.}.
 %
 % Chapter pages have no headers or footers.  So we declare
 %
@@ -2399,7 +2397,7 @@
 % \index{float page}
 % Some people want to have a special layout for float pages (pages only
 % containing floats). As these pages
-% are generated autonomically by \latex/, the user doesn't have any control
+% are generated autonomically by \LaTeX, the user doesn't have any control
 % over them. There is no \cs{thispagestyle} for float pages and any change
 % of the page style will at least also affect the page before the float page.
 % With \pkg{fancyhdr}, however, you can specify in each of
@@ -2435,7 +2433,7 @@
 %                          {There is no topfloat here}}
 % \end{code}
 %
-% Note: Marks in floats will not be visible in \latex/'s output routine, so
+% Note: Marks in floats will not be visible in \LaTeX's output routine, so
 % it is not useful to put marks in floats. So there is currently no way to
 % let a float (e.g.\ a figure caption) influence the page header or footer.
 %
@@ -3056,10 +3054,10 @@
 % We have seen how we can use \LaTeX's marks to get information from the
 % document contents to the headers and footers. The marks mechanism is the
 % only reliable mechanism that you can use to get changing information to the
-% headers or footers. This is because \latex/ may be processing your document
+% headers or footers. This is because \LaTeX{} may be processing your document
 % ahead before deciding to break the page.
 %
-% Sometimes the two marks that \latex/ offers are not enough. An example is
+% Sometimes the two marks that \LaTeX{} offers are not enough. An example is
 % the following:
 % \begin{quote}
 %  If a solution to an exercise goes across a page break, then I would like
@@ -3068,7 +3066,7 @@
 %  first page and ``(Continued\ldots)'' at the top in the margin of the next page.
 % \end{quote}
 %
-% You cannot use \latex/'s mark mechanisms for this if you also want to use
+% You cannot use \LaTeX's mark mechanisms for this if you also want to use
 % chapter and section information.
 %
 % The \pkg{extramarks} package gives you
@@ -3145,7 +3143,7 @@
 % \CmdIndex{toprightxmark}
 %
 % The package also gives you the \cs{firstleftmark} and \cs{lastrightmark}
-% commands that complement the standard \latex/ marks.
+% commands that complement the standard \LaTeX{} marks.
 % \CmdIndex{firstleftmark}
 % \CmdIndex{lastrightmark}
 %
@@ -3158,7 +3156,7 @@
 % In plain \tex/ you would use a concoction of \Cmd{hbox to 0pt},
 % \Cmd{vbox to 0pt}, \cs{hskip},\cs{vskip}, \cs{hss} and
 % \cs{vss} but fortunately
-% \latex/'s \texttt{picture} environment gives a much cleaner way to do this.
+% \LaTeX's \texttt{picture} environment gives a much cleaner way to do this.
 % In order not to disturb the normal header layout we put the text in a zero-sized
 % \texttt{picture}. Generally this is the best way to position things on fixed
 % places on the page. You can then also use the normal headings. See also
@@ -3683,11 +3681,11 @@
 % \begin{enumerate}
 % \item The float didn't fit on the page. In this case it has to move to the
 %   next page or even further. If you didn't specify either \texttt{[t]} or
-%   \texttt{[b]} in the position parameter, \latex/ must save it until it has
+%   \texttt{[b]} in the position parameter, \LaTeX{} must save it until it has
 %   enough for a page of floats. So don't specify only \texttt{[h]}. If you
-%   want to give \latex/ a chance to put the float on a page of floats, you
+%   want to give \LaTeX{} a chance to put the float on a page of floats, you
 %   must also specify ``\texttt{p}''.
-% \item The placement would violate the constraints imposed by \latex/'s
+% \item The placement would violate the constraints imposed by \LaTeX's
 %   float placement parameters. This is one of the most occurring causes and
 %   it can easily be corrected by changing the parameters. Here is a list of
 %   them with their default values:
@@ -3723,7 +3721,7 @@
 % There are also some others for double column floats in two-column documents.
 %
 % The default values are for the standard
-% \latex/ classes. Other classes could use different defaults. As you see
+% \LaTeX{} classes. Other classes could use different defaults. As you see
 % with the default values a float will not be put in the bottom of a page if
 % its height is more than 30\% of the page height. So if you specify \texttt{[hb]} for
 % a float which is taller it has to move to a float page. But if it is less
@@ -3742,7 +3740,7 @@
 % You may want to be careful not to make \cs{floatpagefraction} too small,
 % otherwise you may get too many small floatpages.
 %
-% You can force \latex/ to ignore most of the parameters for one specific float
+% You can force \LaTeX{} to ignore most of the parameters for one specific float
 % occurrence by
 % including an exclamation mark (\texttt{!}) in the placement parameters, e.g.,
 % \begin{code}
@@ -3751,7 +3749,7 @@
 %
 % Floats which contain a ``\texttt{t}'' in the position parameter could be
 % placed before the place where they are referenced (but on the same page).
-% This is normal behaviour for \latex/ but some people just don't like it.
+% This is normal behaviour for \LaTeX{} but some people just don't like it.
 % There are a number of ways to prevent this:
 % \begin{enumerate}
 % \item Of course deleting the ``\texttt{t}'' will help, but in general this is
@@ -3767,7 +3765,7 @@
 %   without parameter for all floats on this page.
 % \end{enumerate}
 %
-% If in spite of all your attempts \latex/ still moves your floats to the end
+% If in spite of all your attempts \LaTeX{} still moves your floats to the end
 % of the document or the end of a chapter, you can insert a \cs{clearpage}
 % command. This will start a new page and insert all pending floats before
 % continuing. If it is undesirable to have a pagebreak you can use the
@@ -3782,7 +3780,7 @@
 % may give strange results, however.
 %
 % Finally, if you want a float only at the place where you define it, without
-% \latex/ moving it whatsoever, you can use the \pkg{float} package and
+% \LaTeX{} moving it whatsoever, you can use the \pkg{float} package and
 % give the command:
 % \TTindex{float}\CmdIndex{restylefloat}%
 % \begin{code}
@@ -3800,11 +3798,11 @@
 % \end{code}
 %
 % \index{Too many floats}%
-% Complaints from \latex/ about ``Too many floats'' are usually caused by one
-% of the above problems: floats not being able to be placed and \latex/
+% Complaints from \LaTeX{} about ``Too many floats'' are usually caused by one
+% of the above problems: floats not being able to be placed and \LaTeX{}
 % collecting too many of them. The solutions given above, especially those
 % with \cs{clearpage} in them will usually help. In some cases there
-% really are too many floats, as \latex/ has a limited number of ``boxes'' to
+% really are too many floats, as \LaTeX{} has a limited number of ``boxes'' to
 % store the floats. The package
 % \TTindex{morefloats}%
 % \pkg{morefloats} can be used to increase
