@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/12/05 v5.0beta
+%<fancyhdr|extramarks>           [2024/12/16 v5.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -57,7 +57,6 @@
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{boxedminipage}
-\usepackage{fancyhdrbox} % TEMPORARY
 
 % The package fourier-orns defines \danger, which conflicts
 % with the 'danger' environment of l3doc.
@@ -76,6 +75,8 @@
 \usepackage[colorlinks,linktocpage]{hyperref}
 \usepackage{ifthen}
 \usepackage{xparse}
+\usepackage{enumitem}
+\setlist{itemsep=1pt}
 \usepackage{fancyhdr}
 \GetFileInfo{fancyhdr.sty}
 \def\tex/{\TeX}
@@ -4353,7 +4354,7 @@
 % independent marks.
 %
 % \begin{itemize}
-% \item Version 5.0, Feb 11, 2021-Dec 14, 2024
+% \item Version 5.0, Feb 11, 2021-Dec 16, 2024
 %   \begin{itemize}
 %   \item Shorten Warning message about \cs{headheight}/\cs{footskip} too large.
 %   \item If the option \texttt{[nocheck]} is given, just keep quiet and
@@ -6616,6 +6617,230 @@
 \fancypagestyle*{fancydefault}{\f@nch@initialise}
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{\fancyhdrbox}
+% \changes{fancyhdr v5.0}{2024/12/16}{Macro \cs{fancyhdrbox} added}
+% \cs{fancyhdrbox}\oarg{alignment}\oarg{width}\marg{lines separated by \cmd{\\}}\\[1ex]
+% This command creates a \cs{halign} inside a vertical box (\cs{vbox} or \cs{vtop}).
+%
+% We need some variables, but these don't have to be declared. They are
+% characterised by \texttt{@@} in their name.
+% \begin{description}[leftmargin=4cm]
+%     \item[\cs{f@nchdrbox@@v}] --     vertical alignment (\texttt{T},
+%                                      \texttt{t}, \texttt{c}, \texttt{b}, \texttt{B})
+%     \item[\cs{f@nchdrbox@@h}] --     horizontal alignment (\texttt{l}, \texttt{c}, \texttt{r})
+%     \item[\cs{f@nchdrbox@@pre}] --   code to be inserted before the
+%                                      first row, a `topstrut' or \Cmd{vspace\{0pt\}}
+%     \item[\cs{f@nchdrbox@@postx}] -- code to be executed at the end of the
+%                                      last row, possibly a `botstrut'
+%     \item[\cs{f@nchdrbox@@posty}] -- code to be executed after the
+%                                      \cs{halign}, possibly a \Cmd{vspace\{0pt\}}
+%     \item[\cs{f@nchdrbox@@crstrut}] -- a `strut' to be inserted at
+%                                        each \cmd{\\} in the \cs{halign}
+%     \item[\cs{f@nchdrbox@@halignto}] -- This is either empty, if no
+%                                        \meta{width} argument is given,
+%                                        or `\texttt{to~\meta{width}}' if
+%                                        it is given.
+% \end{description}
+% A `strut' is a \TeX{} construct to keep the baselines of the lines in
+% a text on a fixed distance. It normally is an invisible rule of \texttt{width}
+% \texttt{0pt}, \texttt{height} \texttt{0.7\cs{baselineskip}} and \texttt{depth}
+% \texttt{0.3\cs{baselineskip}}. Therefore the struts are
+% dependent of the font of the text. But for the \cs{fancyhdrbox} alignments
+% \texttt{T} and \texttt{B} we need special `topstrut' (which only has
+% the \texttt{height}) part, or a `botstrut' (which only has the
+% \texttt{depth}) part. For example with the \texttt{T} alignment, there
+% should be no strut on the first line, because then we don't want the extra
+% space above this line. We use instead a \cmd{vspace\{0pt\}}.
+% But we need the \texttt{depth} part
+% because we want the extra space below the line. Similar for the
+% \texttt{B} alignment, but then in the opposite direction.
+% \begin{macro}[internal]{\f@nchdrbox@topstrut, \f@nchdrbox@botstrut}
+%    \begin{macrocode}
+\def\f@nchdrbox@topstrut{\vrule height\ht\strutbox width\z@}
+\def\f@nchdrbox@botstrut{\vrule depth\dp\strutbox width\z@}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}[internal]{\f@nchdrbox@nostrut}
+% At each \cmd{\\} \cs{f@nchdrbox@@crstrut} will be inserted. It will be a normal \cs{strut}, except
+% in the first row when the alignment is \texttt{T}; then it will be a
+% `botstrut', and moreover, we will insert a \Cmd{vspace\{0pt\}} at the
+% top of the box. The macro \cs{f@nchdrbox@nostrut} will set this up.
+% The assignment to \cs{f@nchdrbox@@crstrut} will be local to the
+% \cs{halign} cell, so after the \cmd{\\} it will be reset to the default.
+%    \begin{macrocode}
+\def\f@nchdrbox@nostrut{\noalign{\vspace{0pt}}\let\f@nchdrbox@@crstrut\f@nchdrbox@botstrut}
+%    \end{macrocode}
+% \end{macro}
+% ^^A\begin{macro}{\fancyhdrbox}
+%   Now we start the only user command in the part: \cs{fancyhdrbox}.
+%   The code is run in a group so that changes to variables are local.
+%   This is necessary in case we use nested \cs{fancyhdrbox}es.
+%
+%   First we set the variables \cs{f@nchdrbox@@pre},
+%   \cs{f@nchdrbox@topstrut}, \cs{f@nchdrbox@@posty}, and
+%   \cs{f@nchdrbox@@crstrut} to their default values. Then we test if
+%   the second optional argument (\meta{width}) was given, and if so,
+%   record this in \cs{f@nchdrbox@@halignto}. We put the \meta{width}
+%   value in a length variable with \cs{setlength} so that we can
+%   support \pkg{calc}-style values.
+%
+%   And then we check if the first optional argument \meta{alignment} is
+%   empty. In that case we use \texttt{cl} instead.
+%    \begin{macrocode}
+\NewDocumentCommand{\fancyhdrbox}{ O{cl} o m }{%
+\begingroup
+  \let\f@nchdrbox@@pre\f@nchdrbox@topstrut
+  \let\f@nchdrbox@@postx\f@nchdrbox@botstrut
+  \let\f@nchdrbox@@posty\relax
+  \let\f@nchdrbox@@crstrut\strut
+  \IfNoValueTF{#2}%
+    {\let\f@nchdrbox@@halignto\@empty}%
+    {\setlength\@tempdima{#2}%
+      \def\f@nchdrbox@@halignto{to\@tempdima}}%
+  \def\@tempa{#1}%
+  \ifx\@tempa\@empty
+    \f@nchdrbox@align cl\@nil{#3}%
+  \else
+    \f@nchdrbox@align #1\@nil{#3}%
+  \fi
+\endgroup
+}
+%    \end{macrocode}
+% ^^A\end{macro}
+%
+% \begin{macro}[internal]{\f@nchdrbox@cr, \@f@nchdrbox@xcr,
+%              \@f@nchdrbox@argc, \@f@nchdrbox@xargc, \@f@nchdrbox@yargc}
+% This is the definition for \cmd{\\} inside \cs{fancyhdrbox},
+% \cmd{\\*} does nothing special here, but we acccept it anyway.
+% The code is mostly copied from the \env{tabular} code from the
+% \LaTeX{} kernel, but simplified, and the names of the macros are
+% changed so that we don't rely on internals in the \LaTeX{} kernel that
+% may change. The trick with the \verb|\ifnum0=`|
+% allows to get unbalanced braces in a macro.
+%    \begin{macrocode}
+\protected\def\f@nchdrbox@cr{%
+  {\ifnum0=`}\fi\@ifstar\@f@nchdrbox@xcr\@f@nchdrbox@xcr}
+
+\def\@f@nchdrbox@xcr{%
+  \unskip\f@nchdrbox@@crstrut
+  \@ifnextchar[\@f@nchdrbox@argc{\ifnum0=`{\fi}\cr}%
+}
+
+\def\@f@nchdrbox@argc[#1]{%
+  \ifnum0=`{\fi}%
+    \ifdim #1>\z@
+      \unskip\@f@nchdrbox@xargc{#1}%
+    \else
+      \@f@nchdrbox@yargc{#1}%
+    \fi}
+
+\def\@f@nchdrbox@xargc#1{\@tempdima #1\advance\@tempdima \dp \strutbox
+   \vrule \@height\z@ \@depth\@tempdima \@width\z@ \cr}
+
+\def\@f@nchdrbox@yargc#1{\cr\noalign{\setlength\@tempdima{#1}\vskip\@tempdima}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}[internal]{\f@nchdrbox@T, \f@nchdrbox@t, \f@nchdrbox@c, \f@nchdrbox@b, \f@nchdrbox@B}
+%   Processing for the vertical alignment options \texttt{T},
+%   \texttt{t}, \texttt{c}, \texttt{b}, \texttt{B}.
+%
+%   \begin{description}
+%   \item[\texttt{T}] set \cs{f@nchdrbox@@pre} to `nostrut' and execute
+%                     the \texttt{t} code
+%   \item[\texttt{t}] set vertical alignment to \texttt{t} and
+%                     horizontal to \texttt{l}
+%   \item[\texttt{c}] set both vertical and horizontal alignment to \texttt{c}
+%   \item[\texttt{b}] set vertical alignment to \texttt{b} and
+%                     horizontal to \texttt{l}
+%   \item[\texttt{B}] set \cs{f@nchdrbox@@postx} to do nothing and
+%                     \cs{f@nchdrbox@@posty} to \Cmd{vspace\{0pt\}} and
+%                     execute the \texttt{b} code
+%   \end{description}
+%   The horizontal alignments are defaults, they may be changed by
+%   processing the horizontal argument, if present.
+%    \begin{macrocode}
+\def\f@nchdrbox@T{\let\f@nchdrbox@@pre\f@nchdrbox@nostrut
+                  \f@nchdrbox@t}
+\def\f@nchdrbox@t{\def\f@nchdrbox@@v{t}\def\f@nchdrbox@@h{l}}
+\def\f@nchdrbox@c{\def\f@nchdrbox@@v{c}\def\f@nchdrbox@@h{c}}
+\def\f@nchdrbox@b{\def\f@nchdrbox@@v{b}\def\f@nchdrbox@@h{l}}
+\def\f@nchdrbox@B{\let\f@nchdrbox@@postx\relax
+                  \def\f@nchdrbox@@posty{\vspace{0pt}}%
+                  \f@nchdrbox@b}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\f@nchdrbox@align}
+% \cs{f@nchdrbox@align}\marg{vert}\marg{hor}\texttt{\cs{@nil}}\marg{lines}\\[1ex]
+% The internal processing for the \cs{halign} in a vertical box.\\
+% ALGORITHM \cs{f@nchdrbox@align}:\\
+% (v = vertical position; h = horizontal position)\\
+% \textbf{IF} \texttt{\#1} in \texttt{\{T,t,c,b,B\}} \\
+% \textbf{THEN} v := \texttt{\#1}; h := (\textbf{if}  \texttt{\#1} == \texttt{c} \textbf{then} \texttt{c} \textbf{else} \texttt{l} \textbf{fi}) (coded in \cs{f@nchdrbox@\meta{\#1}})\\
+% \hspace*{1em}  (The h value is the default in case  \texttt{\#2} is empty)\\
+% \hspace*{1em}  \textbf{if}  \texttt{\#2} is not empty \textbf{then} h :=  \texttt{\#2} \textbf{fi}\\
+% \textbf{ELSE} (\texttt{\#1} not in \texttt{\{T,t,c,b,B\}} -- it must be
+% a horizontal alignment)\\
+% \hspace*{1em}  v := \texttt{c}\\
+% \hspace*{1em}  h := \texttt{\#1}\\
+% \textbf{FI}\\
+% Set the \cs{halign} in a \cs{vtop} (for \texttt{T/t} alignment) or
+% \cs{vbox} (for others). This box is put into \cs{box0} because we have
+% to change it for the vertical alignment \texttt{c}. For the others it
+% isn't necesary, but it just makes the code easier to do it anyway.
+% We also insert the \cs{f@nchdrbox@@pre},
+% \cs{f@nchdrbox@@postx} and \cs{f@nchdrbox@@posty} variables in the
+% proper places. The rest of the code is roughly based on the
+% \env{tabular} code in the \LaTeX{} kernel.
+%    \begin{macrocode}
+\long\def\f@nchdrbox@align#1#2\@nil#3{%
+  \f@nch@ifin{#1}{TtcbB}{%
+    \@nameuse{f@nchdrbox@#1}%
+    \def\@tempa{#2}%
+    \ifx\@tempa\@empty\else \def\f@nchdrbox@@h{#2}\fi
+  }%
+  {\def\f@nchdrbox@@v{c}\def\f@nchdrbox@@h{#1}}%
+  \let\\\f@nchdrbox@cr
+  \setbox0=\if \f@nchdrbox@@v t\vtop
+  \else \vbox
+  \fi
+  {%
+     \ialign \f@nchdrbox@@halignto
+     \bgroup \relax
+     {\if \f@nchdrbox@@h l\hskip 1sp\else \hfil \fi
+       \ignorespaces ##\unskip
+       \if\f@nchdrbox@@h r\else \hfil \fi
+     }%
+     \tabskip\z@skip \cr
+     \f@nchdrbox@@pre
+     #3\unskip \f@nchdrbox@@postx
+     \crcr
+     \egroup
+     \f@nchdrbox@@posty
+  }%
+%    \end{macrocode}
+% If the vertical alignment is \texttt{c}, we calculate the
+% total height + depth of the resulting \cs{box0} and then set
+% the depth and height of this box each to half of this value. This way
+% the box will be vertically centered. We don't use \cs{vcenter} for
+% this, because it centers the box on the \emph{math axis}, which
+% doesn't make sense here, and sometimes gives a different vertical
+% positioning (not exactly centered).
+%    \begin{macrocode}
+  \if\f@nchdrbox@@v c\@tempdima=\ht0\advance\@tempdima\dp0%
+    \ht0=0.5\@tempdima\dp0=0.5\@tempdima\fi
+%    \end{macrocode}
+% Finally we put the box in horizontal mode in the running text.
+%    \begin{macrocode}
+  \leavevmode \box0
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \end{macro}
+%
+% \smallskip
 % \changes{fancyhdr v4.1}{202/09/16}{Support for class \pkg{newlfm}.}
 % The (really outdated) document class \pkg{newlfm} uses some internal
 % \pkg{fancyhdr} commands that have gotten new names. So here we check if

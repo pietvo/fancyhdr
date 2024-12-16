@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2024/12/05 v5.0beta
+           [2024/12/16 v5.0beta
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -596,6 +596,84 @@
   \fi
 }
 \fancypagestyle*{fancydefault}{\f@nch@initialise}
+\def\f@nchdrbox@topstrut{\vrule height\ht\strutbox width\z@}
+\def\f@nchdrbox@botstrut{\vrule depth\dp\strutbox width\z@}
+\def\f@nchdrbox@nostrut{\noalign{\vspace{0pt}}\let\f@nchdrbox@@crstrut\f@nchdrbox@botstrut}
+\NewDocumentCommand{\fancyhdrbox}{ O{cl} o m }{%
+\begingroup
+  \let\f@nchdrbox@@pre\f@nchdrbox@topstrut
+  \let\f@nchdrbox@@postx\f@nchdrbox@botstrut
+  \let\f@nchdrbox@@posty\relax
+  \let\f@nchdrbox@@crstrut\strut
+  \IfNoValueTF{#2}%
+    {\let\f@nchdrbox@@halignto\@empty}%
+    {\setlength\@tempdima{#2}%
+      \def\f@nchdrbox@@halignto{to\@tempdima}}%
+  \def\@tempa{#1}%
+  \ifx\@tempa\@empty
+    \f@nchdrbox@align cl\@nil{#3}%
+  \else
+    \f@nchdrbox@align #1\@nil{#3}%
+  \fi
+\endgroup
+}
+\protected\def\f@nchdrbox@cr{%
+  {\ifnum0=`}\fi\@ifstar\@f@nchdrbox@xcr\@f@nchdrbox@xcr}
+
+\def\@f@nchdrbox@xcr{%
+  \unskip\f@nchdrbox@@crstrut
+  \@ifnextchar[\@f@nchdrbox@argc{\ifnum0=`{\fi}\cr}%
+}
+
+\def\@f@nchdrbox@argc[#1]{%
+  \ifnum0=`{\fi}%
+    \ifdim #1>\z@
+      \unskip\@f@nchdrbox@xargc{#1}%
+    \else
+      \@f@nchdrbox@yargc{#1}%
+    \fi}
+
+\def\@f@nchdrbox@xargc#1{\@tempdima #1\advance\@tempdima \dp \strutbox
+   \vrule \@height\z@ \@depth\@tempdima \@width\z@ \cr}
+
+\def\@f@nchdrbox@yargc#1{\cr\noalign{\setlength\@tempdima{#1}\vskip\@tempdima}}
+\def\f@nchdrbox@T{\let\f@nchdrbox@@pre\f@nchdrbox@nostrut
+                  \f@nchdrbox@t}
+\def\f@nchdrbox@t{\def\f@nchdrbox@@v{t}\def\f@nchdrbox@@h{l}}
+\def\f@nchdrbox@c{\def\f@nchdrbox@@v{c}\def\f@nchdrbox@@h{c}}
+\def\f@nchdrbox@b{\def\f@nchdrbox@@v{b}\def\f@nchdrbox@@h{l}}
+\def\f@nchdrbox@B{\let\f@nchdrbox@@postx\relax
+                  \def\f@nchdrbox@@posty{\vspace{0pt}}%
+                  \f@nchdrbox@b}
+\long\def\f@nchdrbox@align#1#2\@nil#3{%
+  \f@nch@ifin{#1}{TtcbB}{%
+    \@nameuse{f@nchdrbox@#1}%
+    \def\@tempa{#2}%
+    \ifx\@tempa\@empty\else \def\f@nchdrbox@@h{#2}\fi
+  }%
+  {\def\f@nchdrbox@@v{c}\def\f@nchdrbox@@h{#1}}%
+  \let\\\f@nchdrbox@cr
+  \setbox0=\if \f@nchdrbox@@v t\vtop
+  \else \vbox
+  \fi
+  {%
+     \ialign \f@nchdrbox@@halignto
+     \bgroup \relax
+     {\if \f@nchdrbox@@h l\hskip 1sp\else \hfil \fi
+       \ignorespaces ##\unskip
+       \if\f@nchdrbox@@h r\else \hfil \fi
+     }%
+     \tabskip\z@skip \cr
+     \f@nchdrbox@@pre
+     #3\unskip \f@nchdrbox@@postx
+     \crcr
+     \egroup
+     \f@nchdrbox@@posty
+  }%
+  \if\f@nchdrbox@@v c\@tempdima=\ht0\advance\@tempdima\dp0%
+    \ht0=0.5\@tempdima\dp0=0.5\@tempdima\fi
+  \leavevmode \box0
+}
 \@ifclassloaded{newlfm}
 {
   \let\ps@@empty\f@nch@ps@empty
