@@ -2148,9 +2148,14 @@
 %   \ifthenelse{\value{page}=\getpagerefnumber{otherpagestyle}}{0.4pt}{0pt}%
 % }
 % \end{verbatim}
-% For cases like this \Package{fancyhdr} version~4.0 and later has some
-% new commands \cs{fancyheadinit}, \cs{fancyfootinit} and \cs{fancyhfinit}.
 % \DescribeMacro{\fancyheadinit}
+% \DescribeMacro{\fancyfootinit}
+% \DescribeMacro{\fancyhfinit}
+% \phantomsection\label{sec:hfinit}
+% For cases like this \pkg{fancyhdr} version~4.0 and later has some
+% new commands \cs{fancyheadinit}, \cs{fancyfootinit} and \cs{fancyhfinit}.
+% \CmdIndex{fancyheadinit}
+%
 % With \Cmd{fancyheadinit\{\meta{code}\}} you can define some code that will be executed
 % just before the construction of the header. As it is executed in the
 % header, it can test the correct page number, because the counter
