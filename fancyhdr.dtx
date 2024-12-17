@@ -2919,6 +2919,7 @@
 % \end{code}
 %
 % \subsection{Changing the page style of the next page}
+% \label{sec:nextpagestyle}
 %
 % If you want the change of the page style to take effect
 % at the next page you must make sure that the current page is finished. In
@@ -2958,6 +2959,121 @@
 % \afterpage{\thispagestyle{myfancy}}
 % \end{example}
 % Then the page after this code will have the page style \texttt{myfancy}.
+%
+% \subsection{Changing the page style in a \TeX{} group}
+% \label{sec:change-group}
+%
+% Special care has to be taken when you change the page style inside a
+% \TeX{} group. This can be any environment, text between
+% \cs{begingroup} and \cs{endgroup}, between \{~and~\}, and other
+% similar situations. \TeX{} definitions inside such a group are local
+% to this group, unless they are declared to be global. All
+% definitions pertaining to the page style (i.e. \cs{fancypagestyle},
+% \cs{pagestyle}, \cs{fancyhead}, etc.) are local definitions, i.e.,
+% they disappear at the end of the group. The only
+% exception is \cs{thispagestyle}, which is global, i.e., its setting
+% survives the end of the group.
+%
+% An example is the \env{appendices} environment of the package
+% \PKGindex{appendix}\pkg{appendix}\footnote{Use the command `\texttt{texdoc appendix}' to
+% see its documentation.} that you use to get special layout for your
+% appendices. If you also want to change the page headers and/or footers
+% for the appendices, you could use
+% \begin{code}
+% \clearpage
+% \begin{appendices}
+%   \pagestyle{appendices}
+%   \chapter{My Appendix}
+%   Appendix text.
+% \end{appendices}
+% \chapter*{Bibliograpy}
+% \end{code}
+% Note that we put a \cs{clearpage} before the environment to prevent
+% that the page before this environment gets the new page style, as
+% indicated in sections~\ref{sec:curpagestyle} and \ref{sec:nextpagestyle}.
+% In the example above, it is probable that the \texttt{appendices}
+% environment does not end with a \verb|\newpage| or \verb|\clearpage|.
+% Then a page break will be given by the following \verb|\chapter|
+% command, but then the `Special' page style will no longer be current,
+% so the last page of the \texttt{appendices} environment will have the
+% headers and footers that were current before the environment started.
+% If there were still floats to be output at the end of the
+% \texttt{appendices} environment, this could even be several pages. So
+% we should put a \verb|\clearpage| before the \verb|\end{appendices}|.
+%
+% \smallskip
+%
+% Here follows a more stylized example. The intention is to give the
+% pages of the environment the header ``Special Header''. First, the
+% ``wrong'' implementation.
+% \Example{26G}[(a)]
+% \begin{example}
+% \fancypagestyle{Special}{
+%   % setting the header in beginning of environment
+%   \fancyhead[C]{Special Header}
+% }%
+%
+% \newenvironment{Special}[1]{%
+%   \pagestyle{Special}%
+%   \section*{Special Environment #1}
+% }{%
+% }
+% ...
+% \begin{Special}{a}
+%
+% Some text or a lot of text.
+%
+% \end{Special}
+% \end{example}
+% Now the last page of this environment, which may be the first page if
+% the environment fits on one page, will get the wrong page header.
+%
+% The first solution would be to end the environment with a \cs{newpage}
+% or \cs{clearpage} as described above. Generally, it is best to use
+% \cs{clearpage}, because it also takes care of extra pages with floats.
+% \Example{26G}[(b)]
+% \begin{example}
+% \begin{Special}{b}
+%
+% Some text or a lot of text.
+%
+% \clearpage
+% \end{Special}
+% \end{example}
+% It is also possible to add the \cs{clearpage} to the definition of the
+% \env{Special} environment if you define this environment yourself. If
+% you use an existing environment you may use a \LaTeX{} environment
+% hook to inject a \cs{clearpage}, for example in the case of the
+% \env{appendices} environment:
+% \begin{code}
+% \AddToHook{env/appendices/end}{\clearpage}
+% \end{code}
+%
+% Of course this will always cause a page break. If you don't want a
+% page break at the
+% end of your environment, you will have to decide
+% what to do with the page that is partially filled with the special
+% environment and partially with the following text. Which page style to
+% use: the Special page style or the normal page style? If you do
+% nothing it will be the normal page style. If you still want the
+% Special page style, you can put a \Cmd{thispagestyle\{Special\}} at
+% the end of the environment. Again, at the use of the environment, at
+% the definition, or using a hook.
+% \Example{26G}[(c)]
+% \begin{example}
+% \begin{Special}{c}
+%
+% Some text or a lot of text.
+%
+% \thispagestyle{Special}
+% \end{Special}
+% \end{example}
+% Note, however, that this only works if the \texttt{Special} page style
+% is defined outside of the environment, as is done in this example.
+% However if the \texttt{Special} page style was defined inside the environment,
+% it will have disappeared at the end of the page, and \LaTeX{} will
+% silently ignore it. It doesn't even give an error message. The
+% following pages will then get the normal header again.
 %
 % \section{\pkg{Fancyhdr} hooks}
 % \label{sec:hooks}
