@@ -675,76 +675,6 @@
 % \cs{maketitle} you must issue a \Cmd{thispagestyle\{fancy\}} after the
 % \cs{maketitle}.
 %
-% \section{Fancy Centering}
-% \label{sec:fancycenter}
-%
-% \textbf{Note:} This section only applies to \Package{fancyhdr} version~4.0
-% and later\footnote{This comes from the \Package{nccfancyhdr}
-% package by Alexander I. Rozhenko.}.
-%
-% The fields in a fancy header and footer are prepared using \cs{parbox}
-% command. So, you can use multiline fields. In the header, they are
-% aligned to the bottom line, but, in the footer, they are aligned to
-% the top line. The maximum width of every field is equal to the
-% \cs{headwidth}. This can lead to overlapping of neighbouring fields.
-%
-% \CmdIndex{fancycenter}
-% If you want to prepare headers/footers in more traditional way in a line
-% not exceeding the \cs{headwidth}, you can use
-% the following command in any header/footer command:
-% \begin{quote}
-% \cs{fancycenter}\oarg{distance}\oarg{stretch}\\
-% \verb|            |\marg{left-field}\marg{center-field}\marg{right-field}
-% \end{quote}
-% \CmdIndex{fancycenter}
-% This command works like
-% \begin{center}
-% \verb|\hbox to\linewidth{|\marg{left-field}\cs{hfil}\marg{center-field}\cs{hfil}\marg{right-field}\verb|}|
-% \end{center}
-% but does this more carefully trying to exactly center the central part of
-% the text if possible. The solution for exact centering
-% is applied if the width of \meta{center-field} is less than
-% \begin{quote}
-% \verb|\linewidth - 2*(|\meta{stretch}\verb|*|\meta{distance}\verb| +|\\
-% \verb|                max(width(|\meta{left-field}\verb|), width(|\meta{right-field}\verb|)))|.
-% \end{quote}
-% Otherwise the \meta{center-field} will slightly migrate to a shorter item
-% (\meta{left-field} or \meta{right-field}), but at least \meta{distance}
-% space between all parts of line is provided.
-% The default values of \meta{distance} and \meta{stretch}
-% are 1em and 3.
-%
-% If the \meta{center-field} is empty, the \cs{fancycenter} is equivalent to
-% the following command:
-% \begin{center}
-% \verb|\hbox to\linewidth {|\marg{left-field}\verb|\hfil |\marg{right-field}\verb|}|
-% \end{center}
-%
-% You would use this in a header for example with
-% \begin{quote}
-% \verb|\fancyhead[C]{|\cs{fancycenter}\oarg{distance}\oarg{stretch}\\
-% \verb|            |\marg{left-field}\marg{center-field}\marg{right-field}\verb|}|
-% \end{quote}
-% and leave the \texttt{[L,R]} parts empty.
-%
-% \textbf{Note 1}:
-% When \cs{fancycenter} is used inside a header or
-% \CmdIndex{linewidth}%
-% \CmdIndex{headwidth}%
-% footer, \cs{linewidth} usually is the same as \cs{headwidth}. Only
-% when  \cs{fancycenter} is used inside a box with a different width,
-% \cs{linewidth} will be the width of that box.
-%
-% \textbf{Note 2}:
-% If the whole of the \cs{fancycenter} is wider than
-% \cs{linewidth} it will stick out on the right. See
-% section~\ref{sec:longtitles} for possible solutions.
-%
-% \textbf{Note 3}: The usage of the \cs{fancycenter} command is not limited to the
-% argument of headers/footers. You can use it anywhere in your
-% document. Then \cs{linewidth} will be the width of the box or text in
-% which it is used.
-%
 % \section{An example of two-sided printing}\label{two-sided}
 %
 % \TTindex{twoside}
@@ -828,6 +758,76 @@
 % Again, you may
 % use  \Cmd{thispagestyle\{plain\}} for a simple page layout for
 % page~1.
+%
+% \section{Fancy Centering}
+% \label{sec:fancycenter}
+%
+% \textbf{Note:} This section only applies to \Package{fancyhdr} version~4.0
+% and later\footnote{This comes from the \Package{nccfancyhdr}
+% package by Alexander I. Rozhenko.}.
+%
+% The fields in a fancy header and footer are prepared using \cs{parbox}
+% command. So, you can use multiline fields. In the header, they are
+% aligned to the bottom line, but, in the footer, they are aligned to
+% the top line. The maximum width of every field is equal to the
+% \cs{headwidth}. This can lead to overlapping of neighbouring fields.
+%
+% \CmdIndex{fancycenter}
+% If you want to prepare headers/footers in more traditional way in a line
+% not exceeding the \cs{headwidth}, you can use
+% the following command in any header/footer command:
+% \begin{quote}
+% \cs{fancycenter}\oarg{distance}\oarg{stretch}\\
+% \verb|            |\marg{left-field}\marg{center-field}\marg{right-field}
+% \end{quote}
+% \CmdIndex{fancycenter}
+% This command works like
+% \begin{center}
+% \verb|\hbox to\linewidth{|\marg{left-field}\cs{hfil}\marg{center-field}\cs{hfil}\marg{right-field}\verb|}|
+% \end{center}
+% but does this more carefully trying to exactly center the central part of
+% the text if possible. The solution for exact centering
+% is applied if the width of \meta{center-field} is less than
+% \begin{quote}
+% \verb|\linewidth - 2*(|\meta{stretch}\verb|*|\meta{distance}\verb| +|\\
+% \verb|                max(width(|\meta{left-field}\verb|), width(|\meta{right-field}\verb|)))|.
+% \end{quote}
+% Otherwise the \meta{center-field} will slightly migrate to a shorter item
+% (\meta{left-field} or \meta{right-field}), but at least \meta{distance}
+% space between all parts of line is provided.
+% The default values of \meta{distance} and \meta{stretch}
+% are 1em and 3.
+%
+% If the \meta{center-field} is empty, the \cs{fancycenter} is equivalent to
+% the following command:
+% \begin{center}
+% \verb|\hbox to\linewidth {|\marg{left-field}\verb|\hfil |\marg{right-field}\verb|}|
+% \end{center}
+%
+% You would use this in a header for example with
+% \begin{quote}
+% \verb|\fancyhead[C]{|\cs{fancycenter}\oarg{distance}\oarg{stretch}\\
+% \verb|            |\marg{left-field}\marg{center-field}\marg{right-field}\verb|}|
+% \end{quote}
+% and leave the \texttt{[L,R]} parts empty.
+%
+% \textbf{Note 1}:
+% When \cs{fancycenter} is used inside a header or
+% \CmdIndex{linewidth}%
+% \CmdIndex{headwidth}%
+% footer, \cs{linewidth} usually is the same as \cs{headwidth}. Only
+% when  \cs{fancycenter} is used inside a box with a different width,
+% \cs{linewidth} will be the width of that box.
+%
+% \textbf{Note 2}:
+% If the whole of the \cs{fancycenter} is wider than
+% \cs{linewidth} it will stick out on the right. See
+% section~\ref{sec:longtitles} for possible solutions.
+%
+% \textbf{Note 3}: The usage of the \cs{fancycenter} command is not limited to the
+% argument of headers/footers. You can use it anywhere in your
+% document. Then \cs{linewidth} will be the width of the box or text in
+% which it is used.
 %
 % \section{Redefining page style \texttt{plain}}
 % \label{sec:pagestyle-plain}
