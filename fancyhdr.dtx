@@ -2918,14 +2918,55 @@
 %  }
 % \end{code}
 %
-% \subsection{\pkg{Fancyhdr} hooks}
+% \subsection{Changing the page style of the next page}
+%
+% If you want the change of the page style to take effect
+% at the next page you must make sure that the current page is finished. In
+% most cases this can be done by issuing a
+% \CmdIndex{clearpage}\CmdIndex{newpage}%
+% \cs{newpage} or \cs{clearpage} command before % any changes. However,
+% this will immediately end the current page, possibly leaving you with a
+% half-empty page, which may be undesirable.
+%
+% If this is not what you want, you can use the
+% \TTindex{afterpage.sty}%
+% \pkg{afterpage} package with:\\[1ex]
+% \CmdIndex{afterpage}\Cmd{afterpage\{}\Cmd{fancyhead[L]\{new value\}\}} or\\
+% \CmdIndex{pagenumbering}\Cmd{afterpage\{}\Cmd{pagenumbering\{roman\}\}}.
+% \\[1ex]
+% You cannot use \cs{afterpage}
+% to change the \cs{pagestyle} as the commands issued by \cs{afterpage}
+% are local in a group, and the \cs{pagestyle} command makes only local
+% changes. The \cs{pagenumbering} and the \cs{thispagestyle}
+% command make global changes, as well as changes to \LaTeX's counters,
+% such as \cs{setcounter} and \cs{addtocounter}.
+% So these can be used\footnote{In \pkg{fancyhdr} version~3 and
+% earlier the commands like \cs{fancyhead} and \cs{fancyfoot} also made
+% global changes. This is no longer the case in version~4.0 and later.}.
+% Here is an example to change the page style of the next page with \cs{afterpage}:
+%
+% \Example{26}
+% \begin{example}
+% \usepackage{afterpage}
+% \usepackage{fancyhdr}
+% \fancypagestyle{myfancy}{
+%   \fancyhead[LE,RO]{\textbf{MYFANCY SECTION}}
+%   \fancyhead[LO,RE]{\textbf{MYFANCY CHAPTER}}
+%   \fancyfoot[C]{\textbf{--~\thepage~--}}
+% }
+% . . .
+% \afterpage{\thispagestyle{myfancy}}
+% \end{example}
+% Then the page after this code will have the page style \texttt{myfancy}.
+%
+% \section{\pkg{Fancyhdr} hooks}
 % \label{sec:hooks}
 %
 % \LaTeX{} has a system of \emph{hooks}\index{hooks} since the 2020/10/01 release.
 % This allows packages and classes (and other \LaTeX{} software) to
 % define points in its code where other \LaTeX{} code can insert a piece
 % of code. For more details, see  \emph{The \LaTeX{} Companion, Third
-% Edition}, part I, pp. 671ff or the documentation that can be read
+% Edition}, part I, pp. 671 ff. or the documentation that can be read
 % with the command `\texttt{texdoc lthooks-doc}'.
 %
 % \pkg{Fancyhdr} version 4.5 or later defines a number of hooks to be executed at the
@@ -2949,9 +2990,10 @@
 % beginning and the end of the footer construction, respectively
 % \end{description}
 %
-% The interaction of the hooks and the \cs{fancyhfinit} code described in
-% the previous section with the construction of the
-% header and footer is as follows: for the header construction
+% The interaction of the hooks and the \cs{fancyhfinit} code described
+% on page~\pageref{sec:hfinit} in section~\ref{sec:hfinit} with the
+% construction of the header and footer is as follows: for the header
+% construction
 % \begin{itemize}
 % \item first the \texttt{fancyhdr/before} hooks are run, then the
 % \texttt{fancyhdr/head/begin} hooks, then the \cs{fancyheadinit} code.
@@ -3012,47 +3054,6 @@
 % that may have a bad interaction with \pkg{fancyhdr} otherwise. If
 % \pkg{fancyhdr} is not used in a document, the hooks don't do anything.
 % \end{itemize}
-%
-% \subsection{Changing the page style of the next page}
-%
-% If you want the change of the page style to take effect
-% at the next page you must make sure that the current page is finished. In
-% most cases this can be done by issuing a
-% \CmdIndex{clearpage}\CmdIndex{newpage}%
-% \cs{newpage} or \cs{clearpage} command before % any changes. However,
-% this will immediately end the current page, possibly leaving you with a
-% half-empty page, which may be undesirable.
-%
-% If this is not what you want, you can use the
-% \TTindex{afterpage.sty}%
-% \pkg{afterpage} package with:\\[1ex]
-% \CmdIndex{afterpage}\Cmd{afterpage\{}\Cmd{fancyhead[L]\{new value\}\}} or\\
-% \CmdIndex{pagenumbering}\Cmd{afterpage\{}\Cmd{pagenumbering\{roman\}\}}.
-% \\[1ex]
-% You cannot use \cs{afterpage}
-% to change the \cs{pagestyle} as the commands issued by \cs{afterpage}
-% are local in a group, and the \cs{pagestyle} command makes only local
-% changes. The \cs{pagenumbering} and the \cs{thispagestyle}
-% command make global changes, as well as changes to \LaTeX's counters,
-% such as \cs{setcounter} and \cs{addtocounter}.
-% So these can be used\footnote{In \pkg{fancyhdr} version~3 and
-% earlier the commands like \cs{fancyhead} and \cs{fancyfoot} also made
-% global changes. This is no longer the case in version~4.0 and later.}.
-% Here is an example to change the page style of the next page with \cs{afterpage}:
-%
-% \Example{26}
-% \begin{example}
-% \usepackage{afterpage}
-% \usepackage{fancyhdr}
-% \fancypagestyle{myfancy}{
-%   \fancyhead[LE,RO]{\textbf{MYFANCY SECTION}}
-%   \fancyhead[LO,RE]{\textbf{MYFANCY CHAPTER}}
-%   \fancyfoot[C]{\textbf{--~\thepage~--}}
-% }
-% . . .
-% \afterpage{\thispagestyle{myfancy}}
-% \end{example}
-% Then the page after this code will have the page style \texttt{myfancy}.
 %
 % \section{Headers and footers induced by the text}
 % \label{sec:xmarks}
@@ -6045,15 +6046,15 @@
 %   (after expansion).\\
 % Before constructing the header or footer, the environment is reset to
 % a known state, the appropriate hooks (\texttt{fancyhdr/before} and
-% \TTindex{fancyhdr/before}
-% \TTindex{fancyhdr/head/begin}\TTindex{fancyhdr/foot/begin}
+% \TTindex{fancyhdr/before}%
+% \TTindex{fancyhdr/head/begin}\TTindex{fancyhdr/foot/begin}%
 % \texttt{fancyhdr/head/begin} or \texttt{fancyhdr/foot/begin}) are
-% executed, and then the corresponding initialisation code as given in
+% run, and then the corresponding initialisation code as given in
 % \cs{fancyheadinit} or \cs{fancyfootinit}, respectively, is run.\\
 % After constructing the header or footer, the hooks for the end
 % (\texttt{fancyhdr/head/end} or \texttt{fancyhdr/foot/end} and
-% \TTindex{fancyhdr/head/end}\TTindex{fancyhdr/foot/end}
-% \TTindex{fancyhdr/after}
+% \TTindex{fancyhdr/head/end}\TTindex{fancyhdr/foot/end}%
+% \TTindex{fancyhdr/after}%
 % \texttt{fancyhdr/after}) are run.
 %    \begin{macrocode}
 \newcommand\f@nch@head[5]{%
