@@ -2662,6 +2662,110 @@
 % \chapter{My New Chapter}
 % \end{code}
 %
+% Finally, in this section, we give an example that illustrates why
+% using \emph{closed} page styles is recommendable.
+%
+% Suppose we have a part of our document, maybe one or more chapters,
+% that need a different style headers and/or footers than the rest of
+% the document. We can do this by defining a new page style for this
+% part with \cs{fancypagestyle}. First we use the traditional
+% (\emph{open}) form:
+% \NoExample{switchstyle1}
+% \begin{example}
+% \pagestyle{fancy}
+% \fancyhf{}
+% \fancyhead[L]{\leftmark}
+% \fancyhead[R]{\rightmark}
+% \fancyfoot[C]{\thepage}
+%
+% \fancypagestyle{special}{%
+%   \fancyhf{}
+%   \renewcommand{\headrulewidth}{0pt}
+%   \fancyhead[L]{Special Page Style \nouppercase\leftmark}
+%   \fancyfoot[R]{\thepage}
+% }
+% . . .
+% \chapter{Special Chapter}
+% \pagestyle{special}
+% Chapter text
+%
+% \chapter{Another Chapter}
+% \pagestyle{fancy}
+% Chapter text
+% \end{example}
+% Now the last chapter will not use the headers and footers that we
+% defined in the beginning, but those that are defined in page style
+% \texttt{special}. This is because the command
+% \Cmd{pagestyle\{special\}} will just execute the definitions inside
+% it, and so it changes the definitions of \cs{fancyhead[]} etc. Also
+% the definition of \cs{headrulewidth} will not be restored.
+%
+% To remedy this we would need to put the relevant definitions inside
+% the page style \texttt{fancy}. First we try this with the \emph{open}
+% \cs{fancypagestyle}.
+%
+% \NoExample{switchstyle2}
+% \begin{example}
+% \fancypagestyle{fancy}{%
+%   \renewcommand{\headrulewidth}{0.4pt}
+%   \fancyhf{}
+%   \fancyhead[L]{\leftmark}
+%   \fancyhead[R]{\rightmark}
+%   \fancyfoot[C]{\thepage}
+% }
+%
+% \fancypagestyle{special}{%
+%   \fancyhf{}
+%   \renewcommand{\headrulewidth}{0pt}
+%   \fancyhead[L]{Special Page Style \nouppercase\leftmark}
+%   \fancyfoot[R]{\thepage}
+% }
+% \pagestyle{fancy}
+% . . .
+% \chapter{Special Chapter}
+% \pagestyle{special}
+% Chapter text
+%
+% \chapter{Another Chapter}
+% \pagestyle{fancy}
+% Chapter text
+% \end{example}
+% We now have the relevant definitions also embedded in page style
+% \texttt{fancy}. Note that we have to include the (default) definition
+% of \cs{headrulewidth}, although it looks unlogical that we have to do this.
+% But we need it because page style \texttt{special} changes it. And if
+% we had another page style that would change for example the
+% \texttt{offsets} (see section~\ref{sec:book-examples}) then we would
+% also have to include these. This is the reason for the existence of
+% the \emph{closed} form \cs{fancypagestyle*}. So now we give the
+% solution with these. This solves the problem in an elegant and robust way.
+%
+% \NoExample{switchstyle3}
+% \begin{example}
+% \fancypagestyle*{fancy}{%
+%   \fancyhf{}
+%   \fancyhead[L]{\leftmark}
+%   \fancyhead[R]{\rightmark}
+%   \fancyfoot[C]{\thepage}
+% }
+%
+% \fancypagestyle*{special}{%
+%   \fancyhf{}
+%   \renewcommand{\headrulewidth}{0pt}
+%   \fancyhead[L]{Special Page Style \nouppercase\leftmark}
+%   \fancyfoot[R]{\thepage}
+% }
+% \pagestyle{fancy}
+% . . .
+% \chapter{Special Chapter}
+% \pagestyle{special}
+% Chapter text
+%
+% \chapter{Another Chapter}
+% \pagestyle{fancy}
+% Chapter text
+% \end{example}
+%
 % \section{When to change the headers and footers?}
 % \label{sec:change}
 %
