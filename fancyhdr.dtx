@@ -57,6 +57,8 @@
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{boxedminipage}
+\usepackage{tikz}
+\usetikzlibrary{decorations.fractals}
 
 % The package fourier-orns defines \danger, which conflicts
 % with the 'danger' environment of l3doc.
@@ -5115,6 +5117,140 @@
 % \end{example}
 % In the actual code in the Example 35 file there is also some debugging
 % code added.
+%
+% \section{How to change shapes and traits of horizontal lines in headers/footers?}
+% \label{sec:headrules}
+%
+% Sometimes one wants a decorative line in the header or footer that is
+% a bit more sophisticated than a straight line\footnote{See \url{https://tex.stackexchange.com/q/717266/113546}}.
+%
+% If you just want to change the thickness, redefine \cs{headrulewidth}. For example:
+% \begin{code}
+% \renewcommand{\headrulewidth}{0.1pt}
+% \end{code}
+% For more complicated forms you have to redefine \cs{headrule}. One
+% example has already been given in section~\ref{sec:fancy}, and we will
+% repeat it here:
+% \begin{code}
+% \usepackage{fourier-orns}
+% ...
+% \renewcommand\headrule{%
+%       \vspace{-6pt}
+%       \hrulefill
+%       \raisebox{-2.1pt}
+%           {\quad\decofourleft\decotwo\decofourright\quad}%
+%       \hrulefill}
+% \end{code}
+% This gives us the following headrule:
+%
+% \noindent\makebox[\textwidth]{\hrulefill
+% \raisebox{-2.1pt}[10pt][10pt]{\quad\decofourleft\decotwo\decofourright\quad}\hrulefill}
+%
+% Here a simple \cs{headrule}, but with color, and a bit thicker.
+% \begin{code}
+% \usepackage{xcolor}
+% . . .
+% \renewcommand\headrule{%
+%   \nointerlineskip
+%   \smash{\color{blue}\rule{\headwidth}{2.5pt}}%
+% }
+% \end{code}
+% The \cs{interlineskip} is to prevent \LaTeX{} to insert the normal
+% vertical space between lines, and the \cs{smash} to let the
+% \cs{headrule} not occupy any vertical space. Whether you want that is
+% up to you, but if it occupies vertical space it may distort the page layout.\\
+% This gives us the following headrule:
+%
+% \noindent\makebox[\textwidth]{\smash{\color{blue}\rule{\textwidth}{2.5pt}}}\\
+%
+% Now some dotted and dashed headrules:
+%
+% With spaced dashes:
+% \begin{code}
+% \newbox\dashbox\setbox\dashbox\hbox{-\,}
+% \renewcommand{\headrule}{%
+%   \smash{\makebox[\headwidth][c]{\xleaders\copy\dashbox\hfill-}}%
+% }
+% \end{code}
+% This gives:
+%
+% \newbox\dashbox\setbox\dashbox\hbox{-\,}
+% \noindent\makebox[\textwidth][c]{\xleaders\copy\dashbox\hfill-}\\
+%
+% With longer dashes:
+% \begin{code}
+% \newbox\dashbox\setbox\dashbox\hbox{---\,}
+% \renewcommand{\headrule}{%
+%   \smash{\makebox[\headwidth][c]{\xleaders\copy\dashbox\hfill---}}%
+% }
+% \end{code}
+% This gives:
+%
+% \newbox\dashbox\setbox\dashbox\hbox{---\,}
+% \noindent\makebox[\textwidth][c]{\xleaders\copy\dashbox\hfill---}\\
+%
+% With spaced dots:
+% \begin{code}
+% \newbox\dashbox\setbox\dashbox\hbox{.\,}
+% \renewcommand{\headrule}{%
+%   \smash{\makebox[\headwidth][c]{\xleaders\copy\dashbox\hfill.}}%
+% }
+% \end{code}
+% This gives:
+%
+% \setbox\dashbox\hbox{.\,}
+% \noindent\makebox[\textwidth][c]{\xleaders\copy\dashbox\hfill.}\\
+%
+% With unspaced dots:
+% \begin{code}
+% \newbox\dashbox\setbox\dashbox\hbox{.}
+% \renewcommand{\headrule}{%
+%   \smash{\makebox[\headwidth][c]{\xleaders\copy\dashbox\hfill.}}%
+% }
+% \end{code}
+% This gives:
+%
+% \setbox\dashbox\hbox{.}
+% \noindent\makebox[\textwidth][c]{\xleaders\copy\dashbox\hfill.}\\
+%
+% Here is an example with a color gradient, using \PKGindex{tikz}\pkg{tikz}:
+% \CmdIndex{tikz}
+% \begin{code}
+% \usepackage{tikz}
+% \renewcommand{\headrule}{%
+%   \tikz \fill [left color=green,right color=yellow]
+%               (0,0) rectangle (\headwidth,2.5pt);
+% }
+% \end{code}
+% This gives:
+%
+% \noindent\makebox[\textwidth][c]{%
+%   \tikz \fill [left color=green,right color=yellow] (0,0) rectangle (\textwidth,2.5pt);}\\
+%
+% Here is a particularly interesting one. It draws a Koch Snowflake at
+% the end of the headrule\footnote{From Logan Weinert,
+% \url{https://tex.stackexchange.com/q/529474/113546}}.
+% \PKGindex{tikz}
+% \CmdIndex{tikz}
+% \begin{code}
+% \usepackage{tikz}
+% \usetikzlibrary{decorations.fractals}
+% . . .
+% \renewcommand\headrule{%
+%     \vspace{-0.75in}
+%     \hrulefill
+%     {\tikz[decoration=Koch snowflake]{%
+%           \draw decorate{ decorate{ decorate{ (0,-2) -- (3,-2) }}};}}
+% }
+% \end{code}
+% This gives:
+%
+% \noindent\makebox[\textwidth][c]{^^A
+% \hrulefill
+%     {\tikz[decoration=Koch snowflake]{\draw decorate{ decorate{ decorate{ (0,-2) -- (3,-2) }}};}}
+% }\\
+% Of course you would have to make sure not to place anything in the
+% right part of the header.
 %
 % \newpage
 % \part{Implementation}
