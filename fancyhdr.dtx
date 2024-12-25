@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/12/16 v5.0beta
+%<fancyhdr|extramarks>           [2024/12/25 v5.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -518,6 +518,17 @@
 % This command lets you (re)define page styles for use in special
 % situations. See sections~\ref{sec:pagestyle-plain} and
 % \ref{sec:fancypagestyle} for more details.
+% \end{function}
+%
+% \begin{function}{\fancypagestyleassign}
+% \begin{syntax}
+% \cs{fancypagestyleassign}\marg{ps1}\marg{ps2}
+% \end{syntax}
+% This command assigns page style \meta{ps2} to \meta{ps1}. This causes
+% \meta{ps1} to be an exact copy of \meta{ps2}, but completely
+% independent of \meta{ps2}. Or you could say that \meta{ps1} becomes a
+% new name for page style \meta{ps2}.
+% See section~\ref{sec:tocstyle} for an example.
 % \end{function}
 %
 % \begin{function}{\fancyhdrsettoheight}
@@ -1699,6 +1710,60 @@
 % \Cmd{usepackage\{fancyhdr\}}. Or if you want to include your own
 % header and/or footer definitions, use
 % \Cmd{fancypagestyle*\{fancydefault\}}\marg{your definitions}.
+%
+%\subsection{The \cs{fancypagestyleassign} command}
+% \label{sec:fancypagestyleassign}
+%
+% The \cs{fancypagestyleassign} command is only available in
+% \pkg{fancyhdr} version 5.0 and later.
+% \begin{raggedright}
+% The command \cs{fancypagestyleassign}\marg{ps1}\marg{ps2} makes
+% page style \meta{ps1} an exact copy of page style \meta{ps1}.
+% The effect is similar to the command
+% \cs{fancypagestyle}\marg{ps1}\oarg{ps2}\texttt{\{\}}, but there are
+% important differences:
+% \begin{itemize}
+% \item with \cs{fancypagestyleassign}\marg{ps1}\marg{ps2} the page
+% style \meta{ps1} will be completely independent from \meta{ps2}. On
+% the other hand, with
+% \cs{fancypagestyle}\marg{ps1}\oarg{ps2}\texttt{\{\}} the page
+% style \meta{ps1} will depend on \meta{ps2}. If
+% \meta{ps2} later changes (for example with a redefinition with
+% \cs{fancypagestyle}), the page style \meta{ps1} will change accordingly.
+% \item with \cs{fancypagestyle}\marg{ps1}\oarg{ps2}\texttt{\{\}} you
+% must take care that you don't get cyclical dependencies, whereas with
+% \cs{fancypagestyleassign}\ you can't create cyclical dependencies.
+% \item with \cs{fancypagestyle}\marg{ps1}\oarg{ps2}\texttt{\{\}} the
+% page style \meta{ps2} must be a page style that is defined by
+% \pkg{fancyhdr} (with \cs{fancypagestyle} or predefined), but
+% \cs{fancypagestyleassign}\marg{ps1}\marg{ps2} can also be used if
+% \meta{ps2} is not defined by \pkg{fancyhdr}, for example a standard
+% \LaTeX{} page style like \texttt{plain}.
+% \end{itemize}
+% If \meta{ps2} is defined by \pkg{fancyhdr}, then also \meta{ps1} is
+% considered to be defined by \pkg{fancyhdr}. If \meta{ps2} is a
+% \emph{closed} page style, then \meta{ps1} is also \emph{closed}.
+% \end{raggedright}
+%
+% \cs{fancypagestyleassign} comes especially handy if you want to
+% temporaryly redefine a page style, and later to restore it to its
+% original value. For example, if we have a page style
+% \texttt{special}, and we want temporarily to define page style
+% \texttt{plain} to be equal to this, but later to restore it to its
+% original definition, you can do this as follows:
+% \begin{code}
+% \fancypagestyleassign{origplain}{plain}
+% \fancypagestyleassign{plain}{special}
+% . . .  code where plain is equal to special
+% \clearpage
+% \fancypagestyleassign{plain}{origplain}
+% . . . code where plain has its original meaning
+% \end{code}
+% Note that you couldn't do this with \cs{fancypagestyle} because (1)
+% this would introduce a cyclical dependency, (2) you cannot use
+% \texttt{plain} as the base page style, because it is not \pkg{fancyhdr}-based.
+%
+% See section~\ref{sec:tocstyle} for an example.
 %
 % \section{The scoop on \LaTeX's marks}
 % \label{sec:scoop}
@@ -4583,7 +4648,7 @@
 % independent marks.
 %
 % \begin{itemize}
-% \item Version 5.0, Feb 11, 2021-Dec 16, 2024
+% \item Version 5.0, Feb 11, 2021-Dec 25, 2024
 %   \begin{itemize}
 %   \item Shorten Warning message about \cs{headheight}/\cs{footskip} too large.
 %   \item If the option \texttt{[nocheck]} is given, just keep quiet and
@@ -4596,6 +4661,7 @@
 %   \item Mark the \texttt{compatV3} option deprecated.
 %   \item Added command \cs{fancyfootalign}.
 %   \item Added command \cs{fancyhdrbox} (section~\ref{sec:fancyhdrbox}).
+%   \item Added command \cs{fancypagestyleassign} (section~\ref{sec:fancypagestyleassign}).
 %   \end{itemize}
 % \end{itemize}
 %
@@ -6963,6 +7029,45 @@
 %    \begin{macrocode}
     \@temptokenb={}%
   \fi
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\fancypagestyleassign}
+% \changes{fancyhdr v5.0}{2024/12/25}{Macro \cs{fancypagestyleassign} added}
+% \begin{syntax}
+%   \cs{fancypagestyleassign}\marg{ps1}\marg{ps2}
+% \end{syntax}
+% Assigns page style \meta{ps2} to \meta{ps1}. This causes
+% \meta{ps1} to be an exact copy of \meta{ps2}, but completely
+% independent of \meta{ps2}. We do the equivalent of a \cs{let}
+% command, like \cs{let}\cs{ps@\meta{ps1}}\cs{ps@\meta{ps2}}.
+%    \begin{macrocode}
+\newcommand\fancypagestyleassign[2]{%
+  \f@nch@ifundefined{ps@#2}{%
+    \PackageError{fancyhdr}{\string\fancypagestyleassign: Unknown page style `#2'}{}%
+    }{%
+     \expandafter\let
+       \csname ps@#1\expandafter\endcsname
+       \csname ps@#2\endcsname
+%    \end{macrocode}
+%    If \meta{ps2} is not fancyhdr-based, \meta{ps1} will also be
+%    fancyhdr-based, otherwise it will not. If \meta{ps2} is not
+%    fancyhdr-based, but \meta{ps1} is, give a warning that it is
+%    overwritten, which could give unexpected problems.
+%    \begin{macrocode}
+     \f@nch@ifundefined{f@nch@ps@#2-is-fancyhdr}{%
+       \f@nch@ifundefined{f@nch@ps@#1-is-fancyhdr}{}{%
+         \PackageNote{fancyhdr}{%
+           \string\fancypagestyleassign: You overwrite the\MessageBreak
+           fancyhdr-based page style `#1' with the\MessageBreak
+           non-fancyhdr-based page style `#2'.\MessageBreak
+           This could cause unexpected problems if you\MessageBreak
+           use `#1' as the base style in \string\fancypagestyle}}%
+       \expandafter\let\csname f@nch@ps@#1-is-fancyhdr\endcsname\@undefined
+     }{%
+       \@namedef{f@nch@ps@#1-is-fancyhdr}{}%
+     }%
+   }%
 }
 %    \end{macrocode}
 % \end{macro}

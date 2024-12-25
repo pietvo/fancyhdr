@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2024/12/16 v5.0beta
+           [2024/12/25 v5.0beta
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -594,6 +594,27 @@
   \else
     \@temptokenb={}%
   \fi
+}
+\newcommand\fancypagestyleassign[2]{%
+  \f@nch@ifundefined{ps@#2}{%
+    \PackageError{fancyhdr}{\string\fancypagestyleassign: Unknown page style `#2'}{}%
+    }{%
+     \expandafter\let
+       \csname ps@#1\expandafter\endcsname
+       \csname ps@#2\endcsname
+     \f@nch@ifundefined{f@nch@ps@#2-is-fancyhdr}{%
+       \f@nch@ifundefined{f@nch@ps@#1-is-fancyhdr}{}{%
+         \PackageNote{fancyhdr}{%
+           \string\fancypagestyleassign: You overwrite the\MessageBreak
+           fancyhdr-based page style `#1' with the\MessageBreak
+           non-fancyhdr-based page style `#2'.\MessageBreak
+           This could cause unexpected problems if you\MessageBreak
+           use `#1' as the base style in \string\fancypagestyle}}%
+       \expandafter\let\csname f@nch@ps@#1-is-fancyhdr\endcsname\@undefined
+     }{%
+       \@namedef{f@nch@ps@#1-is-fancyhdr}{}%
+     }%
+   }%
 }
 \fancypagestyle*{fancydefault}{\f@nch@initialise}
 \def\f@nchdrbox@topstrut{\vrule height\ht\strutbox width\z@}
