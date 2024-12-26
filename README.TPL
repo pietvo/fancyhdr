@@ -5,8 +5,7 @@ The package provides extensive facilities, both for constructing headers
 and footers, and for controlling their use (for example, at times when
 LaTeX would automatically change the heading style in use).
 
-This is version <V> of fancyhdr.sty and extramarks.sty. They are
-described in the third edition of The LaTeX Companion.
+This is version <V> of fancyhdr.sty and extramarks.sty.
 
 The distribution package from CTAN (e.g. fancyhdr.zip)
 consists of the following files:
