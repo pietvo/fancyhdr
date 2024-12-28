@@ -2026,22 +2026,121 @@
 % this problem can be solved. See Example~35 in
 % section~\ref{sec:firstsubsection} for an example.
 %
-% As a final remark you should also note that the \verb|*| forms of the
-% \cs{chapter} etc.\ commands do \emph{not} call the mark commands. So if
-% you want your preface to set the header info but not be numbered nor be put in
-% the table of contents, you must issue the \cs{markboth} command
-% yourself, e.g.,
+% \section{Headers for unnumbered chapters, sections, etc.}
+% \label{sec:unnumbered}
+%
+% In the standard \LaTeX{} documentclasses the \verb|*| forms of the
+% \cs{chapter} etc.\ commands do \emph{not} call the mark commands. So
+% these don't appear in the header. Neither are they put in the Table of
+% Contents.
+% So, for example, if you want your Preface to set the header info but
+% not be numbered, you must issue the \cs{markboth} command yourself,
+% e.g.,
 %
 % \begin{code}
 % \chapter*{Preface}
 % \markboth{Preface}{}
 % \end{code}
 %
-% Or in a documentclass without chapters:
+% Or for a section:
 % \begin{code}
 % \section*{Preface}
 % \markboth{Preface}{}
 % \end{code}
+%
+% It can be a bit annoying to have to repeat the title. If you don't
+% want that, it is possible to redefine the \cs{chapter} and/or
+% \cs{section} command, in such a way that the \texttt{*} version
+% \emph{does} set the header info. For a chapter this is usually done
+% with the \cs{markboth} command. For a section in a chapter-oriented
+% documentclass with \cs{markright}, otherwise also with \cs{markboth}.
+%
+% Here is a definition that accomplishes this.
+% Redefine the \cs{chapter} command:\\
+% \cs{chapter}\oarg{header}\marg{title}\\
+% \cs{chapter*}\marg{title}\\
+% For the \cs{chapter*} version, we insert a \cs{markboth} command.
+% For the non-\texttt{*} version we just pass the arguments to the
+% original \cs{chapter} command.
+%
+% We use the \cs{RenewDocumentCommand} to redefine the \cs{chapter}
+% command because it allows us to redefine also the \texttt{*} variant,
+% which is much more difficult with \cs{renewcommand}\footnote{If you
+% have an older \LaTeX{} distribution that doesn't have the
+% \cs{RenewDocumentCommand}, include \PKGindex{xparse}\Cmd{usepackage\{xparse\}} in your
+% preamble. Or better: update your \LaTeX{} installation.}.
+%
+% The \verb|{som}| in the definition defines the arguments of the
+% \cs{chapter} command:
+% \begin{enumerate}
+% \item \texttt{s} - a \texttt{*} which can be present or absent. This
+% is checked with \Cmd{IfBooleanTF\{\#1\}}
+% \item \texttt{o} - an optional argument. the presence of the optional
+% argument is checked with \Cmd{IfNoValueTF\{\#2\}}
+% \item \texttt{m} - a mandatory argument
+% \end{enumerate}
+% We first save the original definition of \cs{chapter} in
+% \cs{originalchapter} with the \cs{let} statement. The
+% \Cmd{newcommand\cs{originalchapter}\{\}} is just a precaution to get an error message
+% if \cs{originalchapter} was already defined, for example by
+% another package.
+%
+% \NoExample{unnumbered}
+% \begin{example}
+% \newcommand\originalchapter{}% check that we can define this name
+% \let\originalchapter\chapter
+% \RenewDocumentCommand \chapter {som}{%
+%   \IfBooleanTF{#1}
+%     {% \chapter*
+%       \originalchapter*{#3}%
+%       \markboth{#3}{}%
+%       % we can also put it in the Table of Contents
+%       \addcontentsline{toc}{chapter}{#3}
+%     }%
+%     {% normal \chapter
+%       \IfNoValueTF{#2}
+%         {\originalchapter{#3}}
+%         {\originalchapter[#2]{#3}}%
+%     }%
+% }
+% \end{example}
+% We can do the same for the \cs{section} command, but we use
+% \cs{markright} instead of \cs{markboth}. Note that the \cs{mark..}
+% commands are called \textbf{after} the original command, because the
+% \cs{chapter} command begins with a page break, and a \cs{section}
+% could have a page break before it, but not after it.
+%
+% \textbf{NOTE:} We don't use \cs{chaptermark} or \cs{sectionmark} here
+% because these often include the chapter/section number, which doesn't
+% make sense for an unnumbered one.
+%
+% \NoExample{unnumbered}
+% \begin{example}
+% \newcommand\originalsection{}% check that we can define this name
+% \let\originalsection\section
+% \RenewDocumentCommand \section {som}{%
+%   \IfBooleanTF{#1}
+%     {% \section*
+%       \originalsection*{#3}%
+%       \markright{#3}%
+%       % we can also put it in the Table of Contents
+%       \addcontentsline{toc}{section}{#3}
+%     }%
+%     {% normal \section
+%       \IfNoValueTF{#2}
+%         {\originalsection{#3}}
+%         {\originalsection[#2]{#3}}%
+%     }%
+% }
+% \end{example}
+%
+% Please note that, contrary to the original \LaTeX{} commands,
+% these new command do accept an optional argument with
+% the \texttt{*} version, but if it is given, they don't use it. It is
+% not difficult to add additional code to process this optional argument
+% similar to the non-\texttt{*} case.
+% This is left as an exercise for the reader, or look at the example
+% files \texttt{unnumberedart1.tex} and \texttt{unnumberedart2.tex}.
 %
 % \section{Dictionary style headers}
 %
