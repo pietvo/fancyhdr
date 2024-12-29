@@ -38,7 +38,7 @@ fancyhdr.zip: $(distfiles)
 # Make release for release files (like a github release)
 release: fancyhdr-$(VERSION).zip fancyhdr-dist-$(VERSION).zip
 
-releasefiles = README fancyhdr.sty fancyheadings.sty extramarks.sty fancyhdr.pdf
+releasefiles = README fancyhdr.sty fancyheadings.sty extramarks.sty extramarks-v4.sty fancyhdr.pdf
 fancyhdr-dist-$(VERSION).zip: $(releasefiles)
 	cd .. ; zip -9 fancyhdr/fancyhdr-dist-$(VERSION).zip $(addprefix fancyhdr/,$(releasefiles))
 
