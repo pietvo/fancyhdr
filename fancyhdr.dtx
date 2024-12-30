@@ -81,7 +81,6 @@
 \setlist{itemsep=1pt}
 \usepackage{fancyhdr}
 \GetFileInfo{fancyhdr.sty}
-\def\tex/{\TeX}
 \def\ams/{\protect\pAmS}
 \def\pAmS{{\the\textfont2
         A\kern-.1667em\lower.5ex\hbox{M}\kern-.125emS}}
@@ -147,24 +146,24 @@
 % Page style for demonstrating struts, \headruleskip and \footruleskip.
 
 \newcommand{\strutheader}{%
-  \texttt{\textbackslash strut}:
-  \rule[-0.3\normalbaselineskip]{10pt}{0.3\normalbaselineskip}%
-  \rule{10pt}{0.7\normalbaselineskip}
-  \texttt{\textbackslash headruleskip}$\searrow$
+  \texttt{\textbackslash strut}:\{
+  \rule{10pt}{0.7\normalbaselineskip}%
+  \hspace{-3pt}\rule[-0.3\normalbaselineskip]{10pt}{0.3\normalbaselineskip}%
   \raisebox{-0.3\normalbaselineskip}[0pt][0pt]%
     {\ifdim \headruleskip>0pt
       \rule[-\headruleskip]{10pt}{\headruleskip}
       \else
       \rule{10pt}{-\headruleskip}
-     \fi}
+     \fi}%
+  \raisebox{-0.3\normalbaselineskip}[0pt][0pt]{$\swarrow$}\texttt{\textbackslash headruleskip}%
 }
 \newcommand{\strutfooter}{%
   \raisebox{0pt}[0pt][0pt]{%
-    \texttt{\textbackslash strut}:
+    \texttt{\textbackslash strut}:\{
     \rule[-0.3\normalbaselineskip]{10pt}{0.3\normalbaselineskip}%
-    \rule{10pt}{0.7\normalbaselineskip}
-    \texttt{\textbackslash footruleskip} $\nearrow$
-    \rule[0.7\normalbaselineskip]{10pt}{\footruleskip}}%
+    \hspace{-3pt}\rule{10pt}{0.7\normalbaselineskip}%
+    \rule[0.7\normalbaselineskip]{10pt}{\footruleskip}
+    \raisebox{0.3\normalbaselineskip}{$\nwarrow$}\texttt{\textbackslash footruleskip}}%
 }
 \fancypagestyle{showstruts}{%
   \fancyhead[L]{%
@@ -306,10 +305,55 @@
 %
 % \DoNotIndex{\#,\$,\%,\&,\@,\\,\{,\},\^,\_,\~,\ }
 % \expandafter\DoNotIndex\expandafter{\bslash} ^^A BUG in l3doc
-% \DoNotIndex{\@ne}
-% \DoNotIndex{\@opcol}
-% \DoNotIndex{\advance,\begingroup,\catcode,\closein}
-% \DoNotIndex{\closeout,\day,\def,\edef,\else,\empty,\@empty,\endgroup}
+% \DoNotIndex{\@ne,\box,\box_new:N,\csx,\csn,\copy,\color}
+% \DoNotIndex{\@opcol,\@opcol:,\expandafter,\errorcontextlines}
+% \DoNotIndex{\advance,\begingroup,\catcode,\closein,\centering,\dbltextfloatsep}
+% \DoNotIndex{\begin,\end,\bgroup,\egroup}
+% \DoNotIndex{\closeout,\day,\def,\edef,\else,\empty,\endgroup,\everypar}
+% \DoNotIndex{\cs_gset_eq:NN,\cs_gset_protected:Npn,\cs_if_exist:NTF,\cs_if_exist:cTF}
+% \DoNotIndex{\cs_new:Nn,\cs_new_eq:NN,\cs_new_protected:Npn,\cs_set_eq:NN}
+% \DoNotIndex{\csname,\endcsname,\end,\endinput,\def,\dimen,\do,\dp}
+% \DoNotIndex{\dim_set:Nn,\c_max_dim,\endlinechar,\errmessage}
+% \DoNotIndex{\exp_args:Nc,\exp_last_unbraced:Nv,\exp_not:n,\exp_not:v}
+% \DoNotIndex{\ExplSyntaxOn,\ExplSyntaxOff,\fi,\gdef,\global}
+% \DoNotIndex{\group_begin:,\group_end:,\hbox,\hfil,\hfill,\hsize,\hskip,\hss,\ht}
+% \DoNotIndex{\hrule,\hrulefill,\if,\ifdim,\ifnum,\ifx,\ifvmode,\ifvoid,\ifdefined}
+% \DoNotIndex{\index,\int_new:N,\int_set:Nn,\int_set_eq:NN,\c_max_int}
+% \DoNotIndex{\label,\leavevmode,\let,\llap,\LM,\long,\macro}
+% \DoNotIndex{\makeatletter,\makeatother,\MessageBreak,\mark,\maxdimen}
+% \DoNotIndex{\msg_error:nnn,\msg_error:nnnn,\msg_new:nnn,\mysaved,\newif}
+% \DoNotIndex{\newmarks,\newtoks,\nobreak,\noexpand,\noindent,\output,\outputdblcol}
+% \DoNotIndex{\parbox,\patchcmd,\plain,\pretocmd,\protect,\providecommand}
+% \DoNotIndex{\protect,\ProvidesPackage,\quad,\relax,\renewcommand,\RequirePackage,\restorecr}
+% \DoNotIndex{\restylefloat,\rlap,\rm,\rmfamily,\scan_stop:}
+% \DoNotIndex{\seq_map_inline:Nn,\seq_new:N,\seq_put_right:Nn,\setAP,\setbox}
+% \DoNotIndex{\setcounter,\setlength,\settowidth,\sl,\slshape,\space,startAP,\string}
+% \DoNotIndex{\strut,\temp@a,\temp@a:,\@[xy]lhead,\@botlist,\@chapapp,\@currbox,\@currsize,\@empty}
+% \DoNotIndex{\@firstoftwo,\@for,\@forloop,\@fortmp,\@gobble,\@gobbletwo,\@height}
+% \DoNotIndex{\@ifnextchar,\@ifpackageloaded,\@ifstar,\@ifundefined,\@makecol,\@minus}
+% \DoNotIndex{\@mkboth,\@namedef,\@nameuse,\@newbaseline,\@nil,\@normalcr,\@normalsize}
+% \DoNotIndex{\@outputbox,\@outputdblcol,\@outputpage,\@parboxrestore,\@plus}
+% \DoNotIndex{\@secondoftwo,\@spaces,\@tempa,\@tempboxa,\@tempdima,\@tempdimb,\@tempdimc}
+% \DoNotIndex{\@tempskipa,\@tempskipb,\@temptokena,\@temptokenb,\@tfor,\@themark}
+% \DoNotIndex{\@toplist,\@topnewpage,\@undefined,\@unexpandable@protect,\@width}
+% \DoNotIndex{\c@page,\c@secnumdepth,\col@number,\color@begingroup,\color@endgroup}
+% \DoNotIndex{\color@endbox,\color@vbox,\f@nch@,\insert@nonemptymarks,\latex@makecol}
+% \DoNotIndex{\m@ne,\partial@page,\pcol@@outputpage,\pcol@combinefloats}
+% \DoNotIndex{\pcol@getcurrcol,\pcol@imakeflushedpage,\pcol@ioutputelt,\pcol@makecol,\pcol@prevdepth}
+% \DoNotIndex{\pcol@makeflushedpage,\pcol@outputpage@l,\pcol@outputpage@r,\pcol@prec_depth}
+% \DoNotIndex{\pcol@rightpage,\pcol@spanning,\pcol@synccolumn,\ps@xxx,\return@nonemptymark}
+% \DoNotIndex{\scr@topnewpage,\set@keptmarks,\temp@a,\temp@b,\temp@c,\temp@ty,\tmpf@ra}
+% \DoNotIndex{\toks@,\unrestored@protected@xdef,\voidb@x,\z@,\z@skip}
+% \DoNotIndex{\tex_marks:D,\tex_splitmaxdepth:D,\tex_vbadness:D,\textbf,\textsl,\texttt}
+% \DoNotIndex{\textfraction,\textwidth,\the,\c_empty_tl}
+% \DoNotIndex{\tl_gset:cn,\tl_gset:Nn,\tl_gset:No,\tl_gset:co,\tl_gset_eq:NN,\tl_gset_eq:cc,\tl_gset_eq:cN}
+% \DoNotIndex{\tl_if_empty:cF,\tl_if_empty:cTF,\tl_if_empty:cT,\tl_if_empty:NF,\tl_if_empty:NTF}
+% \DoNotIndex{\tl_new:N,\tl_new:c,\tl_set_eq:cc,\tl_to_str:c,\token_to_str:c,\token_to_str:N}
+% \DoNotIndex{\undefined,\unskip,\unvbox,\unvcopy,\use:n,\use:N,\use:c,\use_none:n,\usepackage}
+% \DoNotIndex{\var,\vbox,\vbox_set:Nn,\vbox_set_split_to_ht:NNn,\vboxed,\vskip,\vspace}
+% \DoNotIndex{\vsplit,\vss,\xdef,\xlap,\xxxx,\xmarks}
+% \DoNotIndex{\newcommand,\NewDocumentCommand,\NewExpandableDocumentCommand,\newlength,\newtoks}
+%
 % \ProvideDocElement[printtype=\textit{hook},idxtype=hook,idxgroup=Hooks]{Hook}{hookdecl}%
 % \newcommand\makedate{}
 % \def\makedate#1/#2/#3/{%
@@ -334,7 +378,7 @@
 % \maketitle
 % \begin{abstract}
 %   This document describes how to customize the page layout of your LaTeX
-%   documents, i.e how to change page margings and sizes,
+%   documents, i.e., how to change page margings and sizes,
 %   headers and footers, and the
 %   proper placement of figures and tables (collectively called floats) on
 %   the page.
@@ -404,7 +448,7 @@
 % \pkg{extramarks.sty}, \pkg{extramarks-v4.sty}
 % and \pkg{fancyheadings.sty} to a place
 % where \LaTeX{} can find it, preferably in a directory similar to
-% \texttt{.../texmf/tex/latex/fancyhdr/} in your \tex/ directory tree.
+% \texttt{.../texmf/tex/latex/fancyhdr/} in your \TeX{} directory tree.
 % To get the documentation, run `\verb+pdflatex fancyhdr.dtx+'.
 %
 % \section{Using \pkg{fancyhdr}}
@@ -438,7 +482,7 @@
 % lowercase is also acceptable.
 % \end{function}
 %
-% %\begin{function}{\fancyheadoffset,\fancyfootoffset,\fancyhfoffset}
+% \begin{function}{\fancyheadoffset,\fancyfootoffset,\fancyhfoffset}
 % \begin{syntax}
 %   \cmd{\fancyheadoffset}\oarg{places}\marg{length} \\
 %   \cmd{\fancyfootoffset}\oarg{places}\marg{length} \\
@@ -448,7 +492,7 @@
 % the inside if negative). Places cannot contain the \texttt{C}
 % specifier. See sections~\ref{sec:book-examples}  and
 % \ref{sec:headwidth} for more details.
-% %\end{function}
+% \end{function}
 %
 % \begin{variable}{\headrulewidth, \footrulewidth, \headruleskip,
 %                  \footruleskip, \headwidth}
@@ -562,7 +606,7 @@
 % \texttt{nocheck} & do not check the heights of the header and footer \\
 % \texttt{compatV3} & keep some behaviour (now considered undesirable) as in version~3 \\
 % \texttt{twoside} & use two-sided headers and footers even in one-sided documents \\
-%          & for \pkg{fancyhdr}-based pagestyles (version 4.1 or later) \\
+%          & for \pkg{fancyhdr}-based page styles (version 4.1 or later) \\
 % \texttt{headings} & redefine the \texttt{headings} page style to be fancy-based \\
 % \texttt{myheadings} & redefine the \texttt{myheadings} page style to be fancy-based \\
 % \bottomrule
@@ -597,10 +641,10 @@
 %
 % \item \OPTindex{twoside}Option \texttt{twoside} implements two-sided headers
 % and footers in one-sided documents (version 4.1 or later). This applies only
-% for \pkg{fancyhdr}-based pagestyles. This option doesn't do anything
+% for \pkg{fancyhdr}-based page styles. This option doesn't do anything
 % special for two-sided documents (\texttt{twoside} documentclass option), as
 % these already have that functionality. And with the \texttt{twoside}
-% documentclass option that does apply to other pagestyles as well.
+% documentclass option that does apply to other page styles as well.
 %
 % \item \PSindex{headings}\PSindex{myheadings}\OPTindex{headings}\OPTindex{myheadings}
 %   The options \texttt{headings} and \texttt{myheadings} redefine the
@@ -608,6 +652,7 @@
 %   decorative line under the header), so that you can later select this
 %   page style as the page style for (part of) the
 %   document\footnote{These options were copied from the
+%   \PKGindex{nccfancyhdr}
 %   \pkg{nccfancyhdr} package, but contrary to that package, they are
 %   not automatically selected.}.
 % \end{itemize}
@@ -621,7 +666,7 @@
 % Please note that these page styles redefine the \cs{chaptermark} and/or
 % \Cmd{[sub]sectionmark} commands (see section~\ref{sec:scoop}), as do the
 % standard \LaTeX{} page styles. The consequence is, that if you select
-% e.g.\ \Cmd{pagestyle\{headings\}}, the definitions of
+% e.g., \Cmd{pagestyle\{headings\}}, the definitions of
 % \Cmd{pagestyle\{fancy\}} are overridden.
 % Also when you change the headers and/or footers
 % while such a page style is in effect, and you then switch back to this
@@ -782,7 +827,7 @@
 %
 % The page headers and footers in \LaTeX{} are defined by the
 % \cs{pagestyle} and \cs{pagenumbering} commands. \cs{pagestyle}
-% defines the general contents of the headers and footers (e.g.\ where the
+% defines the general contents of the headers and footers (e.g., where the
 % page number will be printed), while
 % \cs{pagenumbering} defines the format of the page number.
 % \LaTeX{} has four standard page styles:
@@ -844,7 +889,7 @@
 %
 % The  \Cmd{pagenumbering\{xxx\}} defines the command \cs{thepage} to be the
 % expansion of the page number in the given notation \texttt{xxx}.
-% The pagestyle command
+% The page style command
 % then would include \cs{thepage} in the appropriate place. Additionally
 % the  \cs{pagenumbering} command resets the page number to~1.
 % The  \cs{pagestyle} and  \cs{pagenumbering} apply to the page that is
@@ -872,7 +917,7 @@
 %
 % \section{Simple use of \pkg{fancyhdr}}  To use this package
 % install it in a place where \LaTeX{} can find it (see
-% section~\ref{sec:installation})\footnote{In most modern \tex/
+% section~\ref{sec:installation})\footnote{In most modern \TeX{}
 % installation the package is already included.}, and include in the preamble of your document
 % the commands:
 %
@@ -1141,6 +1186,7 @@
 %
 % \textbf{Note:} This section only applies to \pkg{fancyhdr} version~4.0
 % and later\footnote{This comes from the \pkg{nccfancyhdr}
+% \PKGindex{nccfancyhdr}
 % package by Alexander I. Rozhenko.}.
 %
 % The fields in a fancy header and footer are prepared using \cs{parbox}
@@ -1541,7 +1587,7 @@
 % command to automatically switch to the \texttt{plain} page style, thus
 % ignoring the page style currently in effect.
 %
-% They do this by issuing a \verb+\thispagestyle{plain}+ command. The most
+% They do this by issuing a \Cmd{thispagestyle\{plain\}} command. The most
 % well-known places where this could happen are:
 % \begin{itemize}
 % \item The first pages of chapters in the \texttt{book} and \texttt{report} class
@@ -1556,18 +1602,18 @@
 % \CmdIndex{fancypagestyle}
 % with the \cs{fancypagestyle} command. This command can be used to
 % redefine existing page styles (like \texttt{plain}) or to define new ones,
-% e.g.\ if part of your document needs a different page style. This command
+% e.g., if part of your document needs a different page style. This command
 % has two mandatory parameters and an optional one in between: the first parameter
 % is the name of the page style to be defined, then an optional
 % parameter of an existing base page style can be given, and the last
-% parameter consists of commands that change the headers and/or footers, i.e.
+% parameter consists of commands that change the headers and/or footers, i.e.,
 % \verb|\fancyhead| etc. Also allowed are changes to \cs{headrulewidth} and
 % \cs{footrulewidth} or even \cs{headrule} and \cs{footrule}.
 % The (re)defined page style uses the standard
 % \texttt{fancy} definitions, amended by the optional base style, and
 % finally the definitions in the last
 % parameter. For details see \smartref{sec:pagestyle-plain}{sec:fancypagestyle}.
-% In particular, if the last parameter is empty, i.e. given
+% In particular, if the last parameter is empty, i.e., given
 % as \verb+{}+, then the new page style is equal to base style.
 %
 % As an example, let us redefine the \texttt{plain} style so that it will
@@ -1575,7 +1621,7 @@
 % \begin{code}
 % \fancypagestyle{plain}[fancy]{}
 % \end{code}
-% If you have not redefined page style fancy with \cs{fancypagestyle},
+% If you have not redefined page style \texttt{fancy} with \cs{fancypagestyle},
 % this is equivalent to:
 % \begin{code}
 % \fancypagestyle{plain}{}
@@ -1670,7 +1716,7 @@
 % new page style is used, for a \emph{closed} page style at the time it
 % is defined.
 % \end{enumerate}
-% In an \emph{open} page style, i.e. if you use the  form \cs{fancypagestyle}\oarg{base-style}\marg{style-name}\ldots\ {}
+% In an \emph{open} page style, i.e., if you use the  form \cs{fancypagestyle}\oarg{base-style}\marg{style-name}\ldots\ {}
 % only the first two parts are embedded in the page style.
 %
 % The optional base style argument is only available in \pkg{fancyhdr} version~4.0 and later.
@@ -1838,7 +1884,7 @@
 %    ``Chapter 2. Implementation'' and ``2.1.\ First steps''
 %
 % Redefining the \cs{chaptermark} and \cs{sectionmark} commands may
-% not eliminate all uppercaseness. E.g.\ the bibliography will have a title
+% not eliminate all uppercaseness. E.g., the bibliography will have a title
 % \CmdIndex{uppercase}
 % \index{BIBLIOGRAPHY}
 % of \textsc{bibliography} in the header, as the \cs{MakeUppercase} is
@@ -1970,17 +2016,15 @@
 % \end{example}
 %
 % Another problem with the marks in the standard \LaTeX{} classes is that the
-% higher level sectioning commands (e.g.\ \cs{chapter}) call
+% higher level sectioning commands (e.g., \cs{chapter}) call
 % \cs{markboth} with an empty right argument. This means that on the first
 % page of a chapter (or a section in article style) the \cs{rightmark}
-% will be empty. The underlying problem is that the \tex/ machinery has
-% only one \cs{mark}. All the marks must be packed together in
-% this one. So there are no independent left or right marks. That also
-% applies to the extra marks as described in section~\ref{sec:xmarks}.
-% If this is a problem you must manually insert extra
-% \cs{markright} commands or redefine the \cs{chaptermark}
-% (\cs{sectionmark}) commands to issue a \cs{markboth} command with
-% two decent parameters.
+% will be empty. The underlying problem is that the original \TeX{} machinery had
+% only one \cs{mark}. All the marks had to be packed together in
+% this one. So there were no independent left or right marks.
+% Modern \LaTeX{} distributions, however, do have independent marks, so
+% this problem can be solved. See Example~35 in
+% section~\ref{sec:firstsubsection} for an example.
 %
 % As a final remark you should also note that the \verb|*| forms of the
 % \cs{chapter} etc.\ commands do \emph{not} call the mark commands. So if
@@ -2024,10 +2068,9 @@
 % it would be nice if this would be reduced to just the form
 % \textsf{firstword} if both are the same. This could happen if there is just
 % one entry on the page. In this case a test must be made to check if the
-% marks are the same.  However, \tex/'s marks are strange beasts, which
-% cannot be compared out of the box with the plain \tex/ \cs{if} commands.
-% \TTindex{ifthen}
-% Fortunately the \pkg{ifthen} package works well:
+% marks are the same.  However, \TeX's marks are strange beasts, which
+% cannot be compared out of the box with the plain \TeX{} \Cmd{if} commands.
+% Fortunately the \PKGindex{ifthen}\pkg{ifthen} package works well:
 %
 % \Example{15}
 % \begin{example}
@@ -2147,6 +2190,7 @@
 % it later to its default value.
 %
 % Finally, let us make a real `decorative' line\footnote{Based upon an idea by Wayne Chan.}.
+% \PKGindex{fourier-orns}%
 % \begin{code}
 % \usepackage{fourier-orns}
 % ...
@@ -2192,8 +2236,8 @@
 % the maximum depth of possible descenders in the text, which is 30\% of
 % the normal line distance. You can increase or decrease this distance
 % \CmdIndex{headruleskip}
-% by defining the macro \cs{headruleskip}, similar to \cs{footruleskip}
-% \footnote{(But \cs{headruleskip} is only available since version~4.0.)}.
+% by defining the macro \cs{headruleskip}, similar to \cs{footruleskip}.%
+% \footnote{But \cs{headruleskip} is only available since version~4.0.}
 % This defines the extra distance. The default value is 0pt, and
 % positive values make the distance larger, and negative values make the
 % distance shorter.
@@ -2210,7 +2254,8 @@
 % \indent The header and footer in this page
 % show the \emph{strut} (the amount of space in the text area above and
 % below the baseline), and the \cs{headruleskip} and \cs{footruleskip}.
-% For this page \cs{headruleskip} is 4pt.
+% For this page \cs{headruleskip} is 4pt and \cs{footruleskip} is 3.6pt
+% (0.3\cs{normalbaselineskip}).
 %
 % The code for this can be found in section~\ref{sec:curpagestyle}.
 % \end{minipage}
@@ -2221,7 +2266,7 @@
 % edge of the bottom margin (the lower line of the footer box in
 % figure~\ref{fig:layout}). Most of the time this is what you want, but
 % it means that any descenders in the footer (symbols that extend below
-% the baseline, e.g. p and g or parentheses). See
+% the baseline, e.g., p and g or parentheses). See
 % figure~\ref{fig:footalign-default}, where the horizontal line denotes the
 % bottom border.
 %
@@ -2345,7 +2390,7 @@
 % based on the given parameters.
 %
 % So the above example could also have been done with (N.B. You can only
-% use such an expression as a length parameter if the \pkg{calc}
+% use such an expression as a length parameter if the \PKGindex{calc}\pkg{calc}
 % package is used):
 %
 % \Example{19}
@@ -2354,7 +2399,7 @@
 % \end{example}
 %
 % \textbf{NOTE:} If you change the \cs{textwidth} in the middle of your
-% document, for example by using the \pkg{geometry}\TTindex{geometry} package,
+% document, for example by using the \PKGindex{geometry}\pkg{geometry} package,
 % by default the \cs{headwidth} will not change, as it picks up the value
 % of \cs{textwidth} at the beginning of the document. If you want it to track
 % the changes to \cs{textwidth}, you should use the command \verb|\fancyhfoffset{0pt}|
@@ -2484,7 +2529,7 @@
 % \renewcommand{\headrulewidth}{\iffloatpage{0pt}{0.4pt}}
 % \end{example}
 %
-% \textbf{NOTE:} There is also a package \TTindex{floatpag}%
+% \textbf{NOTE:} There is also a package \PKGindex{floatpag}%
 % \pkg{floatpag}\footnote{\url{https://www.ctan.org/pkg/floatpag}} by Vytas
 % Statulevičius and Sigitas Tolušis that has a command
 % \cs{floatpagestyle}\marg{pagestyle}, that applies \meta{pagestyle} to
@@ -2504,7 +2549,7 @@
 %
 % Note: Marks in floats will not be visible in \LaTeX's output routine, so
 % it is not useful to put marks in floats. So there is currently no way to
-% let a float (e.g.\ a figure caption) influence the page header or footer.
+% let a float (e.g., a figure caption) influence the page header or footer.
 %
 % \section{Those blank pages}
 % \label{sec:blank}
@@ -2512,7 +2557,7 @@
 % In the \texttt{book} class when the \texttt{openany} option is not given or
 % in the \texttt{report} class when the \texttt{openright} option is given,
 % chapters start at odd-numbered pages, half of the time causing a blank page
-% to be inserted. Some people prefer this page to be completely empty, i.e.\
+% to be inserted. Some people prefer this page to be completely empty, i.e.,
 % without headers and footers. This cannot be done with \cs{thispagestyle}
 % as this command would have to be issued on the \emph{previous} page. There
 % is, however, no magic necessary to get this done:
@@ -2552,8 +2597,7 @@
 %
 % Some document writers prefer the pages to be numbered as \textsf{n} of
 % \textsf{m} where \textsf{m} is the number of pages in the document.
-% There is a package \pkg{lastpage}
-% \TTindex{lastpage}
+% There is a package \PKGindex{lastpage}\pkg{lastpage}
 % available which you can use with \pkg{fancyhdr} as follows:
 %
 % \Example{22}
@@ -2562,27 +2606,28 @@
 % ...
 % \fancyfoot[C]{\thepage\ of \pageref{LastPage}}
 % \end{example}
-% Because you want the pages with pagestyle \texttt{plain} to contain
+% Because you want the pages with page style \texttt{plain} to contain
 % the same style of page numbers, you will have to redefine this
-% pagestyle too.
+% page style too.
 % \begin{code}
 % \fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrule}{}}
 % \end{code}
 % We clear all the headers including its rule. The footer will be
-% ``inherited'' from the pagestyle \texttt{fancy}.
+% ``inherited'' from the page style \texttt{fancy}.
 %
-% The value of the \texttt{LastPage}\TTindex{LastPage} label can be used to
-% make different headers or footers on the last page of a document. E.g.\ if
+% The value of the \TTindex{LastPage}\texttt{LastPage} label can be used to
+% make different headers or footers on the last page of a document. E.g., if
 % you want the footer of every odd page, except if it is the last one, to
 % contain the text ``Please turn over'', this can be done by checking if
 % the page number is odd, and if it is equal to the number of the last page.
 %
-% We use the macro \cs{getpagerefnumber} from the package\TTindex{refcount}
+% We use the macro \cs{getpagerefnumber} from the package
+% \PKGindex{refcount}%
 % \pkg{refcount}, because \cs{pageref} isn't always usable in a
 % numerical context (it is meant for typesetting only). This is also done in
 % following similar examples.
 %
-% \TTindex{ifthen}\TTindex{lastpage}\TTindex{refcount}
+% \PKGindex{ifthen}\PKGindex{lastpage}\PKGindex{refcount}
 % \begin{code}
 % \usepackage{ifthen}
 % \usepackage{lastpage}
@@ -2604,7 +2649,7 @@
 % In technical documentation very often page numbers are used of the form
 % 2-10 where the first number is the chapter number and the second is the
 % pagenumber relative to the chapter. Sometimes section is used rather than
-% chapter. The package \pkg{chappg} can be used to get this format.
+% chapter. The package \PKGindex{chappg}\pkg{chappg} can be used to get this format.
 %
 % Basically this package redefines \cs{thepage} as
 % \cs{thechapter}\cs{chappgsep}\Cmd{arabic\{page\}}, where
@@ -2845,7 +2890,7 @@
 % It should be noted that although the \pkg{fancyhdr} commands like
 % \cs{fancyhead} take effect immediately, this does not mean that any
 % ``variables'' used in these commands get the value they have at the place
-% where these commands are given. E.g.\ if \Cmd{fancyfoot[C]\{}\Cmd{thepage\}} is given
+% where these commands are given. E.g., if \Cmd{fancyfoot[C]\{}\Cmd{thepage\}} is given
 % the page number that will be inserted in the footer is not the page number
 % of the page where this command is given, but rather the page number of
 % the actual page where the footer is constructed. Of course for the page
@@ -2880,7 +2925,7 @@
 % As a chapter starts on a new page, we can be sure that the \cs{Author}
 % command comes at the same page as the chapter start.
 %
-% Another source of problems is the fact that \tex/'s output routine processes
+% Another source of problems is the fact that \TeX's output routine processes
 % commands ahead, so it may already have processed some commands that produce
 % text that will appear on the next page. So if our book was not divided
 % into chapters, but into sections, we cannot use the similar system:
@@ -2896,7 +2941,7 @@
 % be solved using marks. In fact this is the whole reason the mark
 % mechanism was developed in \TeX. See section~\ref{sec:xmarks}.
 %
-% The same applies to other changes in the middle of a page, e.g.\ to change the page
+% The same applies to other changes in the middle of a page, e.g., to change the page
 % numbering from roman to arabic (with \cs{pagenumbering}). For the same
 % reason \Cmd{thispagestyle\{mystyle\}} will not always work in the
 % middle of a page.
@@ -2939,8 +2984,8 @@
 % }
 % \end{code}
 % \Example{25 (a)}
-% we define a new pagestyle that makes the choice:
-% \TTindex{ifthen}\TTindex{refcount}
+% we define a new page style that makes the choice:
+% \PKGindex{ifthen}\PKGindex{refcount}
 % \begin{example}
 % \usepackage{ifthen}
 % \usepackage{refcount}
@@ -3029,7 +3074,7 @@
 % the test inside the definition of \cs{headruleskip}, we can put it
 % outside, and then we can use the command \cs{ifthenelse}. So we put
 % the following in \Cmd{pagestyle\{switch\}}\footnote{Assuming we have
-% already loaded package \pkg{refcount}.}:
+% already loaded package \PKGindex{refcount}\pkg{refcount}.}:
 % \begin{code}
 %   \fancyheadinit{%
 %     \ifthenelse{\value{page}=\getpagerefnumber{otherpagestyle}}
@@ -3102,7 +3147,7 @@
 % half-empty page, which may be undesirable.
 %
 % If this is not what you want, you can use the
-% \TTindex{afterpage.sty}%
+% \PKGindex{afterpage}%
 % \pkg{afterpage} package with:\\[1ex]
 % \CmdIndex{afterpage}\Cmd{afterpage\{}\Cmd{fancyhead[L]\{new value\}\}} or\\
 % \CmdIndex{pagenumbering}\Cmd{afterpage\{}\Cmd{pagenumbering\{roman\}\}}.
@@ -3140,7 +3185,7 @@
 % \cs{begingroup} and \cs{endgroup}, between \{~and~\}, and other
 % similar situations. \TeX{} definitions inside such a group are local
 % to this group, unless they are declared to be global. All
-% definitions pertaining to the page style (i.e. \cs{fancypagestyle},
+% definitions pertaining to the page style (i.e., \cs{fancypagestyle},
 % \cs{pagestyle}, \cs{fancyhead}, etc.) are local definitions, i.e.,
 % they disappear at the end of the group. The only
 % exception is \cs{thispagestyle}, which is global, i.e., its setting
@@ -3325,13 +3370,13 @@
 % group, they last until the end of the group. They will disappear
 % outside of the group, or be reset to the value they had outside of the group.
 % \item \cs{fancyhfinit} is meant to be used by the user who writes the
-% document, i.e. it is meant for the current document.
+% document, i.e., it is meant for the current document.
 % \cs{fancyhfinit} \emph{should not be used by package or class writers
 % and similar. They should use the hooks mechanism.} On the other hand
 % the user can also use hooks in the document instead of, or in addition
 % to the \cs{fancyhfinit} mechanism.
 % \item Hooks can be added multiple times, but the \cs{fancyhfinit} code
-% can only be given once (i.e. a new one overwrites the previous one).
+% can only be given once (i.e., a new one overwrites the previous one).
 % \item The \cs{fancyhfinit} code is stored in a \emph{closed} page
 % style (see section~\ref{sec:fancypagestyle}). Hooks are not.
 % \item \cs{fancyhfinit} has no corresponding \texttt{exit} function, so
@@ -3391,7 +3436,7 @@
 % first page of a chapter also the footer will be given if necessary. We
 % assume that a `Continued' block will not cross chapter boundaries, so no
 % header will be necessary on these pages.
-% Also the \cs{extramarks} command must be close to the text, i.e no
+% Also the \cs{extramarks} command must be close to the text, i.e., no
 % empty lines (paragraph boundaries) should intervene. Otherwise the page may
 % be broken at that boundary and the \texttt{extramarks} would come on the wrong page.
 %
@@ -3448,7 +3493,7 @@
 % \index{margin}
 % may be nicer to put it in the  margin. This can be easily
 % accomplished by positioning it at a fixed place relative to the page header.
-% In plain \tex/ you would use a concoction of \Cmd{hbox to 0pt},
+% In plain \TeX{} you would use a concoction of \Cmd{hbox to 0pt},
 % \Cmd{vbox to 0pt}, \cs{hskip},\cs{vskip}, \cs{hss} and
 % \cs{vss} but fortunately
 % \LaTeX's \texttt{picture} environment gives a much cleaner way to do this.
@@ -3475,7 +3520,7 @@
 %
 % Finally you may want to put ``(Continued\ldots)'' in the \emph{text}
 % rather than in the header or the margin. Then you have to use the
-% \TTindex{afterpage}%
+% \PKGindex{afterpage}%
 % \pkg{afterpage} package. We also decide to make a separate
 % environment \env{continued} for it\footnote{In the example files for
 % examples 27 and 28 this is also done; it is just not documented here.}.
@@ -3709,7 +3754,7 @@
 % \cs{protect} does.
 %
 % \textbf{Note 4.} We test the value of \cs{APcommand} with \cs{ifx},
-% not with \cs{ifthenelse} from the \pkg{ifthen} package. The
+% not with \cs{ifthenelse} from the \PKGindex{ifthen}\pkg{ifthen} package. The
 % latter completely expands its parameters, and because \cs{APcommand}
 % has a recursive definition when it is not empty, that would cause
 % \TeX{} to fail. We only want to check the definition of
@@ -3768,6 +3813,170 @@
 % If you want to include one of the marks or other varying information in the
 % saved text, you must use \cs{xdef} rather than \cs{gdef}.
 %
+% \section{Page styles for Table of Content, List of Figures, Bibliography, etc.}
+% \label{sec:tocstyle}
+%
+% Some special sections of a documents, such as the Table of Contents,
+% List of Figures/Tables, Bibliography, Index, and similar ones
+% sometimes cause difficulties if you want them to have special page
+% styles, especially if you also want the first page of these to have
+% a special page style.
+%
+% Supose you have defined a special page style \texttt{tocstyle} for the
+% Table of contents. The Table of contents is generated by the command
+% \cs{tableofcontents} and it can be several pages long, all generated
+% by this simple command. So if you want this to have the page style
+% \texttt{tocstyle}, you must give the command \Cmd{pagestyle\{tocstyle\}}
+% before the \cs{tableofcontents}. But then you have to make sure that
+% the previous page (for example a title page) doesn't get this page
+% style too. As we have seen before we can do this by inserting a
+% \cs{newpage} first. Like
+% \begin{code}
+% \newpage
+% \pagestyle{tocstyle}
+% \tableofcontents
+% \end{code}
+%
+% If we use a chapter based documentclass, like the standard classes
+% \pkg{report} and \pkg{book}, with this setup the first page of the Table
+% of Contents, and similar parts of the document will stil use the
+% \texttt{plain} page style. Usually this is the best choice, but there
+% may be cases where you want these also to use the \texttt{tocstyle}
+% page style (or another special page style). The \texttt{plain} page
+% style is set by a \Cmd{thispagestyle\{plain\}} command embedded
+% in a \cs{chapter*} command that is used in \cs{tableofcontents}. So
+% it is not easy to overwrite. It can be overwritten by a
+% \Cmd{thispagestyle\{tocstyle\}} command, but that must be given after
+% the \cs{chapter*} command, but before the first page of the Table of
+% Contents is finished. So in fact we must break in into the
+% \cs{tableofcontents} command. The other special parts have similar challenges.
+% In this section we give a number of solutions.
+%
+% The first solution applies to the Table of Contents and List of Figures/Tables.
+% We can add additional code in these lists with the \cs{addtocontents}
+% command. We can use this to insert a \cs{thispagestyle} as the first
+% entry,
+% \NoExample{tocpagestyle\\(a)}
+% \begin{example}
+% \newpage
+% \pagestyle{tocstyle}
+% \addtocontents{toc}{\protect\thispagestyle{tocstyle}}
+% \tableofcontents
+% \end{example}
+% and similar for the List of Figures (use \texttt{lof}) and List of
+% Tables (use \texttt{lot} instead of \texttt{toc}). The \cs{protect} is
+% necessary to prevent the \cs{thispagestyle} to be executed too early.
+%
+% \textbf{NOTE:} If you are using the package
+% \pkg{tocloft}\PKGindex{tocloft}, some of the solutions given here for
+% the Table of Contents and List of Figures/Tables may not work (but
+% others may). This is because this package changes the layout of these.
+% In particular, the first page of these will by default have page style
+% \texttt{plain}, even in a documentclass that has no chapters, like
+% \cls{article}. However, the package has a command to set the page
+% style for these first pages. This will set it for all three.
+%\begin{code}
+% \tocloftpagestyle{tocstyle}
+% \end{code}
+%
+% Alternatively, you can use \Cmd{usepackage[titles]\{tocloft\}} which
+% will keep the original \LaTeX{} code, so then the solutions mentioned
+% in this section will apply.
+%
+% \medskip
+%
+% For the Bibliography and Index the above solutions cannot be used. So
+% we need a different solution for these.
+%
+% For the Bibliography we can use the \LaTeX{} hook system (available since the
+% 2020/10/01 \LaTeX{} release). The command \cs{bibliography} reads the
+% file \texttt{\meta{jobname}.bbl}, which contains a
+% \env{thebibliography} environment, that contains a \cs{bibitem} for
+% each reference. The \Cmd{begin\{bibliography\}} sets up the chapter
+% header and starts a \env{list} environment. Unfortunately, the
+% \LaTeX{} hook system doesn't have a hook that is executed just after
+% this point (i.e., before any bibliography items are added).
+%
+% However, we can add a hook at the first \cs{bibitem} as follows:
+% \NoExample{tocpagestyle\\(c)}
+% \begin{example}
+% \AddToHookNext{cmd/bibitem/before}{\thispagestyle{tocstyle}}
+% \end{example}
+%
+% An alternative would be to use an `\texttt{after}' hook on the
+% \cs{thebibliography} command. This command is internally used to do
+% the setup work for the \env{thebibliography} environment, but this
+% is an implementation detail, so theoretically this could change in a
+% future implementation, or an implementation in a different
+% documentclass. But this is the hook that is executed at the right
+% moment: after the setup, and before any bibliography items are added.
+%
+% \NoExample{tocpagestyle\\(c)}
+% \begin{example}
+% \AddToHook{cmd/thebibliography/after}{\thispagestyle{tocstyle}}
+% \end{example}
+%
+% For the Index there is no hook that can be used in a similar manner.
+% Maybe we could use a hook in the \cs{item} command that is used for
+% the index items, but this is just a too general command that is not
+% exclusively used in the Index. However, we can use a hook on the
+% \cs{thispagestyle} command that is used in the internal
+% \cs{chapter*} command in the \cs{printindex} command (the
+% \cs{thispagestyle} that gives us these problems). We just use an
+% `\texttt{after}' hook to insert another \cs{thispagestyle} that
+% replaces the built-in one. In fact we could have used this same
+% solution for each of the cases mentioned in this document.
+%
+% \NoExample{tocpagestyle\\(d)}
+% \begin{example}
+% \newpage
+% \pagestyle{tocstyle}
+% \AddToHookNext{cmd/thispagestyle/after}{\thispagestyle{tocstyle}}
+% \printindex
+% \end{example}
+%
+% Finally, we can use the solution from
+% section~\ref{sec:pagestyle-plain} (redefining page style
+% \texttt{plain}). For example:
+% \begin{code}
+% \fancypagestyle{plain}[tocstyle]{}
+% \end{code}
+% But this would also change the \texttt{plain} page style for the
+% chapters in the normal text, which we don't want. So the page style
+% \texttt{plain} should be reset in the main text. We can do this with
+% the new (\pkg{fancyhdr} version 5) command \cs{fancypagestyleassign}.
+% We can use this to `save' the original \texttt{plain} page style and
+% set it equal to \texttt{tocstyle}. And later we can reset
+% \texttt{plain} to the saved page style.
+%
+% \NoExample{tocpagestyle\\(b)}
+% \begin{example}
+% \fancypagestyleassign{origplain}{plain}
+% \fancypagestyleassign{plain}{tocstyle}
+% \listoftables % \tableofcontents / \listoffigures, etc.
+%
+% % Here the main document text starts
+%
+% \clearpage
+% \fancypagestyleassign{plain}{origplain}
+% \end{example}
+% All definitions for the page style (including the
+% \cs{fancypagestyleassign} commands above) are local to the \TeX{}
+% group in which they are defined (see section~\ref{sec:change-group}).
+% So we could eliminate the saving and restoring to \texttt{origplain}
+% if we do the change in a group. For example:
+%
+% \begin{code}
+% {
+% \fancypagestyleassign{plain}{tocstyle}
+% % or use the older method \fancypagestyle{plain}[tocstyle]{}
+% \listoftables
+% }
+% \end{code}
+% After the group, page style \texttt{plain} has its original value.
+% However, it is not advised to place large parts of your document
+% inside a group.
+%
 % \section{A movie}
 % \label{sec:movie}
 %
@@ -3778,14 +3987,14 @@
 % pages. You can create such a movie easily with \pkg{fancyhdr}. For
 % simplicity we assume that we use a PDF-producing \LaTeX{} (such as
 % \texttt{pdflatex}) and each picture is in a PNG file called
-% \texttt{pic}$\langle n\rangle$.\texttt{png}%
-% \footnote{With \texttt{pdflatex} we could also use PDF or JPG
+% \texttt{pic}$\langle n\rangle$.\texttt{png}\footnote{With
+% \texttt{pdflatex} we could also use PDF or JPG
 % pictures. With a DVI based \texttt{latex} we could use PS or EPS
 % pictures. Or any other supported image format.}
 % where $\langle n\rangle$ is
 % the page number and that we use the \pkg{graphics} or  \pkg{graphicx} package.
-% \TTindex{graphics}
-% \TTindex{graphicx}
+% \PKGindex{graphics}
+% \PKGindex{graphicx}
 % To put the movie in the  righthandside bottom corner the following will work:
 %
 % \Example{30}
@@ -3809,7 +4018,7 @@
 % \index{bible}
 % Some railroad guides and expensive bibles have so called
 % \index{thumb-index}
-% \emph{thumb-indexes}, i.e.\ there are marks on the sides of the pages that
+% \emph{thumb-indexes}, i.e., there are marks on the sides of the pages that
 % indicate where the chapters are. You can create these by printing black
 % blobs in the margin of the pages. The vertical position should be
 % determined by the chapter number or some other counter. As the position is
@@ -3943,7 +4152,7 @@
 %
 % Floats are page elements that float with respect to the rest of the
 % document. Standard floats are tables and figures, but with the
-% \TTindex{float}%
+% \PKGindex{float}%
 % \pkg{float} package you can easily make new ones, like algorithms. Most
 % of the time floats work satisfactory, but sometimes \LaTeX{} seems too
 % stubborn to do what you want. This section describes how you can influence
@@ -3963,7 +4172,7 @@
 % \end{enumerate}
 %
 % In the first two cases you must first check if you have given the correct
-% ``placement'' parameter to you float, e.g.\ \Cmd{begin\{figure\}[htp]}
+% ``placement'' parameter to you float, e.g., \Cmd{begin\{figure\}[htp]}
 % specifies that your figure may be placed either: Here (i.e., in the text
 % position where the command is given), on the Top of a page (which may be
 % the page where you put the command), or on a separate Page of floats. You
@@ -4024,7 +4233,7 @@
 % are given before a float page can be filled to satisfy the
 % \phantomsection\label{page:floatpagefraction}^^A
 % \cs{floatpagefraction} parameter. If you have this kind of behaviour you
-% can easily adapt the parameters, e.g.\ with:
+% can easily adapt the parameters, e.g., with:
 % \begin{code}
 % \renewcommand{\textfraction}{0.05}
 % \renewcommand{\topfraction}{0.95}
@@ -4050,7 +4259,7 @@
 % \item Of course deleting the ``\texttt{t}'' will help, but in general this is
 %   undesirable, as you may want the float to be placed at the top of the
 %   next page.
-% \item \TTindex{flafter}%
+% \item \PKGindex{flafter}%
 %   use the \pkg{flafter} package which causes floats never to be
 %   placed ``backwards''.
 % \item use the command \cs{suppressfloats[t]}.  This
@@ -4065,7 +4274,7 @@
 % command. This will start a new page and insert all pending floats before
 % continuing. If it is undesirable to have a pagebreak you can use the
 % \pkg{afterpage} package and the following command:
-% \TTindex{afterpage}\CmdIndex{afterpage}\CmdIndex{clearpage}%
+% \PKGindex{afterpage}\CmdIndex{afterpage}\CmdIndex{clearpage}%
 % \begin{code}
 % \afterpage{\clearpage}
 % \end{code}
@@ -4077,7 +4286,7 @@
 % Finally, if you want a float only at the place where you define it, without
 % \LaTeX{} moving it whatsoever, you can use the \pkg{float} package and
 % give the command:
-% \TTindex{float}\CmdIndex{restylefloat}%
+% \PKGindex{float}\CmdIndex{restylefloat}%
 % \begin{code}
 % \restylefloat{figure}
 % \end{code}
@@ -4087,7 +4296,7 @@
 % If you want to avoid the unwanted pagebreak, i.e., let
 % \LaTeX{} move the float only if it doesn't fit on the page, then use the
 % \pkg{afterpage} package with:
-% \TTindex{afterpage}\CmdIndex{afterpage}\CmdIndex{clearpage}%
+% \PKGindex{afterpage}\CmdIndex{afterpage}\CmdIndex{clearpage}%
 % \begin{code}
 % \afterpage{\clearpage \begin{figure}[H] ... \end{figure}}
 % \end{code}
@@ -4099,7 +4308,7 @@
 % with \cs{clearpage} in them will usually help. In some cases there
 % really are too many floats, as \LaTeX{} has a limited number of ``boxes'' to
 % store the floats. The package
-% \TTindex{morefloats}%
+% \PKGindex{morefloats}%
 % \pkg{morefloats} can be used to increase
 % this number. If you need still more then you must edit a private copy of
 % this file, but even then there will be some limit that you cannot pass.
@@ -4133,11 +4342,11 @@
 % \subsection{Tables}
 %
 % For tables longer than a page you can use the \pkg{longtable} package.
-% \TTindex{longtable}
+% \PKGindex{longtable}
 % This package defines a \texttt{longtable} environment that is a kind of
-% amalgamation of \texttt{table} and \texttt{tabular}. It has approximately
-% the same syntax as the  \texttt{tabular} environment, but it adds some
-% features of \texttt{table}, like captions. Longtables will be automatically
+% amalgamation of \env{table} and \env{tabular}. It has approximately
+% the same syntax as the  \env{tabular} environment, but it adds some
+% features of \env{table}, like captions. Longtables will be automatically
 % split when they don't fit on the page. And they will be entered in the list
 % of tables when a caption is given. They will not float, however, and cannot
 % be used inside a float environment. This could mean that another
@@ -4146,10 +4355,10 @@
 % out of order. Another problem could be that the \texttt{longtable} starts
 % rather far down the page, which isn't a pleasant sight. If you want the
 % \texttt{longtable} to start at the top of the page, the best thing to do is
-% to include it in an \cs{afterpage} command (using the \pkg{afterpage}
-% package). As a \texttt{longtable} is by definition large, it is best to put
+% to include it in an \cs{afterpage} command (using the \PKGindex{afterpage}\pkg{afterpage}
+% package). As a \env{longtable} is by definition large, it is best to put
 % it in a separate file, and \cs{input} it in the \cs{afterpage} command:
-% \CmdIndex{afterpage}\TTindex{afterpage}\CmdIndex{clearpage}%
+% \CmdIndex{afterpage}\PKGindex{afterpage}\CmdIndex{clearpage}%
 % \begin{code}
 % \afterpage{\input{mytable}}
 % \end{code}
@@ -4239,7 +4448,7 @@
 %
 % If you want your multipage figure to start at a lefthand-side
 % (even-numbered) page you can use a test in the \cs{afterpage} command
-% (using the \pkg{ifthen} package):
+% (using the \PKGindex{ifthen}\pkg{ifthen} package):
 % \CmdIndex{afterpage}
 % \CmdIndex{ifthenelse}
 % \begin{code}
@@ -4306,7 +4515,7 @@
 % \item It is clumsy to make the captions of all but the first part of the figure
 % \item It is hard to refer to the parts separately
 % \end{enumerate}
-% \TTindex{subcaption}%
+% \PKGindex{subcaption}%
 % For this the \pkg{subcaption} package comes to the rescue. First it
 % \CmdIndex{ContinuedFloat}%
 % has a \cs{ContinuedFloat} command to indicate that a figure is a
@@ -4448,9 +4657,9 @@
 %
 % \begin{function}{\fancyplain}
 % \PSindex{fancyplain}
-% There was also a special pagestyle \texttt{fancyplain} that could be
-% used to define both the pagestyle \texttt{fancy} and to redefine the
-% pagestyle \texttt{plain} at the same time. In order to use that you say
+% There was also a special page style \texttt{fancyplain} that could be
+% used to define both the page style \texttt{fancy} and to redefine the
+% page style \texttt{plain} at the same time. In order to use that you say
 % \begin{code}
 % \pagestyle{fancyplain}
 % \end{code}
@@ -4460,8 +4669,8 @@
 %              {value for other pages}}}
 % \end{code}
 %
-% The \cs{fancyplain} command is only useful within the pagestyle \texttt{fancyplain}.
-% Nowadays you would just redefine pagestyle \texttt{plain} with the
+% The \cs{fancyplain} command is only useful within the page style \texttt{fancyplain}.
+% Nowadays you would just redefine page style \texttt{plain} with the
 % \Cmd{fancypagestyle\{plain\}\{xxxx\}} command (see section~\ref{sec:pagestyle-plain}).
 % \end{function}
 %
@@ -4469,8 +4678,8 @@
 % There are also \cs{plainheadrulewidth} and \cs{plainfootrulewidth}
 % commands to define the values of \cs{headrulewidth} and
 % \cs{footrulewidth} to be used on `\texttt{plain}' pages. This also
-% only works with the pagestyle \texttt{fancyplain}, not when you
-% redefine pagestyle \texttt{plain} with the \cs{fancypagestyle} command.
+% only works with the page style \texttt{fancyplain}, not when you
+% redefine page style \texttt{plain} with the \cs{fancypagestyle} command.
 % \end{variable}
 %
 % \end{documentation}
@@ -4565,7 +4774,7 @@
 %   \item The \cs{fancyheadinit}, \cs{fancyfootinit}, and
 %     \cs{fancyhfinit} commands.
 %   \item[] \textbf{Note:} The following changes were mostly copied from the
-%     \pkg{nccfancyhdr} package by Alexander I. Rozhenko.
+%     \PKGindex{nccfancyhdr}\pkg{nccfancyhdr} package by Alexander I. Rozhenko.
 %   \item The \cs{fancycenter} command (section~\ref{sec:fancycenter}).
 %   \item The \texttt{headings} and \texttt{myheadings} package options
 %     (see section~\ref{sec:options}).
@@ -4643,7 +4852,7 @@
 %
 % \subsection{Changes in version 5}
 % \label{sec:version-5}
-% Version 5 adds a number of new features. Most notable is a new
+% Version 5 adds several new features. Most notable is a new
 % implementation of the \pkg{extramarks} package, which now has
 % independent marks.
 %
@@ -4662,6 +4871,7 @@
 %   \item Added command \cs{fancyfootalign}.
 %   \item Added command \cs{fancyhdrbox} (section~\ref{sec:fancyhdrbox}).
 %   \item Added command \cs{fancypagestyleassign} (section~\ref{sec:fancypagestyleassign}).
+%   \item Many documentation improvements.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -4813,7 +5023,7 @@
 %
 % \subsection{Using automatic truncation}
 %
-% For this solution we use the \pkg{truncate} package by Donald
+% For this solution we use the \PKGindex{truncate}\pkg{truncate} package by Donald
 % Arseneau. This has a \cs{truncate}\CmdIndex{truncate} command that
 % truncates a text to a maximum size, when it exceeds that size. We put
 % both headers in \cs{truncate} to limit it to half the \cs{headwidth}.
@@ -4867,13 +5077,13 @@
 % What can I do in order to reestablish the right behavior of the
 % \texttt{fancy} style?''
 %
-% The solution to this problem is actually very simple. The pagestyle
+% The solution to this problem is actually very simple. The page style
 % \texttt{myheadings} (as well as \texttt{headings}\PSindex{headings}) redefines the
-% \cs{chaptermark} and \cs{sectionmark}, so when you return to pagestyle
+% \cs{chaptermark} and \cs{sectionmark}, so when you return to page style
 % \texttt{fancy}, the definitions you had given before (or the ones that
 % \pkg{fancyhdr} provided) are lost. You
 % just have to repeat them at the point where you switch back to
-% pagestyle \texttt{fancy}.
+% page style \texttt{fancy}.
 %
 % \begin{code}
 % \begin{document}
@@ -4944,7 +5154,7 @@
 % \section{I want the first section and the first subsection in my headers}
 % \label{sec:firstsubsection}
 %
-% A question that is regularly asked (e.g.\ on
+% A question that is regularly asked (e.g., on
 % \texttt{tex.stackexchange.com}\footnote{See for example
 % \url{https://tex.stackexchange.com/q/586066/113546}}) is how to get
 % both the first section title and the first subsection title in the
@@ -5060,7 +5270,7 @@
 % pagebreak. It is tricky to detect this situation, but we will propose
 % a solution at the end of the current section.
 % So the new code for the right header becomes the following. We use the
-% package \TTindex{ifthen}\pkg{ifthen} for the test.
+% package \PKGindex{ifthen}\pkg{ifthen} for the test.
 %
 % \Example{35}[(continued)]
 % \begin{example}
@@ -5105,7 +5315,7 @@
 % the page, so the test should be less strict than
 % \cs{pagetotal}=\texttt{0pt}. We might even choose to not inherit the
 % subsection title if only a few lines of the previous subsection are
-% present at the top of the page. Or maybe your design askr for no
+% present at the top of the page. Or maybe your design asks for no
 % inheritance if the subsection at the top of the page before the
 % section header is smaller than 1/3 of the page. The test would then be
 % \cs{pagetotal}$<$0.33\cs{pagegoal}. In the code below we choose a few
@@ -5117,7 +5327,7 @@
 % The next question is how to communicate the fact that the section
 % starts at (or near) to top of the page to the header. A simple way to
 % do this is to set the `\texttt{which}' mark to $-1$ instead of 0.
-% (Another way could be to define a special pagestyle that does not do
+% (Another way could be to define a special page style that does not do
 % the inheritance, and activate that with \cs{thispagestyle}.)
 %
 % \begin{code}
@@ -5198,6 +5408,7 @@
 % For more complicated forms you have to redefine \cs{headrule}. One
 % example has already been given in section~\ref{sec:fancy}, and we will
 % repeat it here:
+% \PKGindex{fourier-orns}
 % \begin{code}
 % \usepackage{fourier-orns}
 % ...
@@ -5214,6 +5425,7 @@
 % \raisebox{-2.1pt}[10pt][10pt]{\quad\decofourleft\decotwo\decofourright\quad}\hrulefill}
 %
 % Here a simple \cs{headrule}, but with color, and a bit thicker.
+% \PKGindex{xcolor}
 % \begin{code}
 % \usepackage{xcolor}
 % . . .
@@ -5475,7 +5687,7 @@
 % \changes{fancyhdr v3.8}{2016/09/06}{Reset \bsbs, \cs{raggedleft},
 % \cs{raggedright} and \cs{centering} to their default values to avoid a
 % clash with the tabu package.\\
-% Move the redefinition of \cs{@makecol} to \texttt{\cs{begin}\{document\}} to
+% Move the redefinition of \cs{@makecol} to \Cmd{begin\{document\}} to
 % avoid a clash with the \pkg{footmisc} package (and maybe others).\\
 % Define a working \cs{iffootnote} command.}
 %
@@ -5574,7 +5786,7 @@
 % \cs{@ifundefined} that avoids these problems, but not everybody may
 % have such a version installed. Therefore we define our own version
 % \cs{f@nch@ifundefined}.
-% This definition is copied from the \pkg{tocloft} package by Peter
+% This definition is copied from the \PKGindex{tocloft}\pkg{tocloft} package by Peter
 % Wilson and Will Robertson.
 %    \begin{macrocode}
 \newcommand{\f@nch@ifundefined}[1]{%
@@ -5590,7 +5802,8 @@
 % \changes{fancyhdr v4.0}{2019/03/17}{Added \texttt{headings} and
 % \texttt{myheadings} options.}
 % Standard styles are redefined optionally. These definitions are
-% borrowed from the \pkg{nccfancyhdr} package by by Alexander I. Rozhenko.
+% borrowed from the \PKGindex{nccfancyhdr}\pkg{nccfancyhdr} package
+% by by Alexander I. Rozhenko.
 %
 % \begin{macro}[internal]{\ps@myheadings}
 % The redefinition of the \texttt{myheadings} style is conditional.
@@ -5820,6 +6033,9 @@
           Please consider using the `twoside' option}%
   \fi\fi\fi
 }
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}[internal]{\f@nch@fancyhf}
 % \changes{fancyhdr v4.0.2}{2022/05/10}{Make \cs{f@nch@fancyhf} \cs{long}.}
 % \changes{fancyhdr v4.1}{2022/09/06}{Implement \texttt{twoside} option.}
@@ -6182,7 +6398,7 @@
 \def\f@nch@center#1[#2]#3#4#5{%
 %    \end{macrocode}
 % At first, we execute the case when the \meta{center-field} is empty\footnote{%
-% This code is reused from the \pkg{nccfancyhdr} by Alexander I. Rozhenko}:
+% This code is reused from the \PKGindex{nccfancyhdr}\pkg{nccfancyhdr} package by Alexander I. Rozhenko}:
 %    \begin{macrocode}
   \def\@tempa{#4}\ifx\@tempa\@empty
     \hbox to\linewidth{\color@begingroup{#3}\hfil {#5}\color@endgroup}%
@@ -6403,7 +6619,7 @@
         Make it at least \the\ht0, for example:\MessageBreak
         \string\setlength{\string#1}{\the\ht0}%
 %    \end{macrocode}
-% If the \texttt{[compatV3} option was given (and not
+% If the \texttt{[compatV3]} option was given (and not
 % \texttt{[nocheck]}), we will also change the
 % \cs{headheight}/\cs{footskip} globally below, and announce this in the warning message.
 %    \begin{macrocode}
@@ -6519,7 +6735,7 @@
 %   the parameter, as is usual in a \cs{parbox}, for backwards compatibility.}
 % \changes{fancyhdr v4.5}{2024/12/05}{Hooks added}
 % We put the \cs{footrule} in a \cs{vbox} to accommodate for flexible
-% footrules (e.g.\ using \cs{hrulefill}), so that the \cs{headwidth} will
+% footrules (e.g., using \cs{hrulefill}), so that the \cs{headwidth} will
 % be used as the line width. But to preserve the vertical spacing we
 % then \cs{unvbox} this box.
 %
@@ -6566,7 +6782,7 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\@chapapp}
-% Define \cs{@chapapp} for classes that don't have it, e.g.\ amsbook
+% Define \cs{@chapapp} for classes that don't have it, e.g., amsbook
 %    \begin{macrocode}
 \f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}%
 %    \end{macrocode}
@@ -6575,7 +6791,7 @@
 % \changes{fancyhdr v4.0}{2019/03/21}{Put all the initialisation code in
 % \cs{f@nch@initialise}}
 % This macro initialises the headers and footers and \cs{chaptermark}
-% and/or \Cmd{[sub]sectionmark} for pagestyle \texttt{fancy}
+% and/or \Cmd{[sub]sectionmark} for page style \texttt{fancy}
 %    \begin{macrocode}
 \def\f@nch@initialise{%
 %    \end{macrocode}
@@ -6652,7 +6868,7 @@
 %
 % \begin{macro}[internal]{\ps@f@nch@fancyproto}
 % \cs{ps@f@nch@fancyproto} is the
-% initial value for pagestyle \texttt{fancy}. The real page style
+% initial value for page style \texttt{fancy}. The real page style
 % is \cs{ps@f@nch@fancycore} but \cs{ps@f@nch@fancyproto} for the first use
 % of \Cmd{pagestyle\{fancy\}} or any of its derivatives. It
 % initialises \cs{headwidth}, and then resets itself to
@@ -6685,7 +6901,7 @@
   \@fancyplainfalse\ps@f@nch@fancycore
 }%
 %    \end{macrocode}
-% Let the system know this is a \pkg{fancyhdr} pagestyle.
+% Let the system know this is a \pkg{fancyhdr} page style.
 %    \begin{macrocode}
 \@namedef{f@nch@ps@f@nch@fancyproto-is-fancyhdr}{}
 %    \end{macrocode}
@@ -6699,7 +6915,7 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\ps@fancyplain}
-% The pagestyle \texttt{fancyplain} (deprecated).
+% The page style \texttt{fancyplain} (deprecated).
 % After initializing by calling \cs{ps@f@nch@fancyproto} it sets page style
 % \texttt{plain} to our version \cs{ps@plain@fancy}, which just sets
 % \cs{@fancyplaintrue} and then calls the page style fancy implementation.
@@ -6711,7 +6927,7 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\f@nch@ps@empty}
-% Save the definition of \cs{ps@empty} (pagestyle \texttt{empty}).
+% Save the definition of \cs{ps@empty} (page style \texttt{empty}).
 % \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@empty} to \cs{f@nch@ps@empty}}
 %
 %    \begin{macrocode}
@@ -6722,7 +6938,7 @@
 % \begin{macro}[internal]{\ps@f@nch@fancycore}
 % \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@fancy} to \cs{ps@f@nch@fancycore}}
 % \changes{fancyhdr v4.1}{2022/09/06}{Implement \texttt{twoside} option.}
-% The actual implementation of pagestyle \texttt{fancy}. For amsbook/amsart, which do
+% The actual implementation of page style \texttt{fancy}. For amsbook/amsart, which do
 % strange things with \cs{topskip}, we start with \cs{f@nch@ps@empty}. We
 % construct the even and odd headers and footers from all the parts that
 % we have collected.
@@ -6827,7 +7043,7 @@
 % to make it easier to pick up these macros for \cs{fancypagestyle*}}
 % Set the offset parts to be used in the construction of the headers and
 % footers. Depending on \cs{f@nch@gbl} it will be done globally (for
-% pagestyle \texttt{fancy}) in \texttt{compatV3} mode)
+% page style \texttt{fancy}) in \texttt{compatV3} mode)
 % or locally (for \cs{fancypagestyle}).
 % The macros \Cmd{f@nch@Oxyz} tell what should be done at the various
 % ends of the headers/footers. They are done with \cs{def} rather than
@@ -6857,7 +7073,7 @@
 % and \cs{f@nch@botfloat}.}
 %   Redefine \cs{@makecol} so that we can capture if there are
 %   top/bottom floats, footnotes or if we are on a float page. Because
-%   of a clash with the footmisc package we do this at
+%   of a clash with the \PKGindex{footmisc}\pkg{footmisc} package we do this at
 %   \verb+\begin{document}+.\\
 %   We need a boolean \cs{iff@nch@footnote} to capture if there was a footnote.
 %
