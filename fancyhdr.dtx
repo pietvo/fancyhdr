@@ -494,6 +494,19 @@
 % \ref{sec:headwidth} for more details.
 % \end{function}
 %
+% \begin{function}{\fancyheadwidth,\fancyfootwidth,\fancyhfwidth}
+% \begin{syntax}
+%   \cmd{\fancyheadwidth}\oarg{places}\marg{length} \\
+%   \cmd{\fancyfootwidth}\oarg{places}\marg{length} \\
+%   \cmd{\fancyhfwidth}\oarg{places}\marg{length}
+% \end{syntax}
+% These define widths for the header and footer fields. The fields will
+% be typeset in a \cs{parbox} of this width, which can be different for
+% each \emph{place}. If the width of a field is not specified, it
+% defaults to \cs{headwidth}, which may cause them to overlap. See
+% section~\ref{sec:field-width} for more details.
+% \end{function}
+%
 % \begin{variable}{\headrulewidth, \footrulewidth, \headruleskip,
 %                  \footruleskip, \headwidth}
 % \cs{headrulewidth} and \cs{footrulewidth} are macros to define the
@@ -6210,6 +6223,101 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\fancyheadwidth, \fancyfootwidth, \fancyhfwidth}
+%   The commands for field widths.
+% \changes{fancyhdr v5.0}{2024/12/30}{New commands \cs{fancyheadwidth},
+% \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
+% Pick up the parameters,
+% and supply an 'h' (\cs{fancyheadwidth}) or 'f' (\cs{fancyfootwidth}).
+%    \begin{macrocode}
+\newcommand{\fancyheadwidth}[2][]{\f@nch@fancyhfwidth\fancyheadwidth h[#1]{#2}}%
+\newcommand{\fancyfootwidth}[2][]{\f@nch@fancyhfwidth\fancyfootwidth f[#1]{#2}}%
+\newcommand{\fancyhfwidth}[2][]{\f@nch@fancyhfwidth\fancyhfwidth {}[#1]{#2}}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\f@nch@fancyhfwdth}
+% This macro interprets the parameters for the header and footer field
+% widths.\\
+% Parameters:\\
+% (1) The user command that was used (like \cs{fancyheadwidth}). This is used
+% for errors/warnings.\\
+% (2) \texttt{h} (for \cs{fancyheadwidth}), \texttt{f} (for \cs{fancyfootwidth}),
+% or \texttt{\{\}} (for \cs{fancyhfwidth}).\\
+% (3) The optional parameter that was given to these commands (default \texttt{[]}).\\
+% (4) The required parameter that was given to these commands.\\
+%   The header and footer field widths are stored in command sequences with
+%   names of the form: \cs{f@nch@width@}\meta{x}\meta{y}\meta{z} with \meta{x} from
+%   \texttt{[eo]}, \meta{y} from \texttt{[lcr]} and \meta{z} from \texttt{[hf]}.
+%
+% First we assign the \meta{width} argument to a temporary length
+% variable, to check if it is a legal \meta{length}. Then we store the
+% \meta{width} in variables for all the specified places.
+%
+%    \begin{macrocode}
+\def\f@nch@fancyhfwidth#1#2[#3]#4{%
+  \setlength\@tempdima{#4}%
+  \def\temp@c{}%
+  \f@nch@forc\tmpf@ra{#3}%
+  {\expandafter\f@nch@ifin\tmpf@ra{eolcrhf,EOLCRHF}%
+    {}{\edef\temp@c{\temp@c\tmpf@ra}}}%
+  \ifx\@empty\temp@c\else \PackageError{fancyhdr}{Illegal char `\temp@c' in
+    \string#1 argument: [#3]}{}%
+  \fi \f@nch@for\temp@c{#3}%
+  {\f@nch@default\f@nch@@eo{eo}\temp@c
+    \f@nch@fancyhf@Echeck{#1}%
+    \f@nch@default\f@nch@@lcr{lcr}\temp@c
+    \f@nch@default\f@nch@@hf{hf}{#2\temp@c}%
+    \f@nch@forc\f@nch@eo\f@nch@@eo
+        {\f@nch@forc\f@nch@lcr\f@nch@@lcr
+          {\f@nch@forc\f@nch@hf\f@nch@@hf
+            {\expandafter\def\csname
+              f@nch@width@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#4}}}}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\f@nch@width@elh}
+% \begin{macro}[internal]{\f@nch@width@ech}
+% \begin{macro}[internal]{\f@nch@width@erh}
+% \begin{macro}[internal]{\f@nch@width@olh}
+% \begin{macro}[internal]{\f@nch@width@och}
+% \begin{macro}[internal]{\f@nch@width@orh}
+% \begin{macro}[internal]{\f@nch@width@elf}
+% \begin{macro}[internal]{\f@nch@width@ecf}
+% \begin{macro}[internal]{\f@nch@width@erf}
+% \begin{macro}[internal]{\f@nch@width@olf}
+% \begin{macro}[internal]{\f@nch@width@ocf}
+% \begin{macro}[internal]{\f@nch@width@orf}
+% Length parameters for the widths. These are stored as macros. They are
+% calculated as lengths when the header/footer is built.
+%
+%    \begin{macrocode}
+\def\f@nch@width@elh{\headwidth}
+\def\f@nch@width@ech{\headwidth}
+\def\f@nch@width@erh{\headwidth}
+\def\f@nch@width@olh{\headwidth}
+\def\f@nch@width@och{\headwidth}
+\def\f@nch@width@orh{\headwidth}
+\def\f@nch@width@elf{\headwidth}
+\def\f@nch@width@ecf{\headwidth}
+\def\f@nch@width@erf{\headwidth}
+\def\f@nch@width@olf{\headwidth}
+\def\f@nch@width@ocf{\headwidth}
+\def\f@nch@width@orf{\headwidth}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
 % \begin{macro}{\lhead}
 % \changes{fancyhdr v3.9}{2016/10/12}{Let \cs{newcommand} do the
 % handling of the optional parameter.}
@@ -6767,10 +6875,13 @@
 %   \cs{color} command. The \cs{ignorespaces} skips initial spaces in
 %   the parameter, as is usual in a \cs{parbox}, for backwards compatibility.}
 % \changes{fancyhdr v4.5}{2024/12/05}{Hooks added}
-%   Put together a header or footer given the left, center and right
-%   text, fillers at left and right and a rule. The \cs{xlap} commands put
+% \changes{fancyhdr v5.0}{2024/12/30}{Support for \cs{fancyheadwidth},
+% \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
+%   Put together a header (\cs{f@nch@head}) or footer (\cs{f@nch@foot})
+%   given the left, center and right text and their widths,
+%   fillers at left and right and a rule. The \cs{xlap} commands put
 %   the text into an hbox of zero size, so overlapping text does not
-%   generate an errormessage.\\ These macros have 5 parameters:\\
+%   generate an errormessage.\\ These macros have 8 parameters:\\
 %   1. LEFTSIDE BEARING.  This determines at which side the header will stick
 %   out. When \cs{fancyhfoffset} is used this calculates \cs{headwidth},
 %   otherwise it is \cs{hss} or \cs{relax} (after expansion). \\
@@ -6782,6 +6893,8 @@
 %   This is the right component. \\
 %   5. RIGHTSIDE BEARING. This is always \cs{relax} or \cs{hss}
 %   (after expansion).\\
+%   6-8. The specified widths for the left, center and right fields.
+%
 % Before constructing the header or footer, the environment is reset to
 % a known state, the appropriate hooks (\texttt{fancyhdr/before} and
 % \TTindex{fancyhdr/before}%
@@ -6795,20 +6908,21 @@
 % \TTindex{fancyhdr/after}%
 % \texttt{fancyhdr/after}) are run.
 %    \begin{macrocode}
-\newcommand\f@nch@head[5]{%
+\newcommand\f@nch@head[8]{%
   \f@nch@reset
   \ifdefined\UseHook\UseHook{fancyhdr/before}\UseHook{fancyhdr/head/begin}\fi
   \f@nch@headinit\relax
   #1%
   \hbox to\headwidth{%
     \f@nch@vbox\headheight{%
-      \hbox{%
-        \rlap{\parbox[b]{\headwidth}{\raggedright\leavevmode\ignorespaces#2}}%
-        \hfill
-        \parbox[b]{\headwidth}{\centering\leavevmode\ignorespaces#3}%
-        \hfill
-        \llap{\parbox[b]{\headwidth}{\raggedleft\leavevmode\ignorespaces#4}}%
-      }%
+      \f@nch@hfbox{#2}{#3}{#4}{b}{#6}{#7}{#8}%
+      % \hbox{%
+      %   \rlap{\parbox[b]{\headwidth}{\raggedright\leavevmode\ignorespaces#2}}%
+      %   \hfill
+      %   \parbox[b]{\headwidth}{\centering\leavevmode\ignorespaces#3}%
+      %   \hfill
+      %   \llap{\parbox[b]{\headwidth}{\raggedleft\leavevmode\ignorespaces#4}}%
+      % }%
       \vskip\headruleskip\relax
       \headrule
     }%
@@ -6833,13 +6947,15 @@
 %   \cs{color} command. The \cs{ignorespaces} skips initial spaces in
 %   the parameter, as is usual in a \cs{parbox}, for backwards compatibility.}
 % \changes{fancyhdr v4.5}{2024/12/05}{Hooks added}
+% \changes{fancyhdr v5.0}{2024/12/30}{Support for \cs{fancyheadwidth},
+% \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
 % We put the \cs{footrule} in a \cs{vbox} to accommodate for flexible
 % footrules (e.g., using \cs{hrulefill}), so that the \cs{headwidth} will
 % be used as the line width. But to preserve the vertical spacing we
 % then \cs{unvbox} this box.
 %
 %    \begin{macrocode}
-\newcommand\f@nch@foot[5]{%
+\newcommand\f@nch@foot[8]{%
   \f@nch@reset
   \ifdefined\UseHook\UseHook{fancyhdr/before}\UseHook{fancyhdr/foot/begin}\fi
   \f@nch@footinit\relax
@@ -6848,13 +6964,14 @@
     \f@nch@vbox\footskip{%
       \setbox0=\vbox{\footrule}\unvbox0
       \vskip\footruleskip
-      \hbox{%
-        \rlap{\parbox[t]{\headwidth}{\raggedright\leavevmode\ignorespaces#2}}%
-        \hfill
-        \parbox[t]{\headwidth}{\centering\leavevmode\ignorespaces#3}%
-        \hfill
-        \llap{\parbox[t]{\headwidth}{\raggedleft\leavevmode\ignorespaces#4}}%
-      }%
+      \f@nch@hfbox{#2}{#3}{#4}{t}{#6}{#7}{#8}%
+      % \hbox{%
+      %   \rlap{\parbox[t]{\headwidth}{\raggedright\leavevmode\ignorespaces#2}}%
+      %   \hfill
+      %   \parbox[t]{\headwidth}{\centering\leavevmode\ignorespaces#3}%
+      %   \hfill
+      %   \llap{\parbox[t]{\headwidth}{\raggedleft\leavevmode\ignorespaces#4}}%
+      % }%
 %    \end{macrocode}
 % \changes{fancyhdr v5.0}{2024/05/13}{\cs{vskip}\meta{length}
 %  added if \cs{fancyfootalign}\protect\marg{length} was given.}
@@ -6868,6 +6985,21 @@
 }
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
+%
+% \begin{macro}[internal]{\f@nch@hfbox}
+%    \begin{macrocode}
+\newcommand\f@nch@hfbox[7]{%
+      % TODO: Check first if the boxes fit
+      \hbox{%
+        \rlap{\parbox[#4]{#5}{\raggedright\leavevmode\ignorespaces#1}}%
+        \hfill
+        \parbox[#4]{#6}{\centering\leavevmode\ignorespaces#2}%
+        \hfill
+        \llap{\parbox[#4]{#7}{\raggedleft\leavevmode\ignorespaces#3}}%
+      }%
+}
+%    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}[internal]{\MakeUppercase}
@@ -7037,6 +7169,8 @@
 % \begin{macro}[internal]{\ps@f@nch@fancycore}
 % \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@fancy} to \cs{ps@f@nch@fancycore}}
 % \changes{fancyhdr v4.1}{2022/09/06}{Implement \texttt{twoside} option.}
+% \changes{fancyhdr v5.0}{2024/12/30}{Support for \cs{fancyheadwidth},
+% \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
 % The actual implementation of page style \texttt{fancy}. For amsbook/amsart, which do
 % strange things with \cs{topskip}, we start with \cs{f@nch@ps@empty}. We
 % construct the even and odd headers and footers from all the parts that
@@ -7045,7 +7179,8 @@
 \def\ps@f@nch@fancycore{%
   \f@nch@ps@empty
   \def\@mkboth{\protect\markboth}%
-  \def\f@nch@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh}%
+  \def\f@nch@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh
+                     \f@nch@width@olh\f@nch@width@och\f@nch@width@orh}%
   \def\@oddhead{%
     \iff@nch@twoside
       \ifodd\c@page
@@ -7057,7 +7192,8 @@
       \f@nch@oddhead
     \fi
   }
-  \def\f@nch@oddfoot{\f@nch@foot\f@nch@Oolf\f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@Oorf}%
+  \def\f@nch@oddfoot{\f@nch@foot\f@nch@Oolf\f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@Oorf
+                     \f@nch@width@olf\f@nch@width@ocf\f@nch@width@orf}%
   \def\@oddfoot{%
     \iff@nch@twoside
       \ifodd\c@page
@@ -7069,8 +7205,10 @@
       \f@nch@oddfoot
     \fi
   }
-  \def\@evenhead{\f@nch@head\f@nch@Oelh\f@nch@elh\f@nch@ech\f@nch@erh\f@nch@Oerh}%
-  \def\@evenfoot{\f@nch@foot\f@nch@Oelf\f@nch@elf\f@nch@ecf\f@nch@erf\f@nch@Oerf}%
+  \def\@evenhead{\f@nch@head\f@nch@Oelh\f@nch@elh\f@nch@ech\f@nch@erh\f@nch@Oerh
+                 \f@nch@width@elh\f@nch@width@ech\f@nch@width@erh}%
+  \def\@evenfoot{\f@nch@foot\f@nch@Oelf\f@nch@elf\f@nch@ecf\f@nch@erf\f@nch@Oerf
+                 \f@nch@width@elf\f@nch@width@ecf\f@nch@width@erf}%
 }
 %    \end{macrocode}
 % \end{macro}
