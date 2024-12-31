@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2024/12/25 v5.0beta
+%<fancyhdr|extramarks>           [2024/12/31 v5.0beta
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -1675,6 +1675,7 @@
 % The information that is picked up consists of:
 % \begin{itemize}
 % \item The header and footer fields in all variants (EO,LRC,HF) (12 items)
+% \item The header and footer field widths in all variants (EO,LRC,HF) (12 items)
 % \item The header and footer offsets (EO,LR,HF) (8 items), see
 % section~\ref{sec:book-examples} and~\ref{sec:headwidth}
 % \item The header and footer init values (2 items), see section~\ref{sec:curpagestyle}
@@ -4969,7 +4970,7 @@
 % independent marks.
 %
 % \begin{itemize}
-% \item Version 5.0, Feb 11, 2021-Dec 25, 2024
+% \item Version 5.0, Feb 11, 2021-Dec 31, 2024
 %   \begin{itemize}
 %   \item Shorten Warning message about \cs{headheight}/\cs{footskip} too large.
 %   \item If the option \texttt{[nocheck]} is given, just keep quiet and
@@ -4983,6 +4984,8 @@
 %   \item Added command \cs{fancyfootalign}.
 %   \item Added command \cs{fancyhdrbox} (section~\ref{sec:fancyhdrbox}).
 %   \item Added command \cs{fancypagestyleassign} (section~\ref{sec:fancypagestyleassign}).
+%   \item Added commands  \cs{fancyheadwidth}, \cs{fancyfootwidth} and
+%     \cs{fancyhfwidth} (section~\ref{sec:field-width}).
 %   \item Many documentation improvements.
 %   \end{itemize}
 % \end{itemize}
@@ -6225,7 +6228,7 @@
 %
 % \begin{macro}{\fancyheadwidth, \fancyfootwidth, \fancyhfwidth}
 %   The commands for field widths.
-% \changes{fancyhdr v5.0}{2024/12/30}{New commands \cs{fancyheadwidth},
+% \changes{fancyhdr v5.0}{2025/01/01}{New commands \cs{fancyheadwidth},
 % \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
 % Pick up the parameters,
 % and supply an 'h' (\cs{fancyheadwidth}) or 'f' (\cs{fancyfootwidth}).
@@ -6236,7 +6239,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[internal]{\f@nch@fancyhfwdth}
+% \begin{macro}[internal]{\f@nch@fancyhfwidth}
 % This macro interprets the parameters for the header and footer field
 % widths.\\
 % Parameters:\\
@@ -6875,7 +6878,7 @@
 %   \cs{color} command. The \cs{ignorespaces} skips initial spaces in
 %   the parameter, as is usual in a \cs{parbox}, for backwards compatibility.}
 % \changes{fancyhdr v4.5}{2024/12/05}{Hooks added}
-% \changes{fancyhdr v5.0}{2024/12/30}{Support for \cs{fancyheadwidth},
+% \changes{fancyhdr v5.0}{2025/01/01}{Support for \cs{fancyheadwidth},
 % \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
 %   Put together a header (\cs{f@nch@head}) or footer (\cs{f@nch@foot})
 %   given the left, center and right text and their widths,
@@ -6916,13 +6919,6 @@
   \hbox to\headwidth{%
     \f@nch@vbox\headheight{%
       \f@nch@hfbox{#2}{#3}{#4}{b}{#6}{#7}{#8}%
-      % \hbox{%
-      %   \rlap{\parbox[b]{\headwidth}{\raggedright\leavevmode\ignorespaces#2}}%
-      %   \hfill
-      %   \parbox[b]{\headwidth}{\centering\leavevmode\ignorespaces#3}%
-      %   \hfill
-      %   \llap{\parbox[b]{\headwidth}{\raggedleft\leavevmode\ignorespaces#4}}%
-      % }%
       \vskip\headruleskip\relax
       \headrule
     }%
@@ -6947,7 +6943,7 @@
 %   \cs{color} command. The \cs{ignorespaces} skips initial spaces in
 %   the parameter, as is usual in a \cs{parbox}, for backwards compatibility.}
 % \changes{fancyhdr v4.5}{2024/12/05}{Hooks added}
-% \changes{fancyhdr v5.0}{2024/12/30}{Support for \cs{fancyheadwidth},
+% \changes{fancyhdr v5.0}{2025/01/01}{Support for \cs{fancyheadwidth},
 % \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
 % We put the \cs{footrule} in a \cs{vbox} to accommodate for flexible
 % footrules (e.g., using \cs{hrulefill}), so that the \cs{headwidth} will
@@ -6965,13 +6961,6 @@
       \setbox0=\vbox{\footrule}\unvbox0
       \vskip\footruleskip
       \f@nch@hfbox{#2}{#3}{#4}{t}{#6}{#7}{#8}%
-      % \hbox{%
-      %   \rlap{\parbox[t]{\headwidth}{\raggedright\leavevmode\ignorespaces#2}}%
-      %   \hfill
-      %   \parbox[t]{\headwidth}{\centering\leavevmode\ignorespaces#3}%
-      %   \hfill
-      %   \llap{\parbox[t]{\headwidth}{\raggedleft\leavevmode\ignorespaces#4}}%
-      % }%
 %    \end{macrocode}
 % \changes{fancyhdr v5.0}{2024/05/13}{\cs{vskip}\meta{length}
 %  added if \cs{fancyfootalign}\protect\marg{length} was given.}
@@ -6987,18 +6976,95 @@
 % \end{macro}
 % \end{macro}
 %
+% \begin{macro}[internal]{\f@nch@widthL, \f@nch@widthC, \f@nch@widthR}
+% Length variables to store the field widths during construction of the
+% header/footer.
+%    \begin{macrocode}
+\newlength\f@nch@widthL
+\newlength\f@nch@widthC
+\newlength\f@nch@widthR
+%    \end{macrocode}
+%
+% \end{macro}
 % \begin{macro}[internal]{\f@nch@hfbox}
+% This macro constructs the box with the header or footer. It has 7 parameters:\\
+% 1. Left field\\
+% 2. Center field\\
+% 3. Right field\\
+% 4. Vertical alignment: \texttt{b} for the header or \texttt{t} for the footer\\
+% 5-7. Widths for the left, center and right fields.
+%
+% Algorithm:\\
+% First we store the field widths in length variables.\\
+% If the sum of the field widths > \cs{headwidth}: the center field is
+% centered in the header/footer, and the left and right fields are put
+% in an \cs{\meta{x}lap} to prevent error messages about overlapping.\\
+% Otherwise, if there is no overlap between the fields, also put the
+% center field centered in the header/footer. This is done by the macro
+% \cs{f@nch@hfbox@center}\\
+% Otherwise (there is enough space, but centering would cause overlap):\\
+% put the center field centered between the left and right field, i.e.
+% with equal gaps on both sides. This is done by the macro
+% \cs{f@nch@hfbox@fit}.
+%
 %    \begin{macrocode}
 \newcommand\f@nch@hfbox[7]{%
-      % TODO: Check first if the boxes fit
-      \hbox{%
-        \rlap{\parbox[#4]{#5}{\raggedright\leavevmode\ignorespaces#1}}%
-        \hfill
-        \parbox[#4]{#6}{\centering\leavevmode\ignorespaces#2}%
-        \hfill
-        \llap{\parbox[#4]{#7}{\raggedleft\leavevmode\ignorespaces#3}}%
-      }%
+  \setlength\f@nch@widthL{#5}%
+  \setlength\f@nch@widthC{#6}%
+  \setlength\f@nch@widthR{#7}%
+  \let\@tempa\f@nch@hfbox@center
+  \ifdim \dimexpr \f@nch@widthL+\f@nch@widthC+\f@nch@widthR>\headwidth
+  \else
+    \ifdim \dimexpr \f@nch@widthL+0.5\f@nch@widthC>0.5\headwidth
+      \let \@tempa\f@nch@hfbox@fit
+    \fi
+    \ifdim \dimexpr \f@nch@widthR+0.5\f@nch@widthC>0.5\headwidth
+      \let \@tempa\f@nch@hfbox@fit
+    \fi
+  \fi
+  \@tempa{#1}{#2}{#3}{#4}%
 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\f@nch@hfbox@center}
+% This macro constructs the box with the header or footer. This is the
+% version that centers the center field in the total header/footer.
+% It has 4 parameters:\\
+% 1. Left field\\
+% 2. Center field\\
+% 3. Right field\\
+% 4. Vertical alignment: \texttt{b} for the header or \texttt{t} for the footer\\
+%    \begin{macrocode}
+\newcommand\f@nch@hfbox@center[4]{%
+  \hbox to \headwidth{%
+    \rlap{\parbox[#4]{\f@nch@widthL}{\raggedright\leavevmode\ignorespaces#1}}%
+    \hfill
+    \parbox[#4]{\f@nch@widthC}{\centering\leavevmode\ignorespaces#2}%
+    \hfill
+    \llap{\parbox[#4]{\f@nch@widthR}{\raggedleft\leavevmode\ignorespaces#3}}%
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}[internal]{\f@nch@hfbox@fit}
+% This macro constructs the box with the header or footer. This is the
+% version that centers the center field between the left and right fields.
+% It has 4 parameters:\\
+% 1. Left field\\
+% 2. Center field\\
+% 3. Right field\\
+% 4. Vertical alignment: \texttt{b} for the header or \texttt{t} for the footer\\
+%    \begin{macrocode}
+\newcommand\f@nch@hfbox@fit[4]{%
+  \hbox to \headwidth{%
+    \parbox[#4]{\f@nch@widthL}{\raggedright\leavevmode\ignorespaces#1}%
+    \hfill
+    \parbox[#4]{\f@nch@widthC}{\centering\leavevmode\ignorespaces#2}%
+    \hfill
+    \parbox[#4]{\f@nch@widthR}{\raggedleft\leavevmode\ignorespaces#3}%
+  }%
+}%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -7169,7 +7235,7 @@
 % \begin{macro}[internal]{\ps@f@nch@fancycore}
 % \changes{fancyhdr v4.0}{2019/03/21}{Rename \cs{ps@@fancy} to \cs{ps@f@nch@fancycore}}
 % \changes{fancyhdr v4.1}{2022/09/06}{Implement \texttt{twoside} option.}
-% \changes{fancyhdr v5.0}{2024/12/30}{Support for \cs{fancyheadwidth},
+% \changes{fancyhdr v5.0}{2025/01/01}{Support for \cs{fancyheadwidth},
 % \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
 % The actual implementation of page style \texttt{fancy}. For amsbook/amsart, which do
 % strange things with \cs{topskip}, we start with \cs{f@nch@ps@empty}. We
@@ -7432,13 +7498,16 @@
     \iff@nch@check\@temptokenb={\f@nch@checktrue}\else\@temptokenb={\f@nch@checkfalse}\fi
 %    \end{macrocode}
 % Save values of all relevant macros (26 in total):\\
-% headers and footers (12), header and footer offsets (8),
-% header and footer inits (2),
+% headers and footers (12), header and footer widths (12),
+% header and footer offsets (8), header and footer inits (2),
 % \cs{headrule} and \cs{footrule} and \texttt{...width} (4)
 %    \begin{macrocode}
     \@tfor\temp@a:=
       \f@nch@olh\f@nch@och\f@nch@orh\f@nch@elh\f@nch@ech\f@nch@erh
       \f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@elf\f@nch@ecf\f@nch@erf
+      \f@nch@width@elh\f@nch@width@ech\f@nch@width@erh\f@nch@width@olh
+      \f@nch@width@och\f@nch@width@orh\f@nch@width@elf\f@nch@width@ecf
+      \f@nch@width@erf\f@nch@width@olf\f@nch@width@ocf\f@nch@width@orf
       \f@nch@Oolh\f@nch@Oorh\f@nch@Oelh\f@nch@Oerh
       \f@nch@Oolf\f@nch@Oorf\f@nch@Oelf\f@nch@Oerf
       \f@nch@headinit\f@nch@footinit

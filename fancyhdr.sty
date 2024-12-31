@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2024/12/25 v5.0beta
+           [2024/12/31 v5.0beta
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2024 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -421,13 +421,6 @@
   \hbox to\headwidth{%
     \f@nch@vbox\headheight{%
       \f@nch@hfbox{#2}{#3}{#4}{b}{#6}{#7}{#8}%
-      % \hbox{%
-      %   \rlap{\parbox[b]{\headwidth}{\raggedright\leavevmode\ignorespaces#2}}%
-      %   \hfill
-      %   \parbox[b]{\headwidth}{\centering\leavevmode\ignorespaces#3}%
-      %   \hfill
-      %   \llap{\parbox[b]{\headwidth}{\raggedleft\leavevmode\ignorespaces#4}}%
-      % }%
       \vskip\headruleskip\relax
       \headrule
     }%
@@ -445,29 +438,49 @@
       \setbox0=\vbox{\footrule}\unvbox0
       \vskip\footruleskip
       \f@nch@hfbox{#2}{#3}{#4}{t}{#6}{#7}{#8}%
-      % \hbox{%
-      %   \rlap{\parbox[t]{\headwidth}{\raggedright\leavevmode\ignorespaces#2}}%
-      %   \hfill
-      %   \parbox[t]{\headwidth}{\centering\leavevmode\ignorespaces#3}%
-      %   \hfill
-      %   \llap{\parbox[t]{\headwidth}{\raggedleft\leavevmode\ignorespaces#4}}%
-      % }%
     \iff@nch@footalign \vskip\f@nch@footalignment \fi
     }%
   }%
   #5%
   \ifdefined\UseHook\UseHook{fancyhdr/foot/end}\UseHook{fancyhdr/after}\fi
 }
+\newlength\f@nch@widthL
+\newlength\f@nch@widthC
+\newlength\f@nch@widthR
 \newcommand\f@nch@hfbox[7]{%
-      % TODO: Check first if the boxes fit
-      \hbox{%
-        \rlap{\parbox[#4]{#5}{\raggedright\leavevmode\ignorespaces#1}}%
-        \hfill
-        \parbox[#4]{#6}{\centering\leavevmode\ignorespaces#2}%
-        \hfill
-        \llap{\parbox[#4]{#7}{\raggedleft\leavevmode\ignorespaces#3}}%
-      }%
+  \setlength\f@nch@widthL{#5}%
+  \setlength\f@nch@widthC{#6}%
+  \setlength\f@nch@widthR{#7}%
+  \let\@tempa\f@nch@hfbox@center
+  \ifdim \dimexpr \f@nch@widthL+\f@nch@widthC+\f@nch@widthR>\headwidth
+  \else
+    \ifdim \dimexpr \f@nch@widthL+0.5\f@nch@widthC>0.5\headwidth
+      \let \@tempa\f@nch@hfbox@fit
+    \fi
+    \ifdim \dimexpr \f@nch@widthR+0.5\f@nch@widthC>0.5\headwidth
+      \let \@tempa\f@nch@hfbox@fit
+    \fi
+  \fi
+  \@tempa{#1}{#2}{#3}{#4}%
 }
+\newcommand\f@nch@hfbox@center[4]{%
+  \hbox to \headwidth{%
+    \rlap{\parbox[#4]{\f@nch@widthL}{\raggedright\leavevmode\ignorespaces#1}}%
+    \hfill
+    \parbox[#4]{\f@nch@widthC}{\centering\leavevmode\ignorespaces#2}%
+    \hfill
+    \llap{\parbox[#4]{\f@nch@widthR}{\raggedleft\leavevmode\ignorespaces#3}}%
+  }%
+}
+\newcommand\f@nch@hfbox@fit[4]{%
+  \hbox to \headwidth{%
+    \parbox[#4]{\f@nch@widthL}{\raggedright\leavevmode\ignorespaces#1}%
+    \hfill
+    \parbox[#4]{\f@nch@widthC}{\centering\leavevmode\ignorespaces#2}%
+    \hfill
+    \parbox[#4]{\f@nch@widthR}{\raggedleft\leavevmode\ignorespaces#3}%
+  }%
+}%
 \f@nch@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
 \f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}%
 \def\f@nch@initialise{%
@@ -617,6 +630,9 @@
     \@tfor\temp@a:=
       \f@nch@olh\f@nch@och\f@nch@orh\f@nch@elh\f@nch@ech\f@nch@erh
       \f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@elf\f@nch@ecf\f@nch@erf
+      \f@nch@width@elh\f@nch@width@ech\f@nch@width@erh\f@nch@width@olh
+      \f@nch@width@och\f@nch@width@orh\f@nch@width@elf\f@nch@width@ecf
+      \f@nch@width@erf\f@nch@width@olf\f@nch@width@ocf\f@nch@width@orf
       \f@nch@Oolh\f@nch@Oorh\f@nch@Oelh\f@nch@Oerh
       \f@nch@Oolf\f@nch@Oorf\f@nch@Oelf\f@nch@Oerf
       \f@nch@headinit\f@nch@footinit
