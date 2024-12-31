@@ -1194,6 +1194,155 @@
 % use  \Cmd{thispagestyle\{plain\}} for a simple page layout for
 % page~1.
 %
+% \section{Specifying the widths of the header and footer fields}
+% \label{sec:field-width}
+%
+% In \pkg{fancyhdr} version 5.0 and later you can specify the width of
+% each header and footer field individually. In older versions each of
+% the fields was typeset in a \cs{parbox} of width \cs{headwidth}, which
+% could cause them to overlap (see e.g., section~\ref{sec:longtitles}).
+%
+% In \pkg{fancyhdr} version 5.0 and later, this is still the default but
+% now you can override this with the commands \cs{fancyheadwidth},
+% \cs{fancyfootwidth} or \cs{fancyhfwidth}. These work exactly like the
+% \cs{fancyhead} etc. commands but instead of a header/footer value they
+% have a \meta{length} as parameter.
+%
+% \begin{syntax}
+%   \cmd{\fancyheadwidth}\oarg{places}\marg{length} \\
+%   \cmd{\fancyfootwidth}\oarg{places}\marg{length} \\
+%   \cmd{\fancyhfwidth}\oarg{places}\marg{length}
+% \end{syntax}
+% Field widths that are not specified default to \cs{headwidth}.
+%
+% NOTE: The widths will be stored as expressions, not as calculated
+% values. The values will be calculated when the header or footer is
+% constructed. So they can change, for example when different pages have
+% different \cs{headwidth} and you use e.g., \texttt{0.3\cs{headwidth}}
+% or another expression with a `variable' as value. Note, however, that
+% at definition time, the width is assigned to a temporary length
+% variable, to check if it is a legal \meta{length}. So any variables
+% used in it should have a value, although this may be different from
+% the value at its final use.
+%
+% The fields are typeset in a \cs{parbox} with the specified width or
+% the default \cs{headwidth}. It is still possible to get overlaps if
+% the sum of the width in a particular header or footer is larger than \cs{headwidth}.
+%
+% The fields will be positioned in a space of width \cs{headwidth} as
+% follows:
+% \begin{itemize}
+% \item the left field will be positioned at the left edge of this space
+% \item the right field will be positioned at the right edge of this space
+% \item the position of the center field by default will be in the
+% horizontal center of the header/footer. But it depends on the available space:\\[1ex]
+%   Let $W_L$, $W_C$, and $W_R$ be the width of the left, center and
+%   right field, respectively.
+%   \begin{itemize}
+%   \item if the total width of the three fields
+%     $ \sum_{i \in \{L, C, R\}}{W_i} > \cs{headwidth}$,
+%     the center field will be centered in the
+%     header/footer, i.e., its midpoint will be at
+%     $\frac{1}{2}\cs{headwidth}$ from each side.\\
+%     NOTE: this also includes the default situation if no widths are
+%     specified. This ensures that documents that don't specify widths
+%     get the same output as before version 5.0.
+%   \item otherwise ($ \sum_{i \in \{L, C, R\}}{W_i} \le \cs{headwidth}$):
+%   \item if there would be an overlap between any of the fields, i.e.,\\
+%     $ W_L +\frac{1}{2}W_C > \frac{1}{2}\cs{headwidth}$ or
+%     $ W_R +\frac{1}{2}W_C > \frac{1}{2}\cs{headwidth}$, then the
+%     center field will be centered between the left and right fields,
+%     with equal distances to both.
+%   \item otherwise (there is enough space, and no overlap), the center
+%     field is centered in the header/footer, like the first case above.
+%   \end{itemize}
+% \end{itemize}
+% Here are some examples. The header fields have a colored bar in them
+% that indicates their width.
+%
+% In the first example, the sum of the field widths $> \cs{headwidth}$,
+% so the center field will be in the center of the header, but there
+% will be overlaps.
+% \NoExample{testheadwidth\\(1.2)}
+% \begin{example}
+% \usepackage{fancyhdr}
+% \pagestyle{fancy}
+% \fancyhead[L]{llllll llllll llllll llllll llllll llllll llllll\\
+%               \color{red}\rule {\linewidth}{4mm}}
+% \fancyhead[C]{cccc cccc cc cc cccc cccc\\
+%               \color{green}\rule{\linewidth}{2mm}}
+% \fancyhead[R]{rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr\\
+%               \color{blue}\rule {\linewidth}{4mm}}
+% \fancyheadwidth[L]{0.3\headwidth}
+% \fancyheadwidth[C]{0.5\headwidth}
+% \fancyheadwidth[R]{0.4\headwidth}
+% \end{example}
+% \showheader{%
+% \setlength{\headheight}{40pt}
+% \fancyhead[L]{llllll llllll llllll llllll llllll llllll llllll\\
+%               \color{red}\rule {\linewidth}{5mm}}
+% \fancyhead[C]{cccc cccc cc cc cccc cccc\\
+%               \color{green}\rule{\linewidth}{3mm}}
+% \fancyhead[R]{rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr\\
+%               \color{blue}\rule {\linewidth}{2mm}}
+% \fancyheadwidth[L]{0.3\headwidth}
+% \fancyheadwidth[C]{0.5\headwidth}
+% \fancyheadwidth[R]{0.4\headwidth}
+% }
+%
+% In the second example, the sum of the field widths $\le \cs{headwidth}$.
+% And there is no overlap between the center field and the other ones
+% (the center and right fields just touch each other), so the center
+% field is still centered in the header.
+% \NoExample{testheadwidth\\(1.3)}
+% \begin{example}
+% \fancyheadwidth[L]{0.3\headwidth}
+% \fancyheadwidth[C]{0.2\headwidth}
+% \fancyheadwidth[R]{0.4\headwidth}
+% \end{example}
+% \showheader{%
+% \setlength{\headheight}{40pt}
+% \fancyhead[L]{llllll llllll llllll llllll llllll llllll llllll\\
+%               \color{red}\rule {\linewidth}{5mm}}
+% \fancyhead[C]{cccc cccc cc cc cccc cccc\\
+%               \color{green}\rule{\linewidth}{3mm}}
+% \fancyhead[R]{rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr\\
+%               \color{blue}\rule {\linewidth}{2mm}}
+% \fancyheadwidth[L]{0.3\headwidth}
+% \fancyheadwidth[C]{0.2\headwidth}
+% \fancyheadwidth[R]{0.4\headwidth}
+% }
+%
+% In the last example, the sum of the field widths still is $\le \cs{headwidth}$.
+% But there would be overlap between the center field and the right
+% field if the center field was centered horizontally in the
+% header. So now it is centered between the left and right fields.
+% \NoExample{testheadwidth\\(1.4)}
+% \begin{example}
+% \fancyheadwidth[L]{0.3\headwidth}
+% \fancyheadwidth[C]{0.25\headwidth}
+% \fancyheadwidth[R]{0.4\headwidth}
+% \end{example}
+% \showheader{%
+% \setlength{\headheight}{40pt}
+% \fancyhead[L]{llllll llllll llllll llllll llllll llllll llllll\\
+%               \color{red}\rule {\linewidth}{5mm}}
+% \fancyhead[C]{cccc cccc cc cc cccc cccc\\
+%               \color{green}\rule{\linewidth}{3mm}}
+% \fancyhead[R]{rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr\\
+%               \color{blue}\rule {\linewidth}{2mm}}
+% \fancyheadwidth[L]{0.3\headwidth}
+% \fancyheadwidth[C]{0.25\headwidth}
+% \fancyheadwidth[R]{0.4\headwidth}
+% }
+% \smallskip
+%
+% \textbf{NOTE:} The \cs{fancyheadwidth},
+% \cs{fancyfootwidth} and \cs{fancyhfwidth} commands are still
+% experimental. This means that they have not been thoroughly tested, so
+% there can still be bugs in them. And the implementation could change
+% in a following release. Use at your own risk, and please, report any bugs.
+%
 % \section{Fancy Centering}
 % \label{sec:fancycenter}
 %
@@ -1205,8 +1354,10 @@
 % The fields in a fancy header and footer are prepared using \cs{parbox}
 % command. So, you can use multiline fields. In the header, they are
 % aligned to the bottom line, but, in the footer, they are aligned to
-% the top line. The maximum width of every field is equal to the
-% \cs{headwidth}. This can lead to overlapping of neighbouring fields.
+% the top line. The maximum width of every field is by default equal to the
+% \cs{headwidth} (unless changed by the commands \cs{fancyheadwidth},
+% \cs{fancyfootwidth} or \cs{fancyhfwidth} from section~\ref{sec:field-width}.)
+% This can lead to overlapping of neighbouring fields.
 %
 % \CmdIndex{fancycenter}
 % If you want to prepare headers/footers in more traditional way in a line
@@ -7003,7 +7154,7 @@
 % center field centered in the header/footer. This is done by the macro
 % \cs{f@nch@hfbox@center}\\
 % Otherwise (there is enough space, but centering would cause overlap):\\
-% put the center field centered between the left and right field, i.e.
+% put the center field centered between the left and right field, i.e.,
 % with equal gaps on both sides. This is done by the macro
 % \cs{f@nch@hfbox@fit}.
 %
