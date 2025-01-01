@@ -5,7 +5,7 @@ The package provides extensive facilities, both for constructing headers
 and footers, and for controlling their use (for example, at times when
 LaTeX would automatically change the heading style in use).
 
-This is version 5.0beta of fancyhdr.sty and extramarks.sty.
+This is version 5.0 of fancyhdr.sty and extramarks.sty.
 
 The distribution package from CTAN (e.g. fancyhdr.zip)
 consists of the following files:
@@ -17,15 +17,15 @@ fancyhdr.pdf         PDF of the documentation
 
 After processing (by tex) of fancyhdr.ins, the following package files will be generated:
 
-fancyhdr.sty      v5.0beta 2024/12/25 the LaTeX package
-extramarks.sty    v5.0beta 2024/12/25 a package for additional marks
+fancyhdr.sty      v5.0 2025/01/01 the LaTeX package
+extramarks.sty    v5.0 2025/01/01 a package for additional marks
 extramarks-v4.sty v4.5 2024/11/30 a legacy version of extramarks.sty
 fancyheadings.sty v4.1 2022/11/09 this loads fancyhdr with a warning message
 
-If you have a user distribution package from github (fancyhdr-dist-5.0beta.zip),
+If you have a user distribution package from github (fancyhdr-dist-5.0.zip),
 then you don't have to do this processing.
 
-If you have a source distribution from github (fancyhdr-5.0beta.zip),
+If you have a source distribution from github (fancyhdr-5.0.zip),
 it will also contain the .sty files, but not the .pdf file.
 To create fancyhdr.pdf, either just run the 'make' command, or:
 latexmk fancyhdr.dtx
