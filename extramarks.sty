@@ -21,14 +21,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{extramarks}
-           [2025/01/01 v5.0
+           [2025/01/06 v5.1
                   Extra marks for LaTeX]
 % Copyright (C) 1994-2025 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \providecommand\DeclareRelease[3]{}
 \providecommand\DeclareCurrentRelease[2]{}
 \DeclareRelease{v4}{2024/11/30}{extramarks-v4.sty}
-\DeclareCurrentRelease{}{2025/01/01}
+\DeclareCurrentRelease{}{2025/01/06}
 \@ifundefined{NewMarkClass}
              {\PackageWarningNoLine{extramarks}{%
 **************************************************\MessageBreak
@@ -40,7 +40,7 @@ You are advised to update your LaTeX installation.\MessageBreak
 **************************************************}
              \RequirePackage{extramarks-v4}\endinput}{}
 \AtBeginDocument{%
-  \@ifpackageloaded{multicol}%
+  \IfPackageLoadedT{multicol}%
     {\IfPackageAtLeastF{multicol}{2024-11-21}{%
       \PackageWarningNoLine{extramarks}{%
         You are using package `extramarks' with a version\MessageBreak

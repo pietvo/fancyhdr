@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2025/01/01 v5.0
+%<fancyhdr|extramarks>           [2025/01/06 v5.1
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -962,8 +962,17 @@
 % \begin{fblock}
 %   \textbf{NOTE:} In \pkg{fancyhdr} version 4.3 and later, paragraph
 % hooks will not work inside \pkg{fancyhdr} headers and footers to
-% avoid unwanted interactions with the main text.
+% avoid unwanted interactions with the main text. However, in version
+% 5.1 and later, it is possible to use paragraph hooks locally in
+% headers and footers. But the hooks defined in the main text will still be
+% disabled in the headers and footers.
 % \end{fblock}
+% \NoExample{parahooks}
+% \begin{example}
+% \AddToHook{fancyhdr/before}{%
+%   \AddToHook{para/begin}{XXXX}%
+% }
+% \end{example}
 %
 % \section{A simple example}
 % \label{sec:simple}
@@ -5139,6 +5148,11 @@
 %     \cs{fancyhfwidth} (section~\ref{sec:field-width}).
 %   \item Many documentation improvements.
 %   \end{itemize}
+% \item Version 5.1, Jan 4, 2025
+%   \begin{itemize}
+%   \item Bug fix in \pkg{extramarks}.
+%   \item Better code to save, clear and restore paragraph hooks in headers/footers.
+%   \end{itemize}
 % \end{itemize}
 %
 %
@@ -6643,15 +6657,6 @@
 % \cs{centering} and \cs{everypar} so that we can reset them when we are
 % typesetting the headers and footers. Some packages change these to
 % incompatible values.\\
-% We also disable paragraph hooks, so that no paragraph hooks will
-% intrude in \pkg{fancyhdr} code. \textbf{NOTE: This is a hack, and
-% should be replaced by cleaner code as soon as the \LaTeX{} kernel
-% provides the necessary commands.}
-% \changes{fancyhdr v4.5}{2024/11/29}{We use a less fragile way to
-% disable paragraph hooks, thereby partially reverting the solution in
-% version v4.3 and v4.3.1. This is less intruding in the hook system,
-% and especially it doesn't affect kernel hooks, only user provided
-% ones. We check the kernel version to see if it support paragraph hooks.}
 %    \begin{macrocode}
 \let\f@nch@raggedleft\raggedleft
 \let\f@nch@raggedright\raggedright
@@ -6662,30 +6667,84 @@
   \providecommand\IfFormatAtLeastTF{\@ifl@t@r\fmtversion}
   \IfFormatAtLeastTF{2021-06-01}{
 %    \end{macrocode}
-% \begin{macro}{\f@nch@clear@par@hook:n}
-% Clear a (paragraph) hook locally.
-% We don't need to restore as this will be done by the \TeX{} grouping.
+% \begin{macro}{\f@nch@saveclr@parhook, \f@nch@restore@parhook}
+% We disable paragraph hooks, so that no paragraph hooks will
+% intrude in \pkg{fancyhdr} code. \textbf{NOTE: This is a hack, and
+% should be replaced by cleaner code as soon as the \LaTeX{} kernel
+% provides the necessary commands.}
+% \changes{fancyhdr v4.5}{2024/11/29}{We use a less fragile way to
+% disable paragraph hooks, thereby partially reverting the solution in
+% version v4.3 and v4.3.1. This is less intruding in the hook system,
+% and especially it doesn't affect kernel hooks, only user provided
+% ones. We check the kernel version to see if it support paragraph hooks.}
+% \changes{fancyhdr v5.1}{2025/01/06}{A new way to disable the paragraph
+% hooks in headers and footers.}
+% The way we do this now: Every hook consists of 4 global `variables':
+% \begin{itemize}
+% \item \cs{__hook \meta{name}}
+% \item \cs{__hook_toplevel \meta{name}}
+% \item \cs{__hook_next \meta{name}}
+% \item \cs{g__hook_\meta{name}_code_prop}
+% \end{itemize}
+% and there are 4 hooks (\texttt{para/before}, \texttt{para/begin},
+% \texttt{para/end}, and \texttt{para/after}). At the beginning of a
+% header/footer, i.e., before any init code and hooks, all these variables are
+% locally saved into variables with the same name, prefixed with
+% `\texttt{f@nch@}', and then globally reset to their `empty' value. At
+% the end of the header/footer they are globally restored to the saved value.
+% So we do only global assignments to them to avoid problems.
+% Save a (paragraph) hook locally and and clear it globally.
+% Restore it globally at the end of header/footer processing.
 %    \begin{macrocode}
-    \cs_new:Npn \f@nch@clear@par@hook:n #1{
-      \tl_clear:c {__hook~#1}
+    \def\f@nch@saveclr@parhook #1{
+      \expandafter\let\csname f@nch@__hook~#1\expandafter\endcsname
+                      \csname __hook~#1\endcsname
+      \tl_gclear:c {__hook~#1}
+      \expandafter\let\csname f@nch@__hook_toplevel~#1\expandafter\endcsname
+                      \csname __hook_toplevel~#1\endcsname
+      \tl_gclear:c {__hook_toplevel~#1}
+      \expandafter\let\csname f@nch@__hook_next~#1\expandafter\endcsname
+                      \csname __hook_next~#1\endcsname
+      \tl_gclear:c {__hook_next~#1}
+      \expandafter\let\csname f@nch@g__hook_#1_code_prop\expandafter\endcsname
+                      \csname g__hook_#1_code_prop\endcsname
+      \prop_gclear_new:c {g__hook_#1_code_prop}
     }
-    \newcommand\f@nch@resetpar{
+    \def\f@nch@restore@parhook #1{
+      \global\expandafter\let\csname __hook~#1\expandafter\endcsname
+                             \csname f@nch@__hook~#1\endcsname
+      \global\expandafter\let\csname __hook_toplevel~#1\expandafter\endcsname
+                             \csname f@nch@__hook_toplevel~#1\endcsname
+      \global\expandafter\let\csname __hook_next~#1\expandafter\endcsname
+                             \csname f@nch@__hook_next~#1\endcsname
+      \global\expandafter\let\csname g__hook_#1_code_prop\expandafter\endcsname
+                             \csname f@nch@g__hook_#1_code_prop\endcsname
+    }
+    \def\f@nch@resetpar{
       \f@nch@everypar{}
-      \f@nch@clear@par@hook:n{para/before}
-      \f@nch@clear@par@hook:n{para/begin}
-      \f@nch@clear@par@hook:n{para/end}
-      \f@nch@clear@par@hook:n{para/after}
+      \f@nch@saveclr@parhook{para/before}
+      \f@nch@saveclr@parhook{para/begin}
+      \f@nch@saveclr@parhook{para/end}
+      \f@nch@saveclr@parhook{para/after}
+    }
+    \def\f@nch@restorepar{
+      \f@nch@restore@parhook{para/before}
+      \f@nch@restore@parhook{para/begin}
+      \f@nch@restore@parhook{para/end}
+      \f@nch@restore@parhook{para/after}
     }
   }{
-  \newcommand\f@nch@resetpar{
-    \f@nch@everypar{}
+    \def\f@nch@resetpar{
+      \f@nch@everypar{}
+    }
+    \def\f@nch@restorepar{}
   }
-}
   \ExplSyntaxOff
 \else
-  \newcommand\f@nch@resetpar{%
+  \def\f@nch@resetpar{%
     \f@nch@everypar{}%
   }
+  \def\f@nch@restorepar{}
 \fi
 %    \end{macrocode}
 % \end{macro}
@@ -7076,6 +7135,7 @@
   }%
   #5%
   \ifdefined\UseHook\UseHook{fancyhdr/head/end}\UseHook{fancyhdr/after}\fi
+  \f@nch@restorepar
 }
 %    \end{macrocode}
 %
@@ -7122,6 +7182,7 @@
   }%
   #5%
   \ifdefined\UseHook\UseHook{fancyhdr/foot/end}\UseHook{fancyhdr/after}\fi
+  \f@nch@restorepar
 }
 %    \end{macrocode}
 % \end{macro}
@@ -8025,7 +8086,7 @@
 \providecommand\DeclareRelease[3]{}
 \providecommand\DeclareCurrentRelease[2]{}
 \DeclareRelease{v4}{2024/11/30}{extramarks-v4.sty}
-\DeclareCurrentRelease{}{2025/01/01}
+\DeclareCurrentRelease{}{2025/01/06}
 \@ifundefined{NewMarkClass}
              {\PackageWarningNoLine{extramarks}{%
 **************************************************\MessageBreak
@@ -8039,6 +8100,7 @@ You are advised to update your LaTeX installation.\MessageBreak
 %    \end{macrocode}
 % \changes{extramarks v5.0}{2024/11/30}{Check if \pkg{extramarks}
 % version 5 is not used with a too old version of \pkg{multicol}.}
+% \changes{extramarks v5.1}{2025/01/04}{Bug fix: use \cs{IfPackageLoadedT}.}
 % We also do a sanity check for the package \PKGindex{multicol}\pkg{multicol}. If it is
 % too old it will not work correctly with the new \pkg{extramarks}. In that
 % case \pkg{extramarks-v4} should be used instead. So in that case
@@ -8047,7 +8109,7 @@ You are advised to update your LaTeX installation.\MessageBreak
 % \pkg{extramarks-v4} will give an error.
 %    \begin{macrocode}
 \AtBeginDocument{%
-  \@ifpackageloaded{multicol}%
+  \IfPackageLoadedT{multicol}%
     {\IfPackageAtLeastF{multicol}{2024-11-21}{%
       \PackageWarningNoLine{extramarks}{%
         You are using package `extramarks' with a version\MessageBreak

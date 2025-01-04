@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancyhdr}%
-           [2025/01/01 v5.0
+           [2025/01/06 v5.1
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2025 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -269,26 +269,55 @@
   \ExplSyntaxOn
   \providecommand\IfFormatAtLeastTF{\@ifl@t@r\fmtversion}
   \IfFormatAtLeastTF{2021-06-01}{
-    \cs_new:Npn \f@nch@clear@par@hook:n #1{
-      \tl_clear:c {__hook~#1}
+    \def\f@nch@saveclr@parhook #1{
+      \expandafter\let\csname f@nch@__hook~#1\expandafter\endcsname
+                      \csname __hook~#1\endcsname
+      \tl_gclear:c {__hook~#1}
+      \expandafter\let\csname f@nch@__hook_toplevel~#1\expandafter\endcsname
+                      \csname __hook_toplevel~#1\endcsname
+      \tl_gclear:c {__hook_toplevel~#1}
+      \expandafter\let\csname f@nch@__hook_next~#1\expandafter\endcsname
+                      \csname __hook_next~#1\endcsname
+      \tl_gclear:c {__hook_next~#1}
+      \expandafter\let\csname f@nch@g__hook_#1_code_prop\expandafter\endcsname
+                      \csname g__hook_#1_code_prop\endcsname
+      \prop_gclear_new:c {g__hook_#1_code_prop}
     }
-    \newcommand\f@nch@resetpar{
+    \def\f@nch@restore@parhook #1{
+      \global\expandafter\let\csname __hook~#1\expandafter\endcsname
+                             \csname f@nch@__hook~#1\endcsname
+      \global\expandafter\let\csname __hook_toplevel~#1\expandafter\endcsname
+                             \csname f@nch@__hook_toplevel~#1\endcsname
+      \global\expandafter\let\csname __hook_next~#1\expandafter\endcsname
+                             \csname f@nch@__hook_next~#1\endcsname
+      \global\expandafter\let\csname g__hook_#1_code_prop\expandafter\endcsname
+                             \csname f@nch@g__hook_#1_code_prop\endcsname
+    }
+    \def\f@nch@resetpar{
       \f@nch@everypar{}
-      \f@nch@clear@par@hook:n{para/before}
-      \f@nch@clear@par@hook:n{para/begin}
-      \f@nch@clear@par@hook:n{para/end}
-      \f@nch@clear@par@hook:n{para/after}
+      \f@nch@saveclr@parhook{para/before}
+      \f@nch@saveclr@parhook{para/begin}
+      \f@nch@saveclr@parhook{para/end}
+      \f@nch@saveclr@parhook{para/after}
+    }
+    \def\f@nch@restorepar{
+      \f@nch@restore@parhook{para/before}
+      \f@nch@restore@parhook{para/begin}
+      \f@nch@restore@parhook{para/end}
+      \f@nch@restore@parhook{para/after}
     }
   }{
-  \newcommand\f@nch@resetpar{
-    \f@nch@everypar{}
+    \def\f@nch@resetpar{
+      \f@nch@everypar{}
+    }
+    \def\f@nch@restorepar{}
   }
-}
   \ExplSyntaxOff
 \else
-  \newcommand\f@nch@resetpar{%
+  \def\f@nch@resetpar{%
     \f@nch@everypar{}%
   }
+  \def\f@nch@restorepar{}
 \fi
 \newcommand\f@nch@noUppercase[2][]{#2}
 \def\f@nch@reset{\f@nch@resetpar\restorecr\endlinechar=13
@@ -427,6 +456,7 @@
   }%
   #5%
   \ifdefined\UseHook\UseHook{fancyhdr/head/end}\UseHook{fancyhdr/after}\fi
+  \f@nch@restorepar
 }
 \newcommand\f@nch@foot[8]{%
   \f@nch@reset
@@ -443,6 +473,7 @@
   }%
   #5%
   \ifdefined\UseHook\UseHook{fancyhdr/foot/end}\UseHook{fancyhdr/after}\fi
+  \f@nch@restorepar
 }
 \newlength\f@nch@widthL
 \newlength\f@nch@widthC
