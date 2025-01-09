@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2025/01/06 v5.1
+%<fancyhdr|extramarks>           [2025/01/07 v5.1.1
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -958,21 +958,6 @@
 %
 % We define each of the six ``fields'' and the two decorative lines
 % separately.
-%
-% \begin{fblock}
-%   \textbf{NOTE:} In \pkg{fancyhdr} version 4.3 and later, paragraph
-% hooks will not work inside \pkg{fancyhdr} headers and footers to
-% avoid unwanted interactions with the main text. However, in version
-% 5.1 and later, it is possible to use paragraph hooks locally in
-% headers and footers. But the hooks defined in the main text will still be
-% disabled in the headers and footers.
-% \end{fblock}
-% \NoExample{parahooks}
-% \begin{example}
-% \AddToHook{fancyhdr/before}{%
-%   \AddToHook{para/begin}{XXXX}%
-% }
-% \end{example}
 %
 % \section{A simple example}
 % \label{sec:simple}
@@ -3661,6 +3646,23 @@
 % \pkg{fancyhdr} is not used in a document, the hooks don't do anything.
 % \end{itemize}
 %
+% \begin{fblock}
+%   \textbf{NOTE:} In \pkg{fancyhdr} version 4.3 and later, paragraph
+% hooks will not work inside \pkg{fancyhdr} headers and footers to
+% avoid unwanted interactions with the main text.
+% However, in version 5.1 and later, the hooks defined in the main text
+% will still be disabled in the headers and footers. But it is possible
+% to use paragraph hooks locally in headers and footers. Se the example below.
+%
+% \textbf{NOTE: This is experimental and may change in the future.}
+% \end{fblock}
+% \NoExample{parahooks}
+% \begin{example}
+% \AddToHook{fancyhdr/before}{%
+%   \AddToHook{para/begin}{XXXX}%
+% }
+% \end{example}
+%
 % \section{Headers and footers induced by the text}
 % \label{sec:xmarks}
 %
@@ -5148,10 +5150,14 @@
 %     \cs{fancyhfwidth} (section~\ref{sec:field-width}).
 %   \item Many documentation improvements.
 %   \end{itemize}
-% \item Version 5.1, Jan 4, 2025
+% \item Version 5.1, Jan 4-6, 2025
 %   \begin{itemize}
 %   \item Bug fix in \pkg{extramarks}.
 %   \item Better code to save, clear and restore paragraph hooks in headers/footers.
+%   \end{itemize}
+% \item Version 5.1.1, Jan 7, 2025
+%   \begin{itemize}
+%   \item Bugfix in save, clear and restore paragraph hooks in headers/footers.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -6679,6 +6685,9 @@
 % ones. We check the kernel version to see if it support paragraph hooks.}
 % \changes{fancyhdr v5.1}{2025/01/06}{A new way to disable the paragraph
 % hooks in headers and footers.}
+% \changes{fancyhdr v5.1.1}{2025/01/07}{Use low-level commands to reset
+% paragraph hooks to prevent LaTeX error when ruinning with latex3
+% debugging.}
 % The way we do this now: Every hook consists of 4 global `variables':
 % \begin{itemize}
 % \item \cs{__hook \meta{name}}
@@ -6696,19 +6705,20 @@
 % Save a (paragraph) hook locally and and clear it globally.
 % Restore it globally at the end of header/footer processing.
 %    \begin{macrocode}
+    \prop_new:N \f@nch@empty_code_prop
     \def\f@nch@saveclr@parhook #1{
       \expandafter\let\csname f@nch@__hook~#1\expandafter\endcsname
                       \csname __hook~#1\endcsname
-      \tl_gclear:c {__hook~#1}
+      \expandafter\gdef\csname __hook~#1\endcsname { }
       \expandafter\let\csname f@nch@__hook_toplevel~#1\expandafter\endcsname
                       \csname __hook_toplevel~#1\endcsname
-      \tl_gclear:c {__hook_toplevel~#1}
+      \expandafter\gdef\csname __hook_toplevel~#1\endcsname { }
       \expandafter\let\csname f@nch@__hook_next~#1\expandafter\endcsname
                       \csname __hook_next~#1\endcsname
-      \tl_gclear:c {__hook_next~#1}
+      \expandafter\gdef\csname __hook_next~#1\endcsname { }
       \expandafter\let\csname f@nch@g__hook_#1_code_prop\expandafter\endcsname
                       \csname g__hook_#1_code_prop\endcsname
-      \prop_gclear_new:c {g__hook_#1_code_prop}
+      \global\expandafter\let\csname g__hook_#1_code_prop\endcsname \f@nch@empty_code_prop
     }
     \def\f@nch@restore@parhook #1{
       \global\expandafter\let\csname __hook~#1\expandafter\endcsname
@@ -7090,6 +7100,8 @@
 % \changes{fancyhdr v4.5}{2024/12/05}{Hooks added}
 % \changes{fancyhdr v5.0}{2025/01/01}{Support for \cs{fancyheadwidth},
 % \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
+% \changes{fancyhdr v5.1}{2025/01/06}{Add paragraph hook restore code
+% (\cs{f@nch@restorepar}).}
 %   Put together a header (\cs{f@nch@head}) or footer (\cs{f@nch@foot})
 %   given the left, center and right text and their widths,
 %   fillers at left and right and a rule. The \cs{xlap} commands put
@@ -7156,6 +7168,8 @@
 % \changes{fancyhdr v4.5}{2024/12/05}{Hooks added}
 % \changes{fancyhdr v5.0}{2025/01/01}{Support for \cs{fancyheadwidth},
 % \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
+% \changes{fancyhdr v5.1}{2025/01/06}{Add paragraph hook restore code
+% (\cs{f@nch@restorepar}).}
 % We put the \cs{footrule} in a \cs{vbox} to accommodate for flexible
 % footrules (e.g., using \cs{hrulefill}), so that the \cs{headwidth} will
 % be used as the line width. But to preserve the vertical spacing we
@@ -8086,7 +8100,7 @@
 \providecommand\DeclareRelease[3]{}
 \providecommand\DeclareCurrentRelease[2]{}
 \DeclareRelease{v4}{2024/11/30}{extramarks-v4.sty}
-\DeclareCurrentRelease{}{2025/01/06}
+\DeclareCurrentRelease{}{2025/01/07}
 \@ifundefined{NewMarkClass}
              {\PackageWarningNoLine{extramarks}{%
 **************************************************\MessageBreak
