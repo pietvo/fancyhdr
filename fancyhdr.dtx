@@ -498,14 +498,19 @@
 %
 % \begin{function}{\fancyheadwidth,\fancyfootwidth,\fancyhfwidth}
 % \begin{syntax}
-%   \cmd{\fancyheadwidth}\oarg{places}\marg{length} \\
-%   \cmd{\fancyfootwidth}\oarg{places}\marg{length} \\
-%   \cmd{\fancyhfwidth}\oarg{places}\marg{length}
+%   \cmd{\fancyheadwidth}\oarg{places}\oarg{alignment}\marg{length} \\
+%   \cmd{\fancyfootwidth}\oarg{places}\oarg{alignment}\marg{length} \\
+%   \cmd{\fancyhfwidth}\oarg{places}\oarg{alignment}\marg{length} \\[1ex]
+%   \cmd{\fancyheadwidth}*\oarg{places}\oarg{alignment}\marg{length} \\
+%   \cmd{\fancyfootwidth}*\oarg{places}\oarg{alignment}\marg{length} \\
+%   \cmd{\fancyhfwidth}*\oarg{places}\oarg{alignment}\marg{length}
 % \end{syntax}
-% These define widths for the header and footer fields. The fields will
-% be typeset in a \cs{parbox} of this width, which can be different for
-% each \emph{place}. If the width of a field is not specified, it
-% defaults to \cs{headwidth}, which may cause them to overlap. See
+% These define widths and optionally the alignments for the header and
+% footer fields. The fields will be typeset in a \cs{parbox} of this
+% width, which can be different for each \emph{place}. If the width of a
+% field is not specified, it defaults to \cs{headwidth}, which may cause
+% them to overlap. The alignment option and the \texttt{*} version are
+% available in \pkg{fancyhdr} version 5.2 and later. See
 % section~\ref{sec:field-width} for more details.
 % \end{function}
 %
@@ -1198,24 +1203,39 @@
 % now you can override this with the commands \cs{fancyheadwidth},
 % \cs{fancyfootwidth} or \cs{fancyhfwidth}. These work exactly like the
 % \cs{fancyhead} etc. commands but instead of a header/footer value they
-% have a \meta{length} as parameter.
+% have a \meta{length} and an optional \meta{alignment} as parameters.
 %
 % \begin{syntax}
-%   \cmd{\fancyheadwidth}\oarg{places}\marg{length} \\
-%   \cmd{\fancyfootwidth}\oarg{places}\marg{length} \\
-%   \cmd{\fancyhfwidth}\oarg{places}\marg{length}
+%   \cmd{\fancyheadwidth}\oarg{places}\oarg{alignment}\marg{length} \\
+%   \cmd{\fancyfootwidth}\oarg{places}\oarg{alignment}\marg{length} \\
+%   \cmd{\fancyhfwidth}\oarg{places}\oarg{alignment}\marg{length} \\[1ex]
+%   \cmd{\fancyheadwidth}*\oarg{places}\oarg{alignment}\marg{length} \\
+%   \cmd{\fancyfootwidth}*\oarg{places}\oarg{alignment}\marg{length} \\
+%   \cmd{\fancyhfwidth}*\oarg{places}\oarg{alignment}\marg{length}
 % \end{syntax}
 % Field widths that are not specified default to \cs{headwidth}.
 %
-% NOTE: The widths will be stored as expressions, not as calculated
-% values. The values will be calculated when the header or footer is
-% constructed. So they can change, for example when different pages have
-% different \cs{headwidth} and you use e.g., \texttt{0.3\cs{headwidth}}
-% or another expression with a `variable' as value. Note, however, that
-% at definition time, the width is assigned to a temporary length
-% variable, to check if it is a legal \meta{length}. So any variables
-% used in it should have a value, although this may be different from
-% the value at its final use.
+% NOTE: In the non-\texttt{*} versions of these commands, the widths
+% will be stored as expressions, not as calculated values. The values
+% will be calculated when the header or footer is constructed. So they
+% can change, for example when different pages have different
+% \cs{headwidth} and you use e.g., \texttt{0.3\cs{headwidth}} or another
+% expression with a `variable' as value. Note, however, that at
+% definition time, the width is assigned to a temporary length variable,
+% to check if it is a legal \meta{length}. So any variables used in it
+% should have a value, although this may be different from the value at
+% its final use.
+%
+% In the \texttt{*} versions of these commands, the width will be
+% calculated at the call of the command, and the calculated value will
+% be stored. So for example if you use an expression like
+% `\texttt{0.4\cs{headwidth}}', and \cs{headwidth} is 10~cm, the value
+% `4~cm' will be stored. If then then later \cs{headwidth} is changed to
+% 15~cm when the header or footer is constructed, the value
+% used for the field will still be 4~cm, which no longer is
+% `\texttt{0.4\cs{headwidth}}'. With the non-\texttt{*} version,
+% however, the value `6~cm' will be used, i.e. 0.4 of the then current
+% \cs{headwidth}.
 %
 % The fields are typeset in a \cs{parbox} with the specified width or
 % the default \cs{headwidth}. It is still possible to get overlaps if
@@ -1328,6 +1348,52 @@
 % \fancyheadwidth[R]{0.4\headwidth}
 % }
 % \smallskip
+%
+% The \meta{alignment} optional parameter consists of two letters: a
+% vertical alignment, which indicates where the baseline of the
+% \cs{parbox} will be, followed by a horizontal alignment that specifies
+% how the lines will be positioned horizontally in the \cs{parbox}. The
+% alignment option is available in \pkg{fancyhdr} version 5.2 and later.
+% \\[1ex]
+% The possibilities for the vertical alignment are:
+% \begin{description}[font=\texttt]
+% \item[T] The baseline of the \cs{parbox} is on the top of the first line, i.e., just
+% where the top of the tallest character or item in the line is.
+% \item[t] The baseline of the \cs{parbox} is the baseline of the first line.
+% \item[c] The baseline of the \cs{parbox} is on the vertical center
+% of the \cs{parbox}.
+% \item[b] The baseline of the \cs{parbox} is the baseline of the last line.
+% \item[B] The baseline of the \cs{parbox} is on the bottom of the last line, i.e., just
+% where the bottom of the deepest character or item in the line is.
+% \item[-] Use the default vertical alignment.
+% \end{description}
+% The letters are the same as the vertical alignment in \cs{fancyhdrbox}
+% (see section~\ref{sec:fancyhdrbox} for examples). The \texttt{t},
+% \texttt{c} and \texttt{b} are the standard options for \cs{parbox}.
+% \\[1ex]
+% The horizontal alignment can be:
+% \begin{description}[font=\texttt]
+% \item[l] left aligned
+% \item[c] centered
+% \item[r] right aligned
+% \item[j] fully justified
+% \end{description}
+% These are the same as the horizontal alignment in \cs{fancyhdrbox},
+% except that the \texttt{j} option is extra. This one gives the default
+% behavior in a \cs{parbox}.
+%
+% The default for the vertical alignment is \texttt{b} for a header
+% field, and \texttt{t} for a footer field. The default for the
+% horizontal alignment is \texttt{l} for an \texttt{L} field, \texttt{c}
+% for a \texttt{C} field, \texttt{r} for an \texttt{R} field.
+%
+% Please note that a single \texttt{c} as the alignment counts as a
+% vertical alignment, and the horizontal alignment will then be the
+% default. If you want to specify only the horizontal alignment and take
+% the default for the vertical alignment, specify the vertical alignment
+% as \texttt{-}. For the horizontal alignment just omit it to get the default.
+%
+% See section~\ref{sec:with-fancyheadwidth} for examples.
 %
 % \textbf{NOTE:} The \cs{fancyheadwidth},
 % \cs{fancyfootwidth} and \cs{fancyhfwidth} commands are still
@@ -1819,6 +1885,7 @@
 % \begin{itemize}
 % \item The header and footer fields in all variants (EO,LRC,HF) (12 items)
 % \item The header and footer field widths in all variants (EO,LRC,HF) (12 items)
+% \item The header and footer field alignments in all variants (EO,LRC,HF) (12 items)
 % \item The header and footer offsets (EO,LR,HF) (8 items), see
 % section~\ref{sec:book-examples} and~\ref{sec:headwidth}
 % \item The header and footer init values (2 items), see section~\ref{sec:curpagestyle}
@@ -5163,7 +5230,8 @@
 %   \item Conditionally require package \pkg{xparse} in fancyhdr.
 %   \item Require \LaTeX{} version 2018-04-01 or later,
 %   \item therefore cleanup some pre-2018 code.
-%   \item Implement \cs{fancyhfwidth} etc. \meta{alignment} option.
+%   \item Implement \cs{fancyhfwidth} etc. \meta{alignment} option and
+%      the \texttt{*} form of these commands.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -5354,6 +5422,7 @@
 % one for the remaining space.
 %
 % \subsection{Using \cs{fancyheadwidth}}
+% \label{sec:with-fancyheadwidth}
 %
 % For this solution we use the \cs{fancyheadwidth} command to give each
 % part a little less than half of the \cs{headwidth}. This command is
