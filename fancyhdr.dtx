@@ -6421,15 +6421,17 @@
 % \changes{fancyhdr v5.0}{2025/01/01}{New commands \cs{fancyheadwidth},
 % \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
 % \changes{fancyhdr v5.2}{2025/01/25}{Second optional parameter \meta{alignment}.}
+% \changes{fancyhdr v5.2}{2025/01/27}{Implement \texttt{*} version of
+% these commands.}
 % Pick up the parameters,
 % and supply an 'h' (\cs{fancyheadwidth}) or 'f' (\cs{fancyfootwidth}).
 %    \begin{macrocode}
-\NewDocumentCommand {\fancyheadwidth}{ O{} O{} m }
-                      {\f@nch@fancyhfwidth\fancyheadwidth h[#1][#2]{#3}}%
-\NewDocumentCommand {\fancyfootwidth}{ O{} O{} m }
-                      {\f@nch@fancyhfwidth\fancyfootwidth f[#1][#2]{#3}}%
-\NewDocumentCommand {\fancyhfwidth}  { O{} O{} m }
-                      {\f@nch@fancyhfwidth\fancyhfwidth  {}[#1][#2]{#3}}%
+\NewDocumentCommand {\fancyheadwidth}{ s O{} O{} m }
+                      {\f@nch@fancyhfwidth{#1}\fancyheadwidth h[#2][#3]{#4}}%
+\NewDocumentCommand {\fancyfootwidth}{ s O{} O{} m }
+                      {\f@nch@fancyhfwidth{#1}\fancyfootwidth f[#2][#3]{#4}}%
+\NewDocumentCommand {\fancyhfwidth}  { s O{} O{} m }
+                      {\f@nch@fancyhfwidth{#1}\fancyhfwidth  {}[#2][#3]{#4}}%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -6437,13 +6439,14 @@
 % This macro interprets the parameters for the header and footer field
 % widths.\\
 % Parameters:\\
-% (1) The user command that was used (like \cs{fancyheadwidth}). This is used
+% (1) The optional \texttt{*} argument.\\
+% (2) The user command that was used (like \cs{fancyheadwidth}). This is used
 % for errors/warnings.\\
-% (2) \texttt{h} (for \cs{fancyheadwidth}), \texttt{f} (for \cs{fancyfootwidth}),
+% (3) \texttt{h} (for \cs{fancyheadwidth}), \texttt{f} (for \cs{fancyfootwidth}),
 % or \texttt{\{\}} (for \cs{fancyhfwidth}).\\
-% (3-4) The two optional parameters that were given to these commands
+% (4-5) The two optional parameters that were given to these commands
 % (default for each \texttt{[]}).\\
-% (5) The required parameter that was given to these commands.\\
+% (6) The required parameter that was given to these commands.\\
 %   The header and footer field widths are stored in command sequences with
 %   names of the form: \cs{f@nch@width@}\meta{x}\meta{y}\meta{z} with \meta{x} from
 %   \texttt{[eo]}, \meta{y} from \texttt{[lcr]} and \meta{z} from \texttt{[hf]}.
@@ -6457,29 +6460,37 @@
 % variable, to check if it is a legal \meta{length}.
 %
 %    \begin{macrocode}
-\def\f@nch@fancyhfwidth#1#2[#3][#4]#5{%
-  \setlength\@tempdima{#5}%
+\def\f@nch@fancyhfwidth#1#2#3[#4][#5]#6{%
+  \setlength\@tempdima{#6}%
   \def\temp@c{}%
-  \f@nch@forc\tmpf@ra{#3}%
+  \f@nch@forc\tmpf@ra{#4}%
   {\expandafter\f@nch@ifin\tmpf@ra{eolcrhf,EOLCRHF}%
     {}{\edef\temp@c{\temp@c\tmpf@ra}}}%
   \ifx\@empty\temp@c\else \PackageError{fancyhdr}{Illegal char `\temp@c' in
-    \string#1 argument: [#3]}{}%
+    \string#2 argument: [#4]}{}%
   \fi
-  \f@nch@for\temp@c{#3}%
+  \f@nch@for\temp@c{#4}%
   {\f@nch@default\f@nch@@eo{eo}\temp@c
-    \f@nch@fancyhf@Echeck{#1}%
+    \f@nch@fancyhf@Echeck{#2}%
     \f@nch@default\f@nch@@lcr{lcr}\temp@c
-    \f@nch@default\f@nch@@hf{hf}{#2\temp@c}%
+    \f@nch@default\f@nch@@hf{hf}{#3\temp@c}%
     \f@nch@forc\f@nch@eo\f@nch@@eo
         {\f@nch@forc\f@nch@lcr\f@nch@@lcr
           {\f@nch@forc\f@nch@hf\f@nch@@hf
 %    \end{macrocode}
 % Then we store the \meta{width} in variables for all the specified
-% places.
+% places. If the \texttt{*} form was given we use the calculated value,
+% otherwise the bare argument.
 %    \begin{macrocode}
-            {\expandafter\def\csname
-              f@nch@width@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#5}%
+            {%
+              \IfBooleanTF{#1}{%
+                \expandafter\edef\csname
+                  f@nch@width@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname{\the\@tempdima}%
+              }%
+              {%
+                \expandafter\def\csname
+                  f@nch@width@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname{#6}%
+              }%
 %    \end{macrocode}
 % Then we apply the defaults to the \meta{alignment} argument.
 % The defaults are:
@@ -6494,13 +6505,13 @@
 % otherwise we process the arguments with \cs{f@nchdrwdt@align}.
 % Finally we store the result in variables for the specified places.
 %    \begin{macrocode}
-             \csname f@nchdrwdt@align@v@\f@nch@hf\endcsname
-             \edef\f@nch@align@@h{\f@nch@lcr}%
-             \def\temp@a{#4}%
-             \ifx\temp@a\@empty \else \f@nchdrwdt@align#4\@nil{#1}\fi
-             \expandafter\edef\csname
-               f@nch@align@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname
-                  {\f@nch@align@@v\f@nch@align@@h}}}}}}
+              \csname f@nchdrwdt@align@v@\f@nch@hf\endcsname
+              \edef\f@nch@align@@h{\f@nch@lcr}%
+              \def\temp@a{#5}%
+              \ifx\temp@a\@empty \else \f@nchdrwdt@align#5\@nil{#2}\fi
+              \expandafter\edef\csname
+                f@nch@align@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname
+                   {\f@nch@align@@v\f@nch@align@@h}}}}}}
 %    \end{macrocode}
 % \end{macro}
 %

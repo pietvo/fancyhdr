@@ -190,38 +190,45 @@
             {\expandafter\setlength\csname
               f@nch@offset@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#4}}}}}%
   \f@nch@setoffs}
-\NewDocumentCommand {\fancyheadwidth}{ O{} O{} m }
-                      {\f@nch@fancyhfwidth\fancyheadwidth h[#1][#2]{#3}}%
-\NewDocumentCommand {\fancyfootwidth}{ O{} O{} m }
-                      {\f@nch@fancyhfwidth\fancyfootwidth f[#1][#2]{#3}}%
-\NewDocumentCommand {\fancyhfwidth}  { O{} O{} m }
-                      {\f@nch@fancyhfwidth\fancyhfwidth  {}[#1][#2]{#3}}%
-\def\f@nch@fancyhfwidth#1#2[#3][#4]#5{%
-  \setlength\@tempdima{#5}%
+\NewDocumentCommand {\fancyheadwidth}{ s O{} O{} m }
+                      {\f@nch@fancyhfwidth{#1}\fancyheadwidth h[#2][#3]{#4}}%
+\NewDocumentCommand {\fancyfootwidth}{ s O{} O{} m }
+                      {\f@nch@fancyhfwidth{#1}\fancyfootwidth f[#2][#3]{#4}}%
+\NewDocumentCommand {\fancyhfwidth}  { s O{} O{} m }
+                      {\f@nch@fancyhfwidth{#1}\fancyhfwidth  {}[#2][#3]{#4}}%
+\def\f@nch@fancyhfwidth#1#2#3[#4][#5]#6{%
+  \setlength\@tempdima{#6}%
   \def\temp@c{}%
-  \f@nch@forc\tmpf@ra{#3}%
+  \f@nch@forc\tmpf@ra{#4}%
   {\expandafter\f@nch@ifin\tmpf@ra{eolcrhf,EOLCRHF}%
     {}{\edef\temp@c{\temp@c\tmpf@ra}}}%
   \ifx\@empty\temp@c\else \PackageError{fancyhdr}{Illegal char `\temp@c' in
-    \string#1 argument: [#3]}{}%
+    \string#2 argument: [#4]}{}%
   \fi
-  \f@nch@for\temp@c{#3}%
+  \f@nch@for\temp@c{#4}%
   {\f@nch@default\f@nch@@eo{eo}\temp@c
-    \f@nch@fancyhf@Echeck{#1}%
+    \f@nch@fancyhf@Echeck{#2}%
     \f@nch@default\f@nch@@lcr{lcr}\temp@c
-    \f@nch@default\f@nch@@hf{hf}{#2\temp@c}%
+    \f@nch@default\f@nch@@hf{hf}{#3\temp@c}%
     \f@nch@forc\f@nch@eo\f@nch@@eo
         {\f@nch@forc\f@nch@lcr\f@nch@@lcr
           {\f@nch@forc\f@nch@hf\f@nch@@hf
-            {\expandafter\def\csname
-              f@nch@width@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#5}%
-             \csname f@nchdrwdt@align@v@\f@nch@hf\endcsname
-             \edef\f@nch@align@@h{\f@nch@lcr}%
-             \def\temp@a{#4}%
-             \ifx\temp@a\@empty \else \f@nchdrwdt@align#4\@nil{#1}\fi
-             \expandafter\edef\csname
-               f@nch@align@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname
-                  {\f@nch@align@@v\f@nch@align@@h}}}}}}
+            {%
+              \IfBooleanTF{#1}{%
+                \expandafter\edef\csname
+                  f@nch@width@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname{\the\@tempdima}%
+              }%
+              {%
+                \expandafter\def\csname
+                  f@nch@width@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname{#6}%
+              }%
+              \csname f@nchdrwdt@align@v@\f@nch@hf\endcsname
+              \edef\f@nch@align@@h{\f@nch@lcr}%
+              \def\temp@a{#5}%
+              \ifx\temp@a\@empty \else \f@nchdrwdt@align#5\@nil{#2}\fi
+              \expandafter\edef\csname
+                f@nch@align@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname
+                   {\f@nch@align@@v\f@nch@align@@h}}}}}}
 \def\f@nch@width@elh{\headwidth}
 \def\f@nch@width@ech{\headwidth}
 \def\f@nch@width@erh{\headwidth}
