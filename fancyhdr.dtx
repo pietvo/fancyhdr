@@ -28,7 +28,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2025/01/15 v5.2
+%<fancyhdr|extramarks>           [2025/01/23 v5.2
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -5157,7 +5157,7 @@
 %   \begin{itemize}
 %   \item Bugfix in save, clear and restore paragraph hooks in headers/footers.
 %   \end{itemize}
-% \item Version 5.2, Jan 14-15, 2025
+% \item Version 5.2, Jan 14-23, 2025
 %   \begin{itemize}
 %   \item Use official interface to reset the paragraph hooks.
 %   \item Conditionally require package \pkg{xparse} in fancyhdr.
@@ -8021,6 +8021,8 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\f@nchdrbox@align}
+% \changes{fancyhdr v5.2}{2025/01/23}{Check for legal alignment
+% argument added.}
 % \cs{f@nchdrbox@align}\marg{vert}\marg{hor}\texttt{\cs{@nil}}\marg{lines}\\[1ex]
 % The internal processing for the \cs{halign} in a vertical box.\\
 % ALGORITHM \cs{f@nchdrbox@align}:\\
@@ -8034,6 +8036,7 @@
 % \hspace*{1em}  v := \texttt{c}\\
 % \hspace*{1em}  h := \texttt{\#1}\\
 % \textbf{FI}\\
+% \textbf{if} h not in \texttt{\{l,c,r\}} \textbf{then} ERROR \textbf{fi}\\
 % Set the \cs{halign} in a \cs{vtop} (for \texttt{T/t} alignment) or
 % \cs{vbox} (for others). This box is put into \cs{box0} because we have
 % to change it for the vertical alignment \texttt{c}. For the others it
@@ -8050,6 +8053,9 @@
     \ifx\@tempa\@empty\else \def\f@nchdrbox@@h{#2}\fi
   }%
   {\def\f@nchdrbox@@v{c}\def\f@nchdrbox@@h{#1}}%
+  \expandafter\f@nch@ifin\expandafter{\f@nchdrbox@@h}{lcr}{}%
+  {\PackageError{fancyhdr}{\string\fancyhdrbox: Illegal char `\f@nchdrbox@@h'\MessageBreak
+                            in alignment argument}{}}%
   \let\\\f@nchdrbox@cr
   \setbox0=\if \f@nchdrbox@@v t\vtop
   \else \vbox

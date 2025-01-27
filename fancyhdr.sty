@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}[2018-04-01]
 \ProvidesPackage{fancyhdr}%
-           [2025/01/15 v5.2
+           [2025/01/23 v5.2
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2025 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -761,6 +761,9 @@
     \ifx\@tempa\@empty\else \def\f@nchdrbox@@h{#2}\fi
   }%
   {\def\f@nchdrbox@@v{c}\def\f@nchdrbox@@h{#1}}%
+  \expandafter\f@nch@ifin\expandafter{\f@nchdrbox@@h}{lcr}{}%
+  {\PackageError{fancyhdr}{\string\fancyhdrbox: Illegal char `\f@nchdrbox@@h'\MessageBreak
+                            in alignment argument}{}}%
   \let\\\f@nchdrbox@cr
   \setbox0=\if \f@nchdrbox@@v t\vtop
   \else \vbox
