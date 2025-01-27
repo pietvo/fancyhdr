@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}[2018-04-01]
 \ProvidesPackage{fancyhdr}%
-           [2025/01/23 v5.2
+           [2025/01/27 v5.2
                   Extensive control of page headers and footers]%
 % Copyright (C) 1994-2025 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -190,18 +190,22 @@
             {\expandafter\setlength\csname
               f@nch@offset@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#4}}}}}%
   \f@nch@setoffs}
-\newcommand{\fancyheadwidth}[2][]{\f@nch@fancyhfwidth\fancyheadwidth h[#1]{#2}}%
-\newcommand{\fancyfootwidth}[2][]{\f@nch@fancyhfwidth\fancyfootwidth f[#1]{#2}}%
-\newcommand{\fancyhfwidth}[2][]{\f@nch@fancyhfwidth\fancyhfwidth {}[#1]{#2}}%
-\def\f@nch@fancyhfwidth#1#2[#3]#4{%
-  \setlength\@tempdima{#4}%
+\NewDocumentCommand {\fancyheadwidth}{ O{} O{} m }
+                      {\f@nch@fancyhfwidth\fancyheadwidth h[#1][#2]{#3}}%
+\NewDocumentCommand {\fancyfootwidth}{ O{} O{} m }
+                      {\f@nch@fancyhfwidth\fancyfootwidth f[#1][#2]{#3}}%
+\NewDocumentCommand {\fancyhfwidth}  { O{} O{} m }
+                      {\f@nch@fancyhfwidth\fancyhfwidth  {}[#1][#2]{#3}}%
+\def\f@nch@fancyhfwidth#1#2[#3][#4]#5{%
+  \setlength\@tempdima{#5}%
   \def\temp@c{}%
   \f@nch@forc\tmpf@ra{#3}%
   {\expandafter\f@nch@ifin\tmpf@ra{eolcrhf,EOLCRHF}%
     {}{\edef\temp@c{\temp@c\tmpf@ra}}}%
   \ifx\@empty\temp@c\else \PackageError{fancyhdr}{Illegal char `\temp@c' in
     \string#1 argument: [#3]}{}%
-  \fi \f@nch@for\temp@c{#3}%
+  \fi
+  \f@nch@for\temp@c{#3}%
   {\f@nch@default\f@nch@@eo{eo}\temp@c
     \f@nch@fancyhf@Echeck{#1}%
     \f@nch@default\f@nch@@lcr{lcr}\temp@c
@@ -210,7 +214,14 @@
         {\f@nch@forc\f@nch@lcr\f@nch@@lcr
           {\f@nch@forc\f@nch@hf\f@nch@@hf
             {\expandafter\def\csname
-              f@nch@width@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#4}}}}}}
+              f@nch@width@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#5}%
+             \csname f@nchdrwdt@align@v@\f@nch@hf\endcsname
+             \edef\f@nch@align@@h{\f@nch@lcr}%
+             \def\temp@a{#4}%
+             \ifx\temp@a\@empty \else \f@nchdrwdt@align#4\@nil{#1}\fi
+             \expandafter\edef\csname
+               f@nch@align@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname
+                  {\f@nch@align@@v\f@nch@align@@h}}}}}}
 \def\f@nch@width@elh{\headwidth}
 \def\f@nch@width@ech{\headwidth}
 \def\f@nch@width@erh{\headwidth}
@@ -223,6 +234,32 @@
 \def\f@nch@width@olf{\headwidth}
 \def\f@nch@width@ocf{\headwidth}
 \def\f@nch@width@orf{\headwidth}
+\def\f@nch@align@elh{bl}
+\def\f@nch@align@ech{bc}
+\def\f@nch@align@erh{br}
+\def\f@nch@align@olh{bl}
+\def\f@nch@align@och{bc}
+\def\f@nch@align@orh{br}
+\def\f@nch@align@elf{tl}
+\def\f@nch@align@ecf{tc}
+\def\f@nch@align@erf{tr}
+\def\f@nch@align@olf{tl}
+\def\f@nch@align@ocf{tc}
+\def\f@nch@align@orf{tr}
+\def\f@nchdrwdt@align@v@h{\def\f@nch@align@@v{b}}%
+\def\f@nchdrwdt@align@v@f{\def\f@nch@align@@v{t}}%
+\long\def\f@nchdrwdt@align#1#2\@nil#3{%
+  \f@nch@ifin{#1}{TtcbB-}{%
+    \f@nch@ifin{#1}{-}{}{\def\f@nch@align@@v{#1}}%
+    \def\@tempa{#2}%
+    \ifx\@tempa\@empty \else \def\f@nch@align@@h{#2}\fi
+  }%
+  {\def\f@nch@align@@h{#1}}%
+  \expandafter\f@nch@ifin\expandafter{\f@nch@align@@h}{lcrj}{}%
+    {\PackageError{fancyhdr}
+                  {\string#3: Illegal char `\f@nch@align@@h'\MessageBreak
+                              in alignment argument}{}}%
+}
 \newcommand{\lhead}[2][\f@nch@olh]%
                      {\f@nch@def\f@nch@olh{#2}\f@nch@def\f@nch@elh{#1}}
 \newcommand{\chead}[2][\f@nch@och]%
@@ -434,14 +471,14 @@
     \fi
   \fi
   \box0}
-\newcommand\f@nch@head[8]{%
+\newcommand\f@nch@head[6]{%
   \f@nch@reset
   \ifdefined\UseHook\UseHook{fancyhdr/before}\UseHook{fancyhdr/head/begin}\fi
   \f@nch@headinit\relax
   #1%
   \hbox to\headwidth{%
     \f@nch@vbox\headheight{%
-      \f@nch@hfbox{#2}{#3}{#4}{b}{#6}{#7}{#8}%
+      \f@nch@hfbox{#2}{#3}{#4}{#6}{h}%
       \vskip\headruleskip\relax
       \headrule
     }%
@@ -450,7 +487,7 @@
   \ifdefined\UseHook\UseHook{fancyhdr/head/end}\UseHook{fancyhdr/after}\fi
   \f@nch@restorepar
 }
-\newcommand\f@nch@foot[8]{%
+\newcommand\f@nch@foot[6]{%
   \f@nch@reset
   \ifdefined\UseHook\UseHook{fancyhdr/before}\UseHook{fancyhdr/foot/begin}\fi
   \f@nch@footinit\relax
@@ -459,7 +496,7 @@
     \f@nch@vbox\footskip{%
       \setbox0=\vbox{\footrule}\unvbox0
       \vskip\footruleskip
-      \f@nch@hfbox{#2}{#3}{#4}{t}{#6}{#7}{#8}%
+      \f@nch@hfbox{#2}{#3}{#4}{#6}{f}%
     \iff@nch@footalign \vskip\f@nch@footalignment \fi
     }%
   }%
@@ -470,10 +507,10 @@
 \newlength\f@nch@widthL
 \newlength\f@nch@widthC
 \newlength\f@nch@widthR
-\newcommand\f@nch@hfbox[7]{%
-  \setlength\f@nch@widthL{#5}%
-  \setlength\f@nch@widthC{#6}%
-  \setlength\f@nch@widthR{#7}%
+\newcommand\f@nch@hfbox[5]{%
+  \setlength\f@nch@widthL{\csname f@nch@width@#4l#5\endcsname}%
+  \setlength\f@nch@widthC{\csname f@nch@width@#4c#5\endcsname}%
+  \setlength\f@nch@widthR{\csname f@nch@width@#4r#5\endcsname}%
   \let\@tempa\f@nch@hfbox@center
   \ifdim \dimexpr \f@nch@widthL+\f@nch@widthC+\f@nch@widthR>\headwidth
   \else
@@ -484,26 +521,51 @@
       \let \@tempa\f@nch@hfbox@fit
     \fi
   \fi
-  \@tempa{#1}{#2}{#3}{#4}%
+  \@tempa{#1}{#2}{#3}#4#5%
 }
-\newcommand\f@nch@hfbox@center[4]{%
+\newcommand\f@nch@hfbox@center[5]{%
   \hbox to \headwidth{%
-    \rlap{\parbox[#4]{\f@nch@widthL}{\raggedright\leavevmode\ignorespaces#1}}%
+    \rlap{\f@nch@parbox{#1}\f@nch@widthL{#4}l{#5}}%
     \hfill
-    \parbox[#4]{\f@nch@widthC}{\centering\leavevmode\ignorespaces#2}%
+    \f@nch@parbox{#2}\f@nch@widthC{#4}c{#5}%
     \hfill
-    \llap{\parbox[#4]{\f@nch@widthR}{\raggedleft\leavevmode\ignorespaces#3}}%
+    \llap{\f@nch@parbox{#3}\f@nch@widthR{#4}r{#5}}%
   }%
 }
-\newcommand\f@nch@hfbox@fit[4]{%
+\newcommand\f@nch@hfbox@fit[5]{%
   \hbox to \headwidth{%
-    \parbox[#4]{\f@nch@widthL}{\raggedright\leavevmode\ignorespaces#1}%
+    \f@nch@parbox{#1}\f@nch@widthL{#4}l{#5}%
     \hfill
-    \parbox[#4]{\f@nch@widthC}{\centering\leavevmode\ignorespaces#2}%
+    \f@nch@parbox{#2}\f@nch@widthC{#4}c{#5}%
     \hfill
-    \parbox[#4]{\f@nch@widthR}{\raggedleft\leavevmode\ignorespaces#3}%
+    \f@nch@parbox{#3}\f@nch@widthR{#4}r{#5}%
   }%
 }%
+\newcommand\f@nch@parbox[5]{%
+  \expandafter\expandafter\expandafter\f@nch@parbox@align
+                     \csname f@nch@align@#3#4#5\endcsname
+  \parbox[\f@nch@align@@v]{#2}%
+    {%
+      \f@nch@align@@pre
+      \f@nch@align@@h\leavevmode\ignorespaces#1%
+      \f@nch@align@@post
+    }%
+}
+\newcommand\f@nch@parbox@align[2]{%
+  \def\f@nch@align@@pre{}%
+  \def\f@nch@align@@post{}%
+  \csname f@nch@parbox@align@v#1\endcsname
+  \csname f@nch@parbox@align@h#2\endcsname
+}
+\def\f@nch@parbox@align@vT{\def\f@nch@align@@v{t}\def\f@nch@align@@pre{\vspace{0pt}}}
+\def\f@nch@parbox@align@vt{\def\f@nch@align@@v{t}}
+\def\f@nch@parbox@align@vc{\def\f@nch@align@@v{c}}
+\def\f@nch@parbox@align@vb{\def\f@nch@align@@v{b}}
+\def\f@nch@parbox@align@vB{\def\f@nch@align@@v{b}\def\f@nch@align@@post{\vspace{0pt}}}
+\def\f@nch@parbox@align@hl{\def\f@nch@align@@h{\raggedright}}
+\def\f@nch@parbox@align@hc{\def\f@nch@align@@h{\centering}}
+\def\f@nch@parbox@align@hr{\def\f@nch@align@@h{\raggedleft}}
+\def\f@nch@parbox@align@hj{\def\f@nch@align@@h{}}
 \@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
 \@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}%
 \def\f@nch@initialise{%
@@ -554,8 +616,7 @@
 \def\ps@f@nch@fancycore{%
   \f@nch@ps@empty
   \def\@mkboth{\protect\markboth}%
-  \def\f@nch@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh
-                     \f@nch@width@olh\f@nch@width@och\f@nch@width@orh}%
+  \def\f@nch@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh{o}}%
   \def\@oddhead{%
     \iff@nch@twoside
       \ifodd\c@page
@@ -567,8 +628,7 @@
       \f@nch@oddhead
     \fi
   }
-  \def\f@nch@oddfoot{\f@nch@foot\f@nch@Oolf\f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@Oorf
-                     \f@nch@width@olf\f@nch@width@ocf\f@nch@width@orf}%
+  \def\f@nch@oddfoot{\f@nch@foot\f@nch@Oolf\f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@Oorf{o}}%
   \def\@oddfoot{%
     \iff@nch@twoside
       \ifodd\c@page
@@ -580,10 +640,8 @@
       \f@nch@oddfoot
     \fi
   }
-  \def\@evenhead{\f@nch@head\f@nch@Oelh\f@nch@elh\f@nch@ech\f@nch@erh\f@nch@Oerh
-                 \f@nch@width@elh\f@nch@width@ech\f@nch@width@erh}%
-  \def\@evenfoot{\f@nch@foot\f@nch@Oelf\f@nch@elf\f@nch@ecf\f@nch@erf\f@nch@Oerf
-                 \f@nch@width@elf\f@nch@width@ecf\f@nch@width@erf}%
+  \def\@evenhead{\f@nch@head\f@nch@Oelh\f@nch@elh\f@nch@ech\f@nch@erh\f@nch@Oerh{e}}%
+  \def\@evenfoot{\f@nch@foot\f@nch@Oelf\f@nch@elf\f@nch@ecf\f@nch@erf\f@nch@Oerf{e}}%
 }
 \def\f@nch@Oolh{\if@reversemargin\hss\else\relax\fi}
 \def\f@nch@Oorh{\if@reversemargin\relax\else\hss\fi}
@@ -656,6 +714,9 @@
       \f@nch@width@elh\f@nch@width@ech\f@nch@width@erh\f@nch@width@olh
       \f@nch@width@och\f@nch@width@orh\f@nch@width@elf\f@nch@width@ecf
       \f@nch@width@erf\f@nch@width@olf\f@nch@width@ocf\f@nch@width@orf
+      \f@nch@align@elh\f@nch@align@ech\f@nch@align@erh\f@nch@align@olh
+      \f@nch@align@och\f@nch@align@orh\f@nch@align@elf\f@nch@align@ecf
+      \f@nch@align@erf\f@nch@align@olf\f@nch@align@ocf\f@nch@align@orf
       \f@nch@Oolh\f@nch@Oorh\f@nch@Oelh\f@nch@Oerh
       \f@nch@Oolf\f@nch@Oorf\f@nch@Oelf\f@nch@Oerf
       \f@nch@headinit\f@nch@footinit

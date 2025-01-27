@@ -28,7 +28,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2025/01/23 v5.2
+%<fancyhdr|extramarks>           [2025/01/27 v5.2
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -5157,12 +5157,13 @@
 %   \begin{itemize}
 %   \item Bugfix in save, clear and restore paragraph hooks in headers/footers.
 %   \end{itemize}
-% \item Version 5.2, Jan 14-23, 2025
+% \item Version 5.2, Jan 14-27, 2025
 %   \begin{itemize}
 %   \item Use official interface to reset the paragraph hooks.
 %   \item Conditionally require package \pkg{xparse} in fancyhdr.
 %   \item Require \LaTeX{} version 2018-04-01 or later,
 %   \item therefore cleanup some pre-2018 code.
+%   \item Implement \cs{fancyhfwidth} etc. \meta{alignment} option.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -6419,12 +6420,16 @@
 %   The commands for field widths.
 % \changes{fancyhdr v5.0}{2025/01/01}{New commands \cs{fancyheadwidth},
 % \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
+% \changes{fancyhdr v5.2}{2025/01/25}{Second optional parameter \meta{alignment}.}
 % Pick up the parameters,
 % and supply an 'h' (\cs{fancyheadwidth}) or 'f' (\cs{fancyfootwidth}).
 %    \begin{macrocode}
-\newcommand{\fancyheadwidth}[2][]{\f@nch@fancyhfwidth\fancyheadwidth h[#1]{#2}}%
-\newcommand{\fancyfootwidth}[2][]{\f@nch@fancyhfwidth\fancyfootwidth f[#1]{#2}}%
-\newcommand{\fancyhfwidth}[2][]{\f@nch@fancyhfwidth\fancyhfwidth {}[#1]{#2}}%
+\NewDocumentCommand {\fancyheadwidth}{ O{} O{} m }
+                      {\f@nch@fancyhfwidth\fancyheadwidth h[#1][#2]{#3}}%
+\NewDocumentCommand {\fancyfootwidth}{ O{} O{} m }
+                      {\f@nch@fancyhfwidth\fancyfootwidth f[#1][#2]{#3}}%
+\NewDocumentCommand {\fancyhfwidth}  { O{} O{} m }
+                      {\f@nch@fancyhfwidth\fancyhfwidth  {}[#1][#2]{#3}}%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -6436,26 +6441,32 @@
 % for errors/warnings.\\
 % (2) \texttt{h} (for \cs{fancyheadwidth}), \texttt{f} (for \cs{fancyfootwidth}),
 % or \texttt{\{\}} (for \cs{fancyhfwidth}).\\
-% (3) The optional parameter that was given to these commands (default \texttt{[]}).\\
-% (4) The required parameter that was given to these commands.\\
+% (3-4) The two optional parameters that were given to these commands
+% (default for each \texttt{[]}).\\
+% (5) The required parameter that was given to these commands.\\
 %   The header and footer field widths are stored in command sequences with
 %   names of the form: \cs{f@nch@width@}\meta{x}\meta{y}\meta{z} with \meta{x} from
 %   \texttt{[eo]}, \meta{y} from \texttt{[lcr]} and \meta{z} from \texttt{[hf]}.
+%   The header and footer alignments are stored (after defaults have
+%   been applied) in command sequences with names of the form:
+%   \cs{f@nch@align@}\meta{x}\meta{y}\meta{z} with \meta{x} from
+%   \texttt{[eo]}, \meta{y} from \texttt{[lcr]} and \meta{z} from
+%   \texttt{[hf]}.
 %
 % First we assign the \meta{width} argument to a temporary length
-% variable, to check if it is a legal \meta{length}. Then we store the
-% \meta{width} in variables for all the specified places.
+% variable, to check if it is a legal \meta{length}.
 %
 %    \begin{macrocode}
-\def\f@nch@fancyhfwidth#1#2[#3]#4{%
-  \setlength\@tempdima{#4}%
+\def\f@nch@fancyhfwidth#1#2[#3][#4]#5{%
+  \setlength\@tempdima{#5}%
   \def\temp@c{}%
   \f@nch@forc\tmpf@ra{#3}%
   {\expandafter\f@nch@ifin\tmpf@ra{eolcrhf,EOLCRHF}%
     {}{\edef\temp@c{\temp@c\tmpf@ra}}}%
   \ifx\@empty\temp@c\else \PackageError{fancyhdr}{Illegal char `\temp@c' in
     \string#1 argument: [#3]}{}%
-  \fi \f@nch@for\temp@c{#3}%
+  \fi
+  \f@nch@for\temp@c{#3}%
   {\f@nch@default\f@nch@@eo{eo}\temp@c
     \f@nch@fancyhf@Echeck{#1}%
     \f@nch@default\f@nch@@lcr{lcr}\temp@c
@@ -6463,8 +6474,33 @@
     \f@nch@forc\f@nch@eo\f@nch@@eo
         {\f@nch@forc\f@nch@lcr\f@nch@@lcr
           {\f@nch@forc\f@nch@hf\f@nch@@hf
+%    \end{macrocode}
+% Then we store the \meta{width} in variables for all the specified
+% places.
+%    \begin{macrocode}
             {\expandafter\def\csname
-              f@nch@width@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#4}}}}}}
+              f@nch@width@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname {#5}%
+%    \end{macrocode}
+% Then we apply the defaults to the \meta{alignment} argument.
+% The defaults are:
+% \begin{itemize}
+% \item for the vertical alignment (v): \texttt{b} in a
+% header, and \texttt{t} in a footer. This is done by executing a
+% corresponding macro.
+% \item for the horizontal alignment (h): l, c, r: the same as the
+% field. Just copy the field letter.
+% \end{itemize}
+% If the optional parameter is empty, we leave it at these defaults,
+% otherwise we process the arguments with \cs{f@nchdrwdt@align}.
+% Finally we store the result in variables for the specified places.
+%    \begin{macrocode}
+             \csname f@nchdrwdt@align@v@\f@nch@hf\endcsname
+             \edef\f@nch@align@@h{\f@nch@lcr}%
+             \def\temp@a{#4}%
+             \ifx\temp@a\@empty \else \f@nchdrwdt@align#4\@nil{#1}\fi
+             \expandafter\edef\csname
+               f@nch@align@\f@nch@eo\f@nch@lcr\f@nch@hf\endcsname
+                  {\f@nch@align@@v\f@nch@align@@h}}}}}}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -6508,6 +6544,88 @@
 % \end{macro}
 % \end{macro}
 % \end{macro}
+% \end{macro}
+%
+% \begin{macro}[internal]{\f@nch@align@elh}
+% \begin{macro}[internal]{\f@nch@align@ech}
+% \begin{macro}[internal]{\f@nch@align@erh}
+% \begin{macro}[internal]{\f@nch@align@olh}
+% \begin{macro}[internal]{\f@nch@align@och}
+% \begin{macro}[internal]{\f@nch@align@orh}
+% \begin{macro}[internal]{\f@nch@align@elf}
+% \begin{macro}[internal]{\f@nch@align@ecf}
+% \begin{macro}[internal]{\f@nch@align@erf}
+% \begin{macro}[internal]{\f@nch@align@olf}
+% \begin{macro}[internal]{\f@nch@align@ocf}
+% \begin{macro}[internal]{\f@nch@align@orf}
+%
+% Alignment parameters for the widths.
+%
+%    \begin{macrocode}
+\def\f@nch@align@elh{bl}
+\def\f@nch@align@ech{bc}
+\def\f@nch@align@erh{br}
+\def\f@nch@align@olh{bl}
+\def\f@nch@align@och{bc}
+\def\f@nch@align@orh{br}
+\def\f@nch@align@elf{tl}
+\def\f@nch@align@ecf{tc}
+\def\f@nch@align@erf{tr}
+\def\f@nch@align@olf{tl}
+\def\f@nch@align@ocf{tc}
+\def\f@nch@align@orf{tr}
+%    \end{macrocode}
+%
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}[internal]{\f@nchdrwdt@align@v@h, \f@nchdrwdt@align@v@f, \f@nchdrwdt@align}
+% \cs{f@nchdrwdt@align@v@h}: set v to \texttt{b}\\[1ex]
+% \cs{f@nchdrwdt@align@v@f}: set v to \texttt{t}\\[1ex]
+% \cs{f@nchdrwdt@align}\marg{vert}\marg{hor}\texttt{\cs{@nil}}\marg{originating command}\\[1ex]
+% The internal processing for \meta{alignment} parameter in \cs{fancyhfwidth},
+% etc.\\
+% ALGORITHM \cs{f@nchdrwdt@align}:\\
+% (v = vertical position; h = horizontal position)\\
+% These have been set to their defaults before calling us.\\
+% \textbf{IF} \texttt{\#1} in \texttt{\{T,t,c,b,B,-\}} \\
+% \textbf{THEN} \textbf{if} \texttt{\#1} $\ne$ `\texttt{-}' \textbf{then}
+% v := \texttt{\#1} \textbf{fi}\\
+% \hspace*{1em}  \textbf{if} \texttt{\#2} is not empty \textbf{then} h := \texttt{\#2}
+% \textbf{fi}\\
+% \textbf{ELSE} (\texttt{\#1} not in \texttt{\{T,t,c,b,B,-\}} -- it must be
+% a horizontal alignment)\\
+% \hspace*{1em}  h := \texttt{\#1}\\
+% \textbf{FI}\\
+% \textbf{if} h not in \texttt{\{l,c,r,j\}} \textbf{then} ERROR \textbf{fi}\\
+%
+% The result can be found in the variables \cs{f@nch@align@@v} and \cs{f@nch@align@@h}.
+%    \begin{macrocode}
+\def\f@nchdrwdt@align@v@h{\def\f@nch@align@@v{b}}%
+\def\f@nchdrwdt@align@v@f{\def\f@nch@align@@v{t}}%
+\long\def\f@nchdrwdt@align#1#2\@nil#3{%
+  \f@nch@ifin{#1}{TtcbB-}{%
+    \f@nch@ifin{#1}{-}{}{\def\f@nch@align@@v{#1}}%
+    \def\@tempa{#2}%
+    \ifx\@tempa\@empty \else \def\f@nch@align@@h{#2}\fi
+  }%
+  {\def\f@nch@align@@h{#1}}%
+  \expandafter\f@nch@ifin\expandafter{\f@nch@align@@h}{lcrj}{}%
+    {\PackageError{fancyhdr}
+                  {\string#3: Illegal char `\f@nch@align@@h'\MessageBreak
+                              in alignment argument}{}}%
+}
+%    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\lhead}
@@ -7125,6 +7243,8 @@
 % \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
 % \changes{fancyhdr v5.1}{2025/01/06}{Add paragraph hook restore code
 % (\cs{f@nch@restorepar}).}
+% \changes{fancyhdr v5.2}{2025/01/25}{Implement \cs{fancyhfwidth} etc.
+% \meta{alignment} option.}
 %   Put together a header (\cs{f@nch@head}) or footer (\cs{f@nch@foot})
 %   given the left, center and right text and their widths,
 %   fillers at left and right and a rule. The \cs{xlap} commands put
@@ -7141,7 +7261,7 @@
 %   This is the right component. \\
 %   5. RIGHTSIDE BEARING. This is always \cs{relax} or \cs{hss}
 %   (after expansion).\\
-%   6-8. The specified widths for the left, center and right fields.
+%   6. Even (\texttt{e}) or odd (\texttt{o}).
 %
 % Before constructing the header or footer, the environment is reset to
 % a known state, the appropriate hooks (\texttt{fancyhdr/before} and
@@ -7156,14 +7276,14 @@
 % \TTindex{fancyhdr/after}%
 % \texttt{fancyhdr/after}) are run.
 %    \begin{macrocode}
-\newcommand\f@nch@head[8]{%
+\newcommand\f@nch@head[6]{%
   \f@nch@reset
   \ifdefined\UseHook\UseHook{fancyhdr/before}\UseHook{fancyhdr/head/begin}\fi
   \f@nch@headinit\relax
   #1%
   \hbox to\headwidth{%
     \f@nch@vbox\headheight{%
-      \f@nch@hfbox{#2}{#3}{#4}{b}{#6}{#7}{#8}%
+      \f@nch@hfbox{#2}{#3}{#4}{#6}{h}%
       \vskip\headruleskip\relax
       \headrule
     }%
@@ -7193,13 +7313,15 @@
 % \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
 % \changes{fancyhdr v5.1}{2025/01/06}{Add paragraph hook restore code
 % (\cs{f@nch@restorepar}).}
+% \changes{fancyhdr v5.2}{2025/01/25}{Implement \cs{fancyhfwidth} etc.
+% \meta{alignment} option.}
 % We put the \cs{footrule} in a \cs{vbox} to accommodate for flexible
 % footrules (e.g., using \cs{hrulefill}), so that the \cs{headwidth} will
 % be used as the line width. But to preserve the vertical spacing we
 % then \cs{unvbox} this box.
 %
 %    \begin{macrocode}
-\newcommand\f@nch@foot[8]{%
+\newcommand\f@nch@foot[6]{%
   \f@nch@reset
   \ifdefined\UseHook\UseHook{fancyhdr/before}\UseHook{fancyhdr/foot/begin}\fi
   \f@nch@footinit\relax
@@ -7208,7 +7330,7 @@
     \f@nch@vbox\footskip{%
       \setbox0=\vbox{\footrule}\unvbox0
       \vskip\footruleskip
-      \f@nch@hfbox{#2}{#3}{#4}{t}{#6}{#7}{#8}%
+      \f@nch@hfbox{#2}{#3}{#4}{#6}{f}%
 %    \end{macrocode}
 % \changes{fancyhdr v5.0}{2024/05/13}{\cs{vskip}\meta{length}
 %  added if \cs{fancyfootalign}\protect\marg{length} was given.}
@@ -7236,12 +7358,12 @@
 %
 % \end{macro}
 % \begin{macro}[internal]{\f@nch@hfbox}
-% This macro constructs the box with the header or footer. It has 7 parameters:\\
+% This macro constructs the box with the header or footer. It has 5 parameters:\\
 % 1. Left field\\
 % 2. Center field\\
 % 3. Right field\\
-% 4. Vertical alignment: \texttt{b} for the header or \texttt{t} for the footer\\
-% 5-7. Widths for the left, center and right fields.
+% 4. Even (\texttt{e}) or odd (\texttt{o}).\\
+% 5. Header (\texttt{h}) or footer (\texttt{f}).
 %
 % Algorithm:\\
 % First we store the field widths in length variables.\\
@@ -7255,12 +7377,14 @@
 % put the center field centered between the left and right field, i.e.,
 % with equal gaps on both sides. This is done by the macro
 % \cs{f@nch@hfbox@fit}.
+% \changes{fancyhdr v5.2}{2025/01/25}{Implement \cs{fancyhfwidth} etc.
+% \meta{alignment} option.}
 %
 %    \begin{macrocode}
-\newcommand\f@nch@hfbox[7]{%
-  \setlength\f@nch@widthL{#5}%
-  \setlength\f@nch@widthC{#6}%
-  \setlength\f@nch@widthR{#7}%
+\newcommand\f@nch@hfbox[5]{%
+  \setlength\f@nch@widthL{\csname f@nch@width@#4l#5\endcsname}%
+  \setlength\f@nch@widthC{\csname f@nch@width@#4c#5\endcsname}%
+  \setlength\f@nch@widthR{\csname f@nch@width@#4r#5\endcsname}%
   \let\@tempa\f@nch@hfbox@center
   \ifdim \dimexpr \f@nch@widthL+\f@nch@widthC+\f@nch@widthR>\headwidth
   \else
@@ -7271,7 +7395,7 @@
       \let \@tempa\f@nch@hfbox@fit
     \fi
   \fi
-  \@tempa{#1}{#2}{#3}{#4}%
+  \@tempa{#1}{#2}{#3}#4#5%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -7283,15 +7407,18 @@
 % 1. Left field\\
 % 2. Center field\\
 % 3. Right field\\
-% 4. Vertical alignment: \texttt{b} for the header or \texttt{t} for the footer\\
+% 4. Even (\texttt{e}) or odd (\texttt{o}).\\
+% 5. Header (\texttt{h}) or footer (\texttt{f}).
+% \changes{fancyhdr v5.2}{2025/01/25}{Implement \cs{fancyhfwidth} etc.
+% \meta{alignment} option.}
 %    \begin{macrocode}
-\newcommand\f@nch@hfbox@center[4]{%
+\newcommand\f@nch@hfbox@center[5]{%
   \hbox to \headwidth{%
-    \rlap{\parbox[#4]{\f@nch@widthL}{\raggedright\leavevmode\ignorespaces#1}}%
+    \rlap{\f@nch@parbox{#1}\f@nch@widthL{#4}l{#5}}%
     \hfill
-    \parbox[#4]{\f@nch@widthC}{\centering\leavevmode\ignorespaces#2}%
+    \f@nch@parbox{#2}\f@nch@widthC{#4}c{#5}%
     \hfill
-    \llap{\parbox[#4]{\f@nch@widthR}{\raggedleft\leavevmode\ignorespaces#3}}%
+    \llap{\f@nch@parbox{#3}\f@nch@widthR{#4}r{#5}}%
   }%
 }
 %    \end{macrocode}
@@ -7303,17 +7430,97 @@
 % 1. Left field\\
 % 2. Center field\\
 % 3. Right field\\
-% 4. Vertical alignment: \texttt{b} for the header or \texttt{t} for the footer\\
+% 4. Even (\texttt{e}) or odd (\texttt{o}).\\
+% 5. Header (\texttt{h}) or footer (\texttt{f}).
+% \changes{fancyhdr v5.2}{2025/01/25}{Implement \cs{fancyhfwidth} etc.
+% \meta{alignment} option.}
 %    \begin{macrocode}
-\newcommand\f@nch@hfbox@fit[4]{%
+\newcommand\f@nch@hfbox@fit[5]{%
   \hbox to \headwidth{%
-    \parbox[#4]{\f@nch@widthL}{\raggedright\leavevmode\ignorespaces#1}%
+    \f@nch@parbox{#1}\f@nch@widthL{#4}l{#5}%
     \hfill
-    \parbox[#4]{\f@nch@widthC}{\centering\leavevmode\ignorespaces#2}%
+    \f@nch@parbox{#2}\f@nch@widthC{#4}c{#5}%
     \hfill
-    \parbox[#4]{\f@nch@widthR}{\raggedleft\leavevmode\ignorespaces#3}%
+    \f@nch@parbox{#3}\f@nch@widthR{#4}r{#5}%
   }%
 }%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\f@nch@parbox}
+% This macro constructs one \cs{parbox} in the header or footer.
+% It has 4 parameters:\\
+% 1. The contents\\
+% 2. The width for the \cs{parbox}.\\
+% 3. Even (\texttt{e}) or odd (\texttt{o}).\\
+% 4. Left (\texttt{l}), center (\texttt{c}) or right (\texttt{r}).\\
+% 5. Header (\texttt{h}) or footer (\texttt{f}).\\
+% Result: the proper \cs{parbox}\\[1ex]
+% First we get (with \cs{csname}) the proper alignment parameter. Then we
+% expand this so that \cs{f@nch@parbox@align} gets the two alignment letters
+% as separate arguments. Then \cs{f@nch@parbox@align} is called to set
+% up the alignment variables. After that we construct the \cs{parbox}
+% with the calculated variables.
+%    \begin{macrocode}
+\newcommand\f@nch@parbox[5]{%
+  \expandafter\expandafter\expandafter\f@nch@parbox@align
+                     \csname f@nch@align@#3#4#5\endcsname
+  \parbox[\f@nch@align@@v]{#2}%
+    {%
+      \f@nch@align@@pre
+      \f@nch@align@@h\leavevmode\ignorespaces#1%
+      \f@nch@align@@post
+    }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\f@nch@parbox@align}
+% The macro \cs{f@nch@parbox@align} sets the alignment variables for \cs{f@nch@parbox}.
+% It has 2 parameters, the two letters for the vertical and horizontal
+% alignment, with the defaults applied.\\
+% 1. Vertical (\texttt{T, t, c, b, B}).\\
+% 2. Horizontal (\texttt{l, c, r, j}).\\
+% Result variables:
+% \begin{description}
+% \item[\cs{f@nch@align@@v}] The vertical alignment for the \cs{parbox}:
+% \texttt{t}, \texttt{c} or \texttt{b}.
+% \item[\cs{f@nch@align@@h}] The horizontal alignment for the
+% \cs{parbox}: \cs{raggedright}, \cs{centering}, \cs{raggedleft} or
+% empty for \texttt{l, c, r, j}, respectively.
+% \item[\cs{f@nch@align@@pre}] code before the contents of the
+% \cs{parbox}: \Cmd{vspace\{0pt\}} for \texttt{T} alignment, otherwise empty.
+% \item[\cs{f@nch@align@@post}] code after the contents of the
+% \cs{parbox}: \Cmd{vspace\{0pt\}} for \texttt{B} alignment, otherwise empty.
+% \end{description}
+% First we set the defaults for \cs{f@nch@align@@pre} and
+% \cs{f@nch@align@@post} (empty). Then we call the proper macros for the
+% alignment parameters.
+%    \begin{macrocode}
+\newcommand\f@nch@parbox@align[2]{%
+  \def\f@nch@align@@pre{}%
+  \def\f@nch@align@@post{}%
+  \csname f@nch@parbox@align@v#1\endcsname
+  \csname f@nch@parbox@align@h#2\endcsname
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\f@nch@parbox@align@vT,
+% \f@nch@parbox@align@vt, \f@nch@parbox@align@vc, \f@nch@parbox@align@vb, \f@nch@parbox@align@vB, \f@nch@parbox@align@hl, \f@nch@parbox@align@hc, \f@nch@parbox@align@hr, \f@nch@parbox@align@hj}
+%
+% The macro \cs{f@nch@parbox@align@\meta{v$|$h}\meta{x}} sets the variables for the
+% vertical or horizontal alignment option \texttt{\meta{x}}.
+%    \begin{macrocode}
+\def\f@nch@parbox@align@vT{\def\f@nch@align@@v{t}\def\f@nch@align@@pre{\vspace{0pt}}}
+\def\f@nch@parbox@align@vt{\def\f@nch@align@@v{t}}
+\def\f@nch@parbox@align@vc{\def\f@nch@align@@v{c}}
+\def\f@nch@parbox@align@vb{\def\f@nch@align@@v{b}}
+\def\f@nch@parbox@align@vB{\def\f@nch@align@@v{b}\def\f@nch@align@@post{\vspace{0pt}}}
+\def\f@nch@parbox@align@hl{\def\f@nch@align@@h{\raggedright}}
+\def\f@nch@parbox@align@hc{\def\f@nch@align@@h{\centering}}
+\def\f@nch@parbox@align@hr{\def\f@nch@align@@h{\raggedleft}}
+\def\f@nch@parbox@align@hj{\def\f@nch@align@@h{}}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -7492,6 +7699,8 @@
 % \changes{fancyhdr v4.1}{2022/09/06}{Implement \texttt{twoside} option.}
 % \changes{fancyhdr v5.0}{2025/01/01}{Support for \cs{fancyheadwidth},
 % \cs{fancyfootwidth} and \cs{fancyhfwidth}.}
+% \changes{fancyhdr v5.2}{2025/01/25}{Implement \cs{fancyhfwidth} etc.
+% \meta{alignment} option.}
 % The actual implementation of page style \texttt{fancy}. For amsbook/amsart, which do
 % strange things with \cs{topskip}, we start with \cs{f@nch@ps@empty}. We
 % construct the even and odd headers and footers from all the parts that
@@ -7500,8 +7709,7 @@
 \def\ps@f@nch@fancycore{%
   \f@nch@ps@empty
   \def\@mkboth{\protect\markboth}%
-  \def\f@nch@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh
-                     \f@nch@width@olh\f@nch@width@och\f@nch@width@orh}%
+  \def\f@nch@oddhead{\f@nch@head\f@nch@Oolh\f@nch@olh\f@nch@och\f@nch@orh\f@nch@Oorh{o}}%
   \def\@oddhead{%
     \iff@nch@twoside
       \ifodd\c@page
@@ -7513,8 +7721,7 @@
       \f@nch@oddhead
     \fi
   }
-  \def\f@nch@oddfoot{\f@nch@foot\f@nch@Oolf\f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@Oorf
-                     \f@nch@width@olf\f@nch@width@ocf\f@nch@width@orf}%
+  \def\f@nch@oddfoot{\f@nch@foot\f@nch@Oolf\f@nch@olf\f@nch@ocf\f@nch@orf\f@nch@Oorf{o}}%
   \def\@oddfoot{%
     \iff@nch@twoside
       \ifodd\c@page
@@ -7526,10 +7733,8 @@
       \f@nch@oddfoot
     \fi
   }
-  \def\@evenhead{\f@nch@head\f@nch@Oelh\f@nch@elh\f@nch@ech\f@nch@erh\f@nch@Oerh
-                 \f@nch@width@elh\f@nch@width@ech\f@nch@width@erh}%
-  \def\@evenfoot{\f@nch@foot\f@nch@Oelf\f@nch@elf\f@nch@ecf\f@nch@erf\f@nch@Oerf
-                 \f@nch@width@elf\f@nch@width@ecf\f@nch@width@erf}%
+  \def\@evenhead{\f@nch@head\f@nch@Oelh\f@nch@elh\f@nch@ech\f@nch@erh\f@nch@Oerh{e}}%
+  \def\@evenfoot{\f@nch@foot\f@nch@Oelf\f@nch@elf\f@nch@ecf\f@nch@erf\f@nch@Oerf{e}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -7745,6 +7950,10 @@
 % \changes{fancyhdr v5.0}{2021/03/27}{Also save the offset length variables
 % \cs{f@nch@offset@xyz} with \cs{setlength}}
 % \changes{fancyhdr v5.0}{2022/01/24}{Replace \cs{myname} with \cs{temp@a}}
+% \changes{fancyhdr v5.0}{2025/01/02}{Implement \cs{fancyhfwidth} etc.,
+% store \meta{width}.}
+% \changes{fancyhdr v5.2}{2025/01/27}{Implement \cs{fancyhfwidth} etc.,
+% store \meta{alignment}.}
 %    \begin{macrocode}
 \newcommand\f@nch@pagestyle@setup{%
   \iff@nch@pagestyle@star
@@ -7754,8 +7963,9 @@
 %    \begin{macrocode}
     \iff@nch@check\@temptokenb={\f@nch@checktrue}\else\@temptokenb={\f@nch@checkfalse}\fi
 %    \end{macrocode}
-% Save values of all relevant macros (26 in total):\\
+% Save values of all relevant macros (50 in total):\\
 % headers and footers (12), header and footer widths (12),
+% header and footer alignments (12),
 % header and footer offsets (8), header and footer inits (2),
 % \cs{headrule} and \cs{footrule} and \texttt{...width} (4)
 %    \begin{macrocode}
@@ -7765,6 +7975,9 @@
       \f@nch@width@elh\f@nch@width@ech\f@nch@width@erh\f@nch@width@olh
       \f@nch@width@och\f@nch@width@orh\f@nch@width@elf\f@nch@width@ecf
       \f@nch@width@erf\f@nch@width@olf\f@nch@width@ocf\f@nch@width@orf
+      \f@nch@align@elh\f@nch@align@ech\f@nch@align@erh\f@nch@align@olh
+      \f@nch@align@och\f@nch@align@orh\f@nch@align@elf\f@nch@align@ecf
+      \f@nch@align@erf\f@nch@align@olf\f@nch@align@ocf\f@nch@align@orf
       \f@nch@Oolh\f@nch@Oorh\f@nch@Oelh\f@nch@Oerh
       \f@nch@Oolf\f@nch@Oorf\f@nch@Oelf\f@nch@Oerf
       \f@nch@headinit\f@nch@footinit
