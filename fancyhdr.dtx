@@ -5212,7 +5212,7 @@
 %  \hrule height\headrulewidth width\textwidth}
 % \bigskip
 % \noindent which isn't very nice.
-% There are basically three options to solve this problem.
+% Here I give four options to solve this problem.
 %
 % \subsection{Using optional arguments}
 %
@@ -5327,7 +5327,7 @@
 % \fancyhead[LO,RE]{\nouppercase{%
 %          \truncate{0.5\headwidth}{\leftmark}}} % Chapter title
 % \end{example}
-% We don't have to make any changes to the chaper and section titles
+% We don't have to make any changes to the chapter and section titles
 % because \cs{truncate} will take care of this.
 % This arrangement gives the following header when both titles are too
 % big, like in the example above:
@@ -5351,6 +5351,37 @@
 % than \cs{headwidth}. A more sophisticated solution would be to check
 % if one of the header parts is small enough and then truncate the other
 % one for the remaining space.
+%
+% \subsection{Using \cs{fancyheadwidth}}
+%
+% For this solution we use the \cs{fancyheadwidth} command to give each
+% part a little less than half of the \cs{headwidth}. This command is
+% available in \texttt{fancyhdr} version 5.0 and later.
+% Of course it is also possible to make asymmetric arrangements.
+% \Example{34d}
+% \begin{example}
+% \setlength{\headheight}{35pt}
+% \fancyhead[LE,RO]{\nouppercase{\rightmark}} % Section title
+% \fancyhead[LO,RE]{\nouppercase{\leftmark}}  % Chapter title
+% \fancyfoot[LE,RO]{\thepage}
+% \fancyheadwidth[L,R]{0.48\headwidth}
+% . . .
+% \chapter{This is a very long chapter title to see if we can
+%          let fancyhdr fit it in the header}
+% \section{This is a very long section title that will not fit in the header}
+% \end{example}
+% We don't have to make any changes to the chapter and section titles.
+% This arrangement gives the following header when both titles are too
+% big, like in the example above:
+%
+% \bigskip
+% \showheader{
+% \setlength{\headheight}{35pt}
+% \fancyhead[LE,RO]{1.1. This is a very long section title that will not fit in the header}
+% \fancyhead[LO,RE]{Chapter 1. This is a very long chapter title to see if we can
+%          let fancyhdr fit it in the header}
+% \fancyheadwidth[L,R]{0.48\headwidth}
+% }
 %
 % \section{I lost my chapter/section titles}
 %
