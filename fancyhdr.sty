@@ -759,13 +759,6 @@
        \csname ps@#1\expandafter\endcsname
        \csname ps@#2\endcsname
      \@ifundefined{f@nch@ps@#2-is-fancyhdr}{%
-       \@ifundefined{f@nch@ps@#1-is-fancyhdr}{}{%
-         \PackageNote{fancyhdr}{%
-           \string\fancypagestyleassign: You overwrite the\MessageBreak
-           fancyhdr-based page style `#1' with the\MessageBreak
-           non-fancyhdr-based page style `#2'.\MessageBreak
-           This could cause unexpected problems if you\MessageBreak
-           use `#1' as the base style in \string\fancypagestyle}}%
        \expandafter\let\csname f@nch@ps@#1-is-fancyhdr\endcsname\@undefined
      }{%
        \@namedef{f@nch@ps@#1-is-fancyhdr}{}%

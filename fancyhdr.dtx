@@ -8158,19 +8158,11 @@
        \csname ps@#1\expandafter\endcsname
        \csname ps@#2\endcsname
 %    \end{macrocode}
-%    If \meta{ps2} is not fancyhdr-based, \meta{ps1} will also be
-%    fancyhdr-based, otherwise it will not. If \meta{ps2} is not
-%    fancyhdr-based, but \meta{ps1} is, give a warning that it is
-%    overwritten, which could give unexpected problems.
+%    If \meta{ps2} is fancyhdr-based, \meta{ps1} will also be
+%    fancyhdr-based, otherwise it is not.
+% \changes{fancyhdr v5.2}{2025/01/27}{Remove \Cmd{PackageNote}.}
 %    \begin{macrocode}
      \@ifundefined{f@nch@ps@#2-is-fancyhdr}{%
-       \@ifundefined{f@nch@ps@#1-is-fancyhdr}{}{%
-         \PackageNote{fancyhdr}{%
-           \string\fancypagestyleassign: You overwrite the\MessageBreak
-           fancyhdr-based page style `#1' with the\MessageBreak
-           non-fancyhdr-based page style `#2'.\MessageBreak
-           This could cause unexpected problems if you\MessageBreak
-           use `#1' as the base style in \string\fancypagestyle}}%
        \expandafter\let\csname f@nch@ps@#1-is-fancyhdr\endcsname\@undefined
      }{%
        \@namedef{f@nch@ps@#1-is-fancyhdr}{}%
