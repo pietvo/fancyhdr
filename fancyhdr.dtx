@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2025/01/14 v5.2
+%<fancyhdr|extramarks>           [2025/01/15 v5.2
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -76,7 +76,7 @@
 \usepackage{subcaption}
 \usepackage[colorlinks,linktocpage]{hyperref}
 \usepackage{ifthen}
-\usepackage{xparse}
+\ifdefined\NewDocumentCommand\else\usepackage{xparse}\fi
 \usepackage{enumitem}
 \setlist{itemsep=1pt}
 \usepackage{fancyhdr}
@@ -5159,9 +5159,10 @@
 %   \begin{itemize}
 %   \item Bugfix in save, clear and restore paragraph hooks in headers/footers.
 %   \end{itemize}
-% \item Version 5.2, Jan 14, 2025
+% \item Version 5.2, Jan 14-15, 2025
 %   \begin{itemize}
 %   \item Use official interface to reset the paragraph hooks.
+%   \item Conditionally require package \pkg{xparse} in fancyhdr.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -5984,6 +5985,8 @@
 % \changes{fancyhdr v3.9}{2016/10/11}{Put everything in a \texttt{.dtx} file.}
 % \changes{fancyhdr v3.9}{2016/10/12}{Rename some macros to have 'f@nch@'
 % in their names, to get a more uniform naming scheme for internal macros.}
+% \changes{fancyhdr v5.2}{2025/01/15}{Conditionally require package \pkg{xparse}.}
+\ifdefined\NewDocumentCommand\else\RequirePackage{xparse}\fi
 %
 % \begin{macro}[internal]{\if@nch@mpty}
 % This macro tests if its argument is empty.
