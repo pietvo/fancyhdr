@@ -26,7 +26,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2025/01/07 v5.1.1
+%<fancyhdr|extramarks>           [2025/01/14 v5.2
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -5159,6 +5159,10 @@
 %   \begin{itemize}
 %   \item Bugfix in save, clear and restore paragraph hooks in headers/footers.
 %   \end{itemize}
+% \item Version 5.2, Jan 14, 2025
+%   \begin{itemize}
+%   \item Use official interface to reset the paragraph hooks.
+%   \end{itemize}
 % \end{itemize}
 %
 %
@@ -6688,6 +6692,8 @@
 % \changes{fancyhdr v5.1.1}{2025/01/07}{Use low-level commands to reset
 % paragraph hooks to prevent LaTeX error when ruinning with latex3
 % debugging.}
+% \changes{fancyhdr v5.2}{2025/01/14}{Use official interface to reset
+% the paragraph hooks.}
 % The way we do this now: Every hook consists of 4 global `variables':
 % \begin{itemize}
 % \item \cs{__hook \meta{name}}
@@ -6699,26 +6705,23 @@
 % \texttt{para/end}, and \texttt{para/after}). At the beginning of a
 % header/footer, i.e., before any init code and hooks, all these variables are
 % locally saved into variables with the same name, prefixed with
-% `\texttt{f@nch@}', and then globally reset to their `empty' value. At
-% the end of the header/footer they are globally restored to the saved value.
+% `\texttt{f@nch@}', and then clear the hook. At the end of the
+% header/footer they are globally restored to the saved value.
 % So we do only global assignments to them to avoid problems.
 % Save a (paragraph) hook locally and and clear it globally.
 % Restore it globally at the end of header/footer processing.
 %    \begin{macrocode}
-    \prop_new:N \f@nch@empty_code_prop
     \def\f@nch@saveclr@parhook #1{
       \expandafter\let\csname f@nch@__hook~#1\expandafter\endcsname
                       \csname __hook~#1\endcsname
-      \expandafter\gdef\csname __hook~#1\endcsname { }
       \expandafter\let\csname f@nch@__hook_toplevel~#1\expandafter\endcsname
                       \csname __hook_toplevel~#1\endcsname
-      \expandafter\gdef\csname __hook_toplevel~#1\endcsname { }
       \expandafter\let\csname f@nch@__hook_next~#1\expandafter\endcsname
                       \csname __hook_next~#1\endcsname
-      \expandafter\gdef\csname __hook_next~#1\endcsname { }
       \expandafter\let\csname f@nch@g__hook_#1_code_prop\expandafter\endcsname
                       \csname g__hook_#1_code_prop\endcsname
-      \global\expandafter\let\csname g__hook_#1_code_prop\endcsname \f@nch@empty_code_prop
+      \RemoveFromHook{#1}[*]
+      \ClearHookNext{#1}
     }
     \def\f@nch@restore@parhook #1{
       \global\expandafter\let\csname __hook~#1\expandafter\endcsname
