@@ -5453,6 +5453,40 @@
 % \fancyheadwidth[L,R]{0.48\headwidth}
 % }
 %
+% You may not like that the two parts of the header are aligned at the
+% bottom, which is the default for the header. We can use the second
+% optional parameter of \cs{fancyheadwidth} to specify a different
+% alignment (in \pkg{fancyhdr} version 5.2 or later). See the following example.
+% \Example{34e}
+% \begin{example}
+% \setlength{\headheight}{35pt}
+% \fancyhead[LE,RO]{\nouppercase{\rightmark}} % Section title
+% \fancyhead[LO,RE]{\nouppercase{\leftmark}}  % Chapter title
+% \fancyfoot[LE,RO]{\thepage}
+% \fancyheadwidth*[L,R][tj]{0.48\headwidth}
+% \fancyfootwidth*[LE,RO][-c]{0.1\headwidth}
+% \end{example}
+% We use \texttt{t} for the vertical alignment, and also \texttt{j}
+% (justified) for the horizontal alignment. Just for fun we use the
+% \texttt{*} form of the command, and also add \cs{fancyfootwidth*}.
+% This puts the page number under the page a little bit away from the
+% edge of the text.
+%
+% The resulting header looks like:
+%
+% \bigskip
+% \showheader{
+% \setlength{\headheight}{35pt}
+% \fancyhead[LE,RO]{1.1. This is a very long section title that will not fit in the header}
+% \fancyhead[LO,RE]{Chapter 1. This is a very long chapter title to see if we can
+%          let fancyhdr fit it in the header}
+% \fancyheadwidth*[L,R][tj]{0.48\headwidth}
+% }
+%
+% Please note, that these solutions also have disadvantages. The header
+% must be quite tall, and when a smaller title is used there is a gap
+% between the title and the line under the header.
+%
 % \section{I lost my chapter/section titles}
 %
 % Some time ago I got a question like this (edited to get the
