@@ -22,7 +22,9 @@
 %
 %    \begin{macrocode}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\NeedsTeXFormat{LaTeX2e}
+% \changes{V5.2}{2025/01/15}{Require \LaTeX{} version at least 2018-04-01.}
+%<fancyhdr|extramarks|extramarks-v4>\NeedsTeXFormat{LaTeX2e}[2018-04-01]
+%<fancyheadings>\NeedsTeXFormat{LaTeX2e}
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
@@ -767,10 +769,6 @@
 % If you want to keep the old behaviour of \pkg{extramarks}, you can use:
 % \begin{verbatim}
 % \usepackage{extramarks}[=v4]
-% \end{verbatim}
-% or if you have an old \LaTeX{} system where the above doesn't work
-% \begin{verbatim}
-% \usepackage{extramarks-v4}
 % \end{verbatim}
 % Please note that in that case the
 % \cs{topleftxmark}, \cs{toprightxmark} and \cs{topxmark} commands may
@@ -5163,6 +5161,8 @@
 %   \begin{itemize}
 %   \item Use official interface to reset the paragraph hooks.
 %   \item Conditionally require package \pkg{xparse} in fancyhdr.
+%   \item Require \LaTeX{} version 2018-04-01 or later,
+%   \item therefore cleanup some pre-2018 code.
 %   \end{itemize}
 % \end{itemize}
 %
@@ -6068,32 +6068,10 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[internal]{\f@nch@ifundefined}
-% This macro tests if a command is undefined. Older versions of
-% fancyhdr used \cs{@ifundefined}, but this had an undesired side effect
-% in the original \LaTeX{} (the command was made equal to \cs{relax} if
-% it was undefined). Another way was\\
-% \verb+\ifx\thecommand\undefined ...+ or \verb+\ifx\thecommand\@undefined ...+
-% but that could conflict with packages that use the \cs{@ifundefined}
-% method. \LaTeX{} versions later than 2018 have a definition of
-% \cs{@ifundefined} that avoids these problems, but not everybody may
-% have such a version installed. Therefore we define our own version
-% \cs{f@nch@ifundefined}.
-% This definition is copied from the \PKGindex{tocloft}\pkg{tocloft} package by Peter
-% Wilson and Will Robertson.
-%    \begin{macrocode}
-\newcommand{\f@nch@ifundefined}[1]{%
-  \begingroup\expandafter\expandafter\expandafter\endgroup
-  \expandafter\ifx\csname #1\endcsname\relax
-    \expandafter\@firstoftwo
-  \else
-    \expandafter\@secondoftwo
-    \fi}
-%    \end{macrocode}
-% \end{macro}
-%
 % \changes{fancyhdr v4.0}{2019/03/17}{Added \texttt{headings} and
 % \texttt{myheadings} options.}
+% \changes{fancyhdr v5.2}{2025/01/15}{Use \cs{@ifundefined} instead of
+% \cs{f@nch@ifundefined}.}
 % Standard styles are redefined optionally. These definitions are
 % borrowed from the \PKGindex{nccfancyhdr}\pkg{nccfancyhdr} package
 % by by Alexander I. Rozhenko.
@@ -6106,7 +6084,7 @@
 % \OPTindex{myheadings}\PSindex{myheadings}
 %    \begin{macrocode}
 \DeclareOption{myheadings}{%
-  \f@nch@ifundefined{chapter}{%
+  \@ifundefined{chapter}{%
 %    \end{macrocode}
 % An article-like class without chapters:
 %    \begin{macrocode}
@@ -6143,9 +6121,11 @@
 % \cs{@mkboth} from \cs{let}\cs{@mkboth}\cs{markboth} to
 % \cs{def}\Cmd{@mkboth\{\cs{protect}\cs{markboth}\}} so that it will pick up changes
 % to \cs{markboth}}
+% \changes{fancyhdr v5.2}{2025/01/15}{Use \cs{@ifundefined} instead of
+% \cs{f@nch@ifundefined}.}
 %    \begin{macrocode}
 \DeclareOption{headings}{%
-  \f@nch@ifundefined{chapter}{%
+  \@ifundefined{chapter}{%
     \if@twoside
 %    \end{macrocode}
 % An article in two-side mode:
@@ -6605,8 +6585,10 @@
 % \begin{macro}{\headruleskip}
 %  Don't define \cs{headruleskip} if it is already defined.
 % \changes{fancyhdr v4.0}{2019/03/22}{Parameter \cs{headruleskip}.}
+% \changes{fancyhdr v5.2}{2025/01/15}{Use \cs{@ifundefined} instead of
+% \cs{f@nch@ifundefined}.}
 %    \begin{macrocode}
-\f@nch@ifundefined{headruleskip}%
+\@ifundefined{headruleskip}%
       {\newcommand{\headruleskip}{0pt}}{}
 %    \end{macrocode}
 % \end{macro}
@@ -6614,8 +6596,10 @@
 % \begin{macro}{\footruleskip}
 %  Memoir also defines \cs{footruleskip}.
 %  Don't define \cs{footruleskip} if it is already defined.
+% \changes{fancyhdr v5.2}{2025/01/15}{Use \cs{@ifundefined} instead of
+% \cs{f@nch@ifundefined}.}
 %    \begin{macrocode}
-\f@nch@ifundefined{footruleskip}%
+\@ifundefined{footruleskip}%
       {\newcommand{\footruleskip}{.3\normalbaselineskip}}{}
 %    \end{macrocode}
 % \end{macro}
@@ -6800,6 +6784,8 @@
 %   is active. (Issue \# 8 \url{https://github.com/pietvo/fancyhdr/issues/8}.)}
 %   \changes{fancyhdr v4.3}{2024/05/08}{Remove pre-NFSS stuff}
 %   \changes{fancyhdr v4.3}{2024/07/17}{Replace \cs{f@nch@everypar} by \cs{f@nch@resetpar}.}
+% \changes{fancyhdr v5.2}{2025/01/15}{Use \cs{@ifundefined} instead of
+% \cs{f@nch@ifundefined}.}
 %    \begin{macrocode}
 \def\f@nch@reset{\f@nch@resetpar\restorecr\endlinechar=13
   \catcode`\\=0\catcode`\{=1\catcode`\}=2\catcode`\$=3\catcode`\&=4
@@ -6817,7 +6803,7 @@
       \expandafter\def\csname MakeUppercase\space\space\space\endcsname
                                                    [####1]####2{####2}%
       ##1}}%
-  \f@nch@ifundefined{@normalsize} {\normalsize} % for ucthesis.cls
+  \@ifundefined{@normalsize} {\normalsize} % for ucthesis.cls
    {\@normalsize}%
   }
 %    \end{macrocode}
@@ -7304,16 +7290,20 @@
 %   Define \MakeUppercase for old \LaTeX{}en. Note: we used \cs{def} rather
 %   than \cs{let}, so that \verb+\let\uppercase\relax+ (from the version 1
 %   documentation) will still work.
+% \changes{fancyhdr v5.2}{2025/01/15}{Use \cs{@ifundefined} instead of
+% \cs{f@nch@ifundefined}.}
 %
 %    \begin{macrocode}
-\f@nch@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
+\@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}[internal]{\@chapapp}
 % Define \cs{@chapapp} for classes that don't have it, e.g., amsbook
+% \changes{fancyhdr v5.2}{2025/01/15}{Use \cs{@ifundefined} instead of
+% \cs{f@nch@ifundefined}.}
 %    \begin{macrocode}
-\f@nch@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}%
+\@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}[internal]{\f@nch@initialise}
@@ -7329,9 +7319,11 @@
 % \begin{macro}{\sectionmark}
 % \begin{macro}{\subsectionmark}
 % Standard definitions for \cs{chaptermark}, \cs{sectionmark} and \cs{subsectionmark}.
+% \changes{fancyhdr v5.2}{2025/01/15}{Use \cs{@ifundefined} instead of
+% \cs{f@nch@ifundefined}.}
 %
 %    \begin{macrocode}
-  \f@nch@ifundefined{chapter}%
+  \@ifundefined{chapter}%
    {\def\sectionmark##1{\markboth{\MakeUppercase{\ifnum \c@secnumdepth>\z@
           \thesection\hskip 1em\relax
         \fi ##1}}{}}%
@@ -7685,12 +7677,14 @@
 % Declare it as a fancyhdr-based page style.
 % \changes{fancyhdr v4.0}{2019/09/05}{Make the definition of \cs{f@nch@pagestyle} \cs{long}.}
 % \changes{fancyhdr v5.0}{2021/02/17}{Add \cs{fancypagestyle*}}
+% \changes{fancyhdr v5.2}{2025/01/15}{Use \cs{@ifundefined} instead of
+% \cs{f@nch@ifundefined}.}
 %    \begin{macrocode}
 \long\def\f@nch@@pagestyle#1[#2]#3{%
-  \f@nch@ifundefined{ps@#2}{%
+  \@ifundefined{ps@#2}{%
     \PackageError{fancyhdr}{\string\fancypagestyle: Unknown base page style `#2'}{}%
   }{%
-    \f@nch@ifundefined{f@nch@ps@#2-is-fancyhdr}{%
+    \@ifundefined{f@nch@ps@#2-is-fancyhdr}{%
       \PackageError{fancyhdr}{\string\fancypagestyle: Base page style `#2' is not fancyhdr-based}{}%
     }%
     {%
@@ -7788,6 +7782,8 @@
 % \end{macro}
 % \begin{macro}{\fancypagestyleassign}
 % \changes{fancyhdr v5.0}{2024/12/25}{Macro \cs{fancypagestyleassign} added}
+% \changes{fancyhdr v5.2}{2025/01/15}{Use \cs{@ifundefined} instead of
+% \cs{f@nch@ifundefined}.}
 % \begin{syntax}
 %   \cs{fancypagestyleassign}\marg{ps1}\marg{ps2}
 % \end{syntax}
@@ -7797,7 +7793,7 @@
 % command, like \cs{let}\cs{ps@\meta{ps1}}\cs{ps@\meta{ps2}}.
 %    \begin{macrocode}
 \newcommand\fancypagestyleassign[2]{%
-  \f@nch@ifundefined{ps@#2}{%
+  \@ifundefined{ps@#2}{%
     \PackageError{fancyhdr}{\string\fancypagestyleassign: Unknown page style `#2'}{}%
     }{%
      \expandafter\let
@@ -7809,8 +7805,8 @@
 %    fancyhdr-based, but \meta{ps1} is, give a warning that it is
 %    overwritten, which could give unexpected problems.
 %    \begin{macrocode}
-     \f@nch@ifundefined{f@nch@ps@#2-is-fancyhdr}{%
-       \f@nch@ifundefined{f@nch@ps@#1-is-fancyhdr}{}{%
+     \@ifundefined{f@nch@ps@#2-is-fancyhdr}{%
+       \@ifundefined{f@nch@ps@#1-is-fancyhdr}{}{%
          \PackageNote{fancyhdr}{%
            \string\fancypagestyleassign: You overwrite the\MessageBreak
            fancyhdr-based page style `#1' with the\MessageBreak
@@ -8101,12 +8097,12 @@
 %
 % \changes{extramarks v5.0}{2024/05/14}{New implementation with
 % independent marks, and fallback option to earlier version 4.}
-% Provide a rollback to earlier version
+% Provide a rollback to earlier version.
+% \changes{extramarks v5.2}{2025/01/15}{Assume \cs{DeclareRelease} is
+% present (\LaTeX{} version at lease 2018-04-01).}
 %    \begin{macrocode}
-\providecommand\DeclareRelease[3]{}
-\providecommand\DeclareCurrentRelease[2]{}
 \DeclareRelease{v4}{2024/11/30}{extramarks-v4.sty}
-\DeclareCurrentRelease{}{2025/01/07}
+\DeclareCurrentRelease{v5}{2025/01/15}
 \@ifundefined{NewMarkClass}
              {\PackageWarningNoLine{extramarks}{%
 **************************************************\MessageBreak
