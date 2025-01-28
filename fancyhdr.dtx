@@ -380,7 +380,7 @@
 % \maketitle
 % \begin{abstract}
 %   This document describes how to customize the page layout of your LaTeX
-%   documents, i.e., how to change page margings and sizes,
+%   documents, i.e., how to change page margins and sizes,
 %   headers and footers, and the
 %   proper placement of figures and tables (collectively called floats) on
 %   the page.
@@ -391,7 +391,6 @@
 % the \pkg{fancyhdr} and \pkg{extramarks} packages (except
 % for the changes mentioned in sections~\ref{sec:version-4} and
 % \ref{sec:version-5}).
-%
 % \end{abstract}
 %
 % \tableofcontents
@@ -406,8 +405,6 @@
 % the user commands of the \pkg{fancyhdr} and \pkg{extramarks} packages.
 %
 % Part II contains elaborate documentation on page layout in \LaTeX.
-% This used to be the complete documentation of \pkg{fancyhdr} and
-% \pkg{extramarks} for several years.
 %
 % Part III contains Questions and Answers.
 %
@@ -819,7 +816,7 @@
 %   \LaTeX{} parameter but it has a different use (namely the indentation of
 %   lists).
 % \item Most of the parameters should not be changed in the middle of a
-%   document. Some changes might work at a pagebreak. If you want to change
+%   document. Some changes might work at a page break. If you want to change
 %   the height of a single page, you can use the \cs{enlargethispage}
 %   command.
 % \end{enumerate}
@@ -1410,7 +1407,7 @@
 % package by Alexander I. Rozhenko.}.
 %
 % The fields in a fancy header and footer are prepared using \cs{parbox}
-% command. So, you can use multiline fields. In the header, they are
+% command. So, you can use multi-line fields. In the header, they are
 % aligned to the bottom line, but, in the footer, they are aligned to
 % the top line. The maximum width of every field is by default equal to the
 % \cs{headwidth} (unless changed by the commands \cs{fancyheadwidth},
@@ -1474,11 +1471,11 @@
 % document. Then \cs{linewidth} will be the width of the box or text in
 % which it is used.
 %
-% \section{The \cs{fancyhdrbox} command}
+% \section{The \Cmd{fancyhdrbox} command}
 % \label{sec:fancyhdrbox}
 %
 % The \cs{fancyhdrbox} command can be used to align multi-line header
-% and footer fields and, for example, images. It is modeled after the
+% and footer fields and, for example, images. It is modelled after the
 % \PKGindex{makecell}
 % \pkg{makecell} package by Olga Lapko, but it is a bit simplified, and also has extra
 % vertical alignments \texttt{T} and \texttt{B}. And the vertical
@@ -1532,7 +1529,7 @@
 %
 % The second optional parameter, \meta{width}, specifies the width of
 % the box. If this is not given, the box has its ``natural'' width,
-% detemined by its contents. With the \meta{width} parameter, the width
+% determined by its contents. With the \meta{width} parameter, the width
 % of the box is fixed to this value, independent of the contents. Note
 % that there will be no automatic line breaking of the lines if they
 % don't fit in the specified width. If a line is too long it will just
@@ -1658,7 +1655,7 @@
 %
 % The first box has an explicit \texttt{[c]} positioning, which implies
 % both vertical and horizontal centering. The second one uses the
-% default positioning (i.e., it is not explicitely specified), which make
+% default positioning (i.e., it is not explicitly specified), which make
 % it \texttt{[cl]}, i.e., horizontally left aligned.
 %
 % \begin{code}
@@ -1981,7 +1978,7 @@
 % header and/or footer definitions, use
 % \Cmd{fancypagestyle*\{fancydefault\}}\marg{your definitions}.
 %
-%\subsection{The \cs{fancypagestyleassign} command}
+%\subsection{The \Cmd{fancypagestyleassign} command}
 % \label{sec:fancypagestyleassign}
 %
 % The \cs{fancypagestyleassign} command is only available in
@@ -2016,7 +2013,7 @@
 % \end{raggedright}
 %
 % \cs{fancypagestyleassign} comes especially handy if you want to
-% temporaryly redefine a page style, and later to restore it to its
+% temporarily redefine a page style, and later to restore it to its
 % original value. For example, if we have a page style
 % \texttt{special}, and we want temporarily to define page style
 % \texttt{plain} to be equal to this, but later to restore it to its
@@ -2439,7 +2436,7 @@
 % \fancyhead[R]{\leftmark\\\rightmark}
 % \end{example}
 %
-% Note that if you want to use header or footer layouts with multiline
+% Note that if you want to use header or footer layouts with multi-line
 % parts that have to be aligned, you can do this with
 % the \cs{fancyhdrbox} command. See section~\ref{sec:fancyhdrbox}.
 %
@@ -2551,7 +2548,7 @@
 % parameter \cs{footruleskip}. It
 % defines the distance between the decorative line in the footer and the top
 % of the footer text line. By default it is set to 30\% of the normal line
-% distance. You may want to adjust it if you use unusally large or small
+% distance. You may want to adjust it if you use unusually large or small
 % fonts in the footer. Change it with \cs{renewcommand}.
 %
 % You can also change the distance between the baseline of the header text and the
@@ -2729,7 +2726,7 @@
 % in the neighborhood of your header/footer definitions, unless you
 % already use such an \texttt{\ldots offset} command, of course.
 % \vspace{\baselineskip}
-% For the second example, we take the \ams/-\LaTeX{} book\footnote{George Gratzer,
+% For the second example, we take the \ams/-\LaTeX{} book\footnote{George Grätzer,
 % \textit{Math into LaTeX, An Introduction to \LaTeX{} and \ams/-\LaTeX}, Birkhauser, Boston.}.
 %
 % Chapter pages have no headers or footers.  So we declare
@@ -2800,8 +2797,8 @@
 % \end{example}
 %
 %
-%\section{Summary of \cs{headwidth} calculation}
-%\label{sec:headwidth}
+% \section{Summary of \Cmd{headwidth} calculation}
+% \label{sec:headwidth}
 %
 % Here is a summary of the calculation of the widths of headers and
 % footers, as illustrated in \smartref{sec:headwidth}{sec:book-examples}.
@@ -2815,7 +2812,7 @@
 % for \cs{headwidth} is \cs{textwidth}. This is used for the width of
 % both the header and the footer. It is possible to change the value of
 % \cs{headwidth}, for example with \cs{setlength} or \cs{addtolength}.
-% The excess or deficit will be applied to the right for a onesided
+% The excess or deficit will be applied to the right for a one-sided
 % document, and for a two-sided document to the right on odd pages and to
 % the left on even pages. The header and the footer will have the same
 % width, \cs{headwidth}.
@@ -2971,7 +2968,7 @@
 %
 % In technical documentation very often page numbers are used of the form
 % 2-10 where the first number is the chapter number and the second is the
-% pagenumber relative to the chapter. Sometimes section is used rather than
+% page number relative to the chapter. Sometimes section is used rather than
 % chapter. The package \PKGindex{chappg}\pkg{chappg} can be used to get this format.
 %
 % Basically this package redefines \cs{thepage} as
@@ -3003,7 +3000,7 @@
 %
 % In the frontmatter of your document (for example the Table of
 % Contents) there will be no chapter numbers. Therefore a simple page
-% number will be used there. This may be confusing, so you might prefer to use roman pagenumbers
+% number will be used there. This may be confusing, so you might prefer to use roman page numbers
 % in the front matter. Do this by using \verb+\pagenumbering{roman}+ in
 % the beginning of the document and \verb+pagenumbering{bychapter}+
 % after the first \cs{chapter} command. If you want to do it before the
@@ -3915,7 +3912,7 @@
 % ``Continued'' information like in the previous examples. The
 % \cs{extramarks} contain essentially the same information as in the
 % previous examples, just formatted a little differently.
-% But the \cs{...leftxmark} is not put in the header, but is eventually used as
+% But the \Cmd{...leftxmark} is not put in the header, but is eventually used as
 % the argument in \cs{afterpage} so that it will appear at the top of the
 % next page body. This is also the reason for the \verb|\\[1ex]|, to
 % separate it from the rest of the page text.
@@ -4019,7 +4016,7 @@
 % fixed text as argument for \cs{afterpage} but by using a macro \cs{APcommand}
 % as argument. When we want to stop the sequence of \cs{afterpage} calls,
 % we make this macro empty. To get a proper timing we reset this macro
-% in the righthand footer field when this is empty, which indicates that
+% in the right-hand footer field when this is empty, which indicates that
 % we are outside of a `Continued' block.
 %
 % We must then take care of restarting the \cs{afterpage} sequence when
@@ -4162,7 +4159,7 @@
 % styles, especially if you also want the first page of these to have
 % a special page style.
 %
-% Supose you have defined a special page style \texttt{tocstyle} for the
+% Suppose you have defined a special page style \texttt{tocstyle} for the
 % Table of contents. The Table of contents is generated by the command
 % \cs{tableofcontents} and it can be several pages long, all generated
 % by this simple command. So if you want this to have the page style
@@ -4179,7 +4176,7 @@
 %
 % If we use a chapter based documentclass, like the standard classes
 % \pkg{report} and \pkg{book}, with this setup the first page of the Table
-% of Contents, and similar parts of the document will stil use the
+% of Contents, and similar parts of the document will still use the
 % \texttt{plain} page style. Usually this is the best choice, but there
 % may be cases where you want these also to use the \texttt{tocstyle}
 % page style (or another special page style). The \texttt{plain} page
@@ -4335,7 +4332,7 @@
 % the page number and that we use the \pkg{graphics} or  \pkg{graphicx} package.
 % \PKGindex{graphics}
 % \PKGindex{graphicx}
-% To put the movie in the  righthandside bottom corner the following will work:
+% To put the movie in the  right-hand side bottom corner the following will work:
 %
 % \Example{30}
 % \begin{example}
@@ -4371,7 +4368,7 @@
 % requires some hand-tuning to get the blobs nicely spaced out vertically.
 % For the application that I originally designed this for, there were 12 sections,
 % so I made the blobs
-% 18 mm apart, i.e., 9~mm blob separated by 9~mm whitespace. In order to avoid
+% 18 mm apart, i.e., 9~mm blob separated by 9~mm white space. In order to avoid
 % calculations they are set in a \texttt{picture} environment with the
 % \cs{unitlength} set to 18~mm. Page numbers are set in the headers at the
 % outer sides, and the blobs are attached to these. In this example the
@@ -4612,7 +4609,7 @@
 % If in spite of all your attempts \LaTeX{} still moves your floats to the end
 % of the document or the end of a chapter, you can insert a \cs{clearpage}
 % command. This will start a new page and insert all pending floats before
-% continuing. If it is undesirable to have a pagebreak you can use the
+% continuing. If it is undesirable to have a page break you can use the
 % \pkg{afterpage} package and the following command:
 % \PKGindex{afterpage}\CmdIndex{afterpage}\CmdIndex{clearpage}%
 % \begin{code}
@@ -4633,7 +4630,7 @@
 %  in the preamble. Now you will be able to
 % specify \texttt{[H]} as the position parameter, which will mean ``HERE
 % and only HERE''. This may cause an unwanted page break however.
-% If you want to avoid the unwanted pagebreak, i.e., let
+% If you want to avoid the unwanted page break, i.e., let
 % \LaTeX{} move the float only if it doesn't fit on the page, then use the
 % \pkg{afterpage} package with:
 % \PKGindex{afterpage}\CmdIndex{afterpage}\CmdIndex{clearpage}%
@@ -4663,7 +4660,7 @@
 % \\Also on Stackexchange:\\
 %  \url{https://tex.stackexchange.com/questions/39017/how-to-influence-the-position-of-float-environments-like-figure-and-table-in-lat}}.
 %
-% \section{Multipage Floats}
+% \section{Multi-page Floats}
 %
 % \LaTeX's floats cannot be split across pages. Sometimes, however, you want
 % to have a table or figure that doesn't fit on one page. The easiest way is
@@ -4741,14 +4738,14 @@
 % \begin{figure}[!htbp]
 %   \centering
 %   \includegraphics[scale=0.5]{example-image-a}
-%   \caption[This is a multipart figure] % For the list of figures
-%           {This is a multipart figure (a)}
+%   \caption[This is a multi-part figure] % For the list of figures
+%           {This is a multi-part figure (a)}
 %   \label{fig:first}
 % \end{figure}
 % \begin{figure}[!htbp]
 %   \centering
 %   \includegraphics[scale=0.5]{example-image-b}
-%   \fakecaption{fig:first}{This is a multipart figure (b)}
+%   \fakecaption{fig:first}{This is a multi-part figure (b)}
 % \end{figure}
 %  . . .
 % \end{example}
@@ -4771,14 +4768,14 @@
 %   \begin{figure}[!htbp]
 %     \centering
 %     \includegraphics[scale=0.5]{example-image-a}
-%     \caption[This is a multipart figure] % For the list of figures
-%             {This is a multipart figure (a)}
+%     \caption[This is a multi-part figure] % For the list of figures
+%             {This is a multi-part figure (a)}
 %     \label{fig:second}
 %   \end{figure}
 %   \begin{figure}[!htbp]
 %     \centering
 %     \includegraphics[scale=0.5]{example-image-b}
-%     \fakecaption{fig:second}{This is a multipart figure (b)}
+%     \fakecaption{fig:second}{This is a multi-part figure (b)}
 %  . . .
 % }
 %  . . .
@@ -4786,7 +4783,7 @@
 % \end{example}
 % \CmdIndex{afterpage}
 %
-% If you want your multipage figure to start at a lefthand-side
+% If you want your multi-page figure to start at a left-hand side
 % (even-numbered) page you can use a test in the \cs{afterpage} command
 % (using the \PKGindex{ifthen}\pkg{ifthen} package):
 % \CmdIndex{afterpage}
@@ -4799,7 +4796,7 @@
 % \end{code}
 %
 % If there are too many floats on the skipped page, this may still fail to
-% start your multipage figure on an even page, however.
+% start your multi-page figure on an even page, however.
 %
 % But if there is enough space left on a page, some of the text will go
 % between the figures. Also, if there is still some figure part of a
@@ -4828,14 +4825,14 @@
 %   \begin{figure}[p]
 %     \centering
 %     \includegraphics[scale=0.5]{example-image-a}
-%     \caption[This is a multipart figure] % For the list of figures
-%             {This is a multipart figure (a)}
+%     \caption[This is a multi-part figure] % For the list of figures
+%             {This is a multi-part figure (a)}
 %     \label{fig:third}
 %   \end{figure}
 %   \begin{figure}[p]
 %     \centering
 %     \includegraphics[scale=0.5]{example-image-b}
-%     \fakecaption{fig:third}{This is a multipart figure (b)}
+%     \fakecaption{fig:third}{This is a multi-part figure (b)}
 %  . . .
 % }
 %  . . .
@@ -5075,7 +5072,7 @@
 %   \item Updated contact information.
 %   \item Restore \cs{newtoks}\cs{@temptokenb}
 %   \end{itemize}
-% \item Version 3.10, Januari 25, 2019
+% \item Version 3.10, January 25, 2019
 %   \begin{itemize}
 %   \item Distribution based on fancydhr.dtx.
 %   \item Use \cs{f@nch@ifundefined} instead of \cs{ifx} or \cs{@ifundefined}.
@@ -5222,7 +5219,7 @@
 %   \end{itemize}
 % \item Version 5.1.1, Jan 7, 2025
 %   \begin{itemize}
-%   \item Bugfix in save, clear and restore paragraph hooks in headers/footers.
+%   \item Bug fix in save, clear and restore paragraph hooks in headers/footers.
 %   \end{itemize}
 % \item Version 5.2, Jan 14-28, 2025
 %   \begin{itemize}
@@ -5234,12 +5231,6 @@
 %      the \texttt{*} form of these commands.
 %   \end{itemize}
 % \end{itemize}
-%
-%
-%
-% \StopEventually{%
-% \PrintChanges
-% \PrintIndex}
 %
 % \part{Questions \& Answers}
 %
@@ -5421,7 +5412,7 @@
 % if one of the header parts is small enough and then truncate the other
 % one for the remaining space.
 %
-% \subsection{Using \cs{fancyheadwidth}}
+% \subsection{Using \Cmd{fancyheadwidth}}
 % \label{sec:with-fancyheadwidth}
 %
 % For this solution we use the \cs{fancyheadwidth} command to give each
@@ -5447,9 +5438,9 @@
 % \bigskip
 % \showheader{
 % \setlength{\headheight}{35pt}
-% \fancyhead[LE,RO]{1.1. This is a very long section title that will not fit in the header}
-% \fancyhead[LO,RE]{Chapter 1. This is a very long chapter title to see if we can
+% \fancyhead[L]{Chapter 1. This is a very long chapter title to see if we can
 %          let fancyhdr fit it in the header}
+% \fancyhead[R]{1.1. This is a very long section title that will not fit in the header}
 % \fancyheadwidth[L,R]{0.48\headwidth}
 % }
 %
@@ -5477,9 +5468,9 @@
 % \bigskip
 % \showheader{
 % \setlength{\headheight}{35pt}
-% \fancyhead[LE,RO]{1.1. This is a very long section title that will not fit in the header}
-% \fancyhead[LO,RE]{Chapter 1. This is a very long chapter title to see if we can
+% \fancyhead[L]{Chapter 1. This is a very long chapter title to see if we can
 %          let fancyhdr fit it in the header}
+% \fancyhead[R]{1.1. This is a very long section title that will not fit in the header}
 % \fancyheadwidth*[L,R][tj]{0.48\headwidth}
 % }
 %
@@ -5678,7 +5669,7 @@
 % the \meta{true code} is executed when there is no subsection title on the
 % current page, and the \meta{false code} when there is at least one.
 %
-% However, there is no command to see if the pagebreak is at the section
+% However, there is no command to see if the page break is at the section
 % or subsection level, because the two are independent. And we
 % cannot use \LaTeX{} variables for this, because of the asynchronous
 % processing of the page breaking. But we can do this if we introduce a
@@ -5693,7 +5684,7 @@
 % There is one caveat, however. If the page begins immediately with a
 % section title, the topmark may indicate that the previous page ended
 % with a subsection, but that subsection did not extend past the
-% pagebreak. It is tricky to detect this situation, but we will propose
+% page break. It is tricky to detect this situation, but we will propose
 % a solution at the end of the current section.
 % So the new code for the right header becomes the following. We use the
 % package \PKGindex{ifthen}\pkg{ifthen} for the test.
@@ -5737,7 +5728,7 @@
 % So if \cs{pagetotal}=\texttt{0pt} we are at the top of
 % the page, otherwise somewhat further down.  We can use this information to
 % communicate to the header that no inheritance should take place. In
-% reality, sometimes there is already a small amount of whitespace on
+% reality, sometimes there is already a small amount of white space on
 % the page, so the test should be less strict than
 % \cs{pagetotal}=\texttt{0pt}. We might even choose to not inherit the
 % subsection title if only a few lines of the previous subsection are
@@ -5766,7 +5757,7 @@
 % \end{code}
 %
 % It appears, however that this is the wrong place to set the mark. A
-% pagebreak could occur between this code and the actual section title,
+% page break could occur between this code and the actual section title,
 % so that the mark is put on the wrong page. The proper place for setting the
 % mark is in the \cs{sectionmark} command, as that is guaranteed to
 % always be together with the section title. So we must put the required
@@ -5784,7 +5775,7 @@
 % \emph{(Another way could be to put the current page number in a mark
 % and then check in the header if this is the same as the page number
 % where the header is put on the page. If different, don't
-% inherit. This is left as an exercice for the reader.)}
+% inherit. This is left as an exercise for the reader.)}
 %
 % \Example{35}[(continued)]
 % \begin{example}
@@ -5860,7 +5851,7 @@
 %   \smash{\color{blue}\rule{\headwidth}{2.5pt}}%
 % }
 % \end{code}
-% The \cs{interlineskip} is to prevent \LaTeX{} to insert the normal
+% The \cs{nointerlineskip} is to prevent \LaTeX{} to insert the normal
 % vertical space between lines, and the \cs{smash} to let the
 % \cs{headrule} not occupy any vertical space. Whether you want that is
 % up to you, but if it occupies vertical space it may distort the page layout.\\
@@ -5957,6 +5948,10 @@
 % Of course you would have to make sure not to place anything in the
 % right part of the header.
 %
+% \MaybeStop{%
+% \PrintChanges
+% \PrintIndex}
+%
 % \newpage
 % \part{Implementation}
 %
@@ -6040,7 +6035,7 @@
 % \changes{fancyhdr v1.99a}{1996/05/10}{Added a few more \% signs.}
 %
 % \changes{fancyhdr v1.99b}{1996/05/10}{Changed the syntax of
-% \cs{f@nch@for} to be resistent to catcode changes of \texttt{:!=}.\protect\\
+% \cs{f@nch@for} to be resistant to catcode changes of \texttt{:!=}.\protect\\
 % Removed the \texttt{[1]} from the defs of \cs{lhead} etc. because the parameter is
 % consumed by the \cs{@[xy]lhead} etc. macros.}
 %
@@ -6080,7 +6075,7 @@
 % \changes{fancyhdr v2.1x=fancyhdr v2.1}{2002/12/09}{The defaults for
 % \cs{footrulewidth}, \cs{plainheadrulewidth} and
 % \cs{plainfootrulewidth} are changed from \cs{z@skip} to 0pt. In this
-% way when someone inadvertantly uses \cs{setlength} to change any of these, the value
+% way when someone inadvertently uses \cs{setlength} to change any of these, the value
 % of \cs{z@skip} will not be changed, rather an errormessage will be given.}
 %
 % \changes{fancyhdr v3.0}{2004/03/03}{Release of version 3.0.}
@@ -6344,9 +6339,9 @@
 %   Execute the body for each character in \texttt{charstring} bound
 %   to \cs{var}.
 %   This is similar to \LaTeX's \cs{@tfor}, but it expands the \texttt{charstring}.
-%    \begin{macrocode}
 % \changes{fancyhdr v3.10}{2019/01/25}{Use \cs{newcommand} instead of \cs{def}.}
 % \changes{fancyhdr v4.0.2}{2021/05/29}{Make \cs{f@nch@rc} \cs{long}.}
+%    \begin{macrocode}
 \newcommand{\f@nch@forc}[3]{\expandafter\f@nchf@rc\expandafter#1\expandafter{#2}{#3}}
 \newcommand{\f@nchf@rc}[3]{\def\temp@ty{#2}\ifx\@empty\temp@ty\else
                                     \f@nch@rc#1#2\f@nch@rc{#3}\fi}
@@ -6802,8 +6797,8 @@
 % \changes{fancyhdr v4.0.2}{2021/03/27}{Change the offset length variables
 % \cs{f@nch@O@xyz} to \cs{f@nch@offset@xyz}}
 % Length parameter to be used for \cs{headwidth}. We use this rather
-% than defining \cs{headwidth} as a length paramater directly to protect
-% ourself to someone saying: \verb+\let\headwidth\textwidth+.
+% than defining \cs{headwidth} as a length parameter directly to protect
+% ourselves to someone saying: \verb+\let\headwidth\textwidth+.
 %    \begin{macrocode}
 \newlength{\f@nch@headwidth} \let\headwidth\f@nch@headwidth
 %    \end{macrocode}
@@ -6940,7 +6935,7 @@
 % \changes{fancyhdr v5.1}{2025/01/06}{A new way to disable the paragraph
 % hooks in headers and footers.}
 % \changes{fancyhdr v5.1.1}{2025/01/07}{Use low-level commands to reset
-% paragraph hooks to prevent LaTeX error when ruinning with latex3
+% paragraph hooks to prevent LaTeX error when running with latex3
 % debugging.}
 % \changes{fancyhdr v5.2}{2025/01/14}{Use official interface to reset
 % the paragraph hooks.}
@@ -7020,7 +7015,7 @@
 %   We want \cs{nouppercase} to work with the various evolutionary stages of
 %   \cs{MakeUppercase}. The current version (2022/11/09) accepts an optional
 %   argument with a language specification. Therefore we define a dummy macro
-%   \cs{f@nch@noUppercase} which copies its mandatory agument, as a
+%   \cs{f@nch@noUppercase} which copies its mandatory argument, as a
 %   replacement for \cs{MakeUppercase} while \cs{nouppercase} is active.
 %    \begin{macrocode}
 \newcommand\f@nch@noUppercase[2][]{#2}
@@ -7034,10 +7029,10 @@
 %   Also reset the catcodes that are changed in verbatim environments,
 %   \cs{makeatother} and \cs{ExplSyntaxOn}. It also
 %   defines a \cs{nouppercase} command that disables \cs{uppercase} and
-%   \cs{Makeuppercase}. It can only be used in the headers and footers. Set
+%   \cs{MakeUppercase}. It can only be used in the headers and footers. Set
 %   \cs{hsize} to \cs{headwidth} (this helps for multicol); reset
 %   \bsbs, \cs{raggedleft}, \cs{raggedright} and \cs{centering} to
-%   their default values (for tabu), and \cs{everypar} to empty.\\
+%   their default values (for \pkg{tabu}), and \cs{everypar} to empty.\\
 %   The font is reset to \cs{normalfont}. Actually this is done in the
 %   \LaTeX{} output routine, so we don't have to do it here.
 %   \changes{fancyhdr v4.1}{2022/11/09}{Change \cs{nouppercase} to work with
@@ -7207,7 +7202,7 @@
 %
 % \begin{macro}[internal]{\f@nch@height}
 % \changes{fancyhdr v5.0}{2021/02/20}{Length variable \cs{f@nch@height} added}
-% Length variable to store heigth of header/footer for use in \cs{fancyhdrsettoheight}
+% Length variable to store height of header/footer for use in \cs{fancyhdrsettoheight}
 %    \begin{macrocode}
 \newlength\f@nch@height
 %    \end{macrocode}
@@ -7332,7 +7327,7 @@
 % However, if the \texttt{[nocheck]} options is given, we just make the
 % height of the header/footer equal to the reserved space, so that no
 % warning about ``Overfull vbox'' will be given. So we pretend that it
-% fits, and it is the users's responsibility to make sure no unwanted
+% fits, and it is the user's responsibility to make sure no unwanted
 % effects take place.
 %    \begin{macrocode}
     \else
@@ -7570,7 +7565,7 @@
 % 4. Left (\texttt{l}), center (\texttt{c}) or right (\texttt{r}).\\
 % 5. Header (\texttt{h}) or footer (\texttt{f}).\\
 % Result: the proper \cs{parbox}\\[1ex]
-% First we get (with \cs{csname}) the proper alignment parameter. Then we
+% First we get (with \Cmd{csname}) the proper alignment parameter. Then we
 % expand this so that \cs{f@nch@parbox@align} gets the two alignment letters
 % as separate arguments. Then \cs{f@nch@parbox@align} is called to set
 % up the alignment variables. After that we construct the \cs{parbox}
@@ -7709,8 +7704,8 @@
 % Initialisation of the head and foot text.
 %
 % The default values still contain \cs{fancyplain} for compatibility:
-% lefthead empty on ``plain'' pages, \cs{rightmark} on even, \cs{leftmark} on odd pages;
-% evenhead empty on ``plain'' pages, \cs{leftmark} on even, \cs{rightmark} on odd pages.
+% left head empty on ``plain'' pages, \cs{rightmark} on even, \cs{leftmark} on odd pages;
+% right head empty on ``plain'' pages, \cs{leftmark} on even, \cs{rightmark} on odd pages.
 %    \begin{macrocode}
   \fancyhf{}%
   \if@twoside
@@ -8270,7 +8265,7 @@
 % \begin{macro}[internal]{\f@nchdrbox@cr, \@f@nchdrbox@xcr,
 %              \@f@nchdrbox@argc, \@f@nchdrbox@xargc, \@f@nchdrbox@yargc}
 % This is the definition for \cmd{\\} inside \cs{fancyhdrbox},
-% \cmd{\\*} does nothing special here, but we acccept it anyway.
+% \cmd{\\*} does nothing special here, but we accept it anyway.
 % The code is mostly copied from the \env{tabular} code from the
 % \LaTeX{} kernel, but simplified, and the names of the macros are
 % changed so that we don't rely on internals in the \LaTeX{} kernel that
@@ -8349,7 +8344,7 @@
 % Set the \cs{halign} in a \cs{vtop} (for \texttt{T/t} alignment) or
 % \cs{vbox} (for others). This box is put into \cs{box0} because we have
 % to change it for the vertical alignment \texttt{c}. For the others it
-% isn't necesary, but it just makes the code easier to do it anyway.
+% isn't necessary, but it just makes the code easier to do it anyway.
 % We also insert the \cs{f@nchdrbox@@pre},
 % \cs{f@nchdrbox@@postx} and \cs{f@nchdrbox@@posty} variables in the
 % proper places. The rest of the code is roughly based on the
