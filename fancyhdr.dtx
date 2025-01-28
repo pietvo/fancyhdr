@@ -28,7 +28,7 @@
 %<fancyhdr>\ProvidesPackage{fancyhdr}%
 %<fancyheadings>\ProvidesPackage{fancyheadings}
 %<extramarks|extramarks-v4>\ProvidesPackage{extramarks}
-%<fancyhdr|extramarks>           [2025/01/27 v5.2
+%<fancyhdr|extramarks>           [2025/01/28 v5.2
 %<fancyhdr>                  Extensive control of page headers and footers]%
 %<fancyheadings>           [2022/11/09 v4.1
 %<fancyheadings>                  Legacy package to call fancyhdr]
@@ -5224,7 +5224,7 @@
 %   \begin{itemize}
 %   \item Bugfix in save, clear and restore paragraph hooks in headers/footers.
 %   \end{itemize}
-% \item Version 5.2, Jan 14-27, 2025
+% \item Version 5.2, Jan 14-28, 2025
 %   \begin{itemize}
 %   \item Use official interface to reset the paragraph hooks.
 %   \item Conditionally require package \pkg{xparse} in fancyhdr.
@@ -7638,17 +7638,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[internal]{\MakeUppercase}
-%   Define \MakeUppercase for old \LaTeX{}en. Note: we used \cs{def} rather
-%   than \cs{let}, so that \verb+\let\uppercase\relax+ (from the version 1
-%   documentation) will still work.
-% \changes{fancyhdr v5.2}{2025/01/15}{Use \cs{@ifundefined} instead of
-% \cs{f@nch@ifundefined}.}
-%
-%    \begin{macrocode}
-\@ifundefined{MakeUppercase}{\def\MakeUppercase{\uppercase}}{}%
-%    \end{macrocode}
-% \end{macro}
+% \changes{fancyhdr v5.2}{2025/01/28}{Remove fallback definition of \cs{MakeUppercase}.}
 %
 % \begin{macro}[internal]{\@chapapp}
 % Define \cs{@chapapp} for classes that don't have it, e.g., amsbook
