@@ -136,14 +136,48 @@
 }
 
 % Our own page style:
+\NewMarkClass{whichpage}
+\newcommand\whichpage{}
+
+\newcommand\checkposinpage{
+  \ifthenelse{\lengthtest{\pagetotal<4\baselineskip}}%
+    {\renewcommand{\whichpage}{top\thepage}}%
+    {\renewcommand{\whichpage}{\thepage}}%
+}
+
 \pagestyle{fancy}
 \setlength{\headheight}{16.0pt}
 \addtolength{\headwidth}{\marginparsep}
 \addtolength{\headwidth}{0.5\marginparwidth}
+\newcommand\normalheader{%
+  \ifthenelse{\equal{\FirstMark{whichpage}}{\thepage}}%
+      {\TopMark{2e-right-nonempty}}%
+    % whichpage != page
+    {\IfMarksEqualTF{whichpage}{top}{first}%
+      {\TopMark{2e-right-nonempty}}% no mark on this page
+      {\rightmark}% title at/near the top of the page
+    }%
+}
+
 \fancyhf{}
-\fancyhead[L]{\rightmark}
+\fancyhead[L]{\normalheader}
 \fancyhead[R]{\textbf{\thepage}}
-\renewcommand{\sectionmark}[1]{\markright{\thesection\quad#1}}
+
+\AddToHook{cmd/section/before}{\checkposinpage}
+\AddToHook{cmd/subsection/before}{\checkposinpage}
+
+\newcommand\setmarks[1]{%
+  \InsertMark{whichpage}{\whichpage}%
+  \markright{#1}%
+}
+
+\renewcommand{\sectionmark}[1]{%
+  \setmarks{\thesection\quad#1}%
+}%
+
+\renewcommand{\subsectionmark}[1]{%
+  \setmarks{\thesubsection\quad#1}%
+}%
 
 % Page style for demonstrating struts, \headruleskip and \footruleskip.
 
@@ -171,7 +205,7 @@
   \fancyhead[L]{%
     \ifthenelse{\value{page}=\getpagerefnumber{showstruts}}%
       {\strutheader}%
-      {\rightmark}%
+      {\normalheader}%
   }
   \fancyfoot[L]{%
     \ifthenelse{\value{page}=\getpagerefnumber{showstruts}}%
@@ -188,6 +222,12 @@
       {\renewcommand{\footrulewidth}{0.4pt}}%
       {\renewcommand{\footrulewidth}{0pt}}%
   }
+}
+
+\fancypagestyle{copyright}{%
+  \fancyfoot[L]{%
+    Copyright \copyright~1994-2025 by Pieter van Oostrum. Distributed under the \LaTeX{}\\
+    Project Public License (LPPL), see \url{http://www.latex-project.org/lppl.txt}}
 }
 
 \newcommand\exampleindex{}
@@ -394,7 +434,10 @@
 % \end{abstract}
 %
 % \tableofcontents
-% \markright{Contents}
+% \thispagestyle{copyright}
+% \newpage
+% \checkposinpage
+% \setmarks{Introduction}
 %
 % \begin{documentation}
 % \part{Introduction}
@@ -5949,10 +5992,15 @@
 % right part of the header.
 %
 % \MaybeStop{%
-% \PrintChanges
-% \PrintIndex}
+%   \setmarks{Change History}\PrintChanges
+%   \setmarks{Index}
+%   ^^A Temporary workaround for mark problems in `multicol'
+%   \fancyhead[L]{Index}
+%   \PrintIndex
+% }
 %
 % \newpage
+% \checkposinpage\setmarks{Implementation}
 % \part{Implementation}
 %
 % \begin{implementation}
