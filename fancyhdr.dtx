@@ -5627,14 +5627,17 @@
 % extract the last left mark (\cs{leftmark}) and the first right mark
 % (\cs{rightmark}). This means that if there are two or more sections on
 % the page you get the last one, which can be counter-intuitive.
-% The newer \LaTeX{} releases (November 2022 or newer) have a command to
+% The newer \LaTeX{} releases (November 2022 or later) have a command
+% (\Cmd{FirstMark\{2e-left\}}) to
 % get the first of the left marks, however. \textbf{We assume in the
 % following code that your \LaTeX{} is recent enough.}
 % \item \LaTeX{} uses \cs{markboth} at a section title in the
 % \pkg{article} class. This also sets an empty right mark. So in
-% some cases you would get an empty subsection title in the header. To
-% avoid this, \LaTeX{} now also has a mark that saves the non-empty
-% right mark in a separate mark \texttt{2e-right-nonempty}
+% some cases you would get an empty subsection title in the header. Also
+% a \cs{part} command issues a \Cmd{markboth\{\}\{\}}, so it generates
+% empty marks too. To avoid this, \LaTeX{} now has an additional mark
+% \texttt{2e-right-nonempty} in which only the non-empty right marks are
+% saved. This is also set by \cs{markboth} and \cs{markright}.
 % \end{itemize}
 %
 % If there is no \cs{section} command on the page, it `inherits' the
@@ -5654,11 +5657,11 @@
 % \subsection{Subsection One}
 %  . . .
 % \end{example}
-% This effectively solves the problem, but it has some undesirable
+% This mostly solves the problem, but it has some undesirable
 % properties, see below. Therefore, some refinement is
-% possible. But we need an extra mark for this. So we are going
-% to use the \LaTeX{} marks directly, instead of using the standard
-% marks. This gives us a bit more control. We need two marks for this,
+% possible. But we need an extra mark for this. We are also going
+% to use new marks, instead of using the standard
+% marks to get more control. We need two marks for this,
 % one for the section title, and one for the subsection title. We call
 % these \texttt{section} and \texttt{subsection} respectively. We
 % replace the marking code above with the following, which gives
@@ -5677,9 +5680,9 @@
 %     \InsertMark{subsection}{\thesubsection. #1}}
 % \end{example}
 %
-% When you have a \cs{section} command on a page, but it doesn't have a
-% subsection for an extended length, then, the
-% previous subsection title is `inherited'. This may be sub-optimal,
+% Now when you have a \cs{section} command on a page, but it doesn't
+% have a subsection for an extended length, then, the previous
+% subsection title is `inherited' on this page. This may be sub-optimal,
 % because it combines the title of section $n$ with a subsection title
 % that belongs to a previous section, so the subsection isn't even
 % present on the page, which looks unnatural. You may want to
@@ -5722,14 +5725,20 @@
 % indicates if the page ends within a subsection or not. And as the
 % topmark on the following page is the same as lastmark on the previous
 % page, we can use this topmark to see whether the text at the beginning
-% of the page comes from a subsection (topmark = 1 means yes).
+% of the page comes from a section or a  subsection (topmark = 0 means
+% section, 1 means subsection).
 %
-% There is one caveat, however. If the page begins immediately with a
-% section title, the topmark may indicate that the previous page ended
-% with a subsection, but that subsection did not extend past the
-% page break. It is tricky to detect this situation, but we will propose
-% a solution at the end of the current section.
-% So the new code for the right header becomes the following. We use the
+% So the interim new code for the right header becomes the following.\\
+% \textbf{if} there is no subsection on the page\\
+% \textbf{then}\\
+% \hspace*{2em}\textbf{if} the previous page ended in a subsection\\
+% \hspace*{2em}\textbf{then} use (inherit) that subsection\\
+% \hspace*{2em}\textbf{else} use an empty header\\
+% \hspace*{2em}\textbf{fi}\\
+% \textbf{else} (there is at least one subsection on the page)\\
+% \hspace*{2em}use the first subsection\\
+% \textbf{fi}\\[1ex]
+% We use the
 % package \PKGindex{ifthen}\pkg{ifthen} for the test.
 %
 % \Example{35}[(continued)]
@@ -5741,8 +5750,8 @@
 %   \IfMarksEqualTF{subsection}{top}{first}
 %     {% no subsection mark on this page
 %       \ifthenelse{\TopMark{which}=1} % previous page ended in a subsection
-%         % then use that subsection
-%         {\TopMark{subsection}}% = \FirstMark{subsection}
+%         % then use (inherit) that subsection
+%         {\TopMark{subsection}}%
 %         {}% otherwise empty right header
 %     }
 %     {% there is a subsectionmark on the page, use it
@@ -5759,14 +5768,18 @@
 % }
 % \end{example}
 %
-% Now we want to suppress the `inheritance' of the subsection if there
+% There is one caveat, however. If the page begins immediately with a
+% section title, the topmark may indicate that the previous page ended
+% with a subsection, but that subsection did not extend past the
+% page break.
+% So we want to suppress the `inheritance' of the subsection if there
 % is a section title at the top of the page and the page contains no
 % subsection title. The information whether a section title is at the
 % top of the page is not available in the marks, so we need some other
 % way to detect this.
 %
 % \TeX{} has two variables that can help us, \cs{pagegoal} is the vertical size
-% that is still available on the page, and \cs{pagetotal} is the amount we
+% that is available on the page, and \cs{pagetotal} is the amount we
 % have used so far\footnote{This doesn't include floats and footnotes.}.
 % So if \cs{pagetotal}=\texttt{0pt} we are at the top of
 % the page, otherwise somewhat further down.  We can use this information to
@@ -5781,75 +5794,120 @@
 % \cs{pagetotal}$<$0.33\cs{pagegoal}. In the code below we choose a few
 % lines as the limit.
 %
-% We have to do the test just before the \cs{section} command is
-% processed. This can be done with a \LaTeX{} \emph{hook}.
+% We have to do the test at the beginning of the \cs{section} command
+% processing. This can be done with a \LaTeX{} \emph{hook}.
 %
 % The next question is how to communicate the fact that the section
-% starts at (or near) to top of the page to the header. A simple way to
-% do this is to set the `\texttt{which}' mark to $-1$ instead of 0.
-% (Another way could be to define a special page style that does not do
-% the inheritance, and activate that with \cs{thispagestyle}.)
+% starts at (or near) the top of the page to the header. A simple way to
+% do this could be to set the `\texttt{which}' mark to a different value, e.g,
+% $-1$ instead of 0. However, below we will present a better way.
 %
 % \begin{code}
 % \AddToHook{cmd/section/before}{%
 %   % use whatever test your design requires
 %   \ifthenelse{\lengthtest{\pagetotal<4\baselineskip}}
-%     {\InsertMark{which}{-1}}
-%     {\InsertMark{which}{0}}
+%     {indicate section at top of page}
+%     {indicate section somewhere else}
 % }
 % \end{code}
-%
-% It appears, however that this is the wrong place to set the mark. A
-% page break could occur between this code and the actual section title,
-% so that the mark is put on the wrong page. The proper place for setting the
-% mark is in the \cs{sectionmark} command, as that is guaranteed to
-% always be together with the section title. So we must put the required
-% value for the mark in a variable.
 %
 % There is another situation where a section title could end up at the
 % top of the page: when it is processed at the bottom of the page, but
 % there isn't enough space left to place it there. It will then be
 % pushed to the next page. In that case the \cs{pagetotal} will be in
-% the neighbourhood of \cs{pagegoal}. In the code below we test for
-% \cs{pagetotal}$>$0.9\cs{pagegoal}, but some experimentation may be
-% necessary to find a proper value.
-% In the example 35 file you can see this in section~6.
+% the neighbourhood of \cs{pagegoal}. However, it is very difficult to
+% find a proper value for the cutoff of \cs{pagetotal}. In many cases it
+% will be too small or too big, depending on the size of the section
+% title. So we need a different way.
 %
-% \emph{(Another way could be to put the current page number in a mark
-% and then check in the header if this is the same as the page number
-% where the header is put on the page. If different, don't
-% inherit. This is left as an exercise for the reader.)}
+% If the section title is pushed to the next page, the page number of
+% the page where the section title is processed will be different from
+% the page number that is current when the header is created. (We assume
+% that all page numbers are different.) So by storing the page number
+% atvthe time of processing the section title, and then comparing it in the header with
+% the \texttt{page} counter, we can check that the header was
+% moved to another page from an earlier page. This doesn't have
+% to be \textbf{the} next page, as there could be float pages in
+% between. The test has to be done while we are in the header, not while
+% we are processing the section title. And it is not enough to store the page
+% number in a variable because there can be subsequent section titles on
+% the next page and these would overwrite the saved value. So it must be stored in
+% yet another mark. Let's call this mark \texttt{whichpage}. We can save
+% this in the \cs{sectionmark} command.
+%
+% Now, in the right header, we can check if \Cmd{FirstMark\{whichpage\}}
+% is equal to \cs{thepage}. If they are different, the section title was
+% pushed across a page boundary, so it is at the top of the page. Note
+% that this test makes only sense if there is a section title on the
+% page, so we have to include a test for this also. This can be done
+% with \Cmd{IfMarksEqualTF\{section\}\{top\}\{first\}}. A compact way to
+% do this is:
+% \begin{code}
+%           \equal{\IfMarksEqualTF{section}{top}{first}
+%                {\thepage}{\FirstMark{whichpage}}}{\thepage}}%
+% \end{code}
+%
+% So if there is no section on the page, we don't compare
+% \texttt{whichpage} to \cs{thepage}, but instead compare \cs{thepage}
+% with itself, which gives \emph{true}, i.e. no section at the top of the page.
+%
+% We use a string comparison for the page number, not a numerical
+% comparison, because page numbers can be non-numeric, for example roman
+% numbers, which can't be compared numerically.
+%
+% This gives us now a way to indicate the previous case for a section
+% title at the top of the page: Just put a value in the
+% \texttt{whichpage} mark that is different from the actual page number.
+% But as the test is done in the hook, and the setting of the mark in
+% \cs{sectionmark}, we must communicate this through a variable. Let's
+% call this variable \cs{whichpage}. I have chosen to just put the text
+% ``top'' in front of the page number to make it different, but any
+% value that can't be a page number would be good.
 %
 % \Example{35}[(continued)]
 % \begin{example}
-% \newcommand{\which}{}
+% \NewMarkClass{whichpage}
+% \newcommand\whichpage{}
+%
 % \AddToHook{cmd/section/before}{%
-%   \ifthenelse{\lengthtest{\pagetotal<4\baselineskip}\or
-%               \lengthtest{\pagetotal>0.9\pagegoal}}{%
-%   {\renewcommand\which{-1}}%
-%   {\renewcommand\which{0}}%
+%   % use whatever test your design requires
+%   \ifthenelse{\lengthtest{\pagetotal<4\baselineskip}}
+%     {\renewcommand{\whichpage}{top\thepage}}%
+%     {\renewcommand{\whichpage}{\thepage}}%
 % }
+%
 % \renewcommand{\sectionmark}[1]{%
 %   \InsertMark{section}{\thesection\ #1}%
-%   \InsertMark{which}{\which}%
-% }%
+%   \InsertMark{which}{0}%
+%   \InsertMark{whichpage}{\whichpage}%
+% }
 % \end{example}
 %
+% In the example 35 file you can see this in section~6.
+%
 % The final code for the right header will now be:
+%
 % \Example{35}[(continued)]
 % \begin{example}
 % \fancyhead[R]{%
-%   \IfMarksEqualTF{subsection}{top}{first}
-%     {% no subsection mark on this page
-%       \ifthenelse{\TopMark{which}=1}{%
-%         % use previous subsection unless suppressed by which = -1
-%         \ifthenelse{\FirstMark{which}<0} % -1
-%           {\FirstMark{subsection}}% = \TopMark{subsection}
+%     \IfMarksEqualTF{subsection}{top}{first}
+%       {% no subsection mark on this page
+%         \ifthenelse{%
+%           % previous page ended in a subsection
+%           \TopMark{which}=1\and
+%                  % Is there a section on the page?
+%           \equal{\IfMarksEqualTF{section}{top}{first}
+%                 {\thepage}{\FirstMark{whichpage}}}{\thepage}}%
+%           {
+%             % use previous subsection unless suppressed by section on top
+%             \TopMark{subsection}%
+%           }
+%         % otherwise use empty right header
+%         {}%
 %       }
-%     }
-%     {% if there is a subsectionmark on the page, use it
-%       \FirstMark{subsection}%
-%     }%
+%       {% if there is a subsectionmark on the page, use it
+%         \FirstMark{subsection}%
+%       }%
 % }
 % \end{example}
 % In the actual code in the Example 35 file there is also some debugging
