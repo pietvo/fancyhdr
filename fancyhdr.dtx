@@ -6327,13 +6327,6 @@
 % \changes{fancyhdr v5.2}{2025/01/15}{Conditionally require package \pkg{xparse}.}
 \ifdefined\NewDocumentCommand\else\RequirePackage{xparse}\fi
 %
-% \begin{macro}[internal]{\if@nch@mpty}
-% This macro tests if its argument is empty.
-%    \begin{macrocode}
-\newcommand\if@nch@mpty[1]{\def\temp@a{#1}\ifx\temp@a\@empty}
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}[internal]{\iff@nch@check}
 % Boolean for the \texttt{nocheck} option.
 % \changes{fancyhdr v4.0}{2019/03/15}{Implement the \texttt{nocheck} option}
@@ -6391,19 +6384,22 @@
 % \end{macro}
 %
 % \begin{macro}[internal]{\f@nch@def}
-% This macro defines another macro (usually a header or footer field).
+% This macro defines another macro (a header or footer field).
 % Depending on the value of \cs{f@nch@gbl} the definition will be
 % global or local.
 % Default it is always local. But with the \texttt{compatV3} option it
 % is \cs{global} in the normal definitions, and local in \cs{fancypagestyle}.
 % The \cs{global} case is now considered a bug (or at least undesirable).
 %
-% If the value (argument 2) is empty, a \cs{leavevmode} will be substituted.
-% If it is not empty, a \cs{strut} will be added.
+% If the value (argument 2) is not empty, a \cs{strut} will be added.
+% \changes{fancyhdr v5.2}{2025/02/07}{Inline \cs{if@nch@mpty}.}
+% \changes{fancyhdr v5.2}{2025/02/07}{Remove \cs{leavevmode}, because
+% the initialisation code also inserts a \cs{leavevmode}.}
 %
 %    \begin{macrocode}
-\newcommand\f@nch@def[2]{\if@nch@mpty{#2}\f@nch@gbl\def#1{\leavevmode}\else
-                                   \f@nch@gbl\def#1{#2\strut}\fi}
+\newcommand\f@nch@def[2]{%
+  \def\temp@a{#2}\ifx\temp@a\@empty\f@nch@gbl\def#1{}%
+                 \else\f@nch@gbl\def#1{#2\strut}\fi}
 %    \end{macrocode}
 % \end{macro}
 %

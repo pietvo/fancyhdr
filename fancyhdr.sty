@@ -26,7 +26,6 @@
 % Copyright (C) 1994-2025 by Pieter van Oostrum <pieter@vanoostrum.org>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ifdefined\NewDocumentCommand\else\RequirePackage{xparse}\fi
-\newcommand\if@nch@mpty[1]{\def\temp@a{#1}\ifx\temp@a\@empty}
 \newif\iff@nch@check
 \f@nch@checktrue
 \DeclareOption{nocheck}{%
@@ -47,8 +46,9 @@
 \DeclareOption{twoside}{%
   \if@twoside\else\f@nch@twosidetrue\fi
 }
-\newcommand\f@nch@def[2]{\if@nch@mpty{#2}\f@nch@gbl\def#1{\leavevmode}\else
-                                   \f@nch@gbl\def#1{#2\strut}\fi}
+\newcommand\f@nch@def[2]{%
+  \def\temp@a{#2}\ifx\temp@a\@empty\f@nch@gbl\def#1{}%
+                 \else\f@nch@gbl\def#1{#2\strut}\fi}
 \DeclareOption{myheadings}{%
   \@ifundefined{chapter}{%
     \def\ps@myheadings{\ps@f@nch@fancyproto \let\@mkboth\@gobbletwo
